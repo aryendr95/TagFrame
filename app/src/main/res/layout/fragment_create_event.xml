@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#99ffffff"></RelativeLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/ll_c">
+
+        <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_event_tittle"
+        android:layout_width="match_parent"
+            android:layout_margin="10dp"
+        android:layout_height="wrap_content">
+
+        <com.tagframe.tagframe.Utils.Edittext
+            android:id="@+id/input_event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textSize="17dp"
+            android:hint="Event Tittle" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_event_description"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content">
+
+        <com.tagframe.tagframe.Utils.Edittext
+            android:id="@+id/input_event_description"
+            android:layout_width="match_parent"
+            android:textSize="17dp"
+            android:layout_height="wrap_content"
+
+            android:hint="Description" />
+    </android.support.design.widget.TextInputLayout>
+
+       <LinearLayout
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:layout_margin="10dp">
+
+           <com.tagframe.tagframe.Utils.MyTextView
+               android:layout_width="wrap_content"
+               android:layout_height="fill_parent"
+                android:gravity="center"
+               android:paddingLeft="5dp"
+               android:textSize="17dp"
+               android:text="Type"/>
+
+           <RadioGroup
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               android:layout_weight="1"
+               android:gravity="center"
+
+               android:orientation="horizontal"
+               android:id="@+id/typeradiogrp">
+
+               <RadioButton
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Public"
+                   android:checked="true"
+                   android:id="@+id/rd_btn_public"/>
+               <RadioButton
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Friends"
+                   android:id="@+id/rd_btn_friends"/>
+               <RadioButton
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Private"
+                   android:id="@+id/rd_btn_private"/>
+           </RadioGroup>
+       </LinearLayout>
+
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp">
+    <Button android:id="@+id/btn_create_event"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Event"
+        android:layout_weight="1"
+        android:background="@color/colorAccent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/white"/>
+    <Button android:id="@+id/btn_saved_event"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Saved Events"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="1"
+        android:background="@color/colorAccent"
+
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>
+    </LinearLayout>
+
+
+
+
+   <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:layout_below="@+id/ll_c"
+        android:id="@+id/ll_select_video">
+
+
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:id="@+id/select_video_list"></ListView>
+        </LinearLayout>
+
+
+
+
+</RelativeLayout>

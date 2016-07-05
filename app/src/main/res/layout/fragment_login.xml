@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#60000000"
+
+   >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dp"
+android:gravity="center"
+        android:orientation="vertical"
+        >
+
+        <com.tagframe.tagframe.Utils.Edittext
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+
+
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/login_usrname"
+            android:layout_margin="10dp"/>
+
+        <com.tagframe.tagframe.Utils.Edittext
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:inputType="textPassword"
+            android:id="@+id/login_password"
+
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"/>
+
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/login_show"
+            android:text="Show Password"
+
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"/>
+
+        <com.tagframe.tagframe.Utils.MyButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+
+            android:text="Login"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:id="@+id/login_action"
+            android:background="@color/GRAY"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_forgot"
+            android:layout_margin="10dp"
+            android:text="Forgot Password?"
+            android:gravity="center"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+</LinearLayout>

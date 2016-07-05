@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+
+
+    <ProgressBar
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/loadprofileinformation"
+        android:layout_centerInParent="true"
+
+        android:indeterminate="true"
+        />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+
+        android:id="@+id/wholelayout">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="7"
+            android:id="@+id/profile_section"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="7"
+                android:orientation="vertical">
+
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+
+                    android:padding="5dp">
+                    <com.pkmmte.view.CircularImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/pro_image"
+                        android:id="@+id/pro_user_pic"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/edit_profile_picture"
+                        android:visibility="gone"
+                        android:src="@android:drawable/ic_menu_edit"/>
+                </RelativeLayout>
+
+
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Username"
+                    android:textStyle="bold"
+
+                    android:id="@+id/pro_user_name"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="10dp"
+
+                    android:text="realname"
+                    android:textStyle="bold"
+                    android:id="@+id/pro_user_realname"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left"
+                    android:text="Description"
+                    android:textColor="@color/GRAY"
+                    android:paddingLeft="10dp"
+
+                    android:focusableInTouchMode="false"
+                    android:id="@+id/pro_user_description"
+                    />
+
+
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+
+                    android:id="@+id/btn_edit_profile"
+                    android:layout_margin="10dp"
+
+                    android:background="@color/GRAY"
+                    android:textColor="#000"
+                    android:text="Edit Profile"/>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/pro_timeline"
+                    android:background="@color/light_gray">
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="5dp"
+                        android:layout_weight="2"
+                        >
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/no_of_timeline"
+                            android:textSize="20dp"
+                            android:gravity="center"
+                            android:textColor="@color/blACK"
+                            android:textStyle="bold"
+                            android:text="0"
+                            android:src="@drawable/timelin"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="3.5">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:text="TimeLine"
+                            android:textSize="10dp"
+                            android:textColor="@color/GRAY"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/pro_event"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="5dp"
+                        android:layout_weight="2"
+                        >
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/no_of_events"
+                            android:textSize="20dp"
+                            android:gravity="center"
+                            android:textColor="@color/blACK"
+                            android:textStyle="bold"
+                            android:text="0"
+                            android:src="@drawable/timelin"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="3.5">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:text="Events"
+                            android:textSize="10dp"
+                            android:textColor="@color/GRAY"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/pro_frames">
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="5dp"
+                        android:layout_weight="2"
+                        >
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/no_of_frames"
+                            android:textColor="@color/blACK"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:gravity="center"
+                            android:text="0"
+                            android:src="@drawable/timelin"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="3.5">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:text="Frames"
+                            android:textColor="@color/GRAY"
+                            android:textSize="10dp"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/pro_following">
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="5dp"
+                        android:layout_weight="2"
+                        >
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/no_of_following"
+                            android:textSize="20dp"
+                            android:textColor="@color/blACK"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:text="0"
+                            android:src="@drawable/timelin"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="3.5">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:text="Following"
+                            android:textSize="10dp"
+                            android:textColor="@color/GRAY"
+
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/pro_followers">
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="5dp"
+                        android:layout_weight="2"
+                        >
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/no_of_followers"
+                            android:textSize="20dp"
+                            android:textColor="@color/blACK"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:text="0"
+                            android:src="@drawable/timelin"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="3.5">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:text="Followers"
+                            android:textColor="@color/GRAY"
+                            android:textSize="10dp"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/GRAY"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/GRAY"/>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.9"
+                android:id="@+id/framelayout_profile"></FrameLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/createevent_profile"
+        android:visibility="gone"
+        android:src="@drawable/camera"
+        android:background="@drawable/floatingbutton"/>
+
+</RelativeLayout>

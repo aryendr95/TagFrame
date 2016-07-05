@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+   >
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbarchangepassword"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+
+    android:orientation="vertical">
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_userinfo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+                <com.pkmmte.view.CircularImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+
+                    android:id="@+id/acc_proimage"
+                    android:src="@drawable/pro_image"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:src="@android:drawable/ic_menu_edit"
+                android:layout_centerInParent="true"
+                android:id="@+id/acc_change_pro_pic"/>
+        </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+
+        android:text="General Information"
+        android:textSize="20dp"
+        android:layout_margin="10dp"
+        android:id="@+id/acc_username"/>
+       <RelativeLayout
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent"
+
+
+          >
+           <ImageView
+               android:layout_width="20dp"
+               android:layout_alignParentRight="true"
+               android:layout_height="20dp"
+               android:layout_margin="10dp"
+               android:src="@drawable/right"
+               android:id="@+id/acc_expand_userinfo"/>
+       </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/expandable_userinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical" >
+
+       <LinearLayout
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent"
+           android:layout_weight="1"
+           android:layout_margin="5dp"
+           android:orientation="horizontal">
+           <TextView
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               android:text="Username:"
+               android:gravity="center"
+               android:layout_weight="2"
+               />
+
+           <EditText
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               android:id="@+id/acc_ed_username"
+               android:layout_weight="1"/>
+       </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="Realname:"
+                android:gravity="center"
+                android:layout_weight="2"
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/acc_ed_realname"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="Email:"
+                android:gravity="center"
+                android:layout_weight="2"
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/acc_ed_email"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="Description:"
+                android:gravity="center"
+                android:layout_weight="2"
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/acc_ed_description"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="If you edit your Username or RealName, it may be harder for other users to find you"
+                android:gravity="center"
+                android:layout_weight="1"
+                />
+
+
+        </LinearLayout>
+
+
+
+
+        <com.tagframe.tagframe.Utils.MyButton
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp"
+            android:background="@color/GRAY"
+            android:textColor="@color/blACK"
+            android:text="Save"
+            android:textStyle="bold"
+            android:id="@+id/acc_save_userinfo"
+            android:layout_weight="1"/>
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/GRAY"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="10dp"
+
+        android:orientation="vertical">
+        <!-- Header -->
+        <LinearLayout
+            android:id="@+id/header_changepassword"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFF"
+            android:layout_margin="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+
+                android:text="Change Password"
+                android:textSize="20dp"
+                android:layout_margin="10dp"
+                />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+
+                >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="20dp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/right"
+                    android:id="@+id/acc_expand_changepassword"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/expandable_changepassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Current Password:"
+                    android:gravity="center"
+                    android:layout_weight="2"
+                    />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/acc_ed_current_pass"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="New Password:"
+                    android:gravity="center"
+                    android:layout_weight="2"
+                    />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/acc_ed_new_pass"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Confirm Password:"
+                    android:gravity="center"
+                    android:layout_weight="2"
+                    />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/acc_ed_confirm_pass"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Forgot Password?"
+                    android:gravity="center"
+                    android:id="@+id/acc_forgot_password"
+                    android:layout_weight="1"
+                    />
+
+
+            </LinearLayout>
+
+
+
+
+
+
+            <com.tagframe.tagframe.Utils.MyButton
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp"
+                android:background="@color/GRAY"
+                android:textColor="@color/blACK"
+                android:text="Change"
+                android:textStyle="bold"
+                android:id="@+id/acc_btn_change_pass"
+                android:layout_weight="1"/>
+
+
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/GRAY"/>
+
+    <com.tagframe.tagframe.Utils.MyButton
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:background="@color/GRAY"
+        android:textColor="@color/blACK"
+        android:text="Delete Account"
+        android:textStyle="bold"
+        android:id="@+id/acc_btn_delete_pass"
+        android:layout_weight="1"/>
+
+    </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

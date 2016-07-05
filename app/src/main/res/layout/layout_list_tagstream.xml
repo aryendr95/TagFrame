@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:layout_marginTop="20dp">
+
+        <com.pkmmte.view.CircularImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+
+            android:src="@drawable/pro_image"
+            android:id="@+id/list_pro_image"/>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+            <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_user_name"
+            android:text="Username"
+            android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginTop="2dp"
+            android:textColor="@color/colorPrimary"
+            />
+
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/GRAY"
+                android:layout_marginTop="5dp"
+                android:text="added new event"
+                android:layout_below="@+id/list_user_name"
+                />
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#60000000"
+        >
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/list_event_image"
+
+            android:scaleType="fitXY"
+
+            />
+            <VideoView
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:id="@+id/list_event_video"
+
+                />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#50000000">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/play_button"
+                android:src="@drawable/playvideo"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/list_user_duration"
+            android:text="2 days ago"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/white"
+            />
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="fill_parent"
+            android:textSize="17dp"
+           android:layout_above="@+id/list_user_duration"
+            android:textColor="@color/white"
+           android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_event_tittle"
+            android:text="Event Tittle"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/GRAY"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/lllike">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="0"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/txt_likes"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:id="@+id/imglike"
+            android:src="@drawable/like"/>
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:id="@+id/txt_like_directive"
+                android:text="Like"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/llshare"
+
+            >
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:src="@drawable/shareevent"/>
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="Share"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

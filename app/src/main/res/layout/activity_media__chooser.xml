@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+            android:id="@+id/dsa"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            >
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="fill_parent"
+                android:src="@drawable/previous"
+                android:id="@+id/media_action_back"/>
+        </LinearLayout>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
+            android:text="Select Video"
+            android:id="@+id/media_action_text"
+            android:textColor="@color/white"
+            android:textSize="20dp"/>
+
+    </LinearLayout>
+    <Button android:id="@+id/selectBtn"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Select" android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:minWidth="200px" />
+    <GridView android:id="@+id/PhoneImageGrid"
+        android:layout_below="@+id/dsa"
+        android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:numColumns="auto_fit" android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp" android:columnWidth="90dp"
+        android:stretchMode="columnWidth" android:gravity="center"
+        android:layout_above="@id/selectBtn" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbar_media_choseer"
+        android:layout_centerInParent="true"></ProgressBar>
+</RelativeLayout>

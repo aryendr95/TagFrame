@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".UI.Acitivity.Productlist">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/top_product"
+        android:background="@color/colorPrimary">
+
+
+
+
+
+
+            <com.tagframe.tagframe.Utils.Edittext
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search product"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:id="@+id/mod_search_text_product"
+                android:paddingBottom="5dp"
+                android:imeOptions="actionSearch"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:layout_weight="2"
+                android:background="@color/colorPrimary"
+                android:textColorHint="@color/white"/>
+
+
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="8"
+                android:id="@+id/mod_search_product"
+                android:src="@drawable/search"/>
+
+
+    </LinearLayout>
+
+    <GridView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/top_product"
+        android:numColumns="2"
+        android:id="@+id/gird_product"></GridView>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/pbar_product"/>
+
+</RelativeLayout>

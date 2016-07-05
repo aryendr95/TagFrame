@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="300dp"
+    android:layout_height="match_parent">
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Are you sure you want to remove this follower?"
+        android:gravity="center_horizontal"
+        android:id="@+id/dia_rem_caption"
+       />
+
+    <com.pkmmte.view.CircularImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/dia_remove_image"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:text="Are you sure you want to remove this follower?"
+        android:gravity="center_horizontal"
+        android:id="@+id/dia_remove_text"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <com.tagframe.tagframe.Utils.MyButton
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:background="@android:color/holo_green_light"
+            android:text="Yes"
+
+            android:id="@+id/dia_rem_yesbtn"/>
+        <com.tagframe.tagframe.Utils.MyButton
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:background="@android:color/holo_red_light"
+            android:text="No"
+
+            android:id="@+id/dia_rem_nobtn"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimaryDark"></LinearLayout>
+
+</LinearLayout>
