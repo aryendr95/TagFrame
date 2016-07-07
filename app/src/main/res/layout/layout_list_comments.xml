@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shadow"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <com.pkmmte.view.CircularImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/img_commentlist_pic"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/appblue"
+            android:layout_toRightOf="@+id/img_commentlist_pic"
+            android:layout_marginLeft="10dp"
+            android:textSize="15dp"
+            android:id="@+id/txt_commentlist_username"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Comment"
+            android:layout_toRightOf="@+id/img_commentlist_pic"
+            android:textSize="13dp"
+            android:layout_below="@+id/txt_commentlist_username"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/txt_commentlist_comment"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Reply"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/img_commentlist_pic"
+            android:textSize="13dp"
+            android:layout_below="@+id/txt_commentlist_comment"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/txt_commentlist_rply"/>
+
+
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_margin="10dp"
+        android:background="@color/bluegray"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/layout_commentlist_rplylayout"
+        >
+
+        <com.pkmmte.view.CircularImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/img_commentlist_rplypic"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/appblue"
+            android:layout_toRightOf="@+id/img_commentlist_rplypic"
+            android:layout_marginLeft="10dp"
+            android:textSize="15dp"
+            android:id="@+id/txt_commentlist_rplyusername"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Comment"
+            android:layout_toRightOf="@+id/img_commentlist_rplypic"
+            android:textSize="13dp"
+            android:layout_below="@+id/txt_commentlist_rplyusername"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/txt_commentlist_rplycomment"/>
+
+
+
+
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_margin="10dp"
+        android:background="@color/bluegray"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/layout_commentlist_rplylayout_comment"
+        >
+
+      <EditText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/ed_commentlist_comment"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          
+          android:layout_toLeftOf="@+id/img_commentlist_send_comment"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_commentlist_send_comment"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/send"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            />
+
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>

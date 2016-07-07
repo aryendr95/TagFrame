@@ -1,5 +1,6 @@
 package com.tagframe.tagframe.Adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -169,14 +170,29 @@ public class TagStreamEventAdapter extends BaseAdapter
             }
         });
 
+
+        //comments
+        mViewHolder.llcomment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showcommentdialog();
+            }
+        });
+
         return convertView;
+    }
+
+    private void showcommentdialog() {
+
+        final Dialog dialog=new Dialog(ctx);
+
     }
 
     private class MyViewHolder {
         TextView tvTitlle, tvname,tvcurrentduration,tvlike,tvlike_direct;
         ImageView iveventimage,ivlike;
         VideoView iveventvideo;
-        LinearLayout ll_like,ll_share;
+        LinearLayout ll_like,ll_share,llcomment;
         CircularImageView ivpropic;
 
         public MyViewHolder(View item) {
@@ -187,6 +203,7 @@ public class TagStreamEventAdapter extends BaseAdapter
 
             ll_like=(LinearLayout)item.findViewById(R.id.lllike);
             ll_share=(LinearLayout)item.findViewById(R.id.llshare);
+            llcomment=(LinearLayout)item.findViewById(R.id.llcomment);
 
             tvlike_direct=(TextView)item.findViewById(R.id.txt_like_directive);
             ivpropic=(CircularImageView)item.findViewById(R.id.list_pro_image);
