@@ -175,18 +175,14 @@ public class TagStreamEventAdapter extends BaseAdapter
         mViewHolder.llcomment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showcommentdialog();
+                
             }
         });
 
         return convertView;
     }
 
-    private void showcommentdialog() {
 
-        final Dialog dialog=new Dialog(ctx);
-
-    }
 
     private class MyViewHolder {
         TextView tvTitlle, tvname,tvcurrentduration,tvlike,tvlike_direct;
