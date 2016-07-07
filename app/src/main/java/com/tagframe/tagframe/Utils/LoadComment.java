@@ -62,7 +62,7 @@ public class LoadComment extends AsyncTask<String,String,String> {
             webServiceHandler.addFormField("video_id",video_id);
             JSONObject resultobject=new JSONObject(webServiceHandler.finish());
 
-           // Log.e("Comment Result",resultobject.toString());
+            Log.e("Comment Result",resultobject.toString());
 
             status=resultobject.getString("status");
             if(status.equals("success"))
@@ -82,9 +82,14 @@ public class LoadComment extends AsyncTask<String,String,String> {
                         comment.setCreated_on(commentobject.getString("created_on"));
                         comment.setParent_id(commentobject.getString("id"));
                         comment.setVideo_id(video_id);
-
-                        JSONArray replyjsonArray=commentobject.getJSONArray("replycomments");
-
+                        JSONArray replyjsonArray;
+                        try {
+                             replyjsonArray = commentobject.getJSONArray("replycomments");
+                        }
+                        catch (JSONException e)
+                        {
+                            replyjsonArray=new JSONArray();
+                        }
 
                         ArrayList<Comment.ReplyComment> replyCommentsarralylist=new ArrayList<>();
                         if(replyjsonArray.length()>0)
@@ -115,11 +120,11 @@ public class LoadComment extends AsyncTask<String,String,String> {
         }
         catch (IOException e)
         {
-
+        Log.e("Das",e.getMessage());
         }
         catch(JSONException E)
         {
-
+            Log.e("Das",E.getMessage());
         }
         return null;
     }
