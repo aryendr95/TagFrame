@@ -63,6 +63,7 @@ import com.tagframe.tagframe.Utils.BitmapHelper;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
+import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.ViewAnimationUtils;
 import com.tagframe.tagframe.Utils.listops;
 
@@ -148,9 +149,16 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
 
-                TagStream fr = new TagStream();
-                changefragment(fr);
 
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+                if (f instanceof TagStream)
+                {
+                    ((TagStream) f).scrolltofirst();
+                }
+                else {
+                    TagStream fr = new TagStream();
+                    changefragment(fr);
+                }
 
             }
         });
@@ -660,6 +668,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Video"), PICK_VIDEO);
+                dialog.dismiss();
             }
         });
         dialog.findViewById(R.id.media_camera).setOnClickListener(new View.OnClickListener() {
@@ -671,6 +680,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 // start the Video Capture Intent
                 startActivityForResult(intent1, TAKE_VIDEO);
+                dialog.dismiss();
 
             }
         });
@@ -684,6 +694,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 // start the Video Capture Intent
                 startActivity(intent2);
                 finish();
+                dialog.dismiss();
             }
         });
 
@@ -756,6 +767,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         transaction.setCustomAnimations(android.R.anim.slide_in_left,
                 android.R.anim.slide_out_right);
         transaction.replace(R.id.mod_frame_layout, fr);
+
 
         transaction.commit();
     }
@@ -852,7 +864,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 else
                 {
 
-                    MyToast.popmessage("ss ", this);
+                    MyToast.popmessage("Error ", this);
                 }
 
 
@@ -868,7 +880,22 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 else
                 {
 
-                    MyToast.popmessage("ss ", this);
+                    MyToast.popmessage("Error", this);
+                }
+
+                break;
+
+            case Constants.operation_comment:
+
+                if(resultCode==1)
+                {
+
+                    PopMessage.makesimplesnack(mSlidingPanel,"Comment Successful");
+                }
+                else
+                {
+
+                    PopMessage.makesimplesnack(mSlidingPanel,"Handle Failure");
                 }
 
                 break;

@@ -203,4 +203,14 @@ public class User_Following extends Fragment {
 
         }
     }
+
+
+
+    //scroll to fisrt
+
+
+    public void scrolltofirst(){
+
+        followlistl.smoothScrollToPosition(0);
+    }
 }

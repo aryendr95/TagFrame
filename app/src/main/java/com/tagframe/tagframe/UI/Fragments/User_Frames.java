@@ -14,9 +14,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.tagframe.tagframe.Adapters.ImageAdapter;
-import com.tagframe.tagframe.Adapters.UserEventAdapter;
 import com.tagframe.tagframe.Models.FrameList_Model;
-import com.tagframe.tagframe.Models.UserEventsModel;
 import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
@@ -25,10 +23,8 @@ import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.listops;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**

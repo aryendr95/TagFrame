@@ -14,7 +14,11 @@ import java.util.concurrent.TimeUnit;
 public class Constants {
 
 
+    //URL
+    public static final String URL_COMMENT_LIST="http://workintelligent.com/TagFrame/webservice/comment_list";
+    public static final String URL_COMMENT="http://workintelligent.com/TagFrame/webservice/post_comment";
 
+    //SP
     public static final String user_id="user_id";
     public static final String user_name="username";
     public static final String user_pic="profile_image";
@@ -82,6 +86,9 @@ public class Constants {
     public static final int eventtype_saved=1002;
     public static final int eventtype_internet=1003;
 
+
+    //intent service operations
+
     public static final int operation_remove_follower=101;
     public static final int operation_unfollow=102;
     public static final int operation_follow=103;
@@ -90,10 +97,11 @@ public class Constants {
     public static final int operation_unfollow_profile=105;
     public static final int operation_follow_profile=106;
     public static final int operation_like=107;
-
     public static final int operation_unlike=108;
 
     public static final int operation_load_user_events=109;
+
+    public static final int operation_comment=110;
     //public static final int operation_unlike=108;
     //public static final int operation_unlike=108;
 

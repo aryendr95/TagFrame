@@ -149,6 +149,57 @@ public class IntentServiceOperations extends IntentService{
         }
 
 
+        else if(operation==Constants.operation_comment)
+        {
+            String user_id=intent.getStringExtra("user_id");
+            String event_id=intent.getStringExtra("video_id");
+            String parent_id=intent.getStringExtra("parent_id");
+            String comment=intent.getStringExtra("comment");
+
+            comment(user_id,event_id,parent_id,comment,operation);
+        }
+
+
+    }
+
+    private void comment(String user_id, String event_id, String parent_id, String comment, int operation) {
+
+        String status="";
+
+        Log.e("ok",user_id+" "+event_id+" "+parent_id+" "+comment);
+
+
+        try {
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.URL_COMMENT);
+            webServiceHandler.addFormField("user_id",user_id);
+            webServiceHandler.addFormField("video_id", event_id);
+            webServiceHandler.addFormField("parent_id", parent_id);
+            webServiceHandler.addFormField("comment", comment);
+
+            JSONObject jsonObject=new JSONObject(webServiceHandler.finish());
+
+            status=jsonObject.getString("status");
+
+        }
+        catch (Exception e)
+        {
+
+            status="error";
+        }
+        if(status.equals("success"))
+        {
+            Bundle bundle=new Bundle();
+            bundle.putInt("operation",operation);
+            bundle.putString("user_id",user_id);
+            receiver.send(1, bundle);
+        }
+        else
+        {
+            Bundle bundle=new Bundle();
+            bundle.putInt("operation", operation);
+            bundle.putString("user_id", user_id);
+            receiver.send(0,bundle);
+        }
     }
 
     private void unlike_event(String user_id, String event_id, int operation) {

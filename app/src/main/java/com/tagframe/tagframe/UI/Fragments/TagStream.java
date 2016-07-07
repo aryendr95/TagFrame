@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -106,7 +109,21 @@ public class TagStream extends Fragment {
         });
 
 
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+
+                //making the others incenter false
+
+
+            }
+        });
 
         return mview;
     }
@@ -232,5 +249,15 @@ public class TagStream extends Fragment {
 
         }
     }
+
+    //scroll to fisrt
+
+
+    public void scrolltofirst(){
+
+        listView.smoothScrollToPosition(0);
+    }
+
+
 
 }

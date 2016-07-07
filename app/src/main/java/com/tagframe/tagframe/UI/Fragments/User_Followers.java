@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.tagframe.tagframe.Adapters.FollowListAdapter;
-import com.tagframe.tagframe.Adapters.UserEventAdapter;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
@@ -203,5 +202,13 @@ public class User_Followers extends Fragment {
                     }
                 }
         }
+    }
+
+    //scroll to fisrt
+
+
+    public void scrolltofirst(){
+
+        followlistl.smoothScrollToPosition(0);
     }
 }

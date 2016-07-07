@@ -20,40 +20,55 @@ import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Utils.PopMessage;
 
 import java.util.ArrayList;
 
 public class AndroidCustomGalleryActivity extends Activity {
-    private int count;
+
+
+    private int count,limit;
     private Bitmap[] thumbnails;
-    ArrayList<String> selectImages = new ArrayList<String>();
+    private ArrayList<String> selectImages = new ArrayList<String>();
     private boolean[] thumbnailsselection;
     private String[] arrPath;
     private ImageAdapter imageAdapter;
+
+
+    private RelativeLayout mlayout;
     private  Button btn_select;
-    TextView mtxt_menu;
-    ImageView mimg_menu_back;
-    ProgressBar pbar;
-    GridView imagegrid;
+    private TextView mtxt_menu;
+    private ImageView mimg_menu_back;
+    private ProgressBar pbar;
+    private GridView imagegrid;
+
+
     loadimage loadimage;
+
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media__chooser);
-        pbar=(ProgressBar)findViewById(R.id.pbar_media_choseer);
-        imagegrid = (GridView) findViewById(R.id.PhoneImageGrid);
 
         loadimage=new loadimage();
         loadimage.execute();
 
+        limit=getIntent().getIntExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT,5);
 
+        mlayout=(RelativeLayout)findViewById(R.id.mlayout_media_choose);
+        pbar=(ProgressBar)findViewById(R.id.pbar_media_choseer);
+        imagegrid = (GridView) findViewById(R.id.PhoneImageGrid);
         mtxt_menu=(TextView)findViewById(R.id.media_action_text);
         mimg_menu_back=(ImageView)findViewById(R.id.media_action_back);
+
+
         mimg_menu_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +80,7 @@ public class AndroidCustomGalleryActivity extends Activity {
                 finish();
             }
         });
+
         mtxt_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,17 +93,14 @@ public class AndroidCustomGalleryActivity extends Activity {
             }
         });
 
-
-
-
-
-
         final Button selectBtn = (Button) findViewById(R.id.selectBtn);
         selectBtn.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 final int len = thumbnailsselection.length;
+
+                selectImages=new ArrayList<String>();
                 int cnt = 0;
 
                 for (int i =0; i<len; i++)
@@ -104,14 +117,20 @@ public class AndroidCustomGalleryActivity extends Activity {
                             "Please select at least one item",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Intent intent=new Intent();
-                    intent.putStringArrayListExtra("videopaths",selectImages);
-                    setResult(901, intent);
-                    if(!loadimage.isCancelled())
+
+                    if(cnt>limit)
                     {
-                        loadimage.cancel(true);
+                        PopMessage.makesimplesnack(mlayout,"You can't select more than " +limit+" videos");
                     }
-                    finish();
+                    else {
+                        Intent intent = new Intent();
+                        intent.putStringArrayListExtra("videopaths", selectImages);
+                        setResult(901, intent);
+                        if (!loadimage.isCancelled()) {
+                            loadimage.cancel(true);
+                        }
+                        finish();
+                    }
 
                 }
             }
@@ -157,9 +176,12 @@ public class AndroidCustomGalleryActivity extends Activity {
 
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-                    CheckBox cb = (CheckBox) v;
+
+
+
+                        CheckBox cb = (CheckBox) v;
                     int id = cb.getId();
-                    if (thumbnailsselection[id]){
+                    if (thumbnailsselection[id]) {
                         cb.setChecked(false);
                         thumbnailsselection[id] = false;
                     } else {
@@ -167,6 +189,7 @@ public class AndroidCustomGalleryActivity extends Activity {
                         thumbnailsselection[id] = true;
 
                     }
+
                 }
             });
 

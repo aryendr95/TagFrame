@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +16,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.tagframe.tagframe.Adapters.TagStreamEventAdapter;
-import com.tagframe.tagframe.Adapters.UserEventAdapter;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.TagStream_Model;
-import com.tagframe.tagframe.Models.UserEventsModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
@@ -54,7 +51,7 @@ public class User_Events extends Fragment {
     int mLastFirstVisibleItem;
     boolean mIsScrollingUp;
 
-    ArrayList<UserEventsModel> tagStream_models=new ArrayList<>();
+    ArrayList<TagStream_Model> tagStream_models=new ArrayList<>();
     private int firstVisibleItem, visibleItemCount,totalItemCount;
     int count=0,flag=0;
 
@@ -202,16 +199,16 @@ public class User_Events extends Fragment {
                     for(int i=0;i<records.length();i++) {
 
                         JSONObject rec=records.getJSONObject(i);
-                        UserEventsModel tagStream_model = new UserEventsModel();
+                        TagStream_Model tagStream_model = new TagStream_Model();
                         tagStream_model.setThumbnail(rec.getString("thumbnail"));
-                        tagStream_model.setData_url(rec.getString("data_url"));
+                        tagStream_model.setDataurl(rec.getString("data_url"));
                         tagStream_model.setEvent_id(rec.getString("event_id"));
-                        tagStream_model.setTittle(rec.getString("title"));
-                        tagStream_model.setUser_name(user_name);
+                        tagStream_model.setTitle(rec.getString("title"));
+                        tagStream_model.setName(user_name);
                         tagStream_model.setProfile_picture(user_pic);
                         tagStream_model.setDescription(rec.getString("description"));
-                        tagStream_model.setNumber_of_event(rec.getString("number_of_event"));
-                        tagStream_model.setCreated_on(rec.getString("created_on"));
+                        //tagStream_model.set(rec.getString("number_of_event"));
+                        tagStream_model.setCreated_at(rec.getString("created_on"));
                         tagStream_model.setTags(rec.getString("tags"));
                         tagStream_model.setType(rec.getString("event_type"));
                         tagStream_model.setNumber_of_likes(rec.getString("count_like"));
@@ -261,7 +258,7 @@ public class User_Events extends Fragment {
                         progressBar.setVisibility(View.GONE);
 
                         if (flag == 0) {
-                            listView.setAdapter(new UserEventAdapter(getActivity(), tagStream_models));
+                            listView.setAdapter(new TagStreamEventAdapter(getActivity(), tagStream_models));
                             flag++;
                         } else {
                             ((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
@@ -273,6 +270,14 @@ public class User_Events extends Fragment {
                     }
                 }
         }
+    }
+
+    //scroll to fisrt
+
+
+    public void scrolltofirst(){
+
+        listView.smoothScrollToPosition(0);
     }
 
 }

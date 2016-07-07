@@ -23,6 +23,34 @@ public class TagStream_Model implements Parcelable {
     private String prduct_name;
     private String number_of_likes;
     private String sharelink;
+    private String type;
+    private boolean in_center=false;
+
+    public boolean isIn_center() {
+        return in_center;
+    }
+
+    public void setIn_center(boolean in_center) {
+        this.in_center = in_center;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    private String tags;
 
     private String like_video;
     private ArrayList<FrameList_Model> frameList_modelArrayList;
@@ -147,6 +175,9 @@ public class TagStream_Model implements Parcelable {
         this.prduct_name = prduct_name;
     }
 
+    public TagStream_Model() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -167,11 +198,11 @@ public class TagStream_Model implements Parcelable {
         dest.writeString(this.prduct_name);
         dest.writeString(this.number_of_likes);
         dest.writeString(this.sharelink);
+        dest.writeString(this.type);
+        dest.writeByte(this.in_center ? (byte) 1 : (byte) 0);
+        dest.writeString(this.tags);
         dest.writeString(this.like_video);
-        dest.writeTypedList(frameList_modelArrayList);
-    }
-
-    public TagStream_Model() {
+        dest.writeTypedList(this.frameList_modelArrayList);
     }
 
     protected TagStream_Model(Parcel in) {
@@ -188,11 +219,14 @@ public class TagStream_Model implements Parcelable {
         this.prduct_name = in.readString();
         this.number_of_likes = in.readString();
         this.sharelink = in.readString();
+        this.type = in.readString();
+        this.in_center = in.readByte() != 0;
+        this.tags = in.readString();
         this.like_video = in.readString();
         this.frameList_modelArrayList = in.createTypedArrayList(FrameList_Model.CREATOR);
     }
 
-    public static final Parcelable.Creator<TagStream_Model> CREATOR = new Parcelable.Creator<TagStream_Model>() {
+    public static final Creator<TagStream_Model> CREATOR = new Creator<TagStream_Model>() {
         @Override
         public TagStream_Model createFromParcel(Parcel source) {
             return new TagStream_Model(source);

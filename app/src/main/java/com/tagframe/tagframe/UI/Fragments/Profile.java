@@ -194,8 +194,16 @@ public class Profile extends Fragment {
                 pro_following.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
                 pro_followers.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
 
-                TimeLine fr=new TimeLine();
-                changefragment(fr);
+
+                Fragment f=getActivity().getSupportFragmentManager().findFragmentById(R.id.framelayout_profile);
+                if(f instanceof TimeLine)
+                {
+                    ((TimeLine) f).scrolltofirst();
+                }
+                else {
+                    TimeLine fr = new TimeLine();
+                    changefragment(fr);
+                }
             }
         });
 
@@ -217,8 +225,17 @@ public class Profile extends Fragment {
                 pro_following.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
                 pro_followers.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
 
-                 User_Events fr=new User_Events();
-                changefragment(fr);
+
+                Fragment f=getActivity().getSupportFragmentManager().findFragmentById(R.id.framelayout_profile);
+                if(f instanceof User_Events)
+                {
+                    ((User_Events) f).scrolltofirst();
+                }
+                else {
+
+                    User_Events fr = new User_Events();
+                    changefragment(fr);
+                }
             }
         });
         pro_frames=(LinearLayout)mview.findViewById(R.id.pro_frames);
@@ -255,8 +272,17 @@ public class Profile extends Fragment {
                 pro_frames.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
                 pro_following.setBackgroundColor(getActivity().getResources().getColor(R.color.light_gray));
                 pro_followers.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
-                User_Following fr=new User_Following();
-                changefragment(fr);
+
+
+                Fragment f=getActivity().getSupportFragmentManager().findFragmentById(R.id.framelayout_profile);
+                if(f instanceof User_Following)
+                {
+                    ((User_Following) f).scrolltofirst();
+                }
+                else {
+                    User_Following fr = new User_Following();
+                    changefragment(fr);
+                }
 
             }
         });
@@ -276,8 +302,15 @@ public class Profile extends Fragment {
                 pro_following.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
                 pro_followers.setBackgroundColor(getActivity().getResources().getColor(R.color.light_gray));
 
-                User_Followers fr=new User_Followers();
-                changefragment(fr);
+                Fragment f=getActivity().getSupportFragmentManager().findFragmentById(R.id.framelayout_profile);
+                if(f instanceof User_Followers)
+                {
+                    ((User_Followers) f).scrolltofirst();
+                }
+                else {
+                    User_Followers fr = new User_Followers();
+                    changefragment(fr);
+                }
 
             }
         });

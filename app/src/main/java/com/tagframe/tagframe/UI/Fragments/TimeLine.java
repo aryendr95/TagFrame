@@ -14,13 +14,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.tagframe.tagframe.Adapters.Time_Line_Adapter;
-import com.tagframe.tagframe.Adapters.UserEventAdapter;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.TimeLine_Model;
-import com.tagframe.tagframe.Models.UserEventsModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
-import com.tagframe.tagframe.Utils.EmptyLayout;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.listops;
@@ -231,5 +228,13 @@ public class TimeLine extends Fragment {
                 firstvisible = listView.getFirstVisiblePosition();
             }
         }
+    }
+
+    //scroll to fisrt
+
+
+    public void scrolltofirst(){
+
+        listView.smoothScrollToPosition(0);
     }
 }

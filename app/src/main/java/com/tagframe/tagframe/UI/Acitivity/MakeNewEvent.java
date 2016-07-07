@@ -60,6 +60,7 @@ import com.tagframe.tagframe.Utils.CustomSeekBar;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.HorizontalListView;
 import com.tagframe.tagframe.Utils.MyToast;
+import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.ProcessnaImages;
 import com.tagframe.tagframe.Utils.SeekBarBackgroundDrawable;
 import com.tagframe.tagframe.Utils.SeekBarProgressDrawable;
@@ -101,7 +102,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
     Button btn_tut_got_it;
 
-    LinearLayout ll_add_frame,ll_bottom_bar;
+    LinearLayout ll_add_frame,ll_bottom_bar,mlayout;
     RelativeLayout ll_container_frames,ll_seekbar_frame_container,ll_top_bar,ll_tutorial;
 
     RelativeLayout.LayoutParams params;
@@ -156,37 +157,6 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     // Constant with a file name
 
 
-    // Serializes an object and saves it to a file
-    public void saveToFile(Context context,String filename) {
-        try {
-            FileOutputStream fileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    // Creates an object by reading it from a file
-    public static SingleEventModel readFromFile(Context context,String fileName) {
-        SingleEventModel createResumeForm = null;
-        try {
-            FileInputStream fileInputStream = context.openFileInput(fileName);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            createResumeForm = (SingleEventModel) objectInputStream.readObject();
-            objectInputStream.close();
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return createResumeForm;
-    }
 
 
 
@@ -242,6 +212,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
         ll_top_bar=(RelativeLayout)findViewById(R.id.topbar);
         ll_bottom_bar=(LinearLayout)findViewById(R.id.ll_mp_tools);
+        mlayout=(LinearLayout)findViewById(R.id.mlayout_makenew_event);
 
 
         vidSurface = (SurfaceView) findViewById(R.id.surfaceviewnewevent);
@@ -322,7 +293,14 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         btn_add_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(framedata_map.size()==5)
+                {
+                    PopMessage.makesimplesnack(mlayout,"You can add only 5 frame to an event");
+                }
+                else {
                     generate_pop_up_add_frame(ll_add_frame);
+                }
             }
         });
 
@@ -982,7 +960,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
                     case R.id.media_library:
                         Intent inte = new Intent(MakeNewEvent.this, AlbumSelectActivity.class);
 //set limit on number of images that can be selected, default is 10
-                        inte.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5);
+                        inte.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5-framedata_map.size());
                         startActivityForResult(inte, 102);
 
                         break;
@@ -1017,7 +995,9 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
                     case R.id.medial_library_video:
                        /* new VideoPicker.Builder(MakeNewEvent.this).mode(VideoPicker.Mode.GALLERY)
                                 .build();*/
+
                         Intent intent12 = new Intent(MakeNewEvent.this, AndroidCustomGalleryActivity.class);
+                        intent12.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT,5-framedata_map.size());
                         startActivityForResult(intent12, 901);
 
                         break;
