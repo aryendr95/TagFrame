@@ -3,12 +3,16 @@ package com.tagframe.tagframe.Utils;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.tagframe.tagframe.Adapters.CommentAdapter;
+import com.tagframe.tagframe.Adapters.CommentsRecyclerViewAdapter;
 import com.tagframe.tagframe.Models.Comment;
 
 import org.json.JSONArray;
@@ -26,7 +30,7 @@ import java.util.Map;
 public class LoadComment extends AsyncTask<String,String,String> {
 
     private ProgressBar progressBar;
-    private ListView listView;
+    private RecyclerView listView;
     private String video_id;
     private Dialog dialog;
     private Context context;
@@ -39,7 +43,7 @@ public class LoadComment extends AsyncTask<String,String,String> {
     private ArrayList<Comment> commentArrayList=new ArrayList<>();;
     private String status="";
 
-    public LoadComment(ProgressBar progressBar,ListView listView,String video_id,Dialog d,Context context)
+    public LoadComment(ProgressBar progressBar,RecyclerView listView,String video_id,Dialog d,Context context)
     {
         this.dialog=d;
         this.listView=listView;
@@ -138,8 +142,11 @@ public class LoadComment extends AsyncTask<String,String,String> {
         if(dialog.isShowing())
         {
             progressBar.setVisibility(View.GONE);
-            Map<Integer, View> myViews = new HashMap<>();
-            listView.setAdapter(new CommentAdapter(context,commentArrayList));
+
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context.getApplicationContext());
+            listView.setLayoutManager(mLayoutManager);
+            listView.setItemAnimator(new DefaultItemAnimator());
+            listView.setAdapter(new CommentsRecyclerViewAdapter(commentArrayList,context));
 
 
         }

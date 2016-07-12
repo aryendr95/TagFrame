@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -241,7 +242,7 @@ public class TagStreamEventAdapter extends BaseAdapter
         dialog.setContentView(R.layout.dialog_comment);
         dialog.setCancelable(true);
 
-        final ListView listview_comment=(ListView)dialog.findViewById(R.id.list_comment);
+        final RecyclerView listview_comment=(RecyclerView) dialog.findViewById(R.id.list_comment);
         final EditText editext_comment=(EditText)dialog.findViewById(R.id.ed_dialog_comment);
         final LinearLayout layout=(LinearLayout)dialog.findViewById(R.id.mlayout_dialog_comment);
         ImageButton img_send_comment=(ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
@@ -306,9 +307,9 @@ public class TagStreamEventAdapter extends BaseAdapter
 
                         commentArrayList.add(comment);
 
-                        ((BaseAdapter)listview_comment.getAdapter()).notifyDataSetChanged();
+                        listview_comment.getAdapter().notifyDataSetChanged();
                         //fast scroll to last item in list
-                        listview_comment.smoothScrollToPosition(listview_comment.getAdapter().getCount()-1);
+                        //listview_comment.smoothScrollToPosition(listview_comment.getAdapter().getCount()-1);
 
 
                         //hiding keyboard and making the edittext empty
@@ -322,11 +323,17 @@ public class TagStreamEventAdapter extends BaseAdapter
                     }
                     else
                     {
+                        InputMethodManager imm = (InputMethodManager) v.getContext()
+                                .getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                         PopMessage.makesimplesnack(layout,"Comments are loading..");
                     }
                 }
                 else
                 {
+                    InputMethodManager imm = (InputMethodManager) v.getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     PopMessage.makesimplesnack(layout,"Please enter a comment");
                 }
             }
