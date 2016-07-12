@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/layout_commentlist_rplycontainer"
+        >
+
+        <com.pkmmte.view.CircularImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/img_commentlist_rplypic"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/appblue"
+            android:layout_toRightOf="@+id/img_commentlist_rplypic"
+            android:layout_marginLeft="5dp"
+            android:textSize="15dp"
+            android:layout_marginTop="3dp"
+            android:id="@+id/txt_commentlist_rplyusername"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Comment"
+            android:layout_toRightOf="@+id/img_commentlist_rplypic"
+            android:textSize="13dp"
+            android:layout_below="@+id/txt_commentlist_rplyusername"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/txt_commentlist_rplycomment"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Reply"
+
+
+
+            android:layout_toRightOf="@+id/img_commentlist_rplypic"
+            android:textSize="10dp"
+            android:layout_below="@+id/txt_commentlist_rplycomment"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/txt_nestedcommentlist_date"/>
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>

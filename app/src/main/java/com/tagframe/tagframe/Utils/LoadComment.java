@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Brajendr on 7/7/2016.
@@ -94,17 +96,18 @@ public class LoadComment extends AsyncTask<String,String,String> {
                         ArrayList<Comment.ReplyComment> replyCommentsarralylist=new ArrayList<>();
                         if(replyjsonArray.length()>0)
                         {
+                            for(int j=0;j<replyjsonArray.length();j++) {
+                                Comment.ReplyComment replyComment = new Comment.ReplyComment();
 
-                            Comment.ReplyComment replyComment=new Comment.ReplyComment();
+                                JSONObject replyobject = replyjsonArray.getJSONObject(j);
 
-                            JSONObject replyobject=replyjsonArray.getJSONObject(0);
+                                replyComment.setComment(replyobject.getString("comment"));
+                                replyComment.setUsername(replyobject.getString("username"));
+                                replyComment.setProfile_image(replyobject.getString("profile_image"));
+                                replyComment.setCreated_on(replyobject.getString("created_on"));
 
-                            replyComment.setComment(replyobject.getString("comment"));
-                            replyComment.setUsername(replyobject.getString("username"));
-                            replyComment.setProfile_image(replyobject.getString("profile_image"));
-                            replyComment.setCreated_on(replyobject.getString("created_on"));
-
-                            replyCommentsarralylist.add(replyComment);
+                                replyCommentsarralylist.add(replyComment);
+                            }
 
 
                         }
@@ -135,6 +138,7 @@ public class LoadComment extends AsyncTask<String,String,String> {
         if(dialog.isShowing())
         {
             progressBar.setVisibility(View.GONE);
+            Map<Integer, View> myViews = new HashMap<>();
             listView.setAdapter(new CommentAdapter(context,commentArrayList));
 
 

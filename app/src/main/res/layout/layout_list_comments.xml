@@ -43,14 +43,14 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Reply"
-            android:textStyle="bold"
-            android:visibility="gone"
-            android:gravity="center"
+
+
+
             android:layout_toRightOf="@+id/img_commentlist_pic"
-            android:textSize="13dp"
+            android:textSize="12dp"
             android:layout_below="@+id/txt_commentlist_comment"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/txt_commentlist_rply"/>
+            android:layout_marginLeft="5dp"
+            android:id="@+id/txt_commentlist_date"/>
 
 
 
@@ -58,47 +58,23 @@
 
 
 
-    <RelativeLayout
+   <ListView
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/list_nested_comments"></ListView>
+
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/layout_commentlist_rplycontainer"
-        >
+        android:text="View all replies"
 
-        <com.pkmmte.view.CircularImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/img_commentlist_rplypic"/>
-
-        <com.tagframe.tagframe.Utils.MyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Username"
-            android:textColor="@color/appblue"
-            android:layout_toRightOf="@+id/img_commentlist_rplypic"
-            android:layout_marginLeft="5dp"
-            android:textSize="15dp"
-            android:layout_marginTop="3dp"
-            android:id="@+id/txt_commentlist_rplyusername"/>
-
-        <com.tagframe.tagframe.Utils.MyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User Comment"
-            android:layout_toRightOf="@+id/img_commentlist_rplypic"
-            android:textSize="13dp"
-            android:layout_below="@+id/txt_commentlist_rplyusername"
-            android:layout_marginLeft="5dp"
-            android:id="@+id/txt_commentlist_rplycomment"/>
-
-
-
-
-
-    </RelativeLayout>
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_toRightOf="@+id/img_commentlist_pic"
+        android:textSize="12dp"
+        android:layout_below="@+id/txt_commentlist_comment"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/txt_commentlist_viewallreply"/>
 
 
 
@@ -120,12 +96,13 @@
           android:textSize="12dp"
           android:layout_toLeftOf="@+id/img_commentlist_send_comment"/>
 
-        <ImageView
-            android:layout_width="15dp"
+        <ImageButton
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/img_commentlist_send_comment"
             android:layout_alignParentRight="true"
             android:src="@drawable/send"
+            android:background="@android:color/transparent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"

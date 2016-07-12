@@ -10,8 +10,10 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -242,7 +244,7 @@ public class TagStreamEventAdapter extends BaseAdapter
         final ListView listview_comment=(ListView)dialog.findViewById(R.id.list_comment);
         final EditText editext_comment=(EditText)dialog.findViewById(R.id.ed_dialog_comment);
         final LinearLayout layout=(LinearLayout)dialog.findViewById(R.id.mlayout_dialog_comment);
-        ImageView img_send_comment=(ImageView)dialog.findViewById(R.id.img_dialog_send_comment);
+        ImageButton img_send_comment=(ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
         ProgressBar progressbar=(ProgressBar)dialog.findViewById(R.id.pbar_comment);
 
         //load comment task
@@ -298,9 +300,24 @@ public class TagStreamEventAdapter extends BaseAdapter
                         comment.setUsername(user_data.getString(Constants.user_name));
                         comment.setProfile_image(user_data.getString(Constants.user_pic));
                         comment.setReplyCommentArrayList(new ArrayList<Comment.ReplyComment>());
+                        //adding the comment to the first postion of list
+                        //find a workaround since too much time taken to  move the n-1 number of elements
+                        //commentArrayList.add(0,comment);
+
                         commentArrayList.add(comment);
 
-                        listview_comment.setAdapter(new CommentAdapter(ctx,commentArrayList));
+                        ((BaseAdapter)listview_comment.getAdapter()).notifyDataSetChanged();
+                        //fast scroll to last item in list
+                        listview_comment.smoothScrollToPosition(listview_comment.getAdapter().getCount()-1);
+
+
+                        //hiding keyboard and making the edittext empty
+                        editext_comment.setText("");
+                        InputMethodManager imm = (InputMethodManager) v.getContext()
+                                .getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+
 
                     }
                     else

@@ -48,8 +48,18 @@ public class Comment {
 
     private String comment;
     private String created_on;
+
+    public boolean isViewallreply() {
+        return viewallreply;
+    }
+
+    public void setViewallreply(boolean viewallreply) {
+        this.viewallreply = viewallreply;
+    }
+
     private String username;
     private String profile_image;
+    private boolean viewallreply=false;
 
     public String getVideo_id() {
         return video_id;

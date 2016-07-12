@@ -3,7 +3,6 @@ package com.tagframe.tagframe.UI.Acitivity;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,70 +11,51 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.Menulistadapter;
-import com.tagframe.tagframe.Models.FollowModel;
-import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
-import com.tagframe.tagframe.UI.Fragments.CreateEvent;
 import com.tagframe.tagframe.UI.Fragments.Follow;
+import com.tagframe.tagframe.UI.Fragments.MarketPlaceFragment;
 import com.tagframe.tagframe.UI.Fragments.Notifications;
 import com.tagframe.tagframe.UI.Fragments.Profile;
 import com.tagframe.tagframe.UI.Fragments.TagStream;
-import com.tagframe.tagframe.Utils.BitmapHelper;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.PopMessage;
-import com.tagframe.tagframe.Utils.ViewAnimationUtils;
 import com.tagframe.tagframe.Utils.listops;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class Modules extends FragmentActivity implements Broadcastresults.Receiver {
 
     //Bottom bar
-    private LinearLayout mlevent, mltagstream, mlnotification, mlfollow, mlprofile,bottombar,topbar;
-    private TextView mtxttagstream,mtxtevent, mtxtnotification, mtxtfollow, mtxtprofile;
-    private ImageView mimgtagstream,mimgevent, mimgnotification, mimgfollow, mimgprofile;
+    private LinearLayout mlevent, mltagstream, mlnotification, mlmarket, mlprofile,bottombar,topbar;
+    private TextView mtxttagstream,mtxtevent, mtxtnotification, mtxtmarket, mtxtprofile;
+    private ImageView mimgtagstream,mimgevent, mimgnotification, mimgmarket, mimgprofile;
 
     //Framelayout
     private FrameLayout frameLayout;
@@ -132,8 +112,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgnotification.setImageResource(R.drawable.nofication);
 
-                mtxtfollow.setTextColor(getResources().getColor(R.color.light_gray));
-                mimgfollow.setImageResource(R.drawable.followers);
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
 
                 mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgprofile.setImageResource(R.drawable.user);
@@ -144,7 +124,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                /* mltagstream.setBackgroundColor(getResources().getColor(R.color.light_gray));
                 mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
-                mlfollow.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
                 mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
@@ -174,8 +154,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mtxtnotification.setTextColor(getResources().getColor(R.color.white));
                 mimgnotification.setImageResource(R.drawable.nofication_hover);
 
-                mtxtfollow.setTextColor(getResources().getColor(R.color.light_gray));
-                mimgfollow.setImageResource(R.drawable.followers);
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
 
                 mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgprofile.setImageResource(R.drawable.user);
@@ -185,7 +165,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
               /* mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
                 mlnotification.setBackgroundColor(getResources().getColor(R.color.light_gray));
-                mlfollow.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
                 mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
@@ -206,8 +186,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgnotification.setImageResource(R.drawable.nofication);
 
-                mtxtfollow.setTextColor(getResources().getColor(R.color.light_gray));
-                mimgfollow.setImageResource(R.drawable.followers);
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
 
                 mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgprofile.setImageResource(R.drawable.user);
@@ -217,7 +197,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mimgevent.setImageResource(R.drawable.event_ho);
                 /*mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
                 mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
-                mlfollow.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
                 mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
@@ -229,8 +209,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         });
 
 
-        mlfollow = (LinearLayout) findViewById(R.id.mod_follow);
-        mlfollow.setOnClickListener(new View.OnClickListener() {
+        mlmarket = (LinearLayout) findViewById(R.id.mod_market);
+        mlmarket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
@@ -239,8 +219,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgnotification.setImageResource(R.drawable.nofication);
 
-                mtxtfollow.setTextColor(getResources().getColor(R.color.white));
-                mimgfollow.setImageResource(R.drawable.followers_hover);
+                mtxtmarket.setTextColor(getResources().getColor(R.color.white));
+                mimgmarket.setImageResource(R.drawable.market_hover);
 
                 mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgprofile.setImageResource(R.drawable.user);
@@ -249,14 +229,14 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                /* mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
                 mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
-                mlfollow.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.light_gray));
                 mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
 
-                Follow follow = new Follow();
+                MarketPlaceFragment marketPlaceFragment= new MarketPlaceFragment();
 
-                changefragment(follow);
+                changefragment(marketPlaceFragment);
             }
         });
 
@@ -270,8 +250,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgnotification.setImageResource(R.drawable.nofication);
 
-                mtxtfollow.setTextColor(getResources().getColor(R.color.light_gray));
-                mimgfollow.setImageResource(R.drawable.followers);
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
 
                 mtxtprofile.setTextColor(getResources().getColor(R.color.white));
                 mimgprofile.setImageResource(R.drawable.user_hover);
@@ -282,7 +262,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                /* mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
                 mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
-                mlfollow.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
                 mlprofile.setBackgroundColor(getResources().getColor(R.color.light_gray));
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
@@ -304,8 +284,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         mtxtevent = (TextView) findViewById(R.id.mod_text_event);
         mimgevent = (ImageView) findViewById(R.id.mod_img_event);
 
-        mtxtfollow = (TextView) findViewById(R.id.mod_text_follow);
-        mimgfollow = (ImageView) findViewById(R.id.mod_img_follow);
+        mtxtmarket = (TextView) findViewById(R.id.mod_text_market);
+        mimgmarket = (ImageView) findViewById(R.id.mod_img_market);
 
         mtxtprofile = (TextView) findViewById(R.id.mod_text_profile);
         mimgprofile = (ImageView) findViewById(R.id.mod_img_profile);
@@ -326,11 +306,12 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
             mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
             mimgnotification.setImageResource(R.drawable.nofication);
 
-            mtxtfollow.setTextColor(getResources().getColor(R.color.white));
-            mimgfollow.setImageResource(R.drawable.followers_hover);
+            mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+            mimgmarket.setImageResource(R.drawable.market);
 
             mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
             mimgprofile.setImageResource(R.drawable.user);
+
 
         }
 
@@ -344,8 +325,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgnotification.setImageResource(R.drawable.nofication);
 
-                mtxtfollow.setTextColor(getResources().getColor(R.color.light_gray));
-                mimgfollow.setImageResource(R.drawable.followers);
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.followers);
 
                 mtxtprofile.setTextColor(getResources().getColor(R.color.white));
                 mimgprofile.setImageResource(R.drawable.user_hover);
@@ -954,6 +935,15 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
 
 
+    }
+    public void hidekeyboard()
+    {
+
+        View view=this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 

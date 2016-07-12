@@ -81,7 +81,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,MediaPlayer.OnPreparedListener,SeekBar.OnSeekBarChangeListener,Broadcastresults.Receiver
+public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,MediaPlayer.OnPreparedListener,SeekBar.OnSeekBarChangeListener,Broadcastresults.Receiver,MediaPlayer.OnBufferingUpdateListener
 
 
 {
@@ -99,6 +99,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     CustomSeekBar seekbar;
 
     TextView btn_add_frame,label_seekbar_currentduration,label_seekbar_totalduration,label_tittle,label_description,post_event,save_event,txt_tutorial_msg;
+    TextView txt_percent;
 
     Button btn_tut_got_it;
 
@@ -209,6 +210,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     private void setupmediaplayer() {
 
 
+        txt_percent=(TextView)findViewById(R.id.txt_percent);
 
         ll_top_bar=(RelativeLayout)findViewById(R.id.topbar);
         ll_bottom_bar=(LinearLayout)findViewById(R.id.ll_mp_tools);
@@ -1225,6 +1227,18 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
 
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+
+
+        Log.i("percent",percent+"");
+        txt_percent.setText(percent+"");
+        if(percent==100)
+        {
+            txt_percent.setVisibility(View.GONE);
+        }
     }
 
 

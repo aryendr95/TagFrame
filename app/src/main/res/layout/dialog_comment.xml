@@ -12,11 +12,12 @@
        android:layout_weight="4.5"
         android:background="@color/bluegray">
 
-        <ImageView
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_back"
             android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
             android:id="@+id/img_comment_dialog_back"/>
 
         <com.tagframe.tagframe.Utils.MyTextView
@@ -70,12 +71,13 @@
             android:hint="Reply"
             android:layout_toLeftOf="@+id/img_dialog_send_comment"/>
 
-        <ImageView
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/img_dialog_send_comment"
             android:layout_alignParentRight="true"
             android:src="@drawable/send"
+            android:background="@android:color/transparent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"

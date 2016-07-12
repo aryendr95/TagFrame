@@ -290,7 +290,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:id="@+id/mod_follow">
+                android:id="@+id/mod_market">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -303,20 +303,20 @@
                     <ImageView
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:id="@+id/mod_img_follow"
-                        android:src="@drawable/followers"/>
+                        android:id="@+id/mod_img_market"
+                        android:src="@drawable/market"/>
 
                 </LinearLayout>
                 <com.tagframe.tagframe.Utils.MyTextView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_weight="7"
-                    android:text="Follow"
+                    android:text="Marketplace"
                     android:layout_marginBottom="3dp"
                     android:textSize="10dp"
                     android:textColor="@color/light_gray"
                     android:gravity="center"
-                    android:id="@+id/mod_text_follow"/>
+                    android:id="@+id/mod_text_market"/>
 
             </LinearLayout>
             <LinearLayout

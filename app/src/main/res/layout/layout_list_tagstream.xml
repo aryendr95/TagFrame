@@ -99,16 +99,17 @@
             android:text="2 days ago"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
-            android:layout_alignParentBottom="true"
+           android:layout_below="@+id/list_event_tittle"
             android:textColor="@color/white"
             />
         <com.tagframe.tagframe.Utils.MyTextView
             android:layout_width="fill_parent"
             android:textSize="17dp"
-           android:layout_above="@+id/list_user_duration"
+
             android:textColor="@color/white"
            android:layout_marginLeft="10dp"
             android:textStyle="bold"
+            android:layout_alignParentTop="true"
             android:layout_height="wrap_content"
             android:id="@+id/list_event_tittle"
             android:text="Event Tittle"/>
