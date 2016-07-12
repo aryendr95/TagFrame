@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by abhinav on 27/04/2016.
@@ -150,19 +151,28 @@ public class FrameListAdapter extends BaseAdapter {
             @Override
             public boolean onDrag(View v, DragEvent event) {
 
+
+                long startTime = System.currentTimeMillis();
                 switch (event.getAction()) {
+
                     case DragEvent.ACTION_DRAG_STARTED:
                         Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
 
                         break;
 
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
+                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_enteR");
 
                         break;
 
                     case DragEvent.ACTION_DRAG_EXITED:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
+
+                        long stopTime = System.currentTimeMillis();
+                        long elapsedTime = stopTime - startTime;
+                        Log.e("Dragexited",elapsedTime+"");
+
+
+
                         if (ctx instanceof MakeNewEvent) {
                             ((MakeNewEvent) ctx).resync_frame(position);
                         }
@@ -171,18 +181,25 @@ public class FrameListAdapter extends BaseAdapter {
                         break;
 
                     case DragEvent.ACTION_DRAG_LOCATION:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
+                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_lo");
 
                         break;
 
                     case DragEvent.ACTION_DRAG_ENDED:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
+                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_emded");
+                        long stopTime2 = System.currentTimeMillis();
+                        long elapsedTime2 = stopTime2 - startTime;
+                        Log.e("Dragended",elapsedTime2+"");
+
 
                         // Do nothing
                         break;
 
                     case DragEvent.ACTION_DROP:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
+                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_drop");
+                        long stopTime1 = System.currentTimeMillis();
+                        long elapsedTime1 = stopTime1 - startTime;
+                        Log.e("actiondrop",elapsedTime1+"");
 
 
                         // Do nothing

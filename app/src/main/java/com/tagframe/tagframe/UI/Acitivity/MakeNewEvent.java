@@ -1434,7 +1434,10 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         mediaPlayer.pause();
     }
 
+    //this method is used for resncing the frame
     public void resync_frame(int position) {
+
+        long startTime = System.currentTimeMillis();
         FrameList_Model fm = framedata_map.get(position);
         if (mediaPlayer.getCurrentPosition() + 2000<=mediaPlayer.getDuration())
         {
@@ -1444,6 +1447,8 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             Collections.sort(framedata_map, new listsort());
             ((BaseAdapter) framelist.getAdapter()).notifyDataSetChanged();
             mediaPlayer.start();
+
+
             if(counter_tut==0) {
                 start_tut("Tap on a Frame to add a Title to it");
                 counter_tut++;
@@ -1454,6 +1459,11 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         {
             MyToast.popmessage("Cannot Sync the frame at this duration", this);
         }
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        Log.e("resyc",elapsedTime+"");
+
+
     }
 
     public BitmapDrawable writeOnDrawable(int drawableId){
@@ -1468,6 +1478,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         if(mediaPlayer!=null)
         {
             mediaPlayer.stop();
+
         }
         super.onBackPressed();
     }
@@ -1482,4 +1493,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     protected void onResume() {
         super.onResume();
     }
+
+
+
 }

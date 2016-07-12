@@ -8,10 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.tagframe.tagframe.Adapters.CommentAdapter;
 import com.tagframe.tagframe.Adapters.CommentsRecyclerViewAdapter;
 import com.tagframe.tagframe.Models.Comment;
 
@@ -21,8 +19,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Brajendr on 7/7/2016.
