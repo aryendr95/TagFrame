@@ -13,14 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.easyandroidanimations.library.PuffOutAnimation;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.R;
@@ -32,8 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by abhinav on 27/04/2016.

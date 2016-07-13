@@ -2,25 +2,20 @@ package com.tagframe.tagframe.UI.Acitivity;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.media.AudioManager;
-import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -45,12 +40,12 @@ import android.widget.VideoView;
 
 import com.darsh.multipleimageselect.activities.AlbumSelectActivity;
 import com.darsh.multipleimageselect.models.Image;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.FrameListAdapter;
 import com.tagframe.tagframe.Models.FrameList_Model;
-
 import com.tagframe.tagframe.Models.SingleEventModel;
+import com.tagframe.tagframe.MyMediaPlayer.IPlayerListener;
+import com.tagframe.tagframe.MyMediaPlayer.Player;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
@@ -66,14 +61,7 @@ import com.tagframe.tagframe.Utils.SeekBarBackgroundDrawable;
 import com.tagframe.tagframe.Utils.SeekBarProgressDrawable;
 import com.tagframe.tagframe.Utils.listops;
 
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,166 +69,210 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,MediaPlayer.OnPreparedListener,SeekBar.OnSeekBarChangeListener,Broadcastresults.Receiver,MediaPlayer.OnBufferingUpdateListener
+/**
+ * Created by Brajendr on 7/13/2016.
+ */
+public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeListener, Broadcastresults.Receiver {
 
-
-{
-
-    //Mediaplayer
+    //Widgets
+    private Player mPlayer;
     private MediaPlayer mediaPlayer;
+
     private SurfaceHolder vidHolder;
     private SurfaceView vidSurface;
-    ProgressBar pbar_mediaplayer;
+    private ProgressBar pbar_mediaplayer;
+    private ImageButton imageButton_play;
+    private CustomSeekBar seekbar;
+    private TextView btn_add_frame, label_seekbar_currentduration, label_seekbar_totalduration, label_tittle, label_description, post_event, save_event, txt_tutorial_msg;
+    private TextView txt_percent;
+    private Button btn_tut_got_it;
+    private LinearLayout ll_add_frame, ll_bottom_bar, mlayout;
+    private RelativeLayout ll_container_frames, ll_seekbar_frame_container, ll_top_bar, ll_tutorial;
+    private RelativeLayout.LayoutParams params;
+    private Point p = new Point();
+    private HorizontalListView framelist;
+    private ImageView img_frame_to_show;
 
 
-    //mediaplayer control
-
-    ImageButton imageButton_play;
-    CustomSeekBar seekbar;
-
-    TextView btn_add_frame,label_seekbar_currentduration,label_seekbar_totalduration,label_tittle,label_description,post_event,save_event,txt_tutorial_msg;
-    TextView txt_percent;
-
-    Button btn_tut_got_it;
-
-    LinearLayout ll_add_frame,ll_bottom_bar,mlayout;
-    RelativeLayout ll_container_frames,ll_seekbar_frame_container,ll_top_bar,ll_tutorial;
-
-    RelativeLayout.LayoutParams params;
-
-    Point p=new Point();
-
-    HorizontalListView framelist;
-
-    ImageView img_frame_to_show;
-
-
+    //Constants
+    private final static String TAG = MakeNewEvent.class.getSimpleName();
+    private final static String CURRENT_DURATION = "CURRENT_DURATION";
+    private final static String TOTAL_DURATION = "TOTAL_DURATION";
+    private final static String FRAMELIST = "FRAMELIST";
+    public static int Flag_select_video = 4;
+    public static int Flag_pick_photo = 5;
+    public static int Flag_select_photo = 6;
 
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();
 
 
-
-
-    String vidAddress = "";
-    String tittle,description,type,event_id;
-
-    public static int Flag_pick_video=3;
-    public static int Flag_select_video=4;
-    public static int Flag_pick_photo=5;
-    public static int Flag_select_photo=6;
-
-    public  long totalduration;
-    String s_current_duration;
-
-    ArrayList<FrameList_Model> framedata_map;
-    ArrayList<Integer> index;
-
-    Broadcastresults  mReceiver;
-
-    listops user_data;
-
-    Calendar cal;
-
-    int count=0,event_type,counter_tut=0;
-
-    Uri selectedImageUri;
-
-
-    int limit=0;
-
-    boolean delete_event=false;
-
+    private String vidAddress = "";
+    private String tittle, description, type, event_id;
+    private long totalduration;
+    private String s_current_duration;
+    private ArrayList<FrameList_Model> framedata_map;
+    private ArrayList<Integer> index;
+    private Broadcastresults mReceiver;
+    private listops user_data;
+    private Calendar cal;
+    private int count = 0, event_type, counter_tut = 0, limit = 0;
+    private Uri selectedImageUri;
+    boolean delete_event = false;
     Uri uriImage;
 
+    //this provides information for configration change
+    //set this to true while retriving the data from the savedinstancestate
+    //then check on bufferingfinished listener if flag is set
+    //perform the mediaplayer seek to operation
+    private boolean isfromsavedinstance=false;
+    private long sav_instance_current_duration=0;
 
 
-    // Constant with a file name
-
-
-
-
-
-
+    //lifecycles methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_new_event);
 
-        vidAddress=getIntent().getStringExtra("data_url");
+        //getting the intents
+        vidAddress = getIntent().getStringExtra("data_url");
 
 
-        event_type=getIntent().getIntExtra("eventtype", 0);
+        event_type = getIntent().getIntExtra("eventtype", 0);
 
 
-        if(event_type==Constants.eventtype_saved)
-        {
-            framedata_map=getIntent().getParcelableArrayListExtra("framelist");
-            tittle="Title:"+getIntent().getStringExtra("tittle");
-            description="Description:"+getIntent().getStringExtra("des");
-        }
-        else if(event_type==Constants.eventtype_local)
-        {
-            framedata_map=new ArrayList<>();
-            index=new ArrayList<>();
-            tittle="Title:";
-            description="Description:";
+        if (event_type == Constants.eventtype_saved) {
+            framedata_map = getIntent().getParcelableArrayListExtra("framelist");
+            tittle = "Title:" + getIntent().getStringExtra("tittle");
+            description = "Description:" + getIntent().getStringExtra("des");
+        } else if (event_type == Constants.eventtype_local) {
+            framedata_map = new ArrayList<>();
+            index = new ArrayList<>();
+            tittle = "Title:";
+            description = "Description:";
 
-        }
-
-        else if(event_type==Constants.eventtype_internet)
-        {
-            framedata_map=getIntent().getParcelableArrayListExtra("framelist");
-            tittle="Title:"+getIntent().getStringExtra("tittle");
-            description="Description:"+getIntent().getStringExtra("des");
-            event_id=getIntent().getStringExtra("eventid");
+        } else if (event_type == Constants.eventtype_internet) {
+            framedata_map = getIntent().getParcelableArrayListExtra("framelist");
+            tittle = "Title:" + getIntent().getStringExtra("tittle");
+            description = "Description:" + getIntent().getStringExtra("des");
+            event_id = getIntent().getStringExtra("eventid");
         }
 
 
+        user_data = new listops(this);
+        cal = Calendar.getInstance();
 
-
-
-        user_data=new listops(this);
-        cal=Calendar.getInstance();
-
-
-        setupmediaplayer();
+        //initialize views and mediaplayer
+        init(savedInstanceState);
     }
 
-    private void setupmediaplayer() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPlayer.setSource(this, vidAddress);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPlayer.reset();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPlayer.release();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        mPlayer.resizeSurface(getWindowManager().getDefaultDisplay());
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putLong(CURRENT_DURATION,mediaPlayer.getCurrentPosition());
+        outState.putLong(TOTAL_DURATION,mediaPlayer.getDuration());
+        outState.putParcelableArrayList(FRAMELIST,framedata_map);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    //*lifecycle methods
 
 
-        txt_percent=(TextView)findViewById(R.id.txt_percent);
+    //utility methods
 
-        ll_top_bar=(RelativeLayout)findViewById(R.id.topbar);
-        ll_bottom_bar=(LinearLayout)findViewById(R.id.ll_mp_tools);
-        mlayout=(LinearLayout)findViewById(R.id.mlayout_makenew_event);
+    private IPlayerListener mPlayerListener = new IPlayerListener() {
+        @Override
+        public void onError(String message) {
+
+            pbar_mediaplayer.setVisibility(View.GONE);
+            txt_percent.setVisibility(View.VISIBLE);
+            txt_percent.setText("An Error Occurred");
+        }
+
+        @Override
+        public void onBufferingStarted() {
+
+            txt_percent.setVisibility(View.VISIBLE);
+            pbar_mediaplayer.setVisibility(View.VISIBLE);
+            txt_percent.setText("Buffering...");
+        }
+
+        @Override
+        public void onBufferingFinished() {
+
+            txt_percent.setVisibility(View.GONE);
+            pbar_mediaplayer.setVisibility(View.GONE);
+
+            if(isfromsavedinstance)
+            {
+                mHandler.removeCallbacks(mUpdateTimeTask);
+
+                //call this when mediaplayer is prepared or after the buffer has been finished
+                mediaPlayer.seekTo((int) sav_instance_current_duration);
+
+                updateProgressBar();
+            }
+            else
+            {
+                updateProgressBar();
+            }
+        }
+    };
+
+    //This method initialiazes all the views
+    private void init(Bundle savedstate) {
 
 
+        //LAYOUTS
+        ll_top_bar = (RelativeLayout) findViewById(R.id.topbar);
+        ll_bottom_bar = (LinearLayout) findViewById(R.id.ll_mp_tools);
+        mlayout = (LinearLayout) findViewById(R.id.mlayout_makenew_event);
+
+        //VIDEO SURFUCE
         vidSurface = (SurfaceView) findViewById(R.id.surfaceviewnewevent);
-        vidHolder = vidSurface.getHolder();
+        txt_percent = (TextView) findViewById(R.id.txt_percent);
+        pbar_mediaplayer = (ProgressBar) findViewById(R.id.pbarmediaplayer);
 
-        vidHolder.addCallback(this);
-
-        vidHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-        pbar_mediaplayer=(ProgressBar)findViewById(R.id.pbarmediaplayer);
-        pbar_mediaplayer.setVisibility(View.VISIBLE);
+        // Setup the player once.
+        mPlayer = new Player(vidSurface, this);
+        mPlayer.setListener(mPlayerListener);
+        mediaPlayer = mPlayer.getMediaPlayer();
 
         //setupcontrols
 
-        imageButton_play=(ImageButton)findViewById(R.id.btn_play_stop);
-
-
-
-        label_seekbar_currentduration=(TextView)findViewById(R.id.txtcurrentduration);
-        label_seekbar_totalduration=(TextView)findViewById(R.id.txttotalduration);
-
-        label_tittle=(TextView)findViewById(R.id.event_tittle);
-        label_description=(TextView)findViewById(R.id.event_description);
-
-        post_event=(TextView)findViewById(R.id.postevent);
-
+        imageButton_play = (ImageButton) findViewById(R.id.btn_play_stop);
+        label_seekbar_currentduration = (TextView) findViewById(R.id.txtcurrentduration);
+        label_seekbar_totalduration = (TextView) findViewById(R.id.txttotalduration);
+        label_tittle = (TextView) findViewById(R.id.event_tittle);
+        label_description = (TextView) findViewById(R.id.event_description);
+        post_event = (TextView) findViewById(R.id.postevent);
         label_tittle.setText(tittle);
         label_description.setText(description);
         label_tittle.setOnClickListener(new View.OnClickListener() {
@@ -249,23 +281,14 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
                 editevent_tittle();
             }
         });
-
-        seekbar=(CustomSeekBar)findViewById(R.id.seekbar);
-
+        seekbar = (CustomSeekBar) findViewById(R.id.seekbar);
         seekbar.setOnSeekBarChangeListener(this);
-
-        img_frame_to_show=(ImageView)findViewById(R.id.img_frame_to_show);
-        ll_seekbar_frame_container=(RelativeLayout)findViewById(R.id.layout_frame_at_time_container);
-
-        params=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        params.leftMargin=0;
+        img_frame_to_show = (ImageView) findViewById(R.id.img_frame_to_show);
+        ll_seekbar_frame_container = (RelativeLayout) findViewById(R.id.layout_frame_at_time_container);
+        params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = 0;
         img_frame_to_show.setLayoutParams(params);
-
         getWindowManager().getDefaultDisplay().getSize(p);
-
-
-
 
 
         //setting the event on play/stop button
@@ -273,13 +296,10 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         imageButton_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mediaPlayer.isPlaying())
-                {
+                if (mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
                     imageButton_play.setImageResource(R.drawable.play);
-                }
-                else
-                {
+                } else {
                     mediaPlayer.start();
                     imageButton_play.setImageResource(R.drawable.stop);
 
@@ -287,29 +307,26 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             }
         });
 
-        ll_add_frame=(LinearLayout)findViewById(R.id.ll_add_frame);
-        btn_add_frame=(TextView)findViewById(R.id.btn_add_frame);
+        ll_add_frame = (LinearLayout) findViewById(R.id.ll_add_frame);
+        btn_add_frame = (TextView) findViewById(R.id.btn_add_frame);
 
-        ll_container_frames=(RelativeLayout)findViewById(R.id.container_frames);
+        ll_container_frames = (RelativeLayout) findViewById(R.id.container_frames);
 
         btn_add_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(framedata_map.size()==5)
-                {
-                    PopMessage.makesimplesnack(mlayout,"You can add only 5 frame to an event");
-                }
-                else {
+                if (framedata_map.size() == 5) {
+                    PopMessage.makesimplesnack(mlayout, "You can add only 5 frame to an event");
+                } else {
                     generate_pop_up_add_frame(ll_add_frame);
                 }
             }
         });
 
-        framelist=(HorizontalListView)findViewById(R.id.framelist);
-        framelist.setAdapter(new FrameListAdapter(this, framedata_map,event_type));
+        framelist = (HorizontalListView) findViewById(R.id.framelist);
+        framelist.setAdapter(new FrameListAdapter(this, framedata_map, event_type));
 
-        updateProgressBar();
         seteventon_framelist();
 
         post_event.setOnClickListener(new View.OnClickListener() {
@@ -317,50 +334,49 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             public void onClick(View v) {
 
 
-                if (event_type==Constants.eventtype_internet){
+                if (event_type == Constants.eventtype_internet) {
 
-                method_post_internet_event();
+                    method_post_internet_event();
 
+                } else {
+                    method_post_event();
                 }
-                else
-                {method_post_event();}
             }
         });
 
-        save_event=(TextView)findViewById(R.id.saveevent);
+        save_event = (TextView) findViewById(R.id.saveevent);
         save_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (event_type==Constants.eventtype_internet){
+                if (event_type == Constants.eventtype_internet) {
 
 
-                    if(mediaPlayer!=null)
-                    {
+                    if (mediaPlayer != null) {
                         mediaPlayer.stop();
                     }
-                    Intent intent=new Intent(MakeNewEvent.this,Modules.class);
-                    if(getIntent().getStringExtra("from").equals("profile"))
-                    {
-                        intent.putExtra("name","Edit Profile");
+                    Intent intent = new Intent(MakeNewEvent.this, Modules.class);
+                    if (getIntent().getStringExtra("from").equals("profile")) {
+                        intent.putExtra("name", "Edit Profile");
                     }
 
                     startActivity(intent);
 
 
                     finish();
+                } else {
+                    method_save_event();
                 }
-                else{method_save_event();}
             }
         });
 
 
         //tutorial screen
 
-        ll_tutorial=(RelativeLayout)findViewById(R.id.layout_tutorials);
+        ll_tutorial = (RelativeLayout) findViewById(R.id.layout_tutorials);
 
-        txt_tutorial_msg=(TextView)findViewById(R.id.txt_tutorial_msg);
+        txt_tutorial_msg = (TextView) findViewById(R.id.txt_tutorial_msg);
 
-        btn_tut_got_it=(Button)findViewById(R.id.txt_tutorial_button);
+        btn_tut_got_it = (Button) findViewById(R.id.txt_tutorial_button);
         btn_tut_got_it.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -374,34 +390,48 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         img_frame_to_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String TAG=img_frame_to_show.getTag().toString();
-                Integer pos=Integer.parseInt(TAG);
+                String TAG = img_frame_to_show.getTag().toString();
+                Integer pos = Integer.parseInt(TAG);
 
-                    show_synced_frame(pos);
+                show_synced_frame(pos);
             }
         });
 
 
-        if(event_type==Constants.eventtype_saved)
-        {
-            if(framedata_map.size()>0)
-            {
+        if (event_type == Constants.eventtype_saved) {
+            if (framedata_map.size() > 0) {
                 ll_container_frames.setVisibility(View.VISIBLE);
             }
-        }
-        else if(event_type==Constants.eventtype_internet)
-        {
+        } else if (event_type == Constants.eventtype_internet) {
 
             save_event.setText("Done");
-            if(framedata_map.size()>0)
-            {
+            if (framedata_map.size() > 0) {
                 ll_container_frames.setVisibility(View.VISIBLE);
             }
         }
 
+
+       if(savedstate!=null)
+       {
+
+           //resotring the mediaplayers state
+           framedata_map=savedstate.getParcelableArrayList(FRAMELIST);
+           sav_instance_current_duration=savedstate.getLong(CURRENT_DURATION);
+           long total=savedstate.getLong(TOTAL_DURATION);
+           if(framedata_map.size()>0)
+           {
+               ll_container_frames.setVisibility(View.VISIBLE);
+               framelist.setAdapter(new FrameListAdapter(this,framedata_map,Constants.eventtype_local));
+           }
+           label_seekbar_currentduration.setText(Constants.milliSecondsToTimer(sav_instance_current_duration));
+           label_seekbar_totalduration.setText(Constants.milliSecondsToTimer(total));
+
+          isfromsavedinstance=true;
+
+       }
+
+
     }
-
-
 
     private void editevent_tittle() {
         final Dialog dialog = new Dialog(this);
@@ -413,8 +443,6 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
         final TextView desxription = (TextView) dialog.findViewById(R.id.dia_framedescription);
         final TextView tittle = (TextView) dialog.findViewById(R.id.dia_frametittle);
-
-
 
 
         tittle.setText(label_tittle.getText().toString().replace("Title:", ""));
@@ -446,16 +474,15 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
     }
 
-    public void show_synced_frame(final int pos)
-    {
+    public void show_synced_frame(final int pos) {
 
         mediaPlayer.pause();
         ll_top_bar.setVisibility(View.GONE);
         ll_bottom_bar.setVisibility(View.GONE);
         ll_seekbar_frame_container.setVisibility(View.GONE);
-        final FrameList_Model frameList_model=framedata_map.get(pos);
+        final FrameList_Model frameList_model = framedata_map.get(pos);
 
-        if(frameList_model.getFrametype()==Constants.frametype_image) {
+        if (frameList_model.getFrametype() == Constants.frametype_image) {
 
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -465,14 +492,14 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.dialog_frame_to_show);
 
-           // VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
+            // VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
             final ImageView frameimage = (ImageView) dialog.findViewById(R.id.framelist_image);
             ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
 
             TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
             final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
 
-           TextView tvaddproduct = (TextView) dialog.findViewById(R.id.add_product);
+            TextView tvaddproduct = (TextView) dialog.findViewById(R.id.add_product);
             tvaddproduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -506,9 +533,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             img_frame_to_show.setVisibility(View.GONE);
             dialog.show();
 
-        }
-        else
-        {
+        } else {
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -520,7 +545,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
 
             TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
-           final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
+            final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
 
 
             framevideo.setVideoURI(Uri.parse(frameList_model.getImagepath()));
@@ -547,33 +572,30 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         }
     }
 
-    public void close_tut()
-    {
+    public void close_tut() {
         ll_top_bar.setVisibility(View.VISIBLE);
         ll_bottom_bar.setVisibility(View.VISIBLE);
         ll_tutorial.setVisibility(View.GONE);
         ll_seekbar_frame_container.setVisibility(View.VISIBLE);
-        if(mediaPlayer!=null)
-        mediaPlayer.start();
+        if (mediaPlayer != null)
+            mediaPlayer.start();
 
     }
 
-    public void start_tut(String msg)
-    {
+    public void start_tut(String msg) {
         ll_top_bar.setVisibility(View.GONE);
         ll_bottom_bar.setVisibility(View.GONE);
         ll_tutorial.setVisibility(View.VISIBLE);
         txt_tutorial_msg.setText(msg);
         ll_seekbar_frame_container.setVisibility(View.GONE);
-        if(mediaPlayer!=null)
-        mediaPlayer.pause();
+        if (mediaPlayer != null)
+            mediaPlayer.pause();
     }
 
-    public void method_save_event()
-    {
-        SingleEventModel singleEventModel=new SingleEventModel();
+    public void method_save_event() {
+        SingleEventModel singleEventModel = new SingleEventModel();
         singleEventModel.setTittle(tittle.replace("Title:", ""));
-       // singleEventModel.setType(type);
+        // singleEventModel.setType(type);
         singleEventModel.setDescription(description.replace("Description", ""));
         singleEventModel.setFrameList_modelArrayList(framedata_map);
         singleEventModel.setVidaddress(vidAddress);
@@ -583,18 +605,17 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         String date = df.format(cal.getTime());
 
         singleEventModel.setTime(date);
-        ArrayList<SingleEventModel> singleEventModelArrayList=user_data.getsingleeventlist();
+        ArrayList<SingleEventModel> singleEventModelArrayList = user_data.getsingleeventlist();
 
         singleEventModelArrayList.add(singleEventModel);
         user_data.putsingleeventlist(singleEventModelArrayList);
         MyToast.popmessage("Event Saved", this);
     }
 
-    public void method_post_event()
-    {
+    public void method_post_event() {
 
         MyToast.popmessage("Posting...", this);
-       Intent intent=new Intent(this, IntentServiceOperations.class);
+        Intent intent = new Intent(this, IntentServiceOperations.class);
         intent.putExtra("video_url", vidAddress);
         intent.putParcelableArrayListExtra("frame_list", framedata_map);
         intent.putExtra("operation", Constants.operation_post_event);
@@ -611,19 +632,16 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     private void method_post_internet_event() {
 
         MyToast.popmessage("Posting Frames..", this);
-        Intent intent=new Intent(this, IntentServiceOperations.class);
+        Intent intent = new Intent(this, IntentServiceOperations.class);
 
         intent.putParcelableArrayListExtra("frame_list", framedata_map);
         intent.putExtra("operation", Constants.operation_post_internet_event);
 
         intent.putExtra("user_id", user_data.getString(Constants.user_id));
-        intent.putExtra("event_id",event_id);
+        intent.putExtra("event_id", event_id);
 
         startService(intent);
     }
-
-
-
 
 
     private void seteventon_framelist() {
@@ -633,17 +651,16 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //FrameList_Model frameList_model = (FrameList_Model) framelist.getAdapter().getItem(position);
-                if(!delete_event)
-                show_synced_frame(position);
+                if (!delete_event)
+                    show_synced_frame(position);
 
 
             }
         });
     }
 
-    public  void deleteframe(int position)
-    {
-        delete_event=true;
+    public void deleteframe(int position) {
+        delete_event = true;
         framedata_map.remove(position);
         ((BaseAdapter) framelist.getAdapter()).notifyDataSetChanged();
         Collections.sort(framedata_map, new listsort());
@@ -651,31 +668,13 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-            delete_event=false;
+                delete_event = false;
             }
-        },2000);
+        }, 2000);
 
     }
 
-
-    public void setMediaPlayer()
-    {
-        try {
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDisplay(vidHolder);
-            mediaPlayer.setDataSource(vidAddress);
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(this);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-    public Broadcastresults register_reviever()
-    {
+    public Broadcastresults register_reviever() {
         mReceiver = new Broadcastresults(new Handler());
 
         mReceiver.setReceiver(this);
@@ -684,68 +683,21 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
     }
 
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-
-        setMediaPlayer();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
-        if (mediaPlayer != null) {
-
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-
-        pbar_mediaplayer.setVisibility(View.GONE);
-        if(mediaPlayer!=null)
-        mediaPlayer.start();
-        totalduration=mediaPlayer.getDuration();
-
-
-
-    }
-
-
-    @Override
-    protected void onPause() {
-        if(mediaPlayer!=null)
-        {
-
-            mediaPlayer.stop();
-        }
-        super.onPause();
-    }
-
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
 
     /**
      * Background Runnable thread
-     * */
+     */
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
             long totalDurationn = 0;
             long currentDuration = 0;
             try {
-                 totalDurationn = mediaPlayer.getDuration();
-                 currentDuration = mediaPlayer.getCurrentPosition();
-            }
-            catch (Exception e)
-            {
+                totalDurationn = mediaPlayer.getDuration();
+                currentDuration = mediaPlayer.getCurrentPosition();
+            } catch (Exception e) {
                 totalDurationn = 0;
                 currentDuration = 0;
             }
@@ -757,10 +709,9 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             label_seekbar_currentduration.setText("" + Constants.milliSecondsToTimer(currentDuration));
 
             // Updating progress bar
-            int progress = (int)(Constants.getProgressPercentage(currentDuration, totalDurationn));
+            int progress = (int) (Constants.getProgressPercentage(currentDuration, totalDurationn));
 
             seekbar.setProgress(progress);
-
 
 
             // Set the "topMargin" to the value you decided upon before
@@ -770,103 +721,56 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
             img_frame_to_show.setVisibility(View.INVISIBLE);
 
-            for(int i=0;i<framedata_map.size();i++)
-            {
-                FrameList_Model fm=framedata_map.get(i);
-                if(fm.getStarttime()-100<=currentDuration&&currentDuration<=fm.getEndtime()+100&&fm.getEndtime()!=0)
-                {
+            for (int i = 0; i < framedata_map.size(); i++) {
+                FrameList_Model fm = framedata_map.get(i);
+                if (fm.getStarttime() - 100 <= currentDuration && currentDuration <= fm.getEndtime() + 100 && fm.getEndtime() != 0) {
                     img_frame_to_show.setVisibility(View.VISIBLE);
 
 
-                    if(fm.getFrametype()==Constants.frametype_image) {
+                    if (fm.getFrametype() == Constants.frametype_image) {
 
-                        if(fm.getFrame_resource_type().equals(Constants.frame_resource_type_local))
-                        {
+                        if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
 
-                            Bitmap bitmap=BitmapHelper.decodeFile(MakeNewEvent.this, new File(fm.getImagepath()));
-                            bitmap=getResizedBitmap(bitmap,200,200);
+                            Bitmap bitmap = BitmapHelper.decodeFile(MakeNewEvent.this, new File(fm.getImagepath()));
+                            bitmap = getResizedBitmap(bitmap, 200, 200);
                             img_frame_to_show.setImageBitmap(bitmap);
-                        }
-                        else
-                        {
+                        } else {
                             Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
                         }
-                    }
-                    else
-                    {
+                    } else {
 
-                        if(fm.getFrame_resource_type().equals(Constants.frame_resource_type_local))
-                        {
+                        if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
                             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
                                     MediaStore.Images.Thumbnails.MINI_KIND);
 
-                            thumb=getResizedBitmap(thumb,200,200);
+                            thumb = getResizedBitmap(thumb, 200, 200);
 
                             img_frame_to_show.setImageBitmap(thumb);
-                        }
-                        else
-                        {
+                        } else {
                             Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
                         }
 
                     }
                     img_frame_to_show.setTag(i + "");
-                    int prog = (int)(Constants.getProgressPercentage(fm.getEndtime(), totalDurationn));
-                    if(prog>80)
-                    {
-                        prog=80;
+                    int prog = (int) (Constants.getProgressPercentage(fm.getEndtime(), totalDurationn));
+                    if (prog > 80) {
+                        prog = 80;
                     }
 
 
-
-                    show_frame_on_seekbar(prog-(int)(Constants.getProgressPercentage(2000, totalDurationn)));
+                    show_frame_on_seekbar(prog - (int) (Constants.getProgressPercentage(2000, totalDurationn)));
 
                 }
-                if(totalDurationn!=0)
-                updateseekbar(seekbar,mediaPlayer.getDuration());
+                if (totalDurationn != 0)
+                    updateseekbar(seekbar, mediaPlayer.getDuration());
 
             }
-
-
-
 
 
             // Running this thread after 100 milliseconds
             mHandler.postDelayed(this, 100);
         }
     };
-    private Bitmap decodeFile(File f) {
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
-
-            // The new size we want to scale to
-            final int REQUIRED_SIZE=50;
-
-            // Find the correct scale value. It should be the power of 2.
-            int scale = 1;
-            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
-                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
-                scale *= 2;
-            }
-
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {}
-        return null;
-    }
-
-    private static Bitmap rotateImage(Bitmap img, int degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-
-        return rotatedImg;
-    }
 
     public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
@@ -888,16 +792,15 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     /**
      *
      * */
-    public  void show_frame_on_seekbar(final int progress)
-    {
-        int measure = (int)((((float)progress * p.x) / 100) - (progress));
+    public void show_frame_on_seekbar(final int progress) {
+        int measure = (int) ((((float) progress * p.x) / 100) - (progress));
 
         // When "measure" will become equal to "p.x"(at progress = 100),
         // the image will be outside the view when we set its "leftMargin".
         // But, the image will start disappearing before that.
         // When this situation comes, set the "leftMargin" to a maximum value
         // which is the screen width - ImageView' width
-        if (p.x - measure < img_frame_to_show.getWidth()){
+        if (p.x - measure < img_frame_to_show.getWidth()) {
 
 
             params.leftMargin = p.x - img_frame_to_show.getWidth();
@@ -923,7 +826,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
     /**
      * When user starts moving the progress handler
-     * */
+     */
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
         // remove message Handler from updating progress bar
@@ -932,13 +835,12 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
     /**
      * When user stops moving the progress hanlder
-     * */
+     */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         mHandler.removeCallbacks(mUpdateTimeTask);
         int totalDuration = mediaPlayer.getDuration();
         int currentPosition = Constants.progressToTimer(seekBar.getProgress(), totalDuration);
-
 
 
         // forward or backward to certain seconds
@@ -948,8 +850,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         updateProgressBar();
     }
 
-    public void generate_pop_up_add_frame(View v)
-    {
+    public void generate_pop_up_add_frame(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.menu_add_frame, popup.getMenu());
@@ -962,7 +863,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
                     case R.id.media_library:
                         Intent inte = new Intent(MakeNewEvent.this, AlbumSelectActivity.class);
 //set limit on number of images that can be selected, default is 10
-                        inte.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5-framedata_map.size());
+                        inte.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5 - framedata_map.size());
                         startActivityForResult(inte, 102);
 
                         break;
@@ -970,7 +871,6 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
                     case R.id.add_frame_take_video:
 
                         Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
 
 
                         // start the Video Capture Intent
@@ -999,7 +899,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
                                 .build();*/
 
                         Intent intent12 = new Intent(MakeNewEvent.this, AndroidCustomGalleryActivity.class);
-                        intent12.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT,5-framedata_map.size());
+                        intent12.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5 - framedata_map.size());
                         startActivityForResult(intent12, 901);
 
                         break;
@@ -1011,8 +911,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
         popup.show();//showing popup menu
     }
 
-    public void set_frames_to_container(final String selectedimage, final int frametype)
-    {
+    public void set_frames_to_container(final String selectedimage, final int frametype) {
 
         /*final int starttime;
         final int endtime;
@@ -1178,67 +1077,48 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
         if (addframe(frameList_model, (int) totalduration)) {
 
-            if(count==0)
-            {
+            if (count == 0) {
                 start_tut("Synch a Frame by holding it and moving it up");
                 count++;
             }
 
 
-
         } else {
-            MyToast.popmessage("Frame is already attached to this duration",this);
+            MyToast.popmessage("Frame is already attached to this duration", this);
         }
         updateProgressBar();
 
     }
 
-    public boolean addframe(FrameList_Model frameList_model,int totalduration)
-    {
-        if(!isduplicate_frame(frameList_model)) {
+    public boolean addframe(FrameList_Model frameList_model, int totalduration) {
+        if (!isduplicate_frame(frameList_model)) {
 
             framedata_map.add(frameList_model);
             updateseekbar(seekbar, totalduration);
 
             displaylistdata();
-            if(framedata_map.size()>1)
-            {
-                Collections.sort(framedata_map,new listsort());
+            if (framedata_map.size() > 1) {
+                Collections.sort(framedata_map, new listsort());
                 displaylistdata();
             }
 
-            framelist.setAdapter(new FrameListAdapter(MakeNewEvent.this, framedata_map,event_type));
+            framelist.setAdapter(new FrameListAdapter(MakeNewEvent.this, framedata_map, event_type));
             ll_container_frames.setVisibility(View.VISIBLE);
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-        public void displaylistdata()
-        {
-            for(int i=0;i<framedata_map.size();i++)
-            {
-                Log.e("frame:",framedata_map.get(i).getName());
-            }
+    public void displaylistdata() {
+        for (int i = 0; i < framedata_map.size(); i++) {
+            Log.e("frame:", framedata_map.get(i).getName());
         }
+    }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
 
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-
-
-        Log.i("percent",percent+"");
-        txt_percent.setText(percent+"");
-        if(percent==100)
-        {
-            txt_percent.setVisibility(View.GONE);
-        }
     }
 
 
@@ -1246,7 +1126,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
         @Override
         public int compare(FrameList_Model e1, FrameList_Model e2) {
-            if(e1.getStarttime() < e2.getStarttime()){
+            if (e1.getStarttime() < e2.getStarttime()) {
                 return -1;
             } else {
                 return 1;
@@ -1256,11 +1136,11 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
     private boolean isduplicate_frame(FrameList_Model frameList_model) {
 
-        boolean isduplicate=false;
-         int s_time=frameList_model.getStarttime();
-        int e_time=frameList_model.getEndtime();
+        boolean isduplicate = false;
+        int s_time = frameList_model.getStarttime();
+        int e_time = frameList_model.getEndtime();
 
-        if(e_time!=0) {
+        if (e_time != 0) {
 
 
             for (int i = 0; i < framedata_map.size(); i++) {
@@ -1274,122 +1154,104 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Flag_select_video&& resultCode == RESULT_OK) {
-                 selectedImageUri = data.getData();
+        if (requestCode == Flag_select_video && resultCode == RESULT_OK) {
+            selectedImageUri = data.getData();
 
-                // OI FILE Manager
-               // String filemanagerstring = selectedImageUri.getPath();
+            // OI FILE Manager
+            // String filemanagerstring = selectedImageUri.getPath();
 
-                // MEDIA GALLERY
-               final String selectedImagePath = GetPaths.getPath(MakeNewEvent.this,selectedImageUri);
-                if (selectedImagePath != null) {
+            // MEDIA GALLERY
+            final String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
+            if (selectedImagePath != null) {
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-                            set_frames_to_container(selectedImagePath, Constants.frametype_video);
-                        }
-                    }, 1000);
+                        set_frames_to_container(selectedImagePath, Constants.frametype_video);
+                    }
+                }, 1000);
 
 
-
-                }
             }
+        } else if (requestCode == 901 && data != null) {
+            ArrayList<String> mPath = data.getStringArrayListExtra("videopaths");
 
-            else if (requestCode == 901&&data!=null) {
-                ArrayList<String> mPath = data.getStringArrayListExtra("videopaths");
+            for (int z = 0; z < mPath.size(); z++) {
 
-                for(int z=0;z<mPath.size();z++)
-                {
-
-                    set_frames_to_container(mPath.get(z),Constants.frametype_video);
-                }
-                //Your Code
+                set_frames_to_container(mPath.get(z), Constants.frametype_video);
             }
-            else if(requestCode==902&& resultCode == RESULT_OK)
-            {
-                 selectedImageUri = data.getData();
+            //Your Code
+        } else if (requestCode == 902 && resultCode == RESULT_OK) {
+            selectedImageUri = data.getData();
 
-                // OI FILE Manager
-                String filemanagerstring = selectedImageUri.getPath();
+            // OI FILE Manager
+            String filemanagerstring = selectedImageUri.getPath();
 
-                // MEDIA GALLERY
-               final String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
-                if (selectedImagePath != null) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mediaPlayer.pause();
-                            set_frames_to_container(selectedImagePath, Constants.frametype_video);
-                        }
-                    }, 1000);
+            // MEDIA GALLERY
+            final String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
+            if (selectedImagePath != null) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mediaPlayer.pause();
+                        set_frames_to_container(selectedImagePath, Constants.frametype_video);
+                    }
+                }, 1000);
 
-                }
             }
+        }
 
-            if (requestCode == 903&& resultCode == RESULT_OK) {
+        if (requestCode == 903 && resultCode == RESULT_OK) {
 //                 selectedImageUri = data.getData();
 
-                // OI FILE Manager
+            // OI FILE Manager
 //                String filemanagerstring = selectedImageUri.getPath();
 
-                // MEDIA GALLERY
-                String selectedImagePath = uriImage.getPath();
-                if (selectedImagePath != null) {
+            // MEDIA GALLERY
+            String selectedImagePath = uriImage.getPath();
+            if (selectedImagePath != null) {
 
-                    set_frames_to_container(selectedImagePath, Constants.frametype_image);
-                    setMediaPlayer();
+                set_frames_to_container(selectedImagePath, Constants.frametype_image);
 
-                }
             }
-            else if(requestCode==Flag_pick_photo&& resultCode == RESULT_OK)
-            {
-                 selectedImageUri = data.getData();
+        } else if (requestCode == Flag_pick_photo && resultCode == RESULT_OK) {
+            selectedImageUri = data.getData();
 
-                // OI FILE Manager
+            // OI FILE Manager
 //                String filemanagerstring = selectedImageUri.getPath();
 
-                // MEDIA GALLERY
-                String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
-                if (selectedImagePath != null) {
-                    set_frames_to_container(selectedImagePath, Constants.frametype_image);
+            // MEDIA GALLERY
+            String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
+            if (selectedImagePath != null) {
+                set_frames_to_container(selectedImagePath, Constants.frametype_image);
 
-                }
             }
-
-            else if(requestCode==102 && resultCode == RESULT_OK && data != null)
-            {
-                ArrayList<Image> images = data.getParcelableArrayListExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_IMAGES);
-                for(int i=0;i<images.size();i++)
-                {
-                    set_frames_to_container(images.get(i).path,Constants.frametype_image);
-                }
+        } else if (requestCode == 102 && resultCode == RESULT_OK && data != null) {
+            ArrayList<Image> images = data.getParcelableArrayListExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_IMAGES);
+            for (int i = 0; i < images.size(); i++) {
+                set_frames_to_container(images.get(i).path, Constants.frametype_image);
             }
-
+        }
 
 
     }
 
-    public String getRealPathFromURI(Uri contentUri)
-    {
-        try
-        {
+    public String getRealPathFromURI(Uri contentUri) {
+        try {
             String[] proj = {MediaStore.Images.Media.DATA};
             Cursor cursor = managedQuery(contentUri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return contentUri.getPath();
         }
     }
 
     // UPDATED!
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Video.Media.DATA };
+        String[] projection = {MediaStore.Video.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         if (cursor != null) {
             // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
@@ -1402,8 +1264,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             return null;
     }
 
-    public void updateseekbar(SeekBar seekBar,int total)
-    {
+    public void updateseekbar(SeekBar seekBar, int total) {
 
           /*  LayerDrawable localLayerDrawable = new LayerDrawable(new Drawable[] {new SeekBarBackgroundDrawable(this),new SeekBarProgressDrawable(new ColorDrawable(Color.WHITE),3,1,this)});
             localLayerDrawable.setId(0, android.R.id.background);
@@ -1411,26 +1272,24 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             seekbar.setProgressDrawable(localLayerDrawable);*/
 
 
-
-       // ColorDrawable backDrawable = new ColorDrawable(Color.WHITE);
+        // ColorDrawable backDrawable = new ColorDrawable(Color.WHITE);
         SeekBarBackgroundDrawable backgroundDrawable = new SeekBarBackgroundDrawable(this);
-       // ColorDrawable progressDrawable = new ColorDrawable(Color.BLUE);
+        // ColorDrawable progressDrawable = new ColorDrawable(Color.BLUE);
         //Custom seek bar progress drawable. Also allows you to modify appearance.
-        SeekBarProgressDrawable clipProgressDrawable = new SeekBarProgressDrawable(this,framedata_map,total);
-        Drawable[] drawables = new Drawable[]{backgroundDrawable,clipProgressDrawable};
+        SeekBarProgressDrawable clipProgressDrawable = new SeekBarProgressDrawable(this, framedata_map, total);
+        Drawable[] drawables = new Drawable[]{backgroundDrawable, clipProgressDrawable};
 
         //Create layer drawables with android pre-defined ids
         LayerDrawable layerDrawable = new LayerDrawable(drawables);
-        layerDrawable.setId(0,android.R.id.background);
-        layerDrawable.setId(1,android.R.id.progress);
+        layerDrawable.setId(0, android.R.id.background);
+        layerDrawable.setId(1, android.R.id.progress);
 
         //Set to seek bar
         seekBar.setProgressDrawable(layerDrawable);
 
     }
 
-    public void pause_mediaplayer()
-    {
+    public void pause_mediaplayer() {
         mediaPlayer.pause();
     }
 
@@ -1439,8 +1298,7 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
 
         long startTime = System.currentTimeMillis();
         FrameList_Model fm = framedata_map.get(position);
-        if (mediaPlayer.getCurrentPosition() + 2000<=mediaPlayer.getDuration())
-        {
+        if (mediaPlayer.getCurrentPosition() + 2000 <= mediaPlayer.getDuration()) {
 
             fm.setStarttime(mediaPlayer.getCurrentPosition());
             fm.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
@@ -1449,51 +1307,24 @@ public class MakeNewEvent extends Activity implements SurfaceHolder.Callback,Med
             mediaPlayer.start();
 
 
-            if(counter_tut==0) {
+            if (counter_tut == 0) {
                 start_tut("Tap on a Frame to add a Title to it");
                 counter_tut++;
             }
 
-        }
-        else
-        {
+        } else {
             MyToast.popmessage("Cannot Sync the frame at this duration", this);
         }
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        Log.e("resyc",elapsedTime+"");
+        Log.e("resyc", elapsedTime + "");
 
 
     }
 
-    public BitmapDrawable writeOnDrawable(int drawableId){
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableId).copy(Bitmap.Config.ARGB_8888, true);
-
-        return new BitmapDrawable(bm);
+    public void addproduct(int pos) {
+        Intent intent = new Intent(this, Productlist.class);
+        startActivityForResult(intent, 1102);
     }
-
-    @Override
-    public void onBackPressed() {
-        if(mediaPlayer!=null)
-        {
-            mediaPlayer.stop();
-
-        }
-        super.onBackPressed();
-    }
-
-    public void addproduct(int pos)
-    {
-        Intent intent=new Intent(this,Productlist.class);
-        startActivityForResult(intent,1102);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-
-
 }

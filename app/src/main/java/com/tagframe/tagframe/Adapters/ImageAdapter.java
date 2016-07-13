@@ -3,29 +3,22 @@ package com.tagframe.tagframe.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.text.Layout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.squareup.picasso.Picasso;
-import com.tagframe.tagframe.Models.TagStream_Model;
-import com.tagframe.tagframe.Models.UserEventsModel;
 import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
-import com.tagframe.tagframe.UI.Fragments.TagStream;
 import com.tagframe.tagframe.Utils.Constants;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**

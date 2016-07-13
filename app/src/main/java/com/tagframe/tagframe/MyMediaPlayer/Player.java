@@ -56,6 +56,8 @@ public class Player implements IPlayer {
         resizeSurface(activity.getWindowManager().getDefaultDisplay());
     }
 
+
+
     @Override
     public void setSource(Context context, String url) {
         try {
@@ -135,6 +137,7 @@ public class Player implements IPlayer {
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
             // NOOP
+            //Log.e("dasd",percent+"");
         }
     };
 
@@ -173,6 +176,13 @@ public class Player implements IPlayer {
 
         mSurfaceView.requestLayout();
     }
+
+    @Override
+    public MediaPlayer getMediaPlayer() {
+        return mPlayer;
+    }
+
+
 
     private PointF getRealDisplaySize(Display display) {
 

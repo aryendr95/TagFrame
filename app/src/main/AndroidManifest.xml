@@ -57,10 +57,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".UI.Acitivity.MakeNewEvent"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name=".UI.Acitivity.Productlist"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
@@ -73,6 +69,12 @@
             android:name=".UI.Acitivity.SavedEvents"
             android:label="@string/title_activity_saved_events"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".UI.Acitivity.MakeNewEvent"
+            android:label="@string/title_activity_saved_events"
+            android:theme="@style/AppTheme" />
+
+
         <activity
             android:name="com.darsh.multipleimageselect.activities.AlbumSelectActivity"
             android:theme="@style/MultipleImageSelectTheme">

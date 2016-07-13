@@ -1,6 +1,7 @@
 package com.tagframe.tagframe.MyMediaPlayer;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.view.Display;
 import android.view.SurfaceView;
 
@@ -19,5 +20,6 @@ public interface IPlayer {
 
     public void resizeSurface(Display display);
 
+    public MediaPlayer getMediaPlayer();
 }
 

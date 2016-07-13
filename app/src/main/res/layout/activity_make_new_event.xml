@@ -34,7 +34,7 @@
            android:id="@+id/txt_percent"
            android:textColor="@color/white"
            android:text="0"
-           android:visibility="gone"
+            android:layout_below="@+id/pbarmediaplayer"
            android:layout_centerInParent="true"
            />
        <RelativeLayout

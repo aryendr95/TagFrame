@@ -14,7 +14,6 @@ import android.widget.VideoView;
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.TimeLine_Model;
-import com.tagframe.tagframe.Models.UserEventsModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;

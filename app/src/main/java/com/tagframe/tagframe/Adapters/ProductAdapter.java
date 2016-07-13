@@ -1,24 +1,16 @@
 package com.tagframe.tagframe.Adapters;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Product;
-import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
-import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
-import com.tagframe.tagframe.Utils.Constants;
 
 import java.util.ArrayList;
 
