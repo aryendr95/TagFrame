@@ -2,20 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shadow"
+
     >
 
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/bluegray"
+        android:elevation="5dp">
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:text="Create Event"/>
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+
         android:textColor="@color/bluegray"
         android:text="Create a event by selecting video"
         android:gravity="center_horizontal"
         android:layout_margin="20dp"
 
         />
+
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -44,7 +61,7 @@
             android:layout_centerVertical="true"
             android:id="@+id/txt_select_gallery"
             android:textSize="20dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
             />
     </RelativeLayout>
 
@@ -73,7 +90,7 @@
            android:layout_toRightOf="@+id/i1"
             android:id="@+id/txt_select_camera"
             android:textSize="20dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
             />
     </RelativeLayout>
 
@@ -102,7 +119,7 @@
             android:id="@+id/txt_select_save"
             android:textSize="20dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
            />
     </RelativeLayout>
 

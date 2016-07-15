@@ -211,58 +211,48 @@ public class SignUp extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             dialog.dismiss();
-            if(status.equals("success"))
-            {
-                if(userinfo==null)
-                {
-                    // generate code for telling the backend handling this json error
-                    MyToast.popmessage("Oops, there seems to be an error", getActivity());
+            if (isAdded()) {
+                if (status.equals("success")) {
+                    if (userinfo == null) {
+                        // generate code for telling the backend handling this json error
+                        MyToast.popmessage("Oops, there seems to be an error", getActivity());
 
-                    Log.e("das", "hg");
+                        Log.e("das", "hg");
 
-                }
-                else
-                {
-                    try {
+                    } else {
+                        try {
 
-                        //storing the userinformation in persistant storage for later use
-                        listops.putString(Constants.user_id, userinfo.getString(Constants.user_id));
-                        listops.putString(Constants.user_name, userinfo.getString(Constants.user_name));
-                        listops.putString(Constants.user_email, userinfo.getString(Constants.user_email));
-                        listops.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
+                            //storing the userinformation in persistant storage for later use
+                            listops.putString(Constants.user_id, userinfo.getString(Constants.user_id));
+                            listops.putString(Constants.user_name, userinfo.getString(Constants.user_name));
+                            listops.putString(Constants.user_email, userinfo.getString(Constants.user_email));
+                            listops.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
 
-                        listops.putString(Constants.loginstatuskey,Constants.loginstatusvalue);
-                        listops.putString(Constants.user_password, save);
+                            listops.putString(Constants.loginstatuskey, Constants.loginstatusvalue);
+                            listops.putString(Constants.user_password, save);
 
                         /*Intent intent=new Intent(getActivity(), Modules.class);
                         startActivity(intent);
                         getActivity().finish();*/
 
-                        ((Authentication)getActivity()).setadapteraddprofile(new AddProfilePhoto());
+                            ((Authentication) getActivity()).setadapteraddprofile(new AddProfilePhoto());
+                        } catch (JSONException e) {
+                            Log.e("das", e.getMessage());
+                            // generate code for telling the backend handling this json error
+                            MyToast.popmessage("Oops, there seems to be an error", getActivity());
+                        }
                     }
-                    catch (JSONException e)
-                    {
-                        Log.e("das",e.getMessage());
-                        // generate code for telling the backend handling this json error
-                        MyToast.popmessage("Oops, there seems to be an error", getActivity());
-                    }
+                } else if (status.equals("url_error")) {
+                    //generate code for telling backend handling bad url
+                    MyToast.popmessage("Oops, there seems to be an error", getActivity());
+                    Log.e("das", "hgj" + status);
+                } else if (status.equals("json_error")) {
+                    /// generate code for telling the backend handling this json error
+                    MyToast.popmessage("Oops, there seems to be an error", getActivity());
+                    Log.e("das", "hg" + status);
+                } else {
+                    MyToast.popmessage(status, getActivity());
                 }
-            }
-            else if(status.equals("url_error"))
-            {
-                //generate code for telling backend handling bad url
-                MyToast.popmessage("Oops, there seems to be an error", getActivity());
-                Log.e("das", "hgj"+status);
-            }
-            else if(status.equals("json_error"))
-            {
-                /// generate code for telling the backend handling this json error
-                MyToast.popmessage("Oops, there seems to be an error", getActivity());
-                Log.e("das", "hg"+status);
-            }
-            else
-            {
-                MyToast.popmessage(status, getActivity());
             }
         }
 

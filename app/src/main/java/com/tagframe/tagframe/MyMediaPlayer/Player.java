@@ -71,9 +71,14 @@ public class Player implements IPlayer {
                 mPlayer.setDataSource(context, Uri.parse(url));
                 mPlayer.prepareAsync();
             }
-        } catch (IOException ioe) {
-            // TODO: handle
-            Log.e(TAG, "IOException setting source!");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

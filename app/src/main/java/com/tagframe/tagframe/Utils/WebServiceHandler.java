@@ -81,8 +81,7 @@ public class WebServiceHandler {
 
     public void addFilePart(String fieldName, File uploadFile,int notification_id,Context context)
             throws IOException {
-        this.context=context;
-        notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         FileInputStream fileInputStream = new FileInputStream(uploadFile);
 
         String fileName = uploadFile.getName();
@@ -103,8 +102,7 @@ public class WebServiceHandler {
         while (bytesRead > 0)
         {
             long prog= (bytesRead*100)/bytesAvailable;
-            Log.e("dsa",prog+"");
-            sendNotification((int) prog);
+
 
             request.write(buffer, 0, bufferSize);
             bytesAvailable = fileInputStream.available();
@@ -115,7 +113,7 @@ public class WebServiceHandler {
         request.writeBytes(this.crlf);
 
         request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
-        notificationManager.cancel(notification_id);
+
     }
 
 
@@ -175,22 +173,7 @@ public class WebServiceHandler {
         return response;
     }
 
-    private void sendNotification(int progr) {
-        myNotification = new NotificationCompat.Builder(context.getApplicationContext())
-                .setContentTitle("Uploading")
-                .setContentText("")
-                .setTicker("")
-                .setProgress(100,progr,false)
-                .setSmallIcon(R.drawable.noti)
-                .setWhen(System.currentTimeMillis())
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setAutoCancel(true)
-                .build();
 
-        notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
-
-
-    }
 
 
 

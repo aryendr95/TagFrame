@@ -168,6 +168,7 @@ public class FrameListAdapter extends BaseAdapter {
 
 
 
+
                         if (ctx instanceof MakeNewEvent) {
                             ((MakeNewEvent) ctx).resync_frame(position);
                         }

@@ -8,7 +8,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.TagPagerAdapter;
 import com.tagframe.tagframe.R;
@@ -51,7 +53,11 @@ public class Authentication extends FragmentActivity {
         });
         mpagerTabStrip.setCustomTabView(R.layout.layout_customized_tab, R.id.txttab);
 
+
+
        setadapter();
+
+
 
     }
 

@@ -1,8 +1,12 @@
 package com.tagframe.tagframe.Utils;
 
+import android.content.IntentFilter;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by Brajendr on 7/11/2016.
@@ -26,6 +30,10 @@ public class AnimUtils extends Animation {
     public void initialize(int width, int height, int parentWidth,
                            int parentHeight) {
         super.initialize(width, height, parentWidth, parentHeight);
+
+        
+
+
     }
 
     @Override

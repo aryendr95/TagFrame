@@ -213,65 +213,54 @@ public class Login extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             dialog.dismiss();
-            if(status.equals("success"))
-            {
-                if(userinfo==null)
-                {
-                    // generate code for telling the backend handling this json error
-                    MyToast.popmessage("Oops, there seems to be an error", getActivity());
+            if (isAdded()) {
+                if (status.equals("success")) {
+                    if (userinfo == null) {
+                        // generate code for telling the backend handling this json error
+                        MyToast.popmessage("Oops, there seems to be an error", getActivity());
 
-                    Log.e("das", "hg");
+                        Log.e("das", "hg");
 
-                }
-                else
-                {
-                    try {
+                    } else {
+                        try {
 
-                        //storing the userinformation in persistant storage for later use
-                        listops.putString(Constants.user_id, userinfo.getString(Constants.user_id));
-                        listops.putString(Constants.user_name, userinfo.getString(Constants.user_name));
-                        listops.putString(Constants.user_email, userinfo.getString(Constants.user_email));
-                        listops.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
-                        listops.putString(Constants.user_pic, userinfo.getString(Constants.user_pic));
-                        listops.putString(Constants.total_events, userinfo.getString(Constants.total_events));
-                        listops.putString(Constants.total_frames, userinfo.getString(Constants.total_frames));
-                        listops.putString(Constants.number_of_followers, userinfo.getString(Constants.number_of_followers));
-                        listops.putString(Constants.number_of_following, userinfo.getString(Constants.number_of_following));
-                        listops.putString(Constants.loginstatuskey,Constants.loginstatusvalue);
-                        listops.putString(Constants.user_password,save);
+                            //storing the userinformation in persistant storage for later use
+                            listops.putString(Constants.user_id, userinfo.getString(Constants.user_id));
+                            listops.putString(Constants.user_name, userinfo.getString(Constants.user_name));
+                            listops.putString(Constants.user_email, userinfo.getString(Constants.user_email));
+                            listops.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
+                            listops.putString(Constants.user_pic, userinfo.getString(Constants.user_pic));
+                            listops.putString(Constants.total_events, userinfo.getString(Constants.total_events));
+                            listops.putString(Constants.total_frames, userinfo.getString(Constants.total_frames));
+                            listops.putString(Constants.number_of_followers, userinfo.getString(Constants.number_of_followers));
+                            listops.putString(Constants.number_of_following, userinfo.getString(Constants.number_of_following));
+                            listops.putString(Constants.loginstatuskey, Constants.loginstatusvalue);
+                            listops.putString(Constants.user_password, save);
 
                         /*Intent intent=new Intent(getActivity(), Modules.class);
                         startActivity(intent);
                         getActivity().finish();*/
 
-                        ((Authentication)getActivity()).setadapteraddprofile(new Splash());
-                    }
-                    catch (JSONException e)
-                    {
+                            ((Authentication) getActivity()).setadapteraddprofile(new Splash());
+                        } catch (JSONException e) {
 
-                        // generate code for telling the backend handling this json error
-                        MyToast.popmessage("Oops, there seems to be an error", getActivity());
+                            // generate code for telling the backend handling this json error
+                            MyToast.popmessage("Oops, there seems to be an error", getActivity());
+                        }
                     }
+                } else if (status.equals("url_error")) {
+                    //generate code for telling backend handling bad url
+                    MyToast.popmessage("Oops, there seems to be an error", getActivity());
+                    Log.e("das", "hgj" + status);
+                } else if (status.equals("json_error")) {
+                    /// generate code for telling the backend handling this json error
+                    MyToast.popmessage("Oops, there seems to be an error", getActivity());
+                    Log.e("das", "hg" + status);
+                } else {
+                    MyToast.popmessage(status, getActivity());
                 }
             }
-            else if(status.equals("url_error"))
-            {
-                //generate code for telling backend handling bad url
-                MyToast.popmessage("Oops, there seems to be an error", getActivity());
-                Log.e("das", "hgj"+status);
-            }
-            else if(status.equals("json_error"))
-            {
-                /// generate code for telling the backend handling this json error
-                MyToast.popmessage("Oops, there seems to be an error", getActivity());
-                Log.e("das", "hg"+status);
-            }
-
-            else
-            {
-                MyToast.popmessage(status, getActivity());
-            }
-            }
+        }
 
         }
 
@@ -330,14 +319,13 @@ public class Login extends Fragment {
 
             dialog.dismiss();
             Log.e("fas",status);
+            if(isAdded()) {
 
-            if(status.equals("success"))
-            {
-                MyToast.popmessage("Your password has been sent to your email",getActivity());
-            }
-            else
-            {
-                MyToast.popmessage("Oops, an error occurred",getActivity());
+                if (status.equals("success")) {
+                    MyToast.popmessage("Your password has been sent to your email", getActivity());
+                } else {
+                    MyToast.popmessage("Oops, an error occurred", getActivity());
+                }
             }
         }
     }

@@ -43,10 +43,11 @@ public class DisplayUtils {
             result.x = (int) displaySize.x;
         }
 
-        result.y=(int)displaySize.y;
-        result.x=(int)displaySize.x;
 
-        Log.d(TAG, "Result: " + result.toString() + " ratio: " + result.x/result.y);
+
+
+
+
 
         return result;
     }

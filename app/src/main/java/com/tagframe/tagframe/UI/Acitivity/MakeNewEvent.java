@@ -134,7 +134,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_new_event);
-
+        
         //getting the intents
         vidAddress = getIntent().getStringExtra("data_url");
 
@@ -229,6 +229,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
             txt_percent.setVisibility(View.GONE);
             pbar_mediaplayer.setVisibility(View.GONE);
+
 
             if(isfromsavedinstance)
             {
