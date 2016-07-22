@@ -14,7 +14,54 @@ public class FrameList_Model implements Parcelable {
     private int starttime;
     private int endtime;
     private String name;
+    private boolean is_product_attached;
+    private String product_path;
+    private String product_id;
+
+    public String getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
+    }
+
+    public String getProduct_url() {
+        return product_url;
+    }
+
+    public void setProduct_url(String product_url) {
+        this.product_url = product_url;
+    }
+
+    private String product_url;
+
+    public boolean is_product_attached() {
+        return is_product_attached;
+    }
+
+    public void setIs_product_attached(boolean is_product_attached) {
+        this.is_product_attached = is_product_attached;
+    }
+
+    public String getProduct_path() {
+        return product_path;
+    }
+
+    public void setProduct_path(String product_path) {
+        this.product_path = product_path;
+    }
+
     private String frame_resource_type;
+    public String getFrame_data_url() {
+        return frame_data_url;
+    }
+
+    public void setFrame_data_url(String frame_data_url) {
+        this.frame_data_url = frame_data_url;
+    }
+
+    private String frame_data_url;
 
     public String getFrame_resource_type() {
         return frame_resource_type;
@@ -84,7 +131,12 @@ public class FrameList_Model implements Parcelable {
         dest.writeInt(this.starttime);
         dest.writeInt(this.endtime);
         dest.writeString(this.name);
+        dest.writeByte(this.is_product_attached ? (byte) 1 : (byte) 0);
+        dest.writeString(this.product_path);
+        dest.writeString(this.product_id);
+        dest.writeString(this.product_url);
         dest.writeString(this.frame_resource_type);
+        dest.writeString(this.frame_data_url);
         dest.writeInt(this.frametype);
     }
 
@@ -93,7 +145,12 @@ public class FrameList_Model implements Parcelable {
         this.starttime = in.readInt();
         this.endtime = in.readInt();
         this.name = in.readString();
+        this.is_product_attached = in.readByte() != 0;
+        this.product_path = in.readString();
+        this.product_id = in.readString();
+        this.product_url = in.readString();
         this.frame_resource_type = in.readString();
+        this.frame_data_url = in.readString();
         this.frametype = in.readInt();
     }
 

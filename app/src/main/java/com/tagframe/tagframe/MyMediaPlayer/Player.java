@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.media.MediaCodecInfo;
+import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -121,6 +123,10 @@ public class Player implements IPlayer {
                     mListener.onBufferingStarted();
                 } else if (what == ON_INFO_BUFFERING_END) {
                     mListener.onBufferingFinished();
+                }
+                else if(what==MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START)
+                {
+                    mListener.onRendereingstarted();
                 }
             }
 

@@ -19,7 +19,7 @@ public class MarketPlaceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView=inflater.inflate(R.layout.fragment_marketplace,container,false);
+        mView=inflater.inflate(R.layout.activity_productlist,container,false);
 
         return mView;
     }

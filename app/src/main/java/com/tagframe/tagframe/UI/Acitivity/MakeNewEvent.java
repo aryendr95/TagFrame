@@ -102,6 +102,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     public static int Flag_select_video = 4;
     public static int Flag_pick_photo = 5;
     public static int Flag_select_photo = 6;
+    public static int Flag_product_list_result = 6;
 
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();
@@ -125,8 +126,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     //set this to true while retriving the data from the savedinstancestate
     //then check on bufferingfinished listener if flag is set
     //perform the mediaplayer seek to operation
-    private boolean isfromsavedinstance=false;
-    private long sav_instance_current_duration=0;
+    private boolean isfromsavedinstance = false;
+    private long sav_instance_current_duration = 0;
 
 
     //lifecycles methods
@@ -134,7 +135,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_new_event);
-        
+
         //getting the intents
         vidAddress = getIntent().getStringExtra("data_url");
 
@@ -195,9 +196,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
-        outState.putLong(CURRENT_DURATION,mediaPlayer.getCurrentPosition());
-        outState.putLong(TOTAL_DURATION,mediaPlayer.getDuration());
-        outState.putParcelableArrayList(FRAMELIST,framedata_map);
+        outState.putLong(CURRENT_DURATION, mediaPlayer.getCurrentPosition());
+        outState.putLong(TOTAL_DURATION, mediaPlayer.getDuration());
+        outState.putParcelableArrayList(FRAMELIST, framedata_map);
 
         super.onSaveInstanceState(outState);
     }
@@ -211,6 +212,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         @Override
         public void onError(String message) {
 
+            mHandler.removeCallbacks(mUpdateTimeTask);
             pbar_mediaplayer.setVisibility(View.GONE);
             txt_percent.setVisibility(View.VISIBLE);
             txt_percent.setText("An Error Occurred");
@@ -231,19 +233,23 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             pbar_mediaplayer.setVisibility(View.GONE);
 
 
-            if(isfromsavedinstance)
-            {
+            if (isfromsavedinstance) {
                 mHandler.removeCallbacks(mUpdateTimeTask);
 
                 //call this when mediaplayer is prepared or after the buffer has been finished
                 mediaPlayer.seekTo((int) sav_instance_current_duration);
 
                 updateProgressBar();
-            }
-            else
-            {
+            } else {
                 updateProgressBar();
             }
+
+        }
+
+        @Override
+        public void onRendereingstarted() {
+            Log.e("Ds", "rendering statered");
+
         }
     };
 
@@ -346,6 +352,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         });
 
         save_event = (TextView) findViewById(R.id.saveevent);
+
         save_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -412,24 +419,22 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         }
 
 
-       if(savedstate!=null)
-       {
+        if (savedstate != null) {
 
-           //resotring the mediaplayers state
-           framedata_map=savedstate.getParcelableArrayList(FRAMELIST);
-           sav_instance_current_duration=savedstate.getLong(CURRENT_DURATION);
-           long total=savedstate.getLong(TOTAL_DURATION);
-           if(framedata_map.size()>0)
-           {
-               ll_container_frames.setVisibility(View.VISIBLE);
-               framelist.setAdapter(new FrameListAdapter(this,framedata_map,Constants.eventtype_local));
-           }
-           label_seekbar_currentduration.setText(Constants.milliSecondsToTimer(sav_instance_current_duration));
-           label_seekbar_totalduration.setText(Constants.milliSecondsToTimer(total));
+            //resotring the mediaplayers state
+            framedata_map = savedstate.getParcelableArrayList(FRAMELIST);
+            sav_instance_current_duration = savedstate.getLong(CURRENT_DURATION);
+            long total = savedstate.getLong(TOTAL_DURATION);
+            if (framedata_map.size() > 0) {
+                ll_container_frames.setVisibility(View.VISIBLE);
+                framelist.setAdapter(new FrameListAdapter(this, framedata_map, Constants.eventtype_local));
+            }
+            label_seekbar_currentduration.setText(Constants.milliSecondsToTimer(sav_instance_current_duration));
+            label_seekbar_totalduration.setText(Constants.milliSecondsToTimer(total));
 
-          isfromsavedinstance=true;
+            isfromsavedinstance = true;
 
-       }
+        }
 
 
     }
@@ -504,16 +509,38 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             tvaddproduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(frameList_model.is_product_attached())
+                    {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(frameList_model.getProduct_url()));
+                        startActivity(browserIntent);
 
-                    addproduct(pos);
-                    dialog.dismiss();
+                        ll_top_bar.setVisibility(View.VISIBLE);
+                        ll_bottom_bar.setVisibility(View.VISIBLE);
+                        ll_seekbar_frame_container.setVisibility(View.VISIBLE);
+
+                        dialog.dismiss();
+                    }
+                    else {
+                        addproduct(pos);
+                        ll_top_bar.setVisibility(View.VISIBLE);
+                        ll_bottom_bar.setVisibility(View.VISIBLE);
+                        ll_seekbar_frame_container.setVisibility(View.VISIBLE);
+                        dialog.dismiss();
+                    }
                 }
             });
 
 
             frameimage.setVisibility(View.VISIBLE);
+            if(frameList_model.is_product_attached())
+            {
+                Picasso.with(MakeNewEvent.this).load(frameList_model.getProduct_path()).into(frameimage);
+                tvaddproduct.setText("Buy Product");
 
-            frameimage.setImageBitmap(BitmapHelper.decodeFile(MakeNewEvent.this, new File(frameList_model.getImagepath())));
+            }
+            else {
+                frameimage.setImageBitmap(BitmapHelper.decodeFile(MakeNewEvent.this, new File(frameList_model.getImagepath())));
+            }
             tittle.setText(frameList_model.getName());
             duration.setText(Constants.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Constants.milliSecondsToTimer(frameList_model.getEndtime()));
 
@@ -521,7 +548,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 @Override
                 public void onClick(View v) {
 
-                    dialog.dismiss();
+
 
                     framedata_map.get(pos).setName(tittle.getText().toString());
                     ((BaseAdapter) framelist.getAdapter()).notifyDataSetChanged();
@@ -529,6 +556,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                     ll_top_bar.setVisibility(View.VISIBLE);
                     ll_bottom_bar.setVisibility(View.VISIBLE);
                     ll_seekbar_frame_container.setVisibility(View.VISIBLE);
+                    dialog.dismiss();
                 }
             });
             img_frame_to_show.setVisibility(View.GONE);
@@ -549,7 +577,12 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
 
 
-            framevideo.setVideoURI(Uri.parse(frameList_model.getImagepath()));
+            try {
+                Log.e("ds",frameList_model.getFrame_data_url());
+                framevideo.setVideoURI(Uri.parse(frameList_model.getFrame_data_url()));
+            } catch (Exception e) {
+                Log.e("Dsa", e.getMessage() + frameList_model.getFrame_data_url());
+            }
             framevideo.start();
 
             tittle.setText(frameList_model.getName());
@@ -862,6 +895,11 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 switch (item.getItemId()) {
 
                     case R.id.media_library:
+
+                        //remove the callbacks to timertask as mediaplayer is not in correct state to call the duration method on it
+                        mHandler.removeCallbacks(mUpdateTimeTask);
+
+
                         Intent inte = new Intent(MakeNewEvent.this, AlbumSelectActivity.class);
 //set limit on number of images that can be selected, default is 10
                         inte.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5 - framedata_map.size());
@@ -871,6 +909,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
                     case R.id.add_frame_take_video:
 
+                        mHandler.removeCallbacks(mUpdateTimeTask);
                         Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
 
@@ -880,6 +919,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                         break;
 
                     case R.id.add_frame_take_photo:
+
+                        mHandler.removeCallbacks(mUpdateTimeTask);
                         // create new Intentwith with Standard Intent action that can be
                         // sent to have the camera application capture an video and return it.
 
@@ -897,8 +938,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
                     case R.id.medial_library_video:
                        /* new VideoPicker.Builder(MakeNewEvent.this).mode(VideoPicker.Mode.GALLERY)
-                                .build();*/
-
+                                    .build();*/
+                        mHandler.removeCallbacks(mUpdateTimeTask);
                         Intent intent12 = new Intent(MakeNewEvent.this, AndroidCustomGalleryActivity.class);
                         intent12.putExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5 - framedata_map.size());
                         startActivityForResult(intent12, 901);
@@ -1155,6 +1196,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        updateProgressBar();
         if (requestCode == Flag_select_video && resultCode == RESULT_OK) {
             selectedImageUri = data.getData();
 
@@ -1234,7 +1278,27 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 set_frames_to_container(images.get(i).path, Constants.frametype_image);
             }
         }
+        else if(requestCode==Flag_product_list_result&&data!=null)
+        {
 
+            //postion of object to which the product has been added
+            int position=data.getIntExtra("frame_position",Productlist.Noframepostion);
+            if(position!=Productlist.Noframepostion) {
+                //make change to the frame to which product has been added
+                FrameList_Model frameList_model = framedata_map.get(position);
+                frameList_model.setProduct_id(data.getStringExtra("product_id"));
+                frameList_model.setProduct_path(data.getStringExtra("product_image"));
+                frameList_model.setProduct_url(data.getStringExtra("product_url"));
+                frameList_model.setIs_product_attached(true);
+
+                //show the su
+                show_synced_frame(position);
+            }
+            else
+            {
+                PopMessage.makesimplesnack(mlayout,"Error adding product");
+            }
+        }
 
     }
 
@@ -1324,8 +1388,14 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
 
+
     public void addproduct(int pos) {
+        //remove the callbacks to timertask as mediaplayer is not in correct state to call the duration method on it
+        mHandler.removeCallbacks(mUpdateTimeTask);
+
+
         Intent intent = new Intent(this, Productlist.class);
-        startActivityForResult(intent, 1102);
+        intent.putExtra("frame_position",pos);
+        startActivityForResult(intent, Flag_product_list_result);
     }
 }

@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/product_backgroung">
+    android:background="@drawable/shadow"
+    android:layout_margin="10dp">
 
     <ImageView
         android:layout_width="150dp"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
+        android:padding="5dp"
         android:id="@+id/product_image"/>
     <com.tagframe.tagframe.Utils.MyTextView
         android:layout_width="wrap_content"

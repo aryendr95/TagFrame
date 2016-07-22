@@ -26,6 +26,8 @@ public class TagStream_Model implements Parcelable {
     private String type;
     private boolean in_center=false;
 
+
+
     public boolean isIn_center() {
         return in_center;
     }

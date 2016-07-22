@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +88,8 @@ public class TagStreamEventAdapter extends BaseAdapter
 
         final TagStream_Model tagStream=tagStream_models.get(position);
 
+
+
         mViewHolder.tvTitlle.setText(tagStream.getTitle());
         mViewHolder.tvname.setText(tagStream.getName());
         mViewHolder.tvcurrentduration.setText(tagStream.getCreated_at());
@@ -138,7 +141,7 @@ public class TagStreamEventAdapter extends BaseAdapter
                 intent.putExtra("eventtype", Constants.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
 
-
+                Log.e("data_url",tagStream.getDataurl());
                 ctx.startActivity(intent);
             }
         });

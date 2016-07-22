@@ -235,8 +235,11 @@ public class listops {
         SharedPreferences.Editor editor=prefs.edit();
         String jsonCars = gson.toJson(arrayList);
         editor.putString("followers", jsonCars);
+
         editor.commit();
     }
+
+
 
 
 

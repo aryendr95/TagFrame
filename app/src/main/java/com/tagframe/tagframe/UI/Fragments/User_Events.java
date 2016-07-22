@@ -227,6 +227,8 @@ public class User_Events extends Fragment {
 
                             frameList_model.setFrametype((frameobject.getString("frame_media_type").equals("IMAGE") ? Constants.frametype_image : Constants.frametype_video));
                             frameList_model.setFrame_resource_type(Constants.frame_resource_type_internet);
+                            frameList_model.setFrame_data_url(frameobject.getString("frame_data_url"));
+                            //Log.e("dsa",frameobject.getString("frame_data_url")+user_id);
                             frameList_models.add(frameList_model);
                         }
 

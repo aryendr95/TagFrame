@@ -247,6 +247,7 @@ public class Splash extends Fragment {
                             frameList_model.setEndtime(Integer.parseInt(frameobject.getString("frame_end_time")) * 1000);
                             frameList_model.setFrametype((frameobject.getString("frame_media_type").equals("IMAGE") ? Constants.frametype_image : Constants.frametype_video));
                             frameList_model.setFrame_resource_type(Constants.frame_resource_type_internet);
+                            frameList_model.setFrame_data_url(frameobject.getString("frame_data_url"));
                             frameList_models.add(frameList_model);
                         }
 
@@ -271,12 +272,14 @@ public class Splash extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            listops.puttagstreamlist(tagStream_models);
 
 
-            Intent intent=new Intent(getActivity(), Modules.class);
-            startActivity(intent);
-            getActivity().finish();
+            if(isAdded()) {
+                listops.puttagstreamlist(tagStream_models);
+                Intent intent = new Intent(getActivity(), Modules.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
         }
     }
 
