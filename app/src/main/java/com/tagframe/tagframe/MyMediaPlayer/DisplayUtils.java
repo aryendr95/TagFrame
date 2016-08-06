@@ -43,12 +43,6 @@ public class DisplayUtils {
             result.x = (int) displaySize.x;
         }
 
-
-
-
-
-
-
         return result;
     }
 }

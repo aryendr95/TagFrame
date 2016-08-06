@@ -28,11 +28,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".UI.Acitivity.Authentication"
@@ -73,13 +69,18 @@
             android:name=".UI.Acitivity.MakeNewEvent"
             android:label="@string/title_activity_saved_events"
             android:theme="@style/AppTheme" />
-
-
         <activity
             android:name="com.darsh.multipleimageselect.activities.AlbumSelectActivity"
             android:theme="@style/MultipleImageSelectTheme">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".TestActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULTkara" />
             </intent-filter>
         </activity>
     </application>

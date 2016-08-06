@@ -38,6 +38,7 @@ public class Player implements IPlayer {
     private int mStatusBarHeight;
     private Activity mActivity;
     private Handler mHandler=new Handler();
+    private boolean IsVideoResized;
 
     public Player(SurfaceView view, Activity activity) {
         mSurfaceView = view;
@@ -140,6 +141,7 @@ public class Player implements IPlayer {
             if (mListener != null) {
                 mListener.onError("Error, what: " + what + " extra: " + extra);
             }
+
             return false;
         }
     };
@@ -154,9 +156,20 @@ public class Player implements IPlayer {
 
     private MediaPlayer.OnPreparedListener mOnPrepared = new MediaPlayer.OnPreparedListener() {
         @Override
-        public void onPrepared(MediaPlayer mp) {
+        public void onPrepared(final MediaPlayer mp) {
             mIsPrepared = true;
+            if(mIsPrepared&&IsVideoResized)
             mp.start();
+            else
+            {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(mIsPrepared&&IsVideoResized)
+                            mp.start();
+                    }
+                },500);
+            }
         }
     };
 
@@ -173,6 +186,7 @@ public class Player implements IPlayer {
             double proportion = (double)width / (double)height;
             Log.d(TAG, "onVideoSize: w"+ width + " h: " + height + " proportion: " + proportion);
             resizeSurface(mActivity.getWindowManager().getDefaultDisplay());
+            IsVideoResized=true;
         }
     };
 

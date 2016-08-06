@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class AndroidCustomGalleryActivity extends Activity {
 
 
-    private int count,limit;
+    private int count, limit;
     private Bitmap[] thumbnails;
     private ArrayList<String> selectImages = new ArrayList<String>();
     private boolean[] thumbnailsselection;
@@ -41,7 +41,7 @@ public class AndroidCustomGalleryActivity extends Activity {
 
 
     private RelativeLayout mlayout;
-    private  Button btn_select;
+    private Button btn_select;
     private TextView mtxt_menu;
     private ImageView mimg_menu_back;
     private ProgressBar pbar;
@@ -51,30 +51,31 @@ public class AndroidCustomGalleryActivity extends Activity {
     loadimage loadimage;
 
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media__chooser);
 
-        loadimage=new loadimage();
+        loadimage = new loadimage();
         loadimage.execute();
 
-        limit=getIntent().getIntExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT,5);
+        limit = getIntent().getIntExtra(com.darsh.multipleimageselect.helpers.Constants.INTENT_EXTRA_LIMIT, 5);
 
-        mlayout=(RelativeLayout)findViewById(R.id.mlayout_media_choose);
-        pbar=(ProgressBar)findViewById(R.id.pbar_media_choseer);
+        mlayout = (RelativeLayout) findViewById(R.id.mlayout_media_choose);
+        pbar = (ProgressBar) findViewById(R.id.pbar_media_choseer);
         imagegrid = (GridView) findViewById(R.id.PhoneImageGrid);
-        mtxt_menu=(TextView)findViewById(R.id.media_action_text);
-        mimg_menu_back=(ImageView)findViewById(R.id.media_action_back);
+        mtxt_menu = (TextView) findViewById(R.id.media_action_text);
+        mimg_menu_back = (ImageView) findViewById(R.id.media_action_back);
 
 
         mimg_menu_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setResult(901);
-                if(!loadimage.isCancelled())
-                {
+                if (!loadimage.isCancelled()) {
                     loadimage.cancel(true);
                 }
                 finish();
@@ -85,8 +86,7 @@ public class AndroidCustomGalleryActivity extends Activity {
             @Override
             public void onClick(View v) {
                 setResult(901);
-                if(!loadimage.isCancelled())
-                {
+                if (!loadimage.isCancelled()) {
                     loadimage.cancel(true);
                 }
                 finish();
@@ -100,29 +100,26 @@ public class AndroidCustomGalleryActivity extends Activity {
                 // TODO Auto-generated method stub
                 final int len = thumbnailsselection.length;
 
-                selectImages=new ArrayList<String>();
+                selectImages = new ArrayList<String>();
                 int cnt = 0;
 
-                for (int i =0; i<len; i++)
-                {
-                    if (thumbnailsselection[i]){
+                for (int i = 0; i < len; i++) {
+                    if (thumbnailsselection[i]) {
                         cnt++;
                         selectImages.add(arrPath[i]);
 
 
                     }
                 }
-                if (cnt == 0){
+                if (cnt == 0) {
                     Toast.makeText(getApplicationContext(),
                             "Please select at least one item",
                             Toast.LENGTH_LONG).show();
                 } else {
 
-                    if(cnt>limit)
-                    {
-                        PopMessage.makesimplesnack(mlayout,"You can't select more than " +limit+" videos");
-                    }
-                    else {
+                    if (cnt > limit) {
+                        PopMessage.makesimplesnack(mlayout, "You can't select more than " + limit + " videos");
+                    } else {
                         Intent intent = new Intent();
                         intent.putStringArrayListExtra("videopaths", selectImages);
                         setResult(901, intent);
@@ -157,7 +154,7 @@ public class AndroidCustomGalleryActivity extends Activity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+            final ViewHolder holder;
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = mInflater.inflate(
@@ -166,21 +163,40 @@ public class AndroidCustomGalleryActivity extends Activity {
                 holder.checkbox = (CheckBox) convertView.findViewById(R.id.itemCheckBox);
 
                 convertView.setTag(holder);
-            }
-            else {
+            } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.checkbox.setId(position);
             holder.imageview.setId(position);
+
             holder.checkbox.setOnClickListener(new OnClickListener() {
 
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
 
 
-
-                        CheckBox cb = (CheckBox) v;
+                    CheckBox cb = (CheckBox) v;
                     int id = cb.getId();
+                    if (thumbnailsselection[id]) {
+                        cb.setChecked(false);
+                        thumbnailsselection[id] = false;
+                    } else {
+                        cb.setChecked(true);
+                        thumbnailsselection[id] = true;
+
+                    }
+
+                }
+            });
+
+            holder.imageview.setOnClickListener(new OnClickListener() {
+
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+
+
+                    CheckBox cb = (CheckBox) holder.checkbox;
+                    int id = v.getId();
                     if (thumbnailsselection[id]) {
                         cb.setChecked(false);
                         thumbnailsselection[id] = false;
@@ -199,6 +215,7 @@ public class AndroidCustomGalleryActivity extends Activity {
             return convertView;
         }
     }
+
     class ViewHolder {
         ImageView imageview;
         CheckBox checkbox;
@@ -206,10 +223,10 @@ public class AndroidCustomGalleryActivity extends Activity {
     }
 
 
-    public class loadimage extends AsyncTask<String,String,String>
-    {
+    public class loadimage extends AsyncTask<String, String, String> {
 
         Cursor imagecursor;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -218,9 +235,9 @@ public class AndroidCustomGalleryActivity extends Activity {
         @Override
         protected String doInBackground(String... params) {
 
-            final String[] columns = { MediaStore.Video.Media.DATA, MediaStore.Video.Media._ID };
+            final String[] columns = {MediaStore.Video.Media.DATA, MediaStore.Video.Media._ID};
             final String orderBy = MediaStore.Video.Media._ID;
-             imagecursor = managedQuery(
+            imagecursor = managedQuery(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, columns, null,
                     null, orderBy);
             int image_column_index = imagecursor.getColumnIndex(MediaStore.Video.Media._ID);
@@ -233,11 +250,11 @@ public class AndroidCustomGalleryActivity extends Activity {
                 int id = imagecursor.getInt(image_column_index);
                 int dataColumnIndex = imagecursor.getColumnIndex(MediaStore.Video.Media.DATA);
 
-                thumbnails[i]=MediaStore.Video.Thumbnails.getThumbnail(
+                thumbnails[i] = MediaStore.Video.Thumbnails.getThumbnail(
                         getApplicationContext().getContentResolver(), id,
                         MediaStore.Video.Thumbnails.MINI_KIND, null);
 
-                arrPath[i]= imagecursor.getString(dataColumnIndex);
+                arrPath[i] = imagecursor.getString(dataColumnIndex);
             }
             return null;
         }

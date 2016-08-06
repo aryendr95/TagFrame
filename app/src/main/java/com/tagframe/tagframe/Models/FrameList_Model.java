@@ -17,6 +17,7 @@ public class FrameList_Model implements Parcelable {
     private boolean is_product_attached;
     private String product_path;
     private String product_id;
+    private String product_url;
 
     public String getProduct_id() {
         return product_id;
@@ -34,7 +35,7 @@ public class FrameList_Model implements Parcelable {
         this.product_url = product_url;
     }
 
-    private String product_url;
+
 
     public boolean is_product_attached() {
         return is_product_attached;
