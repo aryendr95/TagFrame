@@ -51,7 +51,7 @@ public class Productlist extends FragmentActivity {
         gridview_product = (GridView) findViewById(R.id.gird_product);
         mlayout=(RelativeLayout)findViewById(R.id.mlayout_product);
 
-
+        new GetProductlist().execute("");
 
         img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +139,7 @@ public class Productlist extends FragmentActivity {
             super.onPostExecute(s);
             pbar.setVisibility(View.GONE);
             if(Productlist.this!=null)
-            gridview_product.setAdapter(new ProductAdapter(Productlist.this, productArrayList,getIntent().getIntExtra("frame_position",Noframepostion)));
+            gridview_product.setAdapter(new ProductAdapter(Productlist.this, productArrayList));
 
         }
     }

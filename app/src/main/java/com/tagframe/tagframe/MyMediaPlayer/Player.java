@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 
 import java.io.IOException;
 
+
+
 /**
  * Created by interview on 16/07/15.
  */
@@ -206,6 +208,7 @@ public class Player implements IPlayer {
     public MediaPlayer getMediaPlayer() {
         return mPlayer;
     }
+
 
 
 

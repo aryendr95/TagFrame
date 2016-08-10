@@ -457,15 +457,15 @@ public class Account extends Fragment {
                 }
 
                 JSONObject jsonObject = new JSONObject(webServiceHandler.finish());
-                Log.e("das", jsonObject.toString());
+                JSONObject userInfo=jsonObject.getJSONObject("userinfo");
 
                 status = jsonObject.getString("status");
                 if (status.equals("success")) {
-                    listops.putString(Constants.user_email, params[1]);
-                    listops.putString(Constants.user_name, params[2]);
-                    listops.putString(Constants.user_realname, params[3]);
-                    listops.putString(Constants.user_descrip, params[4]);
-                    listops.putString(Constants.user_pic, jsonObject.getString(Constants.user_pic));
+                    listops.putString(Constants.user_email, userInfo.getString(Constants.user_email));
+                    listops.putString(Constants.user_name,userInfo.getString(Constants.user_name));
+                    listops.putString(Constants.user_realname, userInfo.getString(Constants.user_realname));
+                    listops.putString(Constants.user_descrip, userInfo.getString(Constants.user_descrip));
+                    listops.putString(Constants.user_pic, userInfo.getString(Constants.user_pic));
 
                 }
 

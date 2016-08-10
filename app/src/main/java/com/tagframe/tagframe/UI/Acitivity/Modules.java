@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.Gravity;
@@ -49,13 +50,14 @@ import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.listops;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Modules extends FragmentActivity implements Broadcastresults.Receiver {
 
     //Bottom bar
-    private LinearLayout mlevent, mltagstream, mlnotification, mlmarket, mlprofile,bottombar,topbar;
-    private TextView mtxttagstream,mtxtevent, mtxtnotification, mtxtmarket, mtxtprofile;
-    private ImageView mimgtagstream,mimgevent, mimgnotification, mimgmarket, mimgprofile;
+    private LinearLayout mlevent, mltagstream, mlnotification, mlmarket, mlprofile, bottombar, topbar, mLayout;
+    private TextView mtxttagstream, mtxtevent, mtxtnotification, mtxtmarket, mtxtprofile;
+    private ImageView mimgtagstream, mimgevent, mimgnotification, mimgmarket, mimgprofile;
 
     //Framelayout
     private FrameLayout frameLayout;
@@ -77,7 +79,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     private ImageView r_layout;
 
 
-    private int PICK_VIDEO=1,TAKE_VIDEO=2;
+    private int PICK_VIDEO = 1, TAKE_VIDEO = 2;
 
     public Broadcastresults mReceiver;
 
@@ -89,7 +91,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modules);
-        userinfo=new listops(this);
+        userinfo = new listops(this);
         init();
 
 
@@ -99,6 +101,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     }
 
     private void init() {
+
+        mLayout = (LinearLayout) findViewById(R.id.mLayout_module);
 
         mltagstream = (LinearLayout) findViewById(R.id.mod_tagstream);
         mltagstream.setOnClickListener(new View.OnClickListener() {
@@ -129,13 +133,10 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
 
-
                 Fragment f = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
-                if (f instanceof TagStream)
-                {
+                if (f instanceof TagStream) {
                     ((TagStream) f).scrolltofirst();
-                }
-                else {
+                } else {
                     TagStream fr = new TagStream();
                     changefragment(fr);
                 }
@@ -176,11 +177,11 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         });
 
 
-       mlevent = (LinearLayout) findViewById(R.id.mod_event);
+        mlevent = (LinearLayout) findViewById(R.id.mod_event);
         mlevent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+                mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgtagstream.setImageResource(R.drawable.tagstream);
 
                 mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
@@ -234,7 +235,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
 
-                MarketPlaceFragment marketPlaceFragment= new MarketPlaceFragment();
+                MarketPlaceFragment marketPlaceFragment = new MarketPlaceFragment();
 
                 changefragment(marketPlaceFragment);
             }
@@ -294,11 +295,9 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         frameLayout = (FrameLayout) findViewById(R.id.mod_frame_layout);
 
 
-
-
-        Fragment myf=new TagStream();
+        Fragment myf = new TagStream();
         //checking if tagstream list has value else show the follow fragment
-        if(userinfo.gettagstreamlist("tagstream").size()==0) {
+        if (userinfo.gettagstreamlist("tagstream").size() == 0) {
             myf = new Follow();
             mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
             mimgtagstream.setImageResource(R.drawable.tagstream);
@@ -315,7 +314,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
         }
 
-        if(getIntent() != null && getIntent().getExtras() != null)
+        if (getIntent() != null && getIntent().getExtras() != null)
 
         {
             if (getIntent().getStringExtra("name").equals("Edit Profile")) {
@@ -339,7 +338,6 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         }
 
 
-
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.mod_frame_layout, myf);
         transaction.commit();
@@ -354,13 +352,12 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         mSlidingPanel.setPanelSlideListener(panelListener);
         mMenuList = (ListView) findViewById(R.id.mod_MenuList);
 
-        r_layout=(ImageView)findViewById(R.id.img);
+        r_layout = (ImageView) findViewById(R.id.img);
 
 
+        String[] MenuTitles = new String[]{"Account", "Viewer Privacy", "Terms of Service", "Logout"};
 
-        String [] MenuTitles = new String[]{"Account","Viewer Privacy","Terms of Service","Logout"};
-
-       ArrayList<com.tagframe.tagframe.Models.Menu> list= populatelist();
+        ArrayList<com.tagframe.tagframe.Models.Menu> list = populatelist();
         mMenuList.setAdapter(new Menulistadapter(this, list));
 
         mMenuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -467,9 +464,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         try {
             Picasso.with(this).load(userinfo.getString(Constants.user_pic)).error(R.drawable.pro_image).into(mod_pro_image);
             Picasso.with(this).load(userinfo.getString(Constants.user_pic)).error(R.color.colorPrimaryDark).into(r_layout);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             mod_pro_image.setImageResource(R.drawable.pro_image);
             r_layout.setImageResource(R.drawable.pro_image);
         }
@@ -479,70 +474,81 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         mod_email = (TextView) findViewById(R.id.mod_email);
         mod_email.setText(userinfo.getString(Constants.user_email));
 
-        bottombar=(LinearLayout)findViewById(R.id.bottom_bar);
-        topbar=(LinearLayout)findViewById(R.id.topbar);
+        bottombar = (LinearLayout) findViewById(R.id.bottom_bar);
+        topbar = (LinearLayout) findViewById(R.id.topbar);
 
 
-        ed_search=(EditText)findViewById(R.id.mod_search_text);
+        ed_search = (EditText) findViewById(R.id.mod_search_text);
         ed_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-                    if(!ed_search.getText().toString().isEmpty()) {
-                        Follow follow = new Follow();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("keyword", ed_search.getText().toString());
-                        follow.setArguments(bundle);
-                        hideKeyboard(Modules.this);
-
-                        changefragment(follow);
+                    if (!ed_search.getText().toString().isEmpty()) {
+                        Search(ed_search.getText().toString());
                         return true;
-                    }
-                    else
-                    {
-                        MyToast.popmessage("Please provide a search term",Modules.this);
+                    } else {
+                        PopMessage.makesimplesnack(mLayout, "Please provide a search term");
                     }
                 }
                 return false;
             }
         });
 
-        img_search=(ImageView)findViewById(R.id.mod_search);
+        img_search = (ImageView) findViewById(R.id.mod_search);
         img_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!ed_search.getText().toString().isEmpty()) {
-                    Follow follow = new Follow();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("keyword", ed_search.getText().toString());
-                    follow.setArguments(bundle);
-                    hideKeyboard(Modules.this);
-                    changefragment(follow);
+                if (!ed_search.getText().toString().isEmpty()) {
 
-                }
-                else
-                {
-                    MyToast.popmessage("Please provide a search term",Modules.this);
+                    Search(ed_search.getText().toString());
+                } else {
+                    MyToast.popmessage("Please provide a search term", Modules.this);
                 }
             }
         });
 
 
+    }
 
 
+    private void Search(String keyword) {
 
+        if(checkCurrentFragment() instanceof MarketPlaceFragment)
+        {
+            MarketPlaceFragment marketPlaceFragment = new MarketPlaceFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("keyword", keyword);
+            marketPlaceFragment.setArguments(bundle);
+            hideKeyboard(Modules.this);
+            changefragment(marketPlaceFragment);
+        }
+        else {
+            Follow follow = new Follow();
+            Bundle bundle = new Bundle();
+            bundle.putString("keyword", ed_search.getText().toString());
+            follow.setArguments(bundle);
+            hideKeyboard(Modules.this);
+            changefragment(follow);
+        }
+    }
 
+    private Fragment checkCurrentFragment()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        Fragment mCurrentFragment = fragmentManager.findFragmentById(R.id.mod_frame_layout);
+        return mCurrentFragment;
     }
 
     private ArrayList<com.tagframe.tagframe.Models.Menu> populatelist() {
-        String [] MenuTitles = new String[]{"Account","Viewer Privacy","Terms of Service","Logout"};
-        ArrayList<com.tagframe.tagframe.Models.Menu> menuArrayList=new ArrayList<>();
-        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Account",R.drawable.account));
-        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Viewer Privacy",R.drawable.privacy));
-        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Terms of Service",R.drawable.terms_of_service));
-        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Logout",R.drawable.logout));
+        String[] MenuTitles = new String[]{"Account", "Viewer Privacy", "Terms of Service", "Logout"};
+        ArrayList<com.tagframe.tagframe.Models.Menu> menuArrayList = new ArrayList<>();
+        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Account", R.drawable.account));
+        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Viewer Privacy", R.drawable.privacy));
+        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Terms of Service", R.drawable.terms_of_service));
+        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Logout", R.drawable.logout));
         return menuArrayList;
     }
 
@@ -557,26 +563,21 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public void onlistscroll(int visibilty,View v)
-    {
-        if(visibilty==View.GONE)
-        {
+    public void onlistscroll(int visibilty, View v) {
+        if (visibilty == View.GONE) {
             bottombar.setVisibility(View.GONE);
             v.setVisibility(View.GONE);
 
 
-        }
-        else
-        {
+        } else {
             bottombar.setVisibility(View.VISIBLE);
             v.setVisibility(View.VISIBLE);
         }
-       // topbar.setVisibility(visibilty);
-       // bottombar.setVisibility(visibilty);
+        // topbar.setVisibility(visibilty);
+        // bottombar.setVisibility(visibilty);
 
 
     }
-
 
 
     public void generate_media_chooser(View v) {
@@ -658,7 +659,6 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
 
-
                 // start the Video Capture Intent
                 startActivityForResult(intent1, TAKE_VIDEO);
                 dialog.dismiss();
@@ -668,8 +668,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         dialog.findViewById(R.id.media_saved).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent2 = new Intent(Modules.this,SavedEvents.class);
-
+                Intent intent2 = new Intent(Modules.this, SavedEvents.class);
 
 
                 // start the Video Capture Intent
@@ -682,8 +681,6 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
         dialog.show();
     }
-
-
 
 
     SlidingPaneLayout.PanelSlideListener panelListener = new SlidingPaneLayout.PanelSlideListener() {
@@ -710,13 +707,10 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     };
 
 
-
-
-    public void setprofile(String user_id,int user_type)
-    {
-        Profile fr=new Profile();
-        Bundle bundle=new Bundle();
-        bundle.putString("user_id",user_id);
+    public void setprofile(String user_id, int user_type) {
+        Profile fr = new Profile();
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id", user_id);
         bundle.putInt("type", user_type);
         fr.setArguments(bundle);
 
@@ -730,7 +724,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
     // UPDATED!
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Video.Media.DATA };
+        String[] projection = {MediaStore.Video.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         if (cursor != null) {
             // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
@@ -753,8 +747,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         transaction.commit();
     }
 
-    public Broadcastresults register_reviever()
-    {
+    public Broadcastresults register_reviever() {
         mReceiver = new Broadcastresults(new Handler());
 
         mReceiver.setReceiver(this);
@@ -763,87 +756,73 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
     }
 
-    public void setprofileparameter(int s,String v)
-    {
-        Profile profile=(Profile)getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+    public void setprofileparameter(int s, String v) {
+        Profile profile = (Profile) getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
         profile.setprofilestat(s, v);
     }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
 
-       int operation=resultData.getInt("operation");
-        String userid="";
-        switch (operation)
-        {
+        int operation = resultData.getInt("operation");
+        String userid = "";
+        switch (operation) {
             case Constants.operation_remove_follower:
 
-                 userid=resultData.getString("user_id");
-                if(resultCode==1)
-                {
+                userid = resultData.getString("user_id");
+                if (resultCode == 1) {
 
-                    MyToast.popmessage("Successfully Removed",this);
-                }
-                else
-                {
-                    setprofile(userid,Constants.user_type_self);
+                    MyToast.popmessage("Successfully Removed", this);
+                } else {
+                    setprofile(userid, Constants.user_type_self);
                     MyToast.popmessage("There was error removing this user", this);
                 }
                 break;
             case Constants.operation_unfollow:
 
-                userid=resultData.getString("user_id");
-                if(resultCode==1)
-                {
+                userid = resultData.getString("user_id");
+                if (resultCode == 1) {
 
-                    MyToast.popmessage("Successfully UnFollowed",this);
-                }
-                else
-                {
-                    setprofile(userid,Constants.user_type_self);
+                    MyToast.popmessage("Successfully UnFollowed", this);
+                } else {
+                    setprofile(userid, Constants.user_type_self);
                     MyToast.popmessage("There was error unfollowing this user", this);
                 }
                 break;
             case Constants.operation_follow:
 
-                userid=resultData.getString("user_id");
-                if(resultCode==1)
-                {
+                userid = resultData.getString("user_id");
+                if (resultCode == 1) {
 
-                    MyToast.popmessage("Successfully Followed",this);
-                }
-                else
-                {
-                    setprofile(userid,Constants.user_type_self);
+                    MyToast.popmessage("Successfully Followed", this);
+                } else {
+                    setprofile(userid, Constants.user_type_self);
                     MyToast.popmessage("There was error unfollowing this user", this);
                 }
                 break;
 
             case Constants.operation_follow_profile:
 
-                Fragment f =getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
                 if (f instanceof Profile)
                     // do something with f
-                    ((Profile) f).changeprofile_ui(operation,resultCode);
+                    ((Profile) f).changeprofile_ui(operation, resultCode);
 
                 break;
             case Constants.operation_unfollow_profile:
 
-                Fragment f1 =getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+                Fragment f1 = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
                 if (f1 instanceof Profile)
                     // do something with f
-                    ((Profile) f1).changeprofile_ui(operation,resultCode);
+                    ((Profile) f1).changeprofile_ui(operation, resultCode);
 
                 break;
             case Constants.operation_unlike:
 
-                if(resultCode==1)
-                {
+                if (resultCode == 1) {
 
-                    MyToast.popmessage("Post Unliked",this);
-                }
-                else
-                {
+                    MyToast.popmessage("Post Unliked", this);
+                } else {
 
                     MyToast.popmessage("Error ", this);
                 }
@@ -853,13 +832,10 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
             case Constants.operation_like:
 
-                if(resultCode==1)
-                {
+                if (resultCode == 1) {
 
-                    MyToast.popmessage("Post liked",this);
-                }
-                else
-                {
+                    MyToast.popmessage("Post liked", this);
+                } else {
 
                     MyToast.popmessage("Error", this);
                 }
@@ -868,15 +844,12 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
             case Constants.operation_comment:
 
-                if(resultCode==1)
-                {
+                if (resultCode == 1) {
 
-                    PopMessage.makesimplesnack(mSlidingPanel,"Comment Successful");
-                }
-                else
-                {
+                    PopMessage.makesimplesnack(mSlidingPanel, "Comment Successful");
+                } else {
 
-                    PopMessage.makesimplesnack(mSlidingPanel,"Handle Failure");
+                    PopMessage.makesimplesnack(mSlidingPanel, "Handle Failure");
                 }
 
                 break;
@@ -895,7 +868,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 String filemanagerstring = selectedImageUri.getPath();
 
                 // MEDIA GALLERY
-                String selectedImagePath = GetPaths.getPath(Modules.this,selectedImageUri);
+                String selectedImagePath = GetPaths.getPath(Modules.this, selectedImageUri);
 
                 if (selectedImagePath != null) {
 
@@ -909,9 +882,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                     intent.putExtra("eventtype", Constants.eventtype_local);
                     startActivity(intent);
                 }
-            }
-            else if(requestCode==TAKE_VIDEO)
-            {
+            } else if (requestCode == TAKE_VIDEO) {
                 Uri selectedImageUri = data.getData();
 
                 // OI FILE Manager
@@ -925,8 +896,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                             MakeNewEvent.class);
                     intent.putExtra("data_url", selectedImagePath);
                     intent.putExtra("eventtype", Constants.eventtype_local);
-                   // intent.putExtra("tittle",tittle);
-                   // intent.putExtra("des",des);
+                    // intent.putExtra("tittle",tittle);
+                    // intent.putExtra("des",des);
                     //intent.putExtra("type",type);
                     startActivity(intent);
                 }
@@ -934,14 +905,13 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         }
 
 
-
     }
-    public void hidekeyboard()
-    {
 
-        View view=this.getCurrentFocus();
+    public void hidekeyboard() {
+
+        View view = this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }

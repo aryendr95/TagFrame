@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" android:layout_height="fill_parent">
-    <ImageView android:id="@+id/thumbImage" android:layout_width="100dp"
-        android:layout_height="100dp" android:layout_centerInParent="true"
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    <ImageView android:id="@+id/thumbImage" android:layout_width="fill_parent"
+        android:layout_height="120dp" android:layout_centerInParent="true"
         android:scaleType="fitXY"/>
-    <CheckBox android:id="@+id/itemCheckBox" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/playvideo"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:background="#50000000"
+        android:visibility="gone"
+        android:id="@+id/layout_image_Sel"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_done_white"/>
+    </RelativeLayout>
 </RelativeLayout>

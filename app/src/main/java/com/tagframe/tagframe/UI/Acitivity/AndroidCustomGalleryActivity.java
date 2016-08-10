@@ -47,6 +47,8 @@ public class AndroidCustomGalleryActivity extends Activity {
     private ProgressBar pbar;
     private GridView imagegrid;
 
+    private int selectcount=0;
+
 
     loadimage loadimage;
 
@@ -160,34 +162,16 @@ public class AndroidCustomGalleryActivity extends Activity {
                 convertView = mInflater.inflate(
                         R.layout.galleryitem, null);
                 holder.imageview = (ImageView) convertView.findViewById(R.id.thumbImage);
-                holder.checkbox = (CheckBox) convertView.findViewById(R.id.itemCheckBox);
+                holder.mlayout = (RelativeLayout) convertView.findViewById(R.id.layout_image_Sel);
 
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.checkbox.setId(position);
+
             holder.imageview.setId(position);
 
-            holder.checkbox.setOnClickListener(new OnClickListener() {
 
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-
-
-                    CheckBox cb = (CheckBox) v;
-                    int id = cb.getId();
-                    if (thumbnailsselection[id]) {
-                        cb.setChecked(false);
-                        thumbnailsselection[id] = false;
-                    } else {
-                        cb.setChecked(true);
-                        thumbnailsselection[id] = true;
-
-                    }
-
-                }
-            });
 
             holder.imageview.setOnClickListener(new OnClickListener() {
 
@@ -195,13 +179,17 @@ public class AndroidCustomGalleryActivity extends Activity {
                     // TODO Auto-generated method stub
 
 
-                    CheckBox cb = (CheckBox) holder.checkbox;
+
                     int id = v.getId();
                     if (thumbnailsselection[id]) {
-                        cb.setChecked(false);
+                        holder.mlayout.setVisibility(View.GONE);
+                        selectcount--;
+                        mtxt_menu.setText(""+selectcount+" selected");
                         thumbnailsselection[id] = false;
                     } else {
-                        cb.setChecked(true);
+                        holder.mlayout.setVisibility(View.VISIBLE);
+                        selectcount++;
+                        mtxt_menu.setText(""+selectcount+" selected");
                         thumbnailsselection[id] = true;
 
                     }
@@ -210,7 +198,8 @@ public class AndroidCustomGalleryActivity extends Activity {
             });
 
             holder.imageview.setImageBitmap(thumbnails[position]);
-            holder.checkbox.setChecked(thumbnailsselection[position]);
+
+
             holder.id = position;
             return convertView;
         }
@@ -218,7 +207,7 @@ public class AndroidCustomGalleryActivity extends Activity {
 
     class ViewHolder {
         ImageView imageview;
-        CheckBox checkbox;
+        RelativeLayout mlayout;
         int id;
     }
 

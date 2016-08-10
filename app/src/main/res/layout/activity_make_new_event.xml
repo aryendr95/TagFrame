@@ -155,10 +155,15 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/img_frame_to_show"
-
-
-
                 />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/playvideo"
+                android:visibility="gone"
+                android:id="@+id/img_play_video"/>
         </RelativeLayout>
 
 

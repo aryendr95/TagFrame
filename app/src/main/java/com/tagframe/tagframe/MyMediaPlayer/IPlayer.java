@@ -5,6 +5,8 @@ import android.media.MediaPlayer;
 import android.view.Display;
 import android.view.SurfaceView;
 
+
+
 /**
  * Created by interview on 16/07/15.
  */
@@ -21,5 +23,7 @@ public interface IPlayer {
     public void resizeSurface(Display display);
 
     public MediaPlayer getMediaPlayer();
+
+
 }
 

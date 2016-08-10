@@ -67,9 +67,8 @@ public class Login extends Fragment {
 
             String uname=ed_username.getText().toString();
                 String password=ed_password.getText().toString();
-                Networkstate networkstate=new Networkstate(getActivity());
 
-                if(networkstate.haveNetworkConnection()) {
+                if(Networkstate.haveNetworkConnection(getActivity())) {
                     if (!uname.isEmpty() || !password.isEmpty()) {
                         new Logintask().execute(Constants.login, uname, password);
                     } else {

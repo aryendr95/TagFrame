@@ -69,6 +69,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
+
+
 /**
  * Created by Brajendr on 7/13/2016.
  */
@@ -91,7 +93,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private RelativeLayout.LayoutParams params;
     private Point p = new Point();
     private HorizontalListView framelist;
-    private ImageView img_frame_to_show;
+    private ImageView img_frame_to_show,img_play_video;
 
 
     //Constants
@@ -291,10 +293,13 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         seekbar = (CustomSeekBar) findViewById(R.id.seekbar);
         seekbar.setOnSeekBarChangeListener(this);
         img_frame_to_show = (ImageView) findViewById(R.id.img_frame_to_show);
+        img_play_video = (ImageView) findViewById(R.id.img_play_video);
+        //setting the layout parameters of image
         ll_seekbar_frame_container = (RelativeLayout) findViewById(R.id.layout_frame_at_time_container);
         params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = 0;
         img_frame_to_show.setLayoutParams(params);
+        img_play_video.setLayoutParams(params);
         getWindowManager().getDefaultDisplay().getSize(p);
 
 
@@ -560,6 +565,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 }
             });
             img_frame_to_show.setVisibility(View.GONE);
+            img_play_video.setVisibility(View.GONE);
             dialog.show();
 
         } else {
@@ -602,6 +608,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 }
             });
             img_frame_to_show.setVisibility(View.GONE);
+            img_play_video.setVisibility(View.GONE);
             dialog.show();
         }
     }
@@ -754,7 +761,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             // Set LayoutParams
 
             img_frame_to_show.setVisibility(View.INVISIBLE);
-
+            img_play_video.setVisibility(View.INVISIBLE);
             for (int i = 0; i < framedata_map.size(); i++) {
                 FrameList_Model fm = framedata_map.get(i);
                 if (fm.getStarttime() - 100 <= currentDuration && currentDuration <= fm.getEndtime() + 100 && fm.getEndtime() != 0) {
@@ -772,7 +779,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                             Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
                         }
                     } else {
-
+                            img_play_video.setVisibility(View.VISIBLE);
                         if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
                             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
                                     MediaStore.Images.Thumbnails.MINI_KIND);
@@ -851,6 +858,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         // Set LayoutParams
         img_frame_to_show.setLayoutParams(params);
+        img_play_video.setLayoutParams(params);
     }
 
     @Override

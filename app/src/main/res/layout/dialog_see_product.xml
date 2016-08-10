@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_weight="4.5"
+        android:background="@color/bluegray"
+        android:layout_alignParentTop="true"
+        android:id="@+id/dialog_product_tittle">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:id="@+id/img_comment_dialog_back"/>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:text="Product"/>
+    </RelativeLayout>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_product_name"
+        android:text="Product Name"
+        android:layout_below="@+id/dialog_product_tittle"
+        android:layout_margin="10dp"
+        android:textSize="16dp"/>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_product_price"
+        android:text="Product Price"
+        android:layout_below="@+id/dialog_product_tittle"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:textSize="16dp"/>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="300dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/shadow"
+        android:id="@+id/dialog_product_image"
+        android:layout_below="@+id/dialog_product_price"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/dialog_product_image">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/GRAY"
+            android:textColor="@color/white"
+            android:text="Endorse"
+            android:padding="5dp"
+            android:id="@+id/dialog_product_endorse"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/GRAY"
+            android:textColor="@color/white"
+            android:text="Buy"
+            android:id="@+id/dialog_product_buy"
+            android:padding="5dp"
+            android:gravity="center"/>
+    </LinearLayout>
+
+</RelativeLayout>

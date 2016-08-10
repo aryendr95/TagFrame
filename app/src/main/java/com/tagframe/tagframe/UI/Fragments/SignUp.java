@@ -112,9 +112,9 @@ public class SignUp extends Fragment {
                 String password=ed_password.getText().toString();
                 String realname=ed_realname.getText().toString();
                 String email=ed_email.getText().toString();
-                Networkstate networkstate=new Networkstate(getActivity());
 
-                if(networkstate.haveNetworkConnection()) {
+
+                if(Networkstate.haveNetworkConnection(getActivity())) {
                     if (!uname.isEmpty() && !password.isEmpty() &&!realname.isEmpty() && !email.isEmpty() ) {
 
                         if(Constants.isValidEmail(email)) {

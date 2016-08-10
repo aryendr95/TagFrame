@@ -9,15 +9,9 @@ import android.net.NetworkInfo;
  */
 public class Networkstate {
 
-    Context con;
-    public Networkstate(Context cx)
-    {
-        this.con=cx;
-
-    }
 
     //Checking newtork connection
-    public boolean haveNetworkConnection() {
+    public static boolean haveNetworkConnection(Context con) {
         boolean haveConnectedWifi = false;
         boolean haveConnectedMobile = false;
 

@@ -7,7 +7,7 @@
 
     <ImageView
         android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
         android:padding="5dp"
         android:id="@+id/product_image"/>
     <com.tagframe.tagframe.Utils.MyTextView
