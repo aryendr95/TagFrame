@@ -2,16 +2,13 @@ package com.tagframe.tagframe.UI.Fragments;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -34,7 +31,7 @@ import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +54,7 @@ public class Account extends Fragment {
     CircularImageView pro_pic;
     TextView username;
 
-    listops listops;
+    AppPrefs AppPrefs;
     ImageView changepropic;
 
 
@@ -131,11 +128,11 @@ public class Account extends Fragment {
             }
         });
 
-        listops = new listops(getActivity());
+        AppPrefs = new AppPrefs(getActivity());
 
         pro_pic = (CircularImageView) mview.findViewById(R.id.acc_proimage);
         try {
-            Picasso.with(getActivity()).load(listops.getString(Constants.user_pic)).into(pro_pic);
+            Picasso.with(getActivity()).load(AppPrefs.getString(Constants.user_pic)).into(pro_pic);
         } catch (Exception e) {
             pro_pic.setImageResource(R.drawable.pro_image);
         }
@@ -143,18 +140,18 @@ public class Account extends Fragment {
 
 
         ed_email = (EditText) mview.findViewById(R.id.acc_ed_email);
-        ed_email.setText(listops.getString(Constants.user_email));
+        ed_email.setText(AppPrefs.getString(Constants.user_email));
 
 
         ed_username = (EditText) mview.findViewById(R.id.acc_ed_username);
-        ed_username.setText(listops.getString(Constants.user_name));
+        ed_username.setText(AppPrefs.getString(Constants.user_name));
 
 
         ed_realname = (EditText) mview.findViewById(R.id.acc_ed_realname);
-        ed_realname.setText(listops.getString(Constants.user_realname));
+        ed_realname.setText(AppPrefs.getString(Constants.user_realname));
 
         ed_description = (EditText) mview.findViewById(R.id.acc_ed_description);
-        ed_description.setText(listops.getString(Constants.user_descrip));
+        ed_description.setText(AppPrefs.getString(Constants.user_descrip));
 
 
         Button save = (Button) mview.findViewById(R.id.acc_save_userinfo);
@@ -164,7 +161,7 @@ public class Account extends Fragment {
                 if (!ed_realname.getText().toString().isEmpty() && !ed_username.getText().toString().isEmpty() &&
                         !ed_email.getText().toString().isEmpty() && !ed_description.getText().toString().isEmpty()) {
 
-                    new changeuserinfo().execute(listops.getString(Constants.user_id), ed_email.getText().toString(), ed_username.getText().toString(), ed_realname.getText().toString(), ed_description.getText().toString(), picturePath);
+                    new changeuserinfo().execute(AppPrefs.getString(Constants.user_id), ed_email.getText().toString(), ed_username.getText().toString(), ed_realname.getText().toString(), ed_description.getText().toString(), picturePath);
                 } else {
                     MyToast.popmessage("Please fill in all fields", getActivity());
                 }
@@ -211,7 +208,7 @@ public class Account extends Fragment {
 
                 if (!oldpass.isEmpty() && !newpass.isEmpty() && !newpassconfirm.isEmpty()) {
                     if (newpass.equals(newpassconfirm)) {
-                        new changepassword().execute(listops.getString(Constants.user_id), oldpass, newpass);
+                        new changepassword().execute(AppPrefs.getString(Constants.user_id), oldpass, newpass);
 
                     } else {
                         MyToast.popmessage("Password does not match", getActivity());
@@ -273,7 +270,7 @@ public class Account extends Fragment {
         WebServiceHandler webServiceHandler;
         String status;
 
-        listops listops;
+        AppPrefs AppPrefs;
 
         @Override
         protected void onPreExecute() {
@@ -281,7 +278,7 @@ public class Account extends Fragment {
             dialog = new ProgressDialog(getActivity());
             dialog.setMessage("Sending..");
             dialog.show();
-            listops = new listops(getActivity());
+            AppPrefs = new AppPrefs(getActivity());
             super.onPreExecute();
         }
 
@@ -461,11 +458,11 @@ public class Account extends Fragment {
 
                 status = jsonObject.getString("status");
                 if (status.equals("success")) {
-                    listops.putString(Constants.user_email, userInfo.getString(Constants.user_email));
-                    listops.putString(Constants.user_name,userInfo.getString(Constants.user_name));
-                    listops.putString(Constants.user_realname, userInfo.getString(Constants.user_realname));
-                    listops.putString(Constants.user_descrip, userInfo.getString(Constants.user_descrip));
-                    listops.putString(Constants.user_pic, userInfo.getString(Constants.user_pic));
+                    AppPrefs.putString(Constants.user_email, userInfo.getString(Constants.user_email));
+                    AppPrefs.putString(Constants.user_name,userInfo.getString(Constants.user_name));
+                    AppPrefs.putString(Constants.user_realname, userInfo.getString(Constants.user_realname));
+                    AppPrefs.putString(Constants.user_descrip, userInfo.getString(Constants.user_descrip));
+                    AppPrefs.putString(Constants.user_pic, userInfo.getString(Constants.user_pic));
 
                 }
 
@@ -482,16 +479,16 @@ public class Account extends Fragment {
             if (status.equals("success")) {
                 //update sliderdata
 
-                ed_email.setText(listops.getString(Constants.user_email));
+                ed_email.setText(AppPrefs.getString(Constants.user_email));
 
 
-                ed_username.setText(listops.getString(Constants.user_name));
+                ed_username.setText(AppPrefs.getString(Constants.user_name));
 
 
-                ed_realname.setText(listops.getString(Constants.user_realname));
+                ed_realname.setText(AppPrefs.getString(Constants.user_realname));
 
 
-                ed_description.setText(listops.getString(Constants.user_descrip));
+                ed_description.setText(AppPrefs.getString(Constants.user_descrip));
 
 
                 MyToast.popmessage("Successfully updated", getActivity());

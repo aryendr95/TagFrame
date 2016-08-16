@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONObject;
 
@@ -47,14 +46,14 @@ public class AddProfilePhoto extends Fragment {
     private static int RESULT_LOAD_IMAGE = 1;
     String picturePath="";
 
-    listops listops;
+    AppPrefs AppPrefs;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mview=inflater.inflate(R.layout.add_profile_photo,container,false);
 
-        listops=new listops(getActivity());
+        AppPrefs =new AppPrefs(getActivity());
 
         descrip=(EditText)mview.findViewById(R.id.add_description);
 
@@ -146,7 +145,7 @@ public class AddProfilePhoto extends Fragment {
             try {
 
                 webServiceHandler=new WebServiceHandler(Constants.upload_profile_photo);
-                webServiceHandler.addFormField("user_id",listops.getString(Constants.user_id));
+                webServiceHandler.addFormField("user_id", AppPrefs.getString(Constants.user_id));
                 if(!picturePath.isEmpty()) {
                     File file = new File(picturePath);
                     webServiceHandler.addFilePart("profile_photo",file,3,getActivity());

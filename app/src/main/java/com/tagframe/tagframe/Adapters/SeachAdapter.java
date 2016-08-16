@@ -3,9 +3,6 @@ package com.tagframe.tagframe.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,19 +12,17 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.FollowModel;
-import com.tagframe.tagframe.Models.TagStream_Model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
 
@@ -40,7 +35,7 @@ public class SeachAdapter extends BaseAdapter {
     Context ctx;
     LayoutInflater inflater;
     int user_type;
-    listops userinfo;
+    AppPrefs userinfo;
     public Broadcastresults mReceiver;
 
     public SeachAdapter(Context ctx, ArrayList<FollowModel> followModelArrayList,int type)
@@ -51,7 +46,7 @@ public class SeachAdapter extends BaseAdapter {
         inflater=(LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.user_type=type;
-        userinfo=new listops(ctx);
+        userinfo=new AppPrefs(ctx);
     }
     @Override
     public int getCount() {

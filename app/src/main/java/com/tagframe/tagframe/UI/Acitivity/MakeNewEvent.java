@@ -59,7 +59,7 @@ import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.ProcessnaImages;
 import com.tagframe.tagframe.Utils.SeekBarBackgroundDrawable;
 import com.tagframe.tagframe.Utils.SeekBarProgressDrawable;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -117,7 +117,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private ArrayList<FrameList_Model> framedata_map;
     private ArrayList<Integer> index;
     private Broadcastresults mReceiver;
-    private listops user_data;
+    private AppPrefs user_data;
     private Calendar cal;
     private int count = 0, event_type, counter_tut = 0, limit = 0;
     private Uri selectedImageUri;
@@ -163,7 +163,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         }
 
 
-        user_data = new listops(this);
+        user_data = new AppPrefs(this);
         cal = Calendar.getInstance();
 
         //initialize views and mediaplayer

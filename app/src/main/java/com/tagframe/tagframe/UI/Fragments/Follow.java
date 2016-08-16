@@ -13,14 +13,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tagframe.tagframe.Adapters.FollowListAdapter;
 import com.tagframe.tagframe.Adapters.SeachAdapter;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,7 +35,7 @@ public class Follow extends Fragment{
     ListView searchlist;
     TextView textview;
     ProgressBar progressBar;
-    listops userinfo;
+    AppPrefs userinfo;
 
     @Nullable
     @Override
@@ -55,7 +54,7 @@ public class Follow extends Fragment{
             }
         });
 
-        userinfo=new listops(getActivity());
+        userinfo=new AppPrefs(getActivity());
 
         searchlist=(ListView)mview.findViewById(R.id.searchlist);
 

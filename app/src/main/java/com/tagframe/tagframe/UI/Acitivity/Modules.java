@@ -47,10 +47,9 @@ import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.PopMessage;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Modules extends FragmentActivity implements Broadcastresults.Receiver {
 
@@ -74,7 +73,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     TextView mod_usrname, mod_email;
 
 
-    private listops userinfo;
+    private AppPrefs userinfo;
 
     private ImageView r_layout;
 
@@ -91,7 +90,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modules);
-        userinfo = new listops(this);
+        userinfo = new AppPrefs(this);
         init();
 
 
@@ -403,9 +402,9 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                                     dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            listops listops = new listops(Modules.this);
+                                            AppPrefs AppPrefs = new AppPrefs(Modules.this);
 
-                                            listops.putString(Constants.loginstatuskey, "");
+                                            AppPrefs.putString(Constants.loginstatuskey, "");
                                             Constants.flushuserinfo(Modules.this);
                                             Intent intent2 = new Intent(Modules.this, Authentication.class);
                                             startActivity(intent2);

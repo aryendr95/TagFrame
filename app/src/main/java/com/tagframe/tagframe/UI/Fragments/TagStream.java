@@ -1,7 +1,6 @@
 package com.tagframe.tagframe.UI.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.tagframe.tagframe.Adapters.TagStreamEventAdapter;
@@ -27,7 +23,7 @@ import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyListView;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +41,7 @@ public class TagStream extends Fragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
     MyListView listView;
-    listops listops;
+    AppPrefs AppPrefs;
 
     ImageButton imgbtn;
 
@@ -67,11 +63,11 @@ public class TagStream extends Fragment {
         listView=(MyListView)mview.findViewById(R.id.list_tagstream);
         addfooter();
 
-        listops=new listops(getActivity());
+        AppPrefs =new AppPrefs(getActivity());
 
-        tagStream_models=listops.gettagstreamlist("tagstream");
+        tagStream_models= AppPrefs.gettagstreamlist("tagstream");
 
-        listView.setAdapter(new TagStreamEventAdapter(getActivity(), listops.gettagstreamlist("tagstream")));
+        listView.setAdapter(new TagStreamEventAdapter(getActivity(), AppPrefs.gettagstreamlist("tagstream")));
 
 
 
@@ -172,7 +168,7 @@ public class TagStream extends Fragment {
             {
 
                 webServiceHandler=new WebServiceHandler(Constants.tagstreams_url);
-                webServiceHandler.addFormField("user_id",listops.getString(Constants.user_id));
+                webServiceHandler.addFormField("user_id", AppPrefs.getString(Constants.user_id));
                 webServiceHandler.addFormField("next_records","10");
                 String result=webServiceHandler.finish();
                 Log.e("cxc",result);
@@ -242,8 +238,8 @@ public class TagStream extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            listops.puttagstreamlist(tagStream_models);
-            listView.setAdapter(new TagStreamEventAdapter(getActivity(), listops.gettagstreamlist("tagstream")));
+            AppPrefs.puttagstreamlist(tagStream_models);
+            listView.setAdapter(new TagStreamEventAdapter(getActivity(), AppPrefs.gettagstreamlist("tagstream")));
             swipeRefreshLayout.setRefreshing(false);
             footerbar.setVisibility(View.GONE);
 

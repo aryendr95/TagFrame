@@ -23,7 +23,7 @@ import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.PopMessage;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
 
     private List<Comment> commentList;
     private Context context;
-    listops user_data;
+    AppPrefs user_data;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private CircularImageView img_userpic, img_rplyuserpic;
@@ -75,7 +75,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
     public CommentsRecyclerViewAdapter(ArrayList<Comment> moviesList,Context context) {
         this.commentList = moviesList;
         this.context=context;
-        user_data = new listops(context);
+        user_data = new AppPrefs(context);
     }
 
     @Override

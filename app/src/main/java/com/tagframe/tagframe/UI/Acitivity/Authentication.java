@@ -1,20 +1,13 @@
 package com.tagframe.tagframe.UI.Acitivity;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.TagPagerAdapter;
 import com.tagframe.tagframe.R;
-import com.tagframe.tagframe.UI.Fragments.AddProfilePhoto;
 import com.tagframe.tagframe.UI.Fragments.Login;
 import com.tagframe.tagframe.UI.Fragments.SignUp;
 import com.tagframe.tagframe.UI.Fragments.Splash;
@@ -67,8 +60,8 @@ public class Authentication extends FragmentActivity {
         ArrayList<Fragment> fraglist=new ArrayList<>();
         ArrayList<String> names=new ArrayList<>();
 
-        listops listops=new listops(this);
-        if(!listops.getString(Constants.loginstatuskey).equals(Constants.loginstatusvalue))
+        AppPrefs AppPrefs =new AppPrefs(this);
+        if(!AppPrefs.getString(Constants.loginstatuskey).equals(Constants.loginstatusvalue))
         {//if logged out
             fraglist.add(new Login());
             fraglist.add(new SignUp());

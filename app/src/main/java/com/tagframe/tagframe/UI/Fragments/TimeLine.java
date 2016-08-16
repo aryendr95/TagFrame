@@ -20,7 +20,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +39,7 @@ public class TimeLine extends Fragment {
     ListView listView;
     ProgressBar progressBar;
 
-    com.tagframe.tagframe.Utils.listops listops;
+    AppPrefs AppPrefs;
     String user_id,user_name,user_pic;
 
     //list scrill detection
@@ -56,7 +56,7 @@ public class TimeLine extends Fragment {
         swipeRefreshLayout=(SwipeRefreshLayout)mview.findViewById(R.id.swiperefresh_timeline);
         listView=(ListView)mview.findViewById(R.id.list_timeline);
 
-        listops=new listops(getActivity());
+        AppPrefs =new AppPrefs(getActivity());
         progressBar=(ProgressBar)mview.findViewById(R.id.list_timeline_progress);
 
         user_id=getArguments().getString("user_id");

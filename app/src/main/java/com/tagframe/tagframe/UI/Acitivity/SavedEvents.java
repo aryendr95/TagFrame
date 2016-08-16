@@ -3,10 +3,7 @@ package com.tagframe.tagframe.UI.Acitivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -15,13 +12,13 @@ import android.widget.TextView;
 import com.tagframe.tagframe.Adapters.SavedEvent_Adapter;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 public class SavedEvents extends AppCompatActivity implements Broadcastresults.Receiver{
 
 
     ListView listView;
-    listops user_data;
+    AppPrefs user_data;
 
     TextView txtview_msg;
 
@@ -30,7 +27,7 @@ public class SavedEvents extends AppCompatActivity implements Broadcastresults.R
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_events);
 
-        user_data=new listops(this);
+        user_data=new AppPrefs(this);
 
         listView=(ListView)findViewById(R.id.list_saved_events);
 

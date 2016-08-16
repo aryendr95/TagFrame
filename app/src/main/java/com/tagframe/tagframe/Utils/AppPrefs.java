@@ -18,12 +18,12 @@ import java.util.ArrayList;
 /**
  * Created by Karan on 12/24/2015.
  */
-public class listops {
+public class AppPrefs {
     Context mcontext;
     SharedPreferences prefs;
 
 
-    public listops(Context context)
+    public AppPrefs(Context context)
     {
         mcontext=context;
         prefs= mcontext.getSharedPreferences("prefs", Context.MODE_MULTI_PROCESS);

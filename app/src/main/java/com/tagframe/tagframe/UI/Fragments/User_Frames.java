@@ -20,7 +20,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,7 +35,7 @@ public class User_Frames extends Fragment {
     private View mview;
     SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
-    com.tagframe.tagframe.Utils.listops listops;
+    AppPrefs AppPrefs;
     String user_id,user_name,user_pic;
 
     private GridView gridview;
@@ -57,7 +57,7 @@ public class User_Frames extends Fragment {
         swipeRefreshLayout=(SwipeRefreshLayout)mview.findViewById(R.id.swiperefresh_framelist);
         progressBar=(ProgressBar)mview.findViewById(R.id.list_frame_progress);
 
-        listops=new listops(getActivity());
+        AppPrefs =new AppPrefs(getActivity());
 
         user_id=getArguments().getString("user_id");
         user_name=getArguments().getString("user_name");

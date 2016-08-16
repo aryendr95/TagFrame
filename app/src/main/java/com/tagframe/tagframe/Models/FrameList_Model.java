@@ -3,6 +3,9 @@ package com.tagframe.tagframe.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -10,14 +13,34 @@ import java.io.Serializable;
  */
 public class FrameList_Model implements Parcelable {
 
+    @SerializedName("frame_thumbnail_url")
+    @Expose
     private String imagepath;
+    @SerializedName("frame_start_time")
+    @Expose
     private int starttime;
+    @SerializedName("frame_end_time")
+    @Expose
     private int endtime;
+    @SerializedName("frame_title")
+    @Expose
     private String name;
+
     private boolean is_product_attached;
+
     private String product_path;
+
     private String product_id;
+
     private String product_url;
+
+    private String frame_resource_type;
+    @SerializedName("frame_data_url")
+    @Expose
+    private String frame_data_url;
+    @SerializedName("frame_media_type")
+    @Expose
+    private int frametype;
 
     public String getProduct_id() {
         return product_id;
@@ -53,7 +76,7 @@ public class FrameList_Model implements Parcelable {
         this.product_path = product_path;
     }
 
-    private String frame_resource_type;
+
     public String getFrame_data_url() {
         return frame_data_url;
     }
@@ -62,7 +85,7 @@ public class FrameList_Model implements Parcelable {
         this.frame_data_url = frame_data_url;
     }
 
-    private String frame_data_url;
+
 
     public String getFrame_resource_type() {
         return frame_resource_type;
@@ -97,7 +120,7 @@ public class FrameList_Model implements Parcelable {
         this.frametype = frametype;
     }
 
-    private int frametype;
+
 
     public String getName() {
         return name;

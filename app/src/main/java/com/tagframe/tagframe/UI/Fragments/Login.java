@@ -2,12 +2,10 @@ package com.tagframe.tagframe.UI.Fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -23,19 +21,16 @@ import android.widget.TextView;
 
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
-import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Created by abhinav on 04/04/2016.
@@ -152,7 +147,7 @@ public class Login extends Fragment {
         WebServiceHandler webServiceHandler;
         String status;
         JSONObject userinfo;
-        listops listops;
+        AppPrefs AppPrefs;
         String save;
 
         @Override
@@ -161,7 +156,7 @@ public class Login extends Fragment {
             dialog=new ProgressDialog(getActivity());
             dialog.setMessage("Signing in..");
             dialog.show();
-            listops=new listops(getActivity());
+            AppPrefs =new AppPrefs(getActivity());
 
 
 
@@ -224,17 +219,17 @@ public class Login extends Fragment {
                         try {
 
                             //storing the userinformation in persistant storage for later use
-                            listops.putString(Constants.user_id, userinfo.getString(Constants.user_id));
-                            listops.putString(Constants.user_name, userinfo.getString(Constants.user_name));
-                            listops.putString(Constants.user_email, userinfo.getString(Constants.user_email));
-                            listops.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
-                            listops.putString(Constants.user_pic, userinfo.getString(Constants.user_pic));
-                            listops.putString(Constants.total_events, userinfo.getString(Constants.total_events));
-                            listops.putString(Constants.total_frames, userinfo.getString(Constants.total_frames));
-                            listops.putString(Constants.number_of_followers, userinfo.getString(Constants.number_of_followers));
-                            listops.putString(Constants.number_of_following, userinfo.getString(Constants.number_of_following));
-                            listops.putString(Constants.loginstatuskey, Constants.loginstatusvalue);
-                            listops.putString(Constants.user_password, save);
+                            AppPrefs.putString(Constants.user_id, userinfo.getString(Constants.user_id));
+                            AppPrefs.putString(Constants.user_name, userinfo.getString(Constants.user_name));
+                            AppPrefs.putString(Constants.user_email, userinfo.getString(Constants.user_email));
+                            AppPrefs.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
+                            AppPrefs.putString(Constants.user_pic, userinfo.getString(Constants.user_pic));
+                            AppPrefs.putString(Constants.total_events, userinfo.getString(Constants.total_events));
+                            AppPrefs.putString(Constants.total_frames, userinfo.getString(Constants.total_frames));
+                            AppPrefs.putString(Constants.number_of_followers, userinfo.getString(Constants.number_of_followers));
+                            AppPrefs.putString(Constants.number_of_following, userinfo.getString(Constants.number_of_following));
+                            AppPrefs.putString(Constants.loginstatuskey, Constants.loginstatusvalue);
+                            AppPrefs.putString(Constants.user_password, save);
 
                         /*Intent intent=new Intent(getActivity(), Modules.class);
                         startActivity(intent);
@@ -272,7 +267,7 @@ public class Login extends Fragment {
         WebServiceHandler webServiceHandler;
         String status;
 
-        listops listops;
+        AppPrefs AppPrefs;
 
         @Override
         protected void onPreExecute() {
@@ -280,7 +275,7 @@ public class Login extends Fragment {
             dialog=new ProgressDialog(getActivity());
             dialog.setMessage("Sending..");
             dialog.show();
-            listops=new listops(getActivity());
+            AppPrefs =new AppPrefs(getActivity());
             super.onPreExecute();
         }
 

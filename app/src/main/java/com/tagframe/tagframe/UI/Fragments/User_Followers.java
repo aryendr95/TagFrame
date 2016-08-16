@@ -20,7 +20,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +38,7 @@ public class User_Followers extends Fragment {
     ProgressBar progressBar;
     String user_id;
     loadfollow loadfollow=new loadfollow();
-    listops userinfo;
+    AppPrefs userinfo;
 
     private int firstVisibleItem, visibleItemCount,totalItemCount;
     int count=0,flag=0;
@@ -50,7 +50,7 @@ public class User_Followers extends Fragment {
 
         mview=inflater.inflate(R.layout.layout_followers,container,false);
 
-        userinfo=new listops(getActivity());
+        userinfo=new AppPrefs(getActivity());
 
         followlistl=(ListView)mview.findViewById(R.id.list_followers);
         swipeRefreshLayout=(SwipeRefreshLayout)mview.findViewById(R.id.swiperefresh_followers);

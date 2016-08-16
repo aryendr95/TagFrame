@@ -20,7 +20,7 @@ import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
 
@@ -33,13 +33,13 @@ public class Time_Line_Adapter extends BaseAdapter
     Context ctx;
     ArrayList<TimeLine_Model> tagStream_models;
     LayoutInflater inflater;
-    listops user_data;
+    AppPrefs user_data;
 
     public Time_Line_Adapter(Context ctx,ArrayList<TimeLine_Model> tagStream_models)
     {
         this.ctx=ctx;
         this.tagStream_models=tagStream_models;
-        user_data=new listops(ctx);
+        user_data=new AppPrefs(ctx);
         inflater=(LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

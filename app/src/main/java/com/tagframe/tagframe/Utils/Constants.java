@@ -1,10 +1,8 @@
 package com.tagframe.tagframe.Utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -125,7 +123,7 @@ public class Constants {
     }
 
     public final static void flushuserinfo(Context context) {
-       listops userinfo=new listops(context);
+       AppPrefs userinfo=new AppPrefs(context);
         userinfo.puttagstreamlist(new ArrayList<TagStream_Model>());
         userinfo.putString(Constants.user_pic, "");
         userinfo.putString(Constants.user_name, "");

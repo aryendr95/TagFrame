@@ -1,33 +1,22 @@
 package com.tagframe.tagframe.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Comment;
 import com.tagframe.tagframe.R;
-import com.tagframe.tagframe.Services.Broadcastresults;
-import com.tagframe.tagframe.Services.IntentServiceOperations;
-import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
-import com.tagframe.tagframe.Utils.Edittext;
-import com.tagframe.tagframe.Utils.PopMessage;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
 
@@ -39,7 +28,7 @@ public class NestedCommentsAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Comment.ReplyComment> commentArrayList;
     private LayoutInflater inflater;
-    listops user_data;
+    AppPrefs user_data;
 
     public NestedCommentsAdapter(Context context, ArrayList<Comment.ReplyComment> commentArrayList)
     {
@@ -47,7 +36,7 @@ public class NestedCommentsAdapter extends BaseAdapter {
         this.commentArrayList=commentArrayList;
         inflater=(LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        user_data=new listops(context);
+        user_data=new AppPrefs(context);
     }
     @Override
     public int getCount() {

@@ -1,8 +1,5 @@
 package com.tagframe.tagframe.UI.Fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.easyandroidanimations.library.SlideInAnimation;
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.R;
@@ -35,7 +30,7 @@ import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONObject;
 
@@ -68,7 +63,7 @@ public class Profile extends Fragment {
     private ProgressBar progressBar;
 
 
-    listops userinfo_data;
+    AppPrefs userinfo_data;
 
     String userid,username,userpic;
 
@@ -84,7 +79,7 @@ public class Profile extends Fragment {
 
         mview=inflater.inflate(R.layout.fragment_profile,container,false);
 
-        userinfo_data=new listops(getActivity());
+        userinfo_data=new AppPrefs(getActivity());
 
         init();
 

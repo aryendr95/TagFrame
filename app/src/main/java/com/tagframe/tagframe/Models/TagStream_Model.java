@@ -3,27 +3,58 @@ package com.tagframe.tagframe.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 /**
  * Created by abhinav on 08/04/2016.
  */
 public class TagStream_Model implements Parcelable {
-
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("profile_picture")
+    @Expose
     private String profile_picture;
+    @SerializedName("created_at")
+    @Expose
     private String created_at;
+    @SerializedName("thumbnail")
+    @Expose
     private String thumbnail;
+    @SerializedName("data_url")
+    @Expose
     private String dataurl;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("event_id")
+    @Expose
     private String event_id;
+    @SerializedName("description")
+    @Expose
     private String description;
+    @SerializedName("product_url")
+    @Expose
     private String product_url;
+    @SerializedName("product_image")
+    @Expose
     private String product_image;
+    @SerializedName("product_name")
+    @Expose
     private String prduct_name;
+    @SerializedName("count_like")
+    @Expose
     private String number_of_likes;
+    @SerializedName("website_video_url")
+    @Expose
     private String sharelink;
+    @SerializedName("streamtype")
+    @Expose
     private String type;
+
     private boolean in_center=false;
 
 
@@ -53,8 +84,12 @@ public class TagStream_Model implements Parcelable {
     }
 
     private String tags;
-
+    @SerializedName("is_liked")
+    @Expose
     private String like_video;
+
+    @SerializedName("frames")
+    @Expose
     private ArrayList<FrameList_Model> frameList_modelArrayList;
 
     public String getLike_video() {

@@ -22,7 +22,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +41,7 @@ public class User_Events extends Fragment {
     ListView listView;
     ProgressBar progressBar;
 
-    listops listops;
+    AppPrefs AppPrefs;
     String user_id,user_name,user_pic;
 
     //list scrill detection
@@ -67,7 +67,7 @@ public class User_Events extends Fragment {
         listView=(ListView)mview.findViewById(R.id.list_event);
 
 
-        listops=new listops(getActivity());
+        AppPrefs =new AppPrefs(getActivity());
         progressBar=(ProgressBar)mview.findViewById(R.id.list_event_progress);
 
         user_id=getArguments().getString("user_id");

@@ -25,7 +25,7 @@ import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.SavedEvents;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
-import com.tagframe.tagframe.Utils.listops;
+import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,14 +39,14 @@ public class SavedEvent_Adapter extends BaseAdapter
     Context ctx;
     ArrayList<SingleEventModel> tagStream_models;
     LayoutInflater inflater;
-    listops userdata;
+    AppPrefs userdata;
 
 
     public SavedEvent_Adapter(Context ctx,ArrayList<SingleEventModel> tagStream_models)
     {
         this.ctx=ctx;
         this.tagStream_models=tagStream_models;
-        userdata=new listops(ctx);
+        userdata=new AppPrefs(ctx);
         inflater=(LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
