@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottomBarItemtagstream"
+        android:icon="@drawable/tagstream_hover"
+        android:title="TagStream" />
+    <item
+        android:id="@+id/bottomBarItemnotifications"
+        android:icon="@drawable/nofication_hover"
+        android:title="Notifications" />
+    <item
+        android:id="@+id/bottomBarItemevents"
+        android:icon="@drawable/event_ho"
+        android:title="Event" />
+    <item
+        android:id="@+id/bottomBarItemmarketplace"
+        android:icon="@drawable/market_hover"
+        android:title="MarketPlace" />
+    <item
+        android:id="@+id/bottomBarItemprofile"
+        android:icon="@drawable/user_hover"
+        android:title="Profile" />
+
+</menu>

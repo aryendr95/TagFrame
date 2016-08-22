@@ -14,9 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tagframe.tagframe.Adapters.TagStreamEventAdapter;
-import com.tagframe.tagframe.Models.FrameList_Model;
-import com.tagframe.tagframe.Models.TagStreamResponseModel;
+import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.TagStream_Model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
@@ -30,7 +28,6 @@ import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -160,7 +157,7 @@ public class Splash extends Fragment {
                         getActivity().finish();*/
 
                         txt.setText("Loading..");
-                        new loadtagstreamtask().execute();
+                        loadTagStream();
                     }
                     catch (JSONException e)
                     {
@@ -194,108 +191,48 @@ public class Splash extends Fragment {
 
     }
 
-    class loadtagstreamtask extends AsyncTask<String,String,String>
+    public void loadTagStream()
     {
-        WebServiceHandler webServiceHandler;
-        String status;
-        ArrayList<TagStream_Model> tagStream_models;
+        if(Networkstate.haveNetworkConnection(getActivity()))
+        {
+            ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
+            Call<ListResponseModel> call=apiInterface.getTagStream(AppPrefs.getString(Constants.user_id));
+            call.enqueue(new Callback<ListResponseModel>() {
+                @Override
+                public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
+                    try {
+                        if (response.body().getStatus().equals("success")) {
+                            ArrayList<TagStream_Model> tagStream_models = response.body().getTagStreamArrayList();
+                            AppPrefs.puttagstreamlist(tagStream_models);
 
-        int record_length=10;
-
-        @Override
-        protected void onPreExecute() {
-
-            super.onPreExecute();
-
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try
-            {
-
-                webServiceHandler=new WebServiceHandler(Constants.tagstreams_url);
-                webServiceHandler.addFormField("user_id", AppPrefs.getString(Constants.user_id));
-                webServiceHandler.addFormField("next_records","10");
-                String result=webServiceHandler.finish();
-                Log.e("cxc",result);
-                JSONObject jsonObject=new JSONObject(result);
-                status=jsonObject.getString("status");
-
-
-                if(status.equals("success"))
-                {
-                    JSONArray records=jsonObject.getJSONArray("records");
-                    record_length=records.length();
-                    Log.e("cxc",record_length+"");
-
-                    for(int i=0;i<records.length();i++) {
-
-                        JSONObject rec=records.getJSONObject(i);
-                        TagStream_Model tagStream_model = new TagStream_Model();
-                        tagStream_model.setName(rec.getString("name"));
-                        tagStream_model.setProfile_picture(rec.getString("profile_picture"));
-                        tagStream_model.setThumbnail(rec.getString("thumbnail"));
-                        tagStream_model.setDataurl(rec.getString("data_url"));
-                        tagStream_model.setEvent_id(rec.getString("event_id"));
-                        tagStream_model.setTitle(rec.getString("title"));
-                        tagStream_model.setDescription(rec.getString("description"));
-                        tagStream_model.setProduct_url(rec.getString("product_url"));
-                        tagStream_model.setProduct_image(rec.getString("product_image"));
-                        tagStream_model.setPrduct_name(rec.getString("product_name"));
-                        tagStream_model.setNumber_of_likes(rec.getString("count_like"));
-                        tagStream_model.setSharelink(rec.getString("website_video_url"));
-                        tagStream_model.setLike_video(rec.getString("is_liked"));
-                        JSONArray frames=rec.getJSONArray("frames");
-                        ArrayList<FrameList_Model> frameList_models=new ArrayList<>();
-                        for(int f=0;f<frames.length();f++)
-                        {
-                            JSONObject frameobject=frames.getJSONObject(f);
-                            FrameList_Model frameList_model=new FrameList_Model();
-                            frameList_model.setImagepath(frameobject.getString("frame_thumbnail_url"));
-                            frameList_model.setName(frameobject.getString("frame_title"));
-                            frameList_model.setStarttime(Integer.parseInt(frameobject.getString("frame_start_time")) * 1000);
-                            frameList_model.setEndtime(Integer.parseInt(frameobject.getString("frame_end_time")) * 1000);
-                            frameList_model.setFrametype((frameobject.getString("frame_media_type").equals("IMAGE") ? Constants.frametype_image : Constants.frametype_video));
-                            frameList_model.setFrame_resource_type(Constants.frame_resource_type_internet);
-                            frameList_model.setFrame_data_url(frameobject.getString("frame_data_url"));
-                            frameList_models.add(frameList_model);
+                            Intent intent = new Intent(getActivity(), Modules.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                        } else {
+                            PopMessage.makeshorttoast(getActivity(), response.body().getStatus());
                         }
-
-                        tagStream_model.setFrameList_modelArrayList(frameList_models);
-
-                        tagStream_models.add(tagStream_model);
-
-                        Log.e("fas", tagStream_models.size()+"");
+                    }
+                    catch (Exception e)
+                    {
+                        PopMessage.makeshorttoast(getActivity(),"There is some error, try after some time..");
+                        getActivity().finish();
                     }
                 }
 
-            }
-            catch (IOException E)
-            {
+                @Override
+                public void onFailure(Call<ListResponseModel> call, Throwable t) {
 
-            }
-            catch (JSONException E)
-            {
-                Log.e("fas",E.getMessage());
-            }
-            return null;
+                }
+            });
         }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if(isAdded()) {
-                AppPrefs.puttagstreamlist(tagStream_models);
-                Intent intent = new Intent(getActivity(), Modules.class);
-                startActivity(intent);
-                getActivity().finish();
-            }
-
+        else
+        {
+            PopMessage.makeshorttoast(getActivity(),"No Internet Connection");
+            getActivity().finish();
         }
     }
+
+
 
 
 

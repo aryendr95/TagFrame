@@ -70,7 +70,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 
-
 /**
  * Created by Brajendr on 7/13/2016.
  */
@@ -93,7 +92,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private RelativeLayout.LayoutParams params;
     private Point p = new Point();
     private HorizontalListView framelist;
-    private ImageView img_frame_to_show,img_play_video;
+    private ImageView img_frame_to_show, img_play_video;
 
 
     //Constants
@@ -514,8 +513,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             tvaddproduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(frameList_model.is_product_attached())
-                    {
+                    if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id().equals("0")) {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(frameList_model.getProduct_url()));
                         startActivity(browserIntent);
 
@@ -524,8 +522,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                         ll_seekbar_frame_container.setVisibility(View.VISIBLE);
 
                         dialog.dismiss();
-                    }
-                    else {
+                    } else {
                         addproduct(pos);
                         ll_top_bar.setVisibility(View.VISIBLE);
                         ll_bottom_bar.setVisibility(View.VISIBLE);
@@ -537,14 +534,17 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
 
             frameimage.setVisibility(View.VISIBLE);
-            if(frameList_model.is_product_attached())
-            {
+            if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id().equals("0")) {
                 Picasso.with(MakeNewEvent.this).load(frameList_model.getProduct_path()).into(frameimage);
                 tvaddproduct.setText("Buy Product");
 
-            }
-            else {
-                frameimage.setImageBitmap(BitmapHelper.decodeFile(MakeNewEvent.this, new File(frameList_model.getImagepath())));
+            } else {
+                if (frameList_model.getFrame_resource_type().equals(Constants.frame_resource_type_internet)) {
+                    Picasso.with(MakeNewEvent.this).load(frameList_model.getImagepath()).into(frameimage);
+                } else {
+                    frameimage.setImageBitmap(BitmapHelper.decodeFile(MakeNewEvent.this, new File(frameList_model.getImagepath())));
+
+                }
             }
             tittle.setText(frameList_model.getName());
             duration.setText(Constants.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Constants.milliSecondsToTimer(frameList_model.getEndtime()));
@@ -552,7 +552,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
 
 
                     framedata_map.get(pos).setName(tittle.getText().toString());
@@ -584,7 +583,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
 
             try {
-                Log.e("ds",frameList_model.getFrame_data_url());
+                Log.e("ds", frameList_model.getFrame_data_url());
                 framevideo.setVideoURI(Uri.parse(frameList_model.getFrame_data_url()));
             } catch (Exception e) {
                 Log.e("Dsa", e.getMessage() + frameList_model.getFrame_data_url());
@@ -779,7 +778,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                             Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
                         }
                     } else {
-                            img_play_video.setVisibility(View.VISIBLE);
+                        img_play_video.setVisibility(View.VISIBLE);
                         if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
                             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
                                     MediaStore.Images.Thumbnails.MINI_KIND);
@@ -1285,27 +1284,21 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             for (int i = 0; i < images.size(); i++) {
                 set_frames_to_container(images.get(i).path, Constants.frametype_image);
             }
-        }
-        else if(requestCode==Flag_product_list_result&&data!=null)
-        {
+        } else if (requestCode == Flag_product_list_result && data != null) {
 
-            //postion of object to which the product has been added
-            int position=data.getIntExtra("frame_position",Productlist.Noframepostion);
-            if(position!=Productlist.Noframepostion) {
-                //make change to the frame to which product has been added
-                FrameList_Model frameList_model = framedata_map.get(position);
-                frameList_model.setProduct_id(data.getStringExtra("product_id"));
-                frameList_model.setProduct_path(data.getStringExtra("product_image"));
-                frameList_model.setProduct_url(data.getStringExtra("product_url"));
-                frameList_model.setIs_product_attached(true);
 
-                //show the su
-                show_synced_frame(position);
-            }
-            else
-            {
-                PopMessage.makesimplesnack(mlayout,"Error adding product");
-            }
+            int position = Constants.framepostion;
+
+            //make change to the frame to which product has been added
+            FrameList_Model frameList_model = framedata_map.get(position);
+            frameList_model.setProduct_id(data.getStringExtra("product_id"));
+            frameList_model.setProduct_path(data.getStringExtra("product_image"));
+            frameList_model.setProduct_url(data.getStringExtra("product_url"));
+
+
+            //show the frame
+            show_synced_frame(position);
+
         }
 
     }
@@ -1375,6 +1368,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
             fm.setStarttime(mediaPlayer.getCurrentPosition());
             fm.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
+            if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_internet)) {
+                fm.setEdited(true);
+            }
             Collections.sort(framedata_map, new listsort());
             ((BaseAdapter) framelist.getAdapter()).notifyDataSetChanged();
             mediaPlayer.start();
@@ -1396,14 +1392,13 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
 
-
     public void addproduct(int pos) {
         //remove the callbacks to timertask as mediaplayer is not in correct state to call the duration method on it
         mHandler.removeCallbacks(mUpdateTimeTask);
 
-
+        Constants.framepostion = pos;
         Intent intent = new Intent(this, Productlist.class);
-        intent.putExtra("frame_position",pos);
+        intent.putExtra("frame_position", pos);
         startActivityForResult(intent, Flag_product_list_result);
     }
 }

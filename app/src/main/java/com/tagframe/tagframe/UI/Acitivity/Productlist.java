@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -16,11 +17,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.ProductAdapter;
+import com.tagframe.tagframe.Models.GetProductResponseModel;
 import com.tagframe.tagframe.Models.Product;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Retrofit.ApiClient;
+import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.UI.Fragments.Follow;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyToast;
+import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 
@@ -29,16 +34,26 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import in.srain.cube.views.GridViewWithHeaderAndFooter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Productlist extends FragmentActivity {
 
     private EditText ed_product;
     private ImageView img;
 
+    private int page_number = 1;
+    private ArrayList<Product> products = new ArrayList<>();
+    private GridViewWithHeaderAndFooter mGridProduct;
     private ProgressBar pbar;
-    private GridView gridview_product;
-    private RelativeLayout mlayout;
+    private RelativeLayout mLayout;
+    private View footerView;
+    private String search_term="";
 
-    public static int Noframepostion=110;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +63,45 @@ public class Productlist extends FragmentActivity {
         ed_product = (EditText) findViewById(R.id.mod_search_text_product);
         img = (ImageView) findViewById(R.id.mod_search_product);
         pbar = (ProgressBar) findViewById(R.id.pbar_product);
-        gridview_product = (GridView) findViewById(R.id.gird_product);
-        mlayout=(RelativeLayout)findViewById(R.id.mlayout_product);
+        mGridProduct = (GridViewWithHeaderAndFooter) findViewById(R.id.grid_product);
+        pbar = (ProgressBar) findViewById(R.id.pbar_product);
+        mLayout = (RelativeLayout) findViewById(R.id.mlayout_product);
+        //add the footer to the
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        footerView = layoutInflater.inflate(R.layout.layout_gridview_product_footer, null);
+        mGridProduct.addFooterView(footerView);
 
-        new GetProductlist().execute("");
+        footerView.findViewById(R.id.load_more_products).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //incrementing page size
+                page_number++;
+                if (!search_term.isEmpty()) {
+
+                    searchProduct(search_term);
+                } else {
+
+                    getProducts();
+                }
+
+            }
+        });
+
+
+        getProducts();
+
 
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String ed = ed_product.getText().toString();
                 if (!ed.isEmpty()) {
+                    //making page number from starting
+                    page_number = 1;
+                    products = new ArrayList<Product>();
+                    search_term=ed_product.getText().toString();
                     Modules.hideKeyboard(Productlist.this);
-                    new GetProductlist().execute(ed);
+                    searchProduct(search_term);
                 }
             }
         });
@@ -70,13 +112,13 @@ public class Productlist extends FragmentActivity {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-                    if(!ed_product.getText().toString().isEmpty()) {
-
-                        new GetProductlist().execute(ed_product.getText().toString());
-                    }
-                    else
-                    {
-                        PopMessage.makesimplesnack(mlayout,"Please provide a serach keyword");
+                    if (!ed_product.getText().toString().isEmpty()) {
+                        page_number = 1;
+                        products = new ArrayList<Product>();
+                        search_term=ed_product.getText().toString();
+                        searchProduct(search_term);
+                    } else {
+                        PopMessage.makesimplesnack(mLayout, "Please provide a search keyword");
                     }
                 }
                 return false;
@@ -84,63 +126,85 @@ public class Productlist extends FragmentActivity {
         });
     }
 
+    private void searchProduct(String keyword) {
 
 
+        pbar.setVisibility(View.VISIBLE);
+
+        if (Networkstate.haveNetworkConnection(this)) {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<GetProductResponseModel> call = apiInterface.searchProduct(keyword, String.valueOf(page_number));
+            call.enqueue(new Callback<GetProductResponseModel>() {
+                @Override
+                public void onResponse(Call<GetProductResponseModel> call, Response<GetProductResponseModel> response) {
 
 
+                    if (response.body().getStatus().equals("success")) {
+                        if (response.body().getProductList().size() > 0) {
+                            products.addAll(response.body().getProductList());
+                            ProductAdapter productAdapter = new ProductAdapter(Productlist.this, products);
+                            mGridProduct.setAdapter(productAdapter);
+                            pbar.setVisibility(View.GONE);
+                        } else {
+                            pbar.setVisibility(View.GONE);
+                            mGridProduct.removeFooterView(footerView);
+                            PopMessage.makesimplesnack(mLayout, "No products to load");
 
-    public class GetProductlist extends AsyncTask<String, String, String> {
-        WebServiceHandler webServiceHandler;
-        ArrayList<Product> productArrayList;
-        String status;
+                        }
+                    } else {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pbar.setVisibility(View.VISIBLE);
-            productArrayList = new ArrayList<>();
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                webServiceHandler = new WebServiceHandler(Constants.search_product);
-                webServiceHandler.addFormField("product_title", params[0]);
-                JSONObject jsonObject = new JSONObject(webServiceHandler.finish());
-                status = jsonObject.getString("status");
-                if (status.equals("success")) {
-                    JSONArray jsonArray = jsonObject.getJSONArray("records");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject productobj = jsonArray.getJSONObject(i);
-                        Product product = new Product();
-                        product.setId(productobj.getString("product_id"));
-                        product.setName(productobj.getString("product_name"));
-                        product.setUrl(productobj.getString("product_url"));
-                        product.setImage(productobj.getString("product_image"));
-                        productArrayList.add(product);
+                        PopMessage.makesimplesnack(mLayout, response.body().getStatus());
 
                     }
                 }
 
-            } catch (Exception e) {
-                Log.e("dasd", e.getMessage());
-                productArrayList = new ArrayList<>();
-
-            }
-
-
-            return null;
+                @Override
+                public void onFailure(Call<GetProductResponseModel> call, Throwable t) {
+                    pbar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            PopMessage.makesimplesnack(mLayout, "No Internet Connection");
         }
+    }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            pbar.setVisibility(View.GONE);
-            if(Productlist.this!=null)
-            gridview_product.setAdapter(new ProductAdapter(Productlist.this, productArrayList));
+    private void getProducts() {
+        pbar.setVisibility(View.VISIBLE);
+        //getting the product list using Retrofit
+        if (Networkstate.haveNetworkConnection(this)) {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<GetProductResponseModel> call = apiInterface.getAllProducts(String.valueOf(page_number));
+            call.enqueue(new Callback<GetProductResponseModel>() {
+                @Override
+                public void onResponse(Call<GetProductResponseModel> call, Response<GetProductResponseModel> response) {
 
+
+                    if (response.body().getStatus().equals("success")) {
+                        if (response.body().getProductList().size() > 0) {
+                            products.addAll(response.body().getProductList());
+                            ProductAdapter productAdapter = new ProductAdapter(Productlist.this, products);
+                            mGridProduct.setAdapter(productAdapter);
+                            pbar.setVisibility(View.GONE);
+                        } else {
+                            pbar.setVisibility(View.GONE);
+                            mGridProduct.removeFooterView(footerView);
+                            PopMessage.makesimplesnack(mLayout, "No products to load");
+
+                        }
+                    } else {
+
+                        PopMessage.makesimplesnack(mLayout, response.body().getStatus());
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetProductResponseModel> call, Throwable t) {
+                    pbar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            PopMessage.makesimplesnack(mLayout, "No Internet Connection");
         }
     }
 

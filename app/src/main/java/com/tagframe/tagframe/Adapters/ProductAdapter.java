@@ -30,12 +30,11 @@ public class ProductAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
 
-    public ProductAdapter(Context ctx,ArrayList<Product> tagStream_models)
-    {
-        this.ctx=ctx;
-        this.tagStream_models=tagStream_models;
+    public ProductAdapter(Context ctx, ArrayList<Product> tagStream_models) {
+        this.ctx = ctx;
+        this.tagStream_models = tagStream_models;
 
-        inflater=(LayoutInflater) ctx
+        inflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -66,14 +65,12 @@ public class ProductAdapter extends BaseAdapter {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
 
-        final Product tagStream=tagStream_models.get(position);
+        final Product tagStream = tagStream_models.get(position);
 
 
         try {
             Picasso.with(ctx).load(tagStream.getImage()).into(mViewHolder.ivimage);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
 
         }
         mViewHolder.textView.setText(tagStream.getName());
@@ -82,30 +79,17 @@ public class ProductAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-               showProductDialog(ctx,tagStream);
-                /*if(ctx instanceof Productlist)
-                {
-                    Intent intent=new Intent();
-                    intent.putExtra("product_id",tagStream.getId());
-                    intent.putExtra("product_image",tagStream.getImage());
-                    intent.putExtra("product_url",tagStream.getUrl());
-                    intent.putExtra("frame_position",position);
-                    ((Productlist)ctx).setResult(MakeNewEvent.Flag_product_list_result,intent);
-                    ((Productlist)ctx).finish();
+                showProductDialog(ctx, tagStream);
 
-                    Log.i("running","code2");
-                }*/
             }
         });
-
 
 
         return convertView;
     }
 
-    private void showProductDialog(final Context ctx, final Product product)
-    {
-        final Dialog dialog=new Dialog(ctx,android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+    private void showProductDialog(final Context ctx, final Product product) {
+        final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         dialog.setContentView(R.layout.dialog_see_product);
         dialog.setCancelable(true);
         //dismissing dialog
@@ -116,22 +100,37 @@ public class ProductAdapter extends BaseAdapter {
             }
         });
 
-        TextView product_name=(TextView)dialog.findViewById(R.id.dialog_product_name);
-        TextView product_price=(TextView)dialog.findViewById(R.id.dialog_product_price);
-        TextView endorse_product=(TextView)dialog.findViewById(R.id.dialog_product_endorse);
-        TextView buy_product=(TextView)dialog.findViewById(R.id.dialog_product_buy);
+        TextView product_name = (TextView) dialog.findViewById(R.id.dialog_product_name);
+        TextView product_price = (TextView) dialog.findViewById(R.id.dialog_product_price);
+        TextView endorse_product = (TextView) dialog.findViewById(R.id.dialog_product_endorse);
+        TextView buy_product = (TextView) dialog.findViewById(R.id.dialog_product_buy);
 
-        ImageView product_image=(ImageView)dialog.findViewById(R.id.dialog_product_image);
+        ImageView product_image = (ImageView) dialog.findViewById(R.id.dialog_product_image);
         Picasso.with(ctx).load(product.getImage()).into(product_image);
 
         product_name.setText(product.getName());
-        product_price.setText("$"+product.getProduct_price());
+        product_price.setText("$" + product.getProduct_price());
 
         buy_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(product.getUrl()));
                 ctx.startActivity(browserIntent);
+            }
+        });
+
+        endorse_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ctx instanceof Productlist) {
+                    Intent intent = new Intent();
+                    intent.putExtra("product_id", product.getId());
+                    intent.putExtra("product_image", product.getImage());
+                    intent.putExtra("product_url", product.getUrl());
+                    ((Productlist) ctx).setResult(MakeNewEvent.Flag_product_list_result, intent);
+                    ((Productlist) ctx).finish();
+
+                }
             }
         });
 
@@ -149,9 +148,8 @@ public class ProductAdapter extends BaseAdapter {
 
         public MyViewHolder(View item) {
 
-            ivimage=(ImageView)item.findViewById(R.id.product_image);
-            textView=(TextView)item.findViewById(R.id.product_name);
-
+            ivimage = (ImageView) item.findViewById(R.id.product_image);
+            textView = (TextView) item.findViewById(R.id.product_name);
 
 
         }

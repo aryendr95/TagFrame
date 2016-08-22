@@ -1,36 +1,37 @@
 package com.tagframe.tagframe.UI.Fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.TagStreamEventAdapter;
-import com.tagframe.tagframe.Models.FrameList_Model;
+import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.TagStream_Model;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Retrofit.ApiClient;
+import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.MyListView;
-import com.tagframe.tagframe.Utils.MyToast;
-import com.tagframe.tagframe.Utils.WebServiceHandler;
+import com.tagframe.tagframe.Utils.Networkstate;
+import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by abhinav on 05/04/2016.
@@ -38,74 +39,62 @@ import java.util.ArrayList;
 public class TagStream extends Fragment {
 
     private View mview;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private MyListView listView;
+    private AppPrefs AppPrefs;
+    private ImageButton imgbtn;
+    private int next_records = Constants.PAGE_SIZE;
+    private ArrayList<TagStream_Model> tagStream_models;
+    private ProgressBar footerbar;
+    private TextView mTxt_footer;
 
-    SwipeRefreshLayout swipeRefreshLayout;
-    MyListView listView;
-    AppPrefs AppPrefs;
-
-    ImageButton imgbtn;
-
-    loadtagstreamtask loadtagstreamtask;
-
-    int next_records=10;
-
-    ArrayList<TagStream_Model> tagStream_models;
-
-    ProgressBar footerbar;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview=inflater.inflate(R.layout.fragment_tagstream,container,false);
+        mview = inflater.inflate(R.layout.fragment_tagstream, container, false);
 
-        swipeRefreshLayout=(SwipeRefreshLayout)mview.findViewById(R.id.swiperefresh_tagstream);
-        listView=(MyListView)mview.findViewById(R.id.list_tagstream);
+        swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_tagstream);
+        listView = (MyListView) mview.findViewById(R.id.list_tagstream);
         addfooter();
 
-        AppPrefs =new AppPrefs(getActivity());
+        AppPrefs = new AppPrefs(getActivity());
 
-        tagStream_models= AppPrefs.gettagstreamlist("tagstream");
+        tagStream_models = AppPrefs.gettagstreamlist("tagstream");
 
         listView.setAdapter(new TagStreamEventAdapter(getActivity(), AppPrefs.gettagstreamlist("tagstream")));
 
-
-
-        loadtagstreamtask=new loadtagstreamtask();
-        loadtagstreamtask.execute();
+        //check if more items are to be loaded
+        /*if (AppPrefs.gettagstreamlist("tagstream").size() == Constants.PAGE_SIZE) {
+            loadTagStream();
+        }*/
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                tagStream_models=new ArrayList<TagStream_Model>();
-                if(!loadtagstreamtask.isCancelled()) {
-                    loadtagstreamtask.cancel(true);
-                    new loadtagstreamtask().execute();
-                }
-                else
-                {
-                    swipeRefreshLayout.setRefreshing(false);
-                    MyToast.popmessage("Please wait,data is loading..", getActivity());
-                }
+
+                tagStream_models = new ArrayList<TagStream_Model>();
+                next_records=0;
+                //load a new list
+                loadTagStream();
 
             }
         });
 
 
-
-        final ImageButton imgbtn=(ImageButton)mview.findViewById(R.id.createevent_tagstream);
+        final ImageButton imgbtn = (ImageButton) mview.findViewById(R.id.createevent_tagstream);
         imgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-
-                ((Modules)getActivity()).generate_media_chooser(imgbtn);
+                ((Modules) getActivity()).generate_media_chooser(imgbtn);
             }
         });
 
 
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        /*listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -115,22 +104,26 @@ public class TagStream extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
 
-                //making the others incenter false
-
-
             }
-        });
+        });*/
 
         return mview;
     }
 
-    public void addfooter()
-    {
+    public void addfooter() {
 
         //adding a footer to listview
         View footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_layout, null, false);
         listView.addFooterView(footerView);
-        footerbar=(ProgressBar)footerView.findViewById(R.id.pbar_footer);
+        footerbar = (ProgressBar) footerView.findViewById(R.id.pbar_footer);
+        mTxt_footer = (TextView) footerView.findViewById(R.id.txt_footer);
+        mTxt_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadTagStream();
+            }
+        });
+
 
     }
 
@@ -138,123 +131,62 @@ public class TagStream extends Fragment {
     @Override
     public void onPause() {
 
-        if(!loadtagstreamtask.isCancelled())
-        {
-            loadtagstreamtask.cancel(true);
-        }
         super.onPause();
     }
 
-    class loadtagstreamtask extends AsyncTask<String,String,String>
-    {
-        WebServiceHandler webServiceHandler;
-        String status;
-
-        int record_length=10;
-
-        @Override
-        protected void onPreExecute() {
+    public void loadTagStream() {
+        if (Networkstate.haveNetworkConnection(getActivity())) {
 
             footerbar.setVisibility(View.VISIBLE);
-            super.onPreExecute();
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<ListResponseModel> call = apiInterface.getTagStreamPaginated(AppPrefs.getString(Constants.user_id), String.valueOf(next_records));
+            call.enqueue(new Callback<ListResponseModel>() {
+                @Override
+                public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
+                    if (response.body().getStatus().equals("success")) {
 
+                        //add the items to arraylist
+                        ArrayList<TagStream_Model> continued_list = response.body().getTagStreamArrayList();
+                        tagStream_models.addAll(continued_list);
 
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try
-            {
-
-                webServiceHandler=new WebServiceHandler(Constants.tagstreams_url);
-                webServiceHandler.addFormField("user_id", AppPrefs.getString(Constants.user_id));
-                webServiceHandler.addFormField("next_records","10");
-                String result=webServiceHandler.finish();
-                Log.e("cxc",result);
-                JSONObject jsonObject=new JSONObject(result);
-                status=jsonObject.getString("status");
-
-
-                if(status.equals("success"))
-                {
-                    JSONArray records=jsonObject.getJSONArray("records");
-                    record_length=records.length();
-                    Log.e("cxc",record_length+"");
-
-                    for(int i=0;i<records.length();i++) {
-
-                        JSONObject rec=records.getJSONObject(i);
-                        TagStream_Model tagStream_model = new TagStream_Model();
-                        tagStream_model.setName(rec.getString("name"));
-                        tagStream_model.setProfile_picture(rec.getString("profile_picture"));
-                        tagStream_model.setThumbnail(rec.getString("thumbnail"));
-                        tagStream_model.setDataurl(rec.getString("data_url"));
-                        tagStream_model.setEvent_id(rec.getString("event_id"));
-                        tagStream_model.setTitle(rec.getString("title"));
-                        tagStream_model.setDescription(rec.getString("description"));
-                        tagStream_model.setProduct_url(rec.getString("product_url"));
-                        tagStream_model.setProduct_image(rec.getString("product_image"));
-                        tagStream_model.setPrduct_name(rec.getString("product_name"));
-                        tagStream_model.setNumber_of_likes(rec.getString("count_like"));
-                        tagStream_model.setSharelink(rec.getString("website_video_url"));
-                        tagStream_model.setLike_video(rec.getString("is_liked"));
-                        JSONArray frames=rec.getJSONArray("frames");
-                        ArrayList<FrameList_Model> frameList_models=new ArrayList<>();
-                        for(int f=0;f<frames.length();f++)
-                        {
-                            JSONObject frameobject=frames.getJSONObject(f);
-                            FrameList_Model frameList_model=new FrameList_Model();
-                            frameList_model.setImagepath(frameobject.getString("frame_thumbnail_url"));
-                            frameList_model.setName(frameobject.getString("frame_title"));
-                            frameList_model.setStarttime(Integer.parseInt(frameobject.getString("frame_start_time")) * 1000);
-                            frameList_model.setEndtime(Integer.parseInt(frameobject.getString("frame_end_time")) * 1000);
-                            frameList_model.setFrametype((frameobject.getString("frame_media_type").equals("IMAGE") ? Constants.frametype_image : Constants.frametype_video));
-                            frameList_model.setFrame_resource_type(Constants.frame_resource_type_internet);
-                            frameList_model.setFrame_data_url(frameobject.getString("frame_data_url"));
-                            frameList_models.add(frameList_model);
+                        //notify the adpater
+                        ((BaseAdapter)((HeaderViewListAdapter)listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
+                        footerbar.setVisibility(View.GONE);
+                        //if there are more items to be loaded then increse the offset by pagesize
+                        if (continued_list.size() == Constants.PAGE_SIZE) {
+                            next_records = next_records + Constants.PAGE_SIZE;
+                        } else {
+                            mTxt_footer.setOnClickListener(null);
+                            mTxt_footer.setText("No more items to load..");
                         }
 
-                        tagStream_model.setFrameList_modelArrayList(frameList_models);
-
-                        tagStream_models.add(tagStream_model);
-
-                        Log.e("fas", tagStream_models.size()+"");
+                    } else {
+                        PopMessage.makeshorttoast(getActivity(), response.body().getStatus());
+                        footerbar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }
 
-            }
-            catch (IOException E)
-            {
-
-            }
-            catch (JSONException E)
-            {
-                Log.e("fas",E.getMessage());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            AppPrefs.puttagstreamlist(tagStream_models);
-            listView.setAdapter(new TagStreamEventAdapter(getActivity(), AppPrefs.gettagstreamlist("tagstream")));
-            swipeRefreshLayout.setRefreshing(false);
-            footerbar.setVisibility(View.GONE);
-
-
+                @Override
+                public void onFailure(Call<ListResponseModel> call, Throwable t) {
+                    footerbar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        } else {
+            PopMessage.makeshorttoast(getActivity(), "No Internet Connection");
+            getActivity().finish();
         }
     }
 
     //scroll to fisrt
 
 
-    public void scrolltofirst(){
+    public void scrolltofirst() {
 
         listView.smoothScrollToPosition(0);
     }
-
 
 
 }

@@ -63,6 +63,8 @@ public class Constants {
 
     public static final String create_frame=base_url+"create_frame";
 
+    public static final String edit_frame=base_url+"edit_frame";
+
     public static final String user_frame=base_url+"user_frames";
     public static final String upload_video=base_url+"upload_video";
 
@@ -109,9 +111,13 @@ public class Constants {
     //public static final int operation_unlike=108;
     //public static final int operation_unlike=108;
 
+    public static int framepostion = 110;
+
 
     public static final String frame_resource_type_internet="internet";
     public static final String frame_resource_type_local="local";
+
+    public static final int PAGE_SIZE=10;
 
 
     public final static boolean isValidEmail(CharSequence target) {

@@ -33,48 +33,43 @@ import java.util.ArrayList;
 public class User_Frames extends Fragment {
 
     private View mview;
-    SwipeRefreshLayout swipeRefreshLayout;
-    ListView listView;
-    AppPrefs AppPrefs;
-    String user_id,user_name,user_pic;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private AppPrefs AppPrefs;
     private GridView gridview;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
-    loadeventtask loadeventtask=new loadeventtask();
-    int count=0,flag=0;
-    ArrayList<User_Frames_model> tagStream_models=new ArrayList<>();
-
+    private String user_id, user_name, user_pic;
+    loadeventtask loadeventtask = new loadeventtask();
+    int count = 0, flag = 0;
+    ArrayList<User_Frames_model> tagStream_models = new ArrayList<>();
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview=inflater.inflate(R.layout.layout_frames,container,false);
-        gridview=(GridView)mview.findViewById(R.id.grid_frame);
+        mview = inflater.inflate(R.layout.layout_frames, container, false);
+        gridview = (GridView) mview.findViewById(R.id.grid_frame);
 
-        swipeRefreshLayout=(SwipeRefreshLayout)mview.findViewById(R.id.swiperefresh_framelist);
-        progressBar=(ProgressBar)mview.findViewById(R.id.list_frame_progress);
+        swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_framelist);
+        progressBar = (ProgressBar) mview.findViewById(R.id.list_frame_progress);
 
-        AppPrefs =new AppPrefs(getActivity());
+        AppPrefs = new AppPrefs(getActivity());
 
-        user_id=getArguments().getString("user_id");
-        user_name=getArguments().getString("user_name");
-        user_pic=getArguments().getString("user_pic");
+        user_id = getArguments().getString("user_id");
+        user_name = getArguments().getString("user_name");
+        user_pic = getArguments().getString("user_pic");
 
         loadeventtask.execute();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(loadeventtask.isCancelled()) {
+                if (loadeventtask.isCancelled()) {
                     loadeventtask.execute();
-                }
-                else
-                {
+                } else {
                     swipeRefreshLayout.setRefreshing(false);
-                    MyToast.popmessage("Please wait,data is loading..",getActivity());
+                    MyToast.popmessage("Please wait,data is loading..", getActivity());
                 }
 
             }
@@ -87,15 +82,13 @@ public class User_Frames extends Fragment {
     @Override
     public void onPause() {
 
-        if(!loadeventtask.isCancelled())
-        {
+        if (!loadeventtask.isCancelled()) {
             loadeventtask.cancel(true);
         }
         super.onPause();
     }
 
-    class loadeventtask extends AsyncTask<String,String,String>
-    {
+    class loadeventtask extends AsyncTask<String, String, String> {
         WebServiceHandler webServiceHandler;
         String status;
 
@@ -108,26 +101,24 @@ public class User_Frames extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-            try
-            {
+            try {
 
-                webServiceHandler=new WebServiceHandler(Constants.user_frame);
-                webServiceHandler.addFormField("user_id",user_id);
-                webServiceHandler.addFormField("next_records",count+"");
-                String result=webServiceHandler.finish();
-                JSONObject jsonObject=new JSONObject(result);
-                JSONObject jsonObject1=jsonObject.getJSONObject("frames");
-                status=jsonObject1.getString("status");
+                webServiceHandler = new WebServiceHandler(Constants.user_frame);
+                webServiceHandler.addFormField("user_id", user_id);
+                webServiceHandler.addFormField("next_records", count + "");
+                String result = webServiceHandler.finish();
+                JSONObject jsonObject = new JSONObject(result);
+                JSONObject jsonObject1 = jsonObject.getJSONObject("frames");
+                status = jsonObject1.getString("status");
 
-                if(status.equals("success"))
-                {
-                    JSONArray records=jsonObject1.getJSONArray("framedata");
-                    count=records.length();
+                if (status.equals("success")) {
+                    JSONArray records = jsonObject1.getJSONArray("framedata");
+                    count = records.length();
                     flag++;
 
-                    for(int i=0;i<records.length();i++) {
+                    for (int i = 0; i < records.length(); i++) {
 
-                        JSONObject rec=records.getJSONObject(i);
+                        JSONObject rec = records.getJSONObject(i);
                         User_Frames_model tagStream_model = new User_Frames_model();
                         tagStream_model.setThumbnail_url(rec.getString("thumbnail_url"));
                         tagStream_model.setData_url(rec.getString("data_url"));
@@ -137,17 +128,18 @@ public class User_Frames extends Fragment {
                         tagStream_model.setNumber_of_frames(rec.getString("number_of_frames"));
                         tagStream_model.setCreated_on(rec.getString("created_on"));
 
-                        JSONArray frames=rec.getJSONArray("frames");
-                        ArrayList<FrameList_Model> frameList_models=new ArrayList<>();
-                        for(int f=0;f<frames.length();f++)
-                        {
-                            JSONObject frameobject=frames.getJSONObject(f);
-                            FrameList_Model frameList_model=new FrameList_Model();
-                            frameList_model.setImagepath(frameobject.getString("frame_thumbnail_url"));
-                            frameList_model.setName(frameobject.getString("frame_title"));
-                            frameList_model.setStarttime(Integer.parseInt(frameobject.getString("frame_start_time")) * 1000);
-                            frameList_model.setEndtime(Integer.parseInt(frameobject.getString("frame_end_time")) * 1000);
+                        JSONArray frames = rec.getJSONArray("frames");
+                        ArrayList<FrameList_Model> frameList_models = new ArrayList<>();
+                        for (int f = 0; f < frames.length(); f++) {
+                            JSONObject frameobject = frames.getJSONObject(f);
+                            FrameList_Model frameList_model = new FrameList_Model();
 
+                            frameList_model.setName(frameobject.getString("frame_title"));
+                            frameList_model.setImagepath(frameobject.getString("frame_thumbnail_url"));
+                            frameList_model.setStarttime(Integer.parseInt(frameobject.getString("frame_start_time")));
+                            frameList_model.setEndtime(Integer.parseInt(frameobject.getString("frame_end_time")));
+                            frameList_model.setProduct_id(frameobject.getString("product_id"));
+                            frameList_model.setProduct_path(frameobject.getString("product_image"));
                             frameList_model.setFrametype((frameobject.getString("frame_media_type").equals("IMAGE") ? Constants.frametype_image : Constants.frametype_video));
                             frameList_model.setFrame_resource_type(Constants.frame_resource_type_internet);
                             frameList_models.add(frameList_model);
@@ -159,10 +151,7 @@ public class User_Frames extends Fragment {
                     }
                 }
 
-            }
-
-            catch (Exception E)
-            {
+            } catch (Exception E) {
                 Log.e("fas", E.getMessage());
             }
             return null;
@@ -177,13 +166,11 @@ public class User_Frames extends Fragment {
             if (f instanceof User_Frames) {
                 progressBar.setVisibility(View.GONE);
 
-                if(flag==1)
-                gridview.setAdapter(new ImageAdapter(getActivity(), tagStream_models));
+                if (flag == 1)
+                    gridview.setAdapter(new ImageAdapter(getActivity(), tagStream_models));
                 swipeRefreshLayout.setRefreshing(false);
 
             }
-
-
 
 
         }

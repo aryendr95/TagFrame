@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Select Photo"
+        android:id="@+id/media_library"
+        android:icon="@android:drawable/ic_menu_more"
+        />
+    <item android:title="Take Photo"
+        android:id="@+id/add_frame_take_photo"
+        android:icon="@android:drawable/ic_menu_more"
+        />
+
+</menu>

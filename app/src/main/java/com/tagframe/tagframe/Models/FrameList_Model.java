@@ -13,6 +13,28 @@ import java.io.Serializable;
  */
 public class FrameList_Model implements Parcelable {
 
+
+    private boolean edited = false;
+
+    public String getFrame_id() {
+        return frame_id;
+    }
+
+    public void setFrame_id(String frame_id) {
+        this.frame_id = frame_id;
+    }
+
+    public boolean isEdited() {
+        return edited;
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
+    }
+
+    @SerializedName("frame_id")
+    @Expose
+    private String frame_id;
     @SerializedName("frame_thumbnail_url")
     @Expose
     private String imagepath;
@@ -26,14 +48,19 @@ public class FrameList_Model implements Parcelable {
     @Expose
     private String name;
 
-    private boolean is_product_attached;
-
+    @SerializedName("product_image")
+    @Expose
     private String product_path;
 
-    private String product_id;
 
+    @SerializedName("product_id")
+    @Expose
+    private String product_id="";
+    @SerializedName("product_url")
+    @Expose
     private String product_url;
-
+    @SerializedName("frame_resource_type")
+    @Expose
     private String frame_resource_type;
     @SerializedName("frame_data_url")
     @Expose
@@ -60,13 +87,6 @@ public class FrameList_Model implements Parcelable {
 
 
 
-    public boolean is_product_attached() {
-        return is_product_attached;
-    }
-
-    public void setIs_product_attached(boolean is_product_attached) {
-        this.is_product_attached = is_product_attached;
-    }
 
     public String getProduct_path() {
         return product_path;
@@ -84,7 +104,6 @@ public class FrameList_Model implements Parcelable {
     public void setFrame_data_url(String frame_data_url) {
         this.frame_data_url = frame_data_url;
     }
-
 
 
     public String getFrame_resource_type() {
@@ -121,7 +140,6 @@ public class FrameList_Model implements Parcelable {
     }
 
 
-
     public String getName() {
         return name;
     }
@@ -129,7 +147,6 @@ public class FrameList_Model implements Parcelable {
     public void setName(String name) {
         this.name = name;
     }
-
 
 
     public String getImagepath() {
@@ -151,12 +168,15 @@ public class FrameList_Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.edited ? (byte) 1 : (byte) 0);
+        dest.writeString(this.frame_id);
         dest.writeString(this.imagepath);
         dest.writeInt(this.starttime);
         dest.writeInt(this.endtime);
         dest.writeString(this.name);
-        dest.writeByte(this.is_product_attached ? (byte) 1 : (byte) 0);
+
         dest.writeString(this.product_path);
+
         dest.writeString(this.product_id);
         dest.writeString(this.product_url);
         dest.writeString(this.frame_resource_type);
@@ -165,12 +185,15 @@ public class FrameList_Model implements Parcelable {
     }
 
     protected FrameList_Model(Parcel in) {
+        this.edited = in.readByte() != 0;
+        this.frame_id = in.readString();
         this.imagepath = in.readString();
         this.starttime = in.readInt();
         this.endtime = in.readInt();
         this.name = in.readString();
-        this.is_product_attached = in.readByte() != 0;
+
         this.product_path = in.readString();
+
         this.product_id = in.readString();
         this.product_url = in.readString();
         this.frame_resource_type = in.readString();

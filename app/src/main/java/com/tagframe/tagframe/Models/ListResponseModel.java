@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by Brajendr on 8/16/2016.
  */
-public class TagStreamResponseModel {
+public class ListResponseModel {
 
     @SerializedName("status")
     @Expose
@@ -36,7 +36,7 @@ public class TagStreamResponseModel {
     @Expose
     private ArrayList<TagStream_Model> tagStreamArrayList;
 
-    public TagStreamResponseModel(String status, ArrayList<TagStream_Model> tagStreamArrayList) {
+    public ListResponseModel(String status, ArrayList<TagStream_Model> tagStreamArrayList) {
         this.status = status;
         this.tagStreamArrayList = tagStreamArrayList;
     }

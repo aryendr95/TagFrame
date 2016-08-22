@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,22 +43,20 @@ import java.util.ArrayList;
 /**
  * Created by abhinav on 08/04/2016.
  */
-public class TagStreamEventAdapter extends BaseAdapter
-{
+public class TagStreamEventAdapter extends BaseAdapter {
 
     Context ctx;
     ArrayList<TagStream_Model> tagStream_models;
     LayoutInflater inflater;
     AppPrefs user_data;
 
-    public TagStreamEventAdapter(Context ctx,ArrayList<TagStream_Model> tagStream_models)
-    {
-     this.ctx=ctx;
-        this.tagStream_models=tagStream_models;
+    public TagStreamEventAdapter(Context ctx, ArrayList<TagStream_Model> tagStream_models) {
+        this.ctx = ctx;
+        this.tagStream_models = tagStream_models;
 
-        user_data=new AppPrefs(ctx);
-        inflater=(LayoutInflater) ctx
-            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        user_data = new AppPrefs(ctx);
+        inflater = (LayoutInflater) ctx
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class TagStreamEventAdapter extends BaseAdapter
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-         MyViewHolder mViewHolder;
+        MyViewHolder mViewHolder;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.layout_list_tagstream, parent, false);
@@ -86,15 +86,13 @@ public class TagStreamEventAdapter extends BaseAdapter
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
 
-        final TagStream_Model tagStream=tagStream_models.get(position);
-
+        final TagStream_Model tagStream = tagStream_models.get(position);
 
 
         mViewHolder.tvTitlle.setText(tagStream.getTitle());
         mViewHolder.tvname.setText(tagStream.getName());
         mViewHolder.tvcurrentduration.setText(tagStream.getCreated_at());
-        if(tagStream.isIn_center())
-        {
+        if (tagStream.isIn_center()) {
             mViewHolder.iveventimage.setVisibility(View.GONE);
             mViewHolder.iveventvideo.setVisibility(View.VISIBLE);
 
@@ -102,31 +100,29 @@ public class TagStreamEventAdapter extends BaseAdapter
             mViewHolder.iveventvideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    mp.setVolume(0,0);
+                    mp.setVolume(0, 0);
                 }
             });
-        }
-        else
-        {
+        } else {
             mViewHolder.iveventimage.setVisibility(View.VISIBLE);
             mViewHolder.iveventvideo.setVisibility(View.GONE);
 
-            Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
+            try {
+                Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
+            } catch (Exception e) {
+                mViewHolder.iveventimage.setImageDrawable(new ColorDrawable(Color.GRAY));
+            }
         }
 
 
         mViewHolder.tvlike.setText(tagStream.getNumber_of_likes());
 
-        Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
+
         try {
             Picasso.with(ctx).load(tagStream.getProfile_picture()).into(mViewHolder.ivpropic);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             mViewHolder.ivpropic.setImageResource(R.drawable.pro_image);
         }
-
-
 
 
         mViewHolder.iveventimage.setOnClickListener(new View.OnClickListener() {
@@ -136,12 +132,12 @@ public class TagStreamEventAdapter extends BaseAdapter
                 intent.putExtra("data_url", tagStream.getDataurl());
                 intent.putExtra("tittle", tagStream.getTitle());
                 intent.putExtra("from", "tagstream");
-                intent.putExtra("description",tagStream.getDescription());
+                intent.putExtra("description", tagStream.getDescription());
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
                 intent.putExtra("eventtype", Constants.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
 
-                Log.e("data_url",tagStream.getDataurl());
+                Log.e("data_url", tagStream.getDataurl());
                 ctx.startActivity(intent);
             }
         });
@@ -153,7 +149,7 @@ public class TagStreamEventAdapter extends BaseAdapter
                 intent.putExtra("data_url", tagStream.getDataurl());
                 intent.putExtra("tittle", tagStream.getTitle());
                 intent.putExtra("from", "tagstream");
-                intent.putExtra("description",tagStream.getDescription());
+                intent.putExtra("description", tagStream.getDescription());
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
                 intent.putExtra("eventtype", Constants.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
@@ -170,13 +166,10 @@ public class TagStreamEventAdapter extends BaseAdapter
             }
         });
 
-        if(tagStream.getLike_video().equals("No"))
-        {
-         mViewHolder.tvlike_direct.setText("Like");
+        if (tagStream.getLike_video().equals("No")) {
+            mViewHolder.tvlike_direct.setText("Like");
             mViewHolder.ivlike.setImageResource(R.drawable.like);
-        }
-        else
-        {
+        } else {
             mViewHolder.tvlike_direct.setText("UnLike");
             mViewHolder.ivlike.setImageResource(R.drawable.unlike);
         }
@@ -186,14 +179,12 @@ public class TagStreamEventAdapter extends BaseAdapter
             public void onClick(View v) {
 
 
+                if (tagStream.getLike_video().equals("No")) {
+                    Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
 
-                if(tagStream.getLike_video().equals("No"))
-                {
-                    Broadcastresults mReceiver=((Modules)ctx).register_reviever();
-
-                    Intent intent=new Intent(ctx, IntentServiceOperations.class);
-                    intent.putExtra("operation",Constants.operation_like);
-                    intent.putExtra("user_id",user_data.getString(Constants.user_id));
+                    Intent intent = new Intent(ctx, IntentServiceOperations.class);
+                    intent.putExtra("operation", Constants.operation_like);
+                    intent.putExtra("user_id", user_data.getString(Constants.user_id));
                     intent.putExtra("event_id", tagStream.getEvent_id());
                     intent.putExtra("receiver", mReceiver);
                     ctx.startService(intent);
@@ -201,14 +192,12 @@ public class TagStreamEventAdapter extends BaseAdapter
                     tagStream.setLike_video("Yes");
                     notifyDataSetChanged();
 
-                }
-                else
-                {
-                    Broadcastresults mReceiver=((Modules)ctx).register_reviever();
+                } else {
+                    Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
 
-                    Intent intent=new Intent(ctx, IntentServiceOperations.class);
-                    intent.putExtra("operation",Constants.operation_unlike);
-                    intent.putExtra("user_id",user_data.getString(Constants.user_id));
+                    Intent intent = new Intent(ctx, IntentServiceOperations.class);
+                    intent.putExtra("operation", Constants.operation_unlike);
+                    intent.putExtra("user_id", user_data.getString(Constants.user_id));
                     intent.putExtra("event_id", tagStream.getEvent_id());
                     intent.putExtra("receiver", mReceiver);
                     tagStream.setNumber_of_likes((Integer.parseInt(tagStream.getNumber_of_likes()) - 1) + "");
@@ -225,30 +214,59 @@ public class TagStreamEventAdapter extends BaseAdapter
         mViewHolder.llcomment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCommentDialog(ctx,tagStream.getEvent_id(),user_data.getString(Constants.user_id));
+                showCommentDialog(ctx, tagStream.getEvent_id(), user_data.getString(Constants.user_id));
             }
         });
 
 
-        mViewHolder.tvframetext.setText(tagStream.getFrameList_modelArrayList().size()+"/"+"5"+" "+"Frames");
+        mViewHolder.tvframetext.setText(tagStream.getFrameList_modelArrayList().size() + "/" + "5" + " " + "Frames");
+
+
+        //events might be of different user
+
+        AppPrefs appPrefs = new AppPrefs(ctx);
+        final int user_type = getUser_Type(tagStream.getUser_id(), appPrefs.getString(Constants.user_id));
+
+
+        //click listners on profile photo and name
+        mViewHolder.ivpropic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
+            }
+        });
+
+        mViewHolder.tvname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
+            }
+        });
 
         return convertView;
     }
 
-    private  void showCommentDialog(final Context ctx, final String video, final String user_id) {
+    private int getUser_Type(String user_id, String saved_user_id) {
+        if (user_id.equals(saved_user_id))
+            return Constants.user_type_self;
+        else
+            return Constants.user_type_following;
+    }
 
-        final Dialog dialog=new Dialog(ctx,android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+    private void showCommentDialog(final Context ctx, final String video, final String user_id) {
+
+        final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         dialog.setContentView(R.layout.dialog_comment);
         dialog.setCancelable(true);
 
-        final RecyclerView listview_comment=(RecyclerView) dialog.findViewById(R.id.list_comment);
-        final EditText editext_comment=(EditText)dialog.findViewById(R.id.ed_dialog_comment);
-        final LinearLayout layout=(LinearLayout)dialog.findViewById(R.id.mlayout_dialog_comment);
-        ImageButton img_send_comment=(ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
-        ProgressBar progressbar=(ProgressBar)dialog.findViewById(R.id.pbar_comment);
+        final RecyclerView listview_comment = (RecyclerView) dialog.findViewById(R.id.list_comment);
+        final EditText editext_comment = (EditText) dialog.findViewById(R.id.ed_dialog_comment);
+        final LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.mlayout_dialog_comment);
+        ImageButton img_send_comment = (ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
+        ProgressBar progressbar = (ProgressBar) dialog.findViewById(R.id.pbar_comment);
 
         //load comment task
-        final LoadComment loadComment=new LoadComment(progressbar,listview_comment,video,dialog,ctx);
+        final LoadComment loadComment = new LoadComment(progressbar, listview_comment, video, dialog, ctx);
         loadComment.execute();
 
         //cancel load dialog task
@@ -272,28 +290,27 @@ public class TagStreamEventAdapter extends BaseAdapter
         img_send_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!editext_comment.getText().toString().isEmpty())
-                {
+                if (!editext_comment.getText().toString().isEmpty()) {
 
 
-                    if(loadComment.getStatus() == AsyncTask.Status.FINISHED){
+                    if (loadComment.getStatus() == AsyncTask.Status.FINISHED) {
                         // My AsyncTask is done and onPostExecute was called
 
-                        Broadcastresults mReceiver=((Modules)ctx).register_reviever();
+                        Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
 
-                        Intent intent=new Intent(ctx, IntentServiceOperations.class);
+                        Intent intent = new Intent(ctx, IntentServiceOperations.class);
                         intent.putExtra("operation", Constants.operation_comment);
-                        intent.putExtra("user_id",user_id);
-                        intent.putExtra("video_id",video);
-                        intent.putExtra("parent_id","0");
-                        intent.putExtra("comment",editext_comment.getText().toString());
+                        intent.putExtra("user_id", user_id);
+                        intent.putExtra("video_id", video);
+                        intent.putExtra("parent_id", "0");
+                        intent.putExtra("comment", editext_comment.getText().toString());
 
                         intent.putExtra("receiver", mReceiver);
                         ctx.startService(intent);
 
-                        ArrayList<Comment> commentArrayList=loadComment.getCommentArrayList();
+                        ArrayList<Comment> commentArrayList = loadComment.getCommentArrayList();
 
-                        Comment comment =new Comment();
+                        Comment comment = new Comment();
                         comment.setVideo_id(video);
                         comment.setParent_id("-1");
                         comment.setComment(editext_comment.getText().toString());
@@ -318,22 +335,17 @@ public class TagStreamEventAdapter extends BaseAdapter
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
 
-
-                    }
-                    else
-                    {
+                    } else {
                         InputMethodManager imm = (InputMethodManager) v.getContext()
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        PopMessage.makesimplesnack(layout,"Comments are loading..");
+                        PopMessage.makesimplesnack(layout, "Comments are loading..");
                     }
-                }
-                else
-                {
+                } else {
                     InputMethodManager imm = (InputMethodManager) v.getContext()
                             .getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    PopMessage.makesimplesnack(layout,"Please enter a comment");
+                    PopMessage.makesimplesnack(layout, "Please enter a comment");
                 }
             }
         });
@@ -342,50 +354,48 @@ public class TagStreamEventAdapter extends BaseAdapter
         dialog.show();
 
 
-
     }
 
 
     private class MyViewHolder {
-        TextView tvTitlle, tvname,tvcurrentduration,tvlike,tvlike_direct,tvframetext;
-        ImageView iveventimage,ivlike;
+        TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct, tvframetext;
+        ImageView iveventimage, ivlike;
         VideoView iveventvideo;
-        LinearLayout ll_like,ll_share,llcomment,ll_frame;
+        LinearLayout ll_like, ll_share, llcomment, ll_frame;
         CircularImageView ivpropic;
 
         public MyViewHolder(View item) {
             tvTitlle = (TextView) item.findViewById(R.id.list_event_tittle);
             tvname = (TextView) item.findViewById(R.id.list_user_name);
             tvcurrentduration = (TextView) item.findViewById(R.id.list_user_duration);
-            iveventimage=(ImageView)item.findViewById(R.id.list_event_image);
+            iveventimage = (ImageView) item.findViewById(R.id.list_event_image);
 
-            ll_like=(LinearLayout)item.findViewById(R.id.lllike);
-            ll_share=(LinearLayout)item.findViewById(R.id.llshare);
-            llcomment=(LinearLayout)item.findViewById(R.id.llcomment);
-            ll_frame=(LinearLayout)item.findViewById(R.id.lladd_frame);
+            ll_like = (LinearLayout) item.findViewById(R.id.lllike);
+            ll_share = (LinearLayout) item.findViewById(R.id.llshare);
+            llcomment = (LinearLayout) item.findViewById(R.id.llcomment);
+            ll_frame = (LinearLayout) item.findViewById(R.id.lladd_frame);
 
-            tvlike_direct=(TextView)item.findViewById(R.id.txt_like_directive);
-            ivpropic=(CircularImageView)item.findViewById(R.id.list_pro_image);
+            tvlike_direct = (TextView) item.findViewById(R.id.txt_like_directive);
+            ivpropic = (CircularImageView) item.findViewById(R.id.list_pro_image);
 
-            tvlike=(TextView)item.findViewById(R.id.txt_likes);
-            ivlike=(ImageView)item.findViewById(R.id.imglike);
-            tvframetext=(TextView)item.findViewById(R.id.txt_number_of_frames);
+            tvlike = (TextView) item.findViewById(R.id.txt_likes);
+            ivlike = (ImageView) item.findViewById(R.id.imglike);
+            tvframetext = (TextView) item.findViewById(R.id.txt_number_of_frames);
 
-            iveventvideo=(VideoView)item.findViewById(R.id.list_event_video);
+            iveventvideo = (VideoView) item.findViewById(R.id.list_event_video);
 
 
         }
     }
-    public void share(String link,Context ctx)
-    {
+
+    public void share(String link, Context ctx) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT,
-                "Hey check out this event at TagFrame:"+link);
+                "Hey check out this event at TagFrame:" + link);
         sendIntent.setType("text/plain");
         ctx.startActivity(sendIntent);
     }
-
 
 
 }

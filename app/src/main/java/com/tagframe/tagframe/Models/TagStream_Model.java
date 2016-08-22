@@ -12,6 +12,19 @@ import java.util.ArrayList;
  * Created by abhinav on 08/04/2016.
  */
 public class TagStream_Model implements Parcelable {
+
+    @SerializedName("user_id")
+    @Expose
+    private String user_id;
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
     @SerializedName("name")
     @Expose
     private String name;
@@ -222,6 +235,7 @@ public class TagStream_Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.user_id);
         dest.writeString(this.name);
         dest.writeString(this.profile_picture);
         dest.writeString(this.created_at);
@@ -243,6 +257,7 @@ public class TagStream_Model implements Parcelable {
     }
 
     protected TagStream_Model(Parcel in) {
+        this.user_id = in.readString();
         this.name = in.readString();
         this.profile_picture = in.readString();
         this.created_at = in.readString();

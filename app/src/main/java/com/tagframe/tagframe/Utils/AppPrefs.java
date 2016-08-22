@@ -11,6 +11,7 @@ import com.tagframe.tagframe.Models.SingleEventModel;
 import com.tagframe.tagframe.Models.TagStream_Model;
 import com.tagframe.tagframe.Models.UserEventsModel;
 import com.tagframe.tagframe.Models.User_Frames_model;
+import com.tagframe.tagframe.UI.Fragments.User_Frames;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -121,27 +122,27 @@ public class AppPrefs {
         editor.commit();
     }
 
-    public ArrayList<UserEventsModel> getuser_event( )
+    public ArrayList<TagStream_Model> getuser_event( )
     {
 
         SharedPreferences.Editor editor=prefs.edit();
 
-        Type type = new TypeToken<ArrayList<SingleEventModel>>(){}.getType();
+        Type type = new TypeToken<ArrayList<TagStream_Model>>(){}.getType();
         String lists=prefs.getString("userevent","");
         Gson gson=new Gson();
-        ArrayList<UserEventsModel> schoolinfomodels;
+        ArrayList<TagStream_Model> schoolinfomodels;
         if(!lists.equals("")) {
             schoolinfomodels = gson.fromJson(lists, type);
         }
         else
         {
-            schoolinfomodels=new ArrayList<UserEventsModel>();
+            schoolinfomodels=new ArrayList<TagStream_Model>();
         }
         return  schoolinfomodels;
     }
 
 
-    public void putusereventlist( ArrayList<UserEventsModel> arrayList)
+    public void putusereventlist( ArrayList<TagStream_Model> arrayList)
     {
 
         SharedPreferences.Editor editor=prefs.edit();
@@ -237,6 +238,20 @@ public class AppPrefs {
         editor.putString("followers", jsonCars);
 
         editor.commit();
+    }
+
+    public void flushProfileInformation()
+    {
+        ArrayList<TagStream_Model> tagStream_modelArrayList=new ArrayList<>();
+        ArrayList<FollowModel> followModelArrayLis=new ArrayList<>();
+        ArrayList<User_Frames_model> framesArrayList=new ArrayList<>();
+
+        putusereventlist(tagStream_modelArrayList);
+        putuserframelist(framesArrayList);
+        putuserfollowers(followModelArrayLis);
+        putuserfollowing(followModelArrayLis);
+
+
     }
 
 
