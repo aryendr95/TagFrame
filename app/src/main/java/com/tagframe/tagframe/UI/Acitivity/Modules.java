@@ -11,12 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -36,9 +34,6 @@ import android.widget.TextView;
 
 
 import com.pkmmte.view.CircularImageView;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarBadge;
-import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.Menulistadapter;
 import com.tagframe.tagframe.R;
@@ -48,18 +43,22 @@ import com.tagframe.tagframe.UI.Fragments.MarketPlaceFragment;
 import com.tagframe.tagframe.UI.Fragments.Notifications;
 import com.tagframe.tagframe.UI.Fragments.Profile;
 import com.tagframe.tagframe.UI.Fragments.TagStream;
+import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.PopMessage;
-import com.tagframe.tagframe.Utils.AppPrefs;
+
 
 import java.util.ArrayList;
 
 public class Modules extends FragmentActivity implements Broadcastresults.Receiver {
 
     //Bottom bar
-    private LinearLayout  mLayout;
+    private LinearLayout mlevent, mltagstream, mlnotification, mlmarket, mlprofile, bottombar, topbar, mLayout;
+    private TextView mtxttagstream, mtxtevent, mtxtnotification, mtxtmarket, mtxtprofile;
+    private ImageView mimgtagstream, mimgevent, mimgnotification, mimgmarket, mimgprofile;
+
     //Framelayout
     private FrameLayout frameLayout;
 
@@ -87,15 +86,13 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     private EditText ed_search;
     private ImageView img_search;
 
-    private BottomBar mBottomBar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modules);
         userinfo = new AppPrefs(this);
-        init(savedInstanceState);
+        init();
 
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -103,73 +100,196 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
     }
 
-    private void init(Bundle savedInstanceState) {
+    private void init() {
 
         mLayout = (LinearLayout) findViewById(R.id.mLayout_module);
 
-        //setting the bottom bar
-
-         mBottomBar = BottomBar.attach(findViewById(R.id.SlidingPanel), savedInstanceState);
-        mBottomBar.noTopOffset();
-
-        mBottomBar.setItems(R.menu.bottom_bar_menu);
-
-        mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
+        mltagstream = (LinearLayout) findViewById(R.id.mod_tagstream);
+        mltagstream.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onMenuTabSelected(@IdRes int menuItemId) {
-                //setting fragment
+            public void onClick(View v) {
 
 
-                if (menuItemId == R.id.bottomBarItemtagstream) {
+                mtxttagstream.setTextColor(getResources().getColor(R.color.white));
+                mimgtagstream.setImageResource(R.drawable.tagstream_hover);
 
-                        TagStream fr = new TagStream();
-                        changefragment(fr);
+                mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgnotification.setImageResource(R.drawable.nofication);
 
-                } else if (menuItemId == R.id.bottomBarItemnotifications) {
-                    Notifications fr = new Notifications();
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
+
+                mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgprofile.setImageResource(R.drawable.user);
+
+                mtxtevent.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgevent.setImageResource(R.drawable.event);
+
+
+               /* mltagstream.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
+                mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
+                mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
+
+
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+                if (f instanceof TagStream) {
+                    ((TagStream) f).scrolltofirst();
+                } else {
+                    TagStream fr = new TagStream();
                     changefragment(fr);
-
-                } else if (menuItemId == R.id.bottomBarItemevents) {
-                    generate_media_chooser(mBottomBar);
-
-                }
-                else if (menuItemId == R.id.bottomBarItemmarketplace) {
-                    MarketPlaceFragment marketPlaceFragment = new MarketPlaceFragment();
-
-                    changefragment(marketPlaceFragment);
-                }
-                else if (menuItemId == R.id.bottomBarItemprofile) {
-                    Profile fr = new Profile();
-                    changefragment(fr);
                 }
 
-
-            }
-
-            @Override
-            public void onMenuTabReSelected(@IdRes int menuItemId) {
-                if (menuItemId == R.id.bottomBarItemevents) {
-                    generate_media_chooser(mBottomBar);
-
-                }
             }
         });
 
-        BottomBarBadge unreadMessages = mBottomBar.makeBadgeForTabAt(1, "#FF0000", 13);
 
-// Control the badge's visibility
-        unreadMessages.show();
-        unreadMessages.setAutoShowAfterUnSelection(true);
+        mlnotification = (LinearLayout) findViewById(R.id.mod_notification);
+        mlnotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgtagstream.setImageResource(R.drawable.tagstream);
+
+                mtxtnotification.setTextColor(getResources().getColor(R.color.white));
+                mimgnotification.setImageResource(R.drawable.nofication_hover);
+
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
+
+                mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgprofile.setImageResource(R.drawable.user);
+                mtxtevent.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgevent.setImageResource(R.drawable.event);
 
 
+              /* mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
+                mlnotification.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
+                mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
+                mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
+
+                Notifications fr = new Notifications();
+                changefragment(fr);
+
+            }
+        });
 
 
-        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        mBottomBar.mapColorForTab(1,  ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        mBottomBar.mapColorForTab(2,  ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        mBottomBar.mapColorForTab(3,  ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        mBottomBar.mapColorForTab(4, ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        mlevent = (LinearLayout) findViewById(R.id.mod_event);
+        mlevent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgtagstream.setImageResource(R.drawable.tagstream);
 
+                mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgnotification.setImageResource(R.drawable.nofication);
+
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
+
+                mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgprofile.setImageResource(R.drawable.user);
+
+                mtxtevent.setTextColor(getResources().getColor(R.color.white));
+
+                mimgevent.setImageResource(R.drawable.event_ho);
+                /*mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
+                mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
+                mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
+                mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
+
+                //CreateEvent createEvent=new CreateEvent();
+                //changefragment(createEvent);
+                generate_media_chooser(mlevent);
+
+            }
+        });
+
+
+        mlmarket = (LinearLayout) findViewById(R.id.mod_market);
+        mlmarket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgtagstream.setImageResource(R.drawable.tagstream);
+
+                mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgnotification.setImageResource(R.drawable.nofication);
+
+                mtxtmarket.setTextColor(getResources().getColor(R.color.white));
+                mimgmarket.setImageResource(R.drawable.market_hover);
+
+                mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgprofile.setImageResource(R.drawable.user);
+                mtxtevent.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgevent.setImageResource(R.drawable.event);
+
+               /* mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
+                mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                mlprofile.setBackgroundColor(getResources().getColor(R.color.white));
+                mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
+
+
+                MarketPlaceFragment marketPlaceFragment = new MarketPlaceFragment();
+
+                changefragment(marketPlaceFragment);
+            }
+        });
+
+        mlprofile = (LinearLayout) findViewById(R.id.mod_profile);
+        mlprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgtagstream.setImageResource(R.drawable.tagstream);
+
+                mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgnotification.setImageResource(R.drawable.nofication);
+
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
+
+                mtxtprofile.setTextColor(getResources().getColor(R.color.white));
+                mimgprofile.setImageResource(R.drawable.user_hover);
+
+                mtxtevent.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgevent.setImageResource(R.drawable.event);
+
+
+               /* mltagstream.setBackgroundColor(getResources().getColor(R.color.white));
+                mlnotification.setBackgroundColor(getResources().getColor(R.color.white));
+                mlmarket.setBackgroundColor(getResources().getColor(R.color.white));
+                mlprofile.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
+
+                Profile fr = new Profile();
+                changefragment(fr);
+
+            }
+        });
+
+
+        //imageview and textview
+
+        mtxttagstream = (TextView) findViewById(R.id.mod_text_tagstream);
+        mimgtagstream = (ImageView) findViewById(R.id.mod_img_tagsteam);
+
+        mtxtnotification = (TextView) findViewById(R.id.mod_text_notification);
+        mimgnotification = (ImageView) findViewById(R.id.mod_img_notification);
+
+        mtxtevent = (TextView) findViewById(R.id.mod_text_event);
+        mimgevent = (ImageView) findViewById(R.id.mod_img_event);
+
+        mtxtmarket = (TextView) findViewById(R.id.mod_text_market);
+        mimgmarket = (ImageView) findViewById(R.id.mod_img_market);
+
+        mtxtprofile = (TextView) findViewById(R.id.mod_text_profile);
+        mimgprofile = (ImageView) findViewById(R.id.mod_img_profile);
 
 
         frameLayout = (FrameLayout) findViewById(R.id.mod_frame_layout);
@@ -179,7 +299,17 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         //checking if tagstream list has value else show the follow fragment
         if (userinfo.gettagstreamlist("tagstream").size() == 0) {
             myf = new Follow();
-            mBottomBar.selectTabAtPosition(3,true);
+            mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+            mimgtagstream.setImageResource(R.drawable.tagstream);
+
+            mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
+            mimgnotification.setImageResource(R.drawable.nofication);
+
+            mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+            mimgmarket.setImageResource(R.drawable.market);
+
+            mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
+            mimgprofile.setImageResource(R.drawable.user);
 
 
         }
@@ -188,8 +318,21 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
         {
             if (getIntent().getStringExtra("name").equals("Edit Profile")) {
+                mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgtagstream.setImageResource(R.drawable.tagstream);
+
+                mtxtnotification.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgnotification.setImageResource(R.drawable.nofication);
+
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.followers);
+
+                mtxtprofile.setTextColor(getResources().getColor(R.color.white));
+                mimgprofile.setImageResource(R.drawable.user_hover);
+
+                mtxtevent.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgevent.setImageResource(R.drawable.event);
                 myf = new Profile();
-                mBottomBar.selectTabAtPosition(4,true);
 
             }
         }
@@ -212,7 +355,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         r_layout = (ImageView) findViewById(R.id.img);
 
 
-        String[] MenuTitles = new String[]{"Account", "Viewer Privacy", "Terms of Service", "Logout"};
+        String[] MenuTitles = new String[]{"Account", "My Endorsements", "Viewer Privacy", "Terms of Service", "Logout"};
 
         ArrayList<com.tagframe.tagframe.Models.Menu> list = populatelist();
         mMenuList.setAdapter(new Menulistadapter(this, list));
@@ -232,7 +375,14 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                             finish();
 
                             break;
+
                         case 1:
+
+                            Intent endorseIntent = new Intent(Modules.this, MyEndorsement.class);
+                            startActivity(endorseIntent);
+                            finish();
+                            break;
+                        case 2:
 
                             Intent intent1 = new Intent(Modules.this, Menu_Action.class);
                             intent1.putExtra("name", "Viewer Privacy");
@@ -240,7 +390,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                             startActivity(intent1);
                             finish();
                             break;
-                        case 2:
+                        case 3:
 
                             Intent intent11 = new Intent(Modules.this, Menu_Action.class);
                             intent11.putExtra("name", "Terms of Service");
@@ -248,7 +398,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                             startActivity(intent11);
                             finish();
                             break;
-                        case 3:
+                        case 4:
                             mSlidingPanel.closePane();
 
                             new Handler().postDelayed(new Runnable() {
@@ -260,9 +410,9 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                                     dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            AppPrefs AppPrefs = new AppPrefs(Modules.this);
+                                            AppPrefs listops = new AppPrefs(Modules.this);
 
-                                            AppPrefs.putString(Constants.loginstatuskey, "");
+                                            listops.putString(Constants.loginstatuskey, "");
                                             Constants.flushuserinfo(Modules.this);
                                             Intent intent2 = new Intent(Modules.this, Authentication.class);
                                             startActivity(intent2);
@@ -289,6 +439,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
         });
 
+        //dispatching the touch top framelayout
         mMenuList.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -331,6 +482,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         mod_email = (TextView) findViewById(R.id.mod_email);
         mod_email.setText(userinfo.getString(Constants.user_email));
 
+        bottombar = (LinearLayout) findViewById(R.id.bottom_bar);
+        topbar = (LinearLayout) findViewById(R.id.topbar);
 
 
         ed_search = (EditText) findViewById(R.id.mod_search_text);
@@ -370,16 +523,14 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
     private void Search(String keyword) {
 
-        if(checkCurrentFragment() instanceof MarketPlaceFragment)
-        {
+        if (checkCurrentFragment() instanceof MarketPlaceFragment) {
             MarketPlaceFragment marketPlaceFragment = new MarketPlaceFragment();
             Bundle bundle = new Bundle();
             bundle.putString("keyword", keyword);
             marketPlaceFragment.setArguments(bundle);
             hideKeyboard(Modules.this);
             changefragment(marketPlaceFragment);
-        }
-        else {
+        } else {
             Follow follow = new Follow();
             Bundle bundle = new Bundle();
             bundle.putString("keyword", ed_search.getText().toString());
@@ -389,8 +540,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         }
     }
 
-    private Fragment checkCurrentFragment()
-    {
+    private Fragment checkCurrentFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         Fragment mCurrentFragment = fragmentManager.findFragmentById(R.id.mod_frame_layout);
@@ -401,6 +551,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         String[] MenuTitles = new String[]{"Account", "Viewer Privacy", "Terms of Service", "Logout"};
         ArrayList<com.tagframe.tagframe.Models.Menu> menuArrayList = new ArrayList<>();
         menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Account", R.drawable.account));
+        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("My Endorsements", R.drawable.ic_endorse));
         menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Viewer Privacy", R.drawable.privacy));
         menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Terms of Service", R.drawable.terms_of_service));
         menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Logout", R.drawable.logout));
@@ -418,7 +569,21 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public void onlistscroll(int visibilty, View v) {
+        if (visibilty == View.GONE) {
+            bottombar.setVisibility(View.GONE);
+            v.setVisibility(View.GONE);
 
+
+        } else {
+            bottombar.setVisibility(View.VISIBLE);
+            v.setVisibility(View.VISIBLE);
+        }
+        // topbar.setVisibility(visibilty);
+        // bottombar.setVisibility(visibilty);
+
+
+    }
 
 
     public void generate_media_chooser(View v) {
@@ -498,8 +663,6 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
-
                 // start the Video Capture Intent
                 startActivityForResult(intent1, TAKE_VIDEO);
                 dialog.dismiss();
@@ -510,8 +673,6 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(Modules.this, SavedEvents.class);
-
-
                 // start the Video Capture Intent
                 startActivity(intent2);
                 finish();
@@ -530,7 +691,6 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         public void onPanelClosed(View arg0) {
             // TODO Auto-genxxerated method stub        getActionBar().setTitle(getString(R.string.app_name));
             mod_menu.animate().rotation(0);
-            mBottomBar.show();
         }
 
         @Override
@@ -538,14 +698,12 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
             // TODO Auto-generated method stub
 
             mod_menu.animate().rotation(90);
-            mBottomBar.hide();
-
         }
 
         @Override
         public void onPanelSlide(View arg0, float arg1) {
             // TODO Auto-generated method stub
-            mBottomBar.hide();
+
         }
 
     };

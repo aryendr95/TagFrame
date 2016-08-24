@@ -8,10 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.Models.SingleEventModel;
-import com.tagframe.tagframe.Models.TagStream_Model;
-import com.tagframe.tagframe.Models.UserEventsModel;
+import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.User_Frames_model;
-import com.tagframe.tagframe.UI.Fragments.User_Frames;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,27 +36,27 @@ public class AppPrefs {
 
     Gson gson = new Gson();
 
-   public ArrayList<TagStream_Model> gettagstreamlist(String listname )
+   public ArrayList<Event_Model> gettagstreamlist(String listname )
     {
 
         SharedPreferences.Editor editor=prefs.edit();
 
-        Type type = new TypeToken<ArrayList<TagStream_Model>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Event_Model>>(){}.getType();
         String lists=prefs.getString(listname,"");
         Gson gson=new Gson();
-        ArrayList<TagStream_Model> schoolinfomodels;
+        ArrayList<Event_Model> schoolinfomodels;
         if(!lists.equals("")) {
             schoolinfomodels = gson.fromJson(lists, type);
         }
         else
         {
-            schoolinfomodels=new ArrayList<TagStream_Model>();
+            schoolinfomodels=new ArrayList<Event_Model>();
         }
         return  schoolinfomodels;
     }
 
 
-    public void puttagstreamlist( ArrayList<TagStream_Model> arrayList)
+    public void puttagstreamlist( ArrayList<Event_Model> arrayList)
     {
 
         SharedPreferences.Editor editor=prefs.edit();
@@ -122,27 +120,27 @@ public class AppPrefs {
         editor.commit();
     }
 
-    public ArrayList<TagStream_Model> getuser_event( )
+    public ArrayList<Event_Model> getuser_event( )
     {
 
         SharedPreferences.Editor editor=prefs.edit();
 
-        Type type = new TypeToken<ArrayList<TagStream_Model>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Event_Model>>(){}.getType();
         String lists=prefs.getString("userevent","");
         Gson gson=new Gson();
-        ArrayList<TagStream_Model> schoolinfomodels;
+        ArrayList<Event_Model> schoolinfomodels;
         if(!lists.equals("")) {
             schoolinfomodels = gson.fromJson(lists, type);
         }
         else
         {
-            schoolinfomodels=new ArrayList<TagStream_Model>();
+            schoolinfomodels=new ArrayList<Event_Model>();
         }
         return  schoolinfomodels;
     }
 
 
-    public void putusereventlist( ArrayList<TagStream_Model> arrayList)
+    public void putusereventlist( ArrayList<Event_Model> arrayList)
     {
 
         SharedPreferences.Editor editor=prefs.edit();
@@ -242,7 +240,7 @@ public class AppPrefs {
 
     public void flushProfileInformation()
     {
-        ArrayList<TagStream_Model> tagStream_modelArrayList=new ArrayList<>();
+        ArrayList<Event_Model> tagStream_modelArrayList=new ArrayList<>();
         ArrayList<FollowModel> followModelArrayLis=new ArrayList<>();
         ArrayList<User_Frames_model> framesArrayList=new ArrayList<>();
 

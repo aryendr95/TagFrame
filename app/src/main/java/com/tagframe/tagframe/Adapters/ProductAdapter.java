@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Product;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.UI.Acitivity.SearchUserActivity;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Productlist;
 
@@ -119,10 +119,24 @@ public class ProductAdapter extends BaseAdapter {
             }
         });
 
+
+        //if user access products with market place ,he can directly endorse it else
+        //user endorses the product to the frame
+        //if the context here is of marketplace, then directly endorse else otherwise
+
+        if (ctx instanceof Productlist) {
+            //frame endorse
+            endorse_product.setText("Endorse");
+        } else {
+            //direct endorse
+            endorse_product.setText("Direct Endorse");
+        }
+
         endorse_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ctx instanceof Productlist) {
+                    //frame endorse
                     Intent intent = new Intent();
                     intent.putExtra("product_id", product.getId());
                     intent.putExtra("product_image", product.getImage());
@@ -130,6 +144,11 @@ public class ProductAdapter extends BaseAdapter {
                     ((Productlist) ctx).setResult(MakeNewEvent.Flag_product_list_result, intent);
                     ((Productlist) ctx).finish();
 
+                } else {
+                    //direct endorse
+                    Intent intent=new Intent(ctx, SearchUserActivity.class);
+                    intent.putExtra("product_id", product.getId());
+                    ctx.startActivity(intent);
                 }
             }
         });

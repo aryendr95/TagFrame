@@ -1,5 +1,8 @@
 package com.tagframe.tagframe.Models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 /**
@@ -7,16 +10,38 @@ import java.util.ArrayList;
  */
 public class User_Frames_model {
 
+    @Expose
+    @SerializedName("frame_id")
     private String frame_id;
+    @Expose
+    @SerializedName("video_id")
     private String video_id;
+    @Expose
+    @SerializedName("title")
     private String title;
+    @Expose
+    @SerializedName("product_id")
     private String product_id;
+    @Expose
+    @SerializedName("media_type")
     private String media_type;
+    @Expose
+    @SerializedName("name")
     private String name;
+    @Expose
+    @SerializedName("thumbnail_url")
     private String thumbnail_url;
+    @Expose
+    @SerializedName("data_url")
     private String data_url;
+    @Expose
+    @SerializedName("number_of_frames")
     private String number_of_frames;
+    @Expose
+    @SerializedName("created_on")
     private String created_on;
+    @Expose
+    @SerializedName("frames")
     private ArrayList<FrameList_Model> frameList_modelArrayList;
 
     public ArrayList<FrameList_Model> getFrameList_modelArrayList() {

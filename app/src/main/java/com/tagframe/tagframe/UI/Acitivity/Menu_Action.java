@@ -69,13 +69,13 @@ public class Menu_Action extends FragmentActivity {
               case 0:
                   myf=new Account();
             break;
-            case 1:
+            case 2:
                 myf=new ViewerPrivacy();
                 break;
-            case 2:
+            case 3:
                 myf=new TermsofService();
                 break;
-            case 3:
+
         }
 
 

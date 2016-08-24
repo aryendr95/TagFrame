@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tagframe.tagframe.Adapters.SeachAdapter;
+import com.tagframe.tagframe.Adapters.SearchAdapter;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
@@ -100,9 +100,7 @@ public class Follow extends Fragment{
                 webServiceHandler=new WebServiceHandler(Constants.search);
                 webServiceHandler.addFormField("keyword", params[0]);
                 webServiceHandler.addFormField("user_id", userinfo.getString(Constants.user_id));
-                JSONObject jsonObject1=new JSONObject(webServiceHandler.finish());
-                Log.e("das",jsonObject1.toString());
-                JSONObject jsonObject=jsonObject1.getJSONObject("search");
+                JSONObject jsonObject=new JSONObject(webServiceHandler.finish());
 
                 status=jsonObject.getString("status");
                 if(status.equals("success"))
@@ -135,7 +133,7 @@ public class Follow extends Fragment{
             super.onPostExecute(s);
 
             progressBar.setVisibility(View.GONE);
-            searchlist.setAdapter(new SeachAdapter(getActivity(), followModelArrayList, 2));
+            searchlist.setAdapter(new SearchAdapter(getActivity(), followModelArrayList, 2,Constants.operation_onclicked_direct_follow));
 
             if(followModelArrayList.size()==0)
             {

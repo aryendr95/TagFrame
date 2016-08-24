@@ -11,4 +11,10 @@
     <string name="empty_button">Try again</string>
     <string name="loading_button">Cancel</string>
     <string name="error_button">Try again</string>
+
+    <string name="direct_endorse_message">Search for the user to directly endorse the product.</string>
+    <string name="tag_user_message">Search for the user to tag them.</string>
+
+    <string name="no_items_message">There no items in this list</string>
+    <string name="no_items_message_tagged_users">There no Tagged Users</string>
 </resources>

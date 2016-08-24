@@ -111,7 +111,7 @@ public class ImageAdapter extends BaseAdapter
                 frameimage.setVisibility(View.VISIBLE);
                 Picasso.with(ctx).load(tagStream.getThumbnail_url()).into(frameimage);
 
-                tittle.setText(tagStream.getMedia_type());
+                tittle.setText(tagStream.getTitle());
                // duration.setText(Constants.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Constants.milliSecondsToTimer(frameList_model.getEndtime()));
 
                 delete.setOnClickListener(new View.OnClickListener() {

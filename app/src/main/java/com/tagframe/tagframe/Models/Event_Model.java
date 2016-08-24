@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by abhinav on 08/04/2016.
  */
-public class TagStream_Model implements Parcelable {
+public class Event_Model implements Parcelable {
 
     @SerializedName("user_id")
     @Expose
@@ -225,7 +225,7 @@ public class TagStream_Model implements Parcelable {
         this.prduct_name = prduct_name;
     }
 
-    public TagStream_Model() {
+    public Event_Model() {
     }
 
     @Override
@@ -256,7 +256,7 @@ public class TagStream_Model implements Parcelable {
         dest.writeTypedList(this.frameList_modelArrayList);
     }
 
-    protected TagStream_Model(Parcel in) {
+    protected Event_Model(Parcel in) {
         this.user_id = in.readString();
         this.name = in.readString();
         this.profile_picture = in.readString();
@@ -278,15 +278,15 @@ public class TagStream_Model implements Parcelable {
         this.frameList_modelArrayList = in.createTypedArrayList(FrameList_Model.CREATOR);
     }
 
-    public static final Creator<TagStream_Model> CREATOR = new Creator<TagStream_Model>() {
+    public static final Creator<Event_Model> CREATOR = new Creator<Event_Model>() {
         @Override
-        public TagStream_Model createFromParcel(Parcel source) {
-            return new TagStream_Model(source);
+        public Event_Model createFromParcel(Parcel source) {
+            return new Event_Model(source);
         }
 
         @Override
-        public TagStream_Model[] newArray(int size) {
-            return new TagStream_Model[size];
+        public Event_Model[] newArray(int size) {
+            return new Event_Model[size];
         }
     };
 }

@@ -2,6 +2,7 @@ package com.tagframe.tagframe.UI.Acitivity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -16,6 +17,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -42,8 +45,10 @@ import com.darsh.multipleimageselect.activities.AlbumSelectActivity;
 import com.darsh.multipleimageselect.models.Image;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.FrameListAdapter;
+import com.tagframe.tagframe.Adapters.TaggedUserAdapter;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.SingleEventModel;
+import com.tagframe.tagframe.Models.TaggedUserModel;
 import com.tagframe.tagframe.MyMediaPlayer.IPlayerListener;
 import com.tagframe.tagframe.MyMediaPlayer.Player;
 import com.tagframe.tagframe.R;
@@ -84,7 +89,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private ProgressBar pbar_mediaplayer;
     private ImageButton imageButton_play;
     private CustomSeekBar seekbar;
-    private TextView btn_add_frame, label_seekbar_currentduration, label_seekbar_totalduration, label_tittle, label_description, post_event, save_event, txt_tutorial_msg;
+    private TextView txt_tagged_user, btn_add_frame, label_seekbar_currentduration, label_seekbar_totalduration, label_tittle, label_description, post_event, save_event, txt_tutorial_msg;
     private TextView txt_percent;
     private Button btn_tut_got_it;
     private LinearLayout ll_add_frame, ll_bottom_bar, mlayout;
@@ -102,8 +107,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private final static String FRAMELIST = "FRAMELIST";
     public static int Flag_select_video = 4;
     public static int Flag_pick_photo = 5;
-    public static int Flag_select_photo = 6;
+    //public static int Flag_select_photo = 6;
     public static int Flag_product_list_result = 6;
+    public static int Flag_Get_Tagged_User = 7;
 
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();
@@ -113,8 +119,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private String tittle, description, type, event_id;
     private long totalduration;
     private String s_current_duration;
-    private ArrayList<FrameList_Model> framedata_map;
-    private ArrayList<Integer> index;
+
     private Broadcastresults mReceiver;
     private AppPrefs user_data;
     private Calendar cal;
@@ -130,6 +135,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private boolean isfromsavedinstance = false;
     private long sav_instance_current_duration = 0;
 
+
+    private ArrayList<FrameList_Model> framedata_map;
+    private ArrayList<TaggedUserModel> list_taggerd_user;
 
     //lifecycles methods
     @Override
@@ -148,11 +156,12 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             framedata_map = getIntent().getParcelableArrayListExtra("framelist");
             tittle = "Title:" + getIntent().getStringExtra("tittle");
             description = "Description:" + getIntent().getStringExtra("des");
+
         } else if (event_type == Constants.eventtype_local) {
             framedata_map = new ArrayList<>();
-            index = new ArrayList<>();
             tittle = "Title:";
             description = "Description:";
+            list_taggerd_user = new ArrayList<>();
 
         } else if (event_type == Constants.eventtype_internet) {
             framedata_map = getIntent().getParcelableArrayListExtra("framelist");
@@ -281,6 +290,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         label_tittle = (TextView) findViewById(R.id.event_tittle);
         label_description = (TextView) findViewById(R.id.event_description);
         post_event = (TextView) findViewById(R.id.postevent);
+        txt_tagged_user = (TextView) findViewById(R.id.taguser_event);
         label_tittle.setText(tittle);
         label_description.setText(description);
         label_tittle.setOnClickListener(new View.OnClickListener() {
@@ -422,6 +432,14 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             }
         }
 
+        //tagged user functionality
+        txt_tagged_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show_tagged_user();
+            }
+        });
+
 
         if (savedstate != null) {
 
@@ -440,6 +458,47 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         }
 
+
+    }
+
+    private void show_tagged_user() {
+        mediaPlayer.pause();
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_tagged_users);
+
+        TextView txt_message = (TextView) dialog.findViewById(R.id.txt_no_message_tagged_user);
+
+        RecyclerView list = (RecyclerView) dialog.findViewById(R.id.list_tagged_users);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        list.setLayoutManager(layoutManager);
+
+        if (list_taggerd_user.size() > 0) {
+            txt_message.setVisibility(View.GONE);
+        }
+        list.setAdapter(new TaggedUserAdapter(list_taggerd_user, this));
+
+        dialog.findViewById(R.id.txt_tag_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MakeNewEvent.this, SearchUserActivity.class);
+                intent.putExtra("operation", Constants.operation_onclicked_tagged_user);
+                startActivityForResult(intent, Flag_Get_Tagged_User);
+                dialog.dismiss();
+
+            }
+        });
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mediaPlayer.start();
+            }
+        });
+
+
+        dialog.show();
 
     }
 
@@ -765,31 +824,37 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 FrameList_Model fm = framedata_map.get(i);
                 if (fm.getStarttime() - 100 <= currentDuration && currentDuration <= fm.getEndtime() + 100 && fm.getEndtime() != 0) {
                     img_frame_to_show.setVisibility(View.VISIBLE);
+                    //if a product is attached to the frame
+                    if (!fm.getProduct_id().isEmpty() && !fm.getProduct_id().equals("0")) {
+                        Picasso.with(MakeNewEvent.this).load(fm.getProduct_path()).into(img_frame_to_show);
 
 
-                    if (fm.getFrametype() == Constants.frametype_image) {
-
-                        if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
-
-                            Bitmap bitmap = BitmapHelper.decodeFile(MakeNewEvent.this, new File(fm.getImagepath()));
-                            bitmap = getResizedBitmap(bitmap, 200, 200);
-                            img_frame_to_show.setImageBitmap(bitmap);
-                        } else {
-                            Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
-                        }
                     } else {
-                        img_play_video.setVisibility(View.VISIBLE);
-                        if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
-                            Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
-                                    MediaStore.Images.Thumbnails.MINI_KIND);
 
-                            thumb = getResizedBitmap(thumb, 200, 200);
+                        if (fm.getFrametype() == Constants.frametype_image) {
 
-                            img_frame_to_show.setImageBitmap(thumb);
+                            if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
+
+                                Bitmap bitmap = BitmapHelper.decodeFile(MakeNewEvent.this, new File(fm.getImagepath()));
+                                bitmap = getResizedBitmap(bitmap, 200, 200);
+                                img_frame_to_show.setImageBitmap(bitmap);
+                            } else {
+                                Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
+                            }
                         } else {
-                            Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
-                        }
+                            img_play_video.setVisibility(View.VISIBLE);
+                            if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
+                                Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
+                                        MediaStore.Images.Thumbnails.MINI_KIND);
 
+                                thumb = getResizedBitmap(thumb, 200, 200);
+
+                                img_frame_to_show.setImageBitmap(thumb);
+                            } else {
+                                Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
+                            }
+
+                        }
                     }
                     img_frame_to_show.setTag(i + "");
                     int prog = (int) (Constants.getProgressPercentage(fm.getEndtime(), totalDurationn));
@@ -1299,8 +1364,25 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             //show the frame
             show_synced_frame(position);
 
+        } else if (requestCode == Flag_Get_Tagged_User && data != null) {
+            TaggedUserModel taggedUserModel = (TaggedUserModel) data.getParcelableExtra("tagged_user");
+            if (searchForDuplicate(taggedUserModel)) {
+                PopMessage.makesimplesnack(mlayout, "User already added");
+            } else {
+                list_taggerd_user.add(taggedUserModel);
+                show_tagged_user();
+            }
+            pbar_mediaplayer.setVisibility(View.GONE);
         }
+    }
 
+    private boolean searchForDuplicate(TaggedUserModel taggedUserModel) {
+        pbar_mediaplayer.setVisibility(View.VISIBLE);
+        for (int i = 0; i < list_taggerd_user.size(); i++) {
+            if (taggedUserModel.getUser_id().equals(list_taggerd_user.get(i).getUser_id()))
+                return true;
+        }
+        return false;
     }
 
     public String getRealPathFromURI(Uri contentUri) {

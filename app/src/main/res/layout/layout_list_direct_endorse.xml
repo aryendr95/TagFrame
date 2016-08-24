@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shadow"
+    android:layout_margin="5dp">
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:id="@+id/list_endorse_img_product"/>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_endorse_img_product"
+        android:text="Product Name"
+        android:gravity="center"
+        android:id="@+id/list_endorse_product_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        />
+
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/list_endorse_img_product"
+        android:text="Endorsed to"
+        android:gravity="center"
+        android:layout_toLeftOf="@+id/list_endorse_img_user"
+        android:id="@+id/txt_endorse"
+        android:layout_centerInParent="true"/>
+
+
+    <com.pkmmte.view.CircularImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/list_endorse_img_user"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"/>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_endorse_img_product"
+        android:text="Product Name"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:id="@+id/list_endorse_user_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/list_endorse_product_name"/>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_endorse_product_name"
+        android:text="Endorsed to"
+        android:gravity="center"
+        android:id="@+id/list_endorse_date"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

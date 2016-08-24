@@ -2,7 +2,6 @@ package com.tagframe.tagframe.Models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tagframe.tagframe.UI.Fragments.TagStream;
 
 import java.util.ArrayList;
 
@@ -15,11 +14,11 @@ public class ListResponseModel {
     @Expose
     private String status;
 
-    public ArrayList<TagStream_Model> getTagStreamArrayList() {
+    public ArrayList<Event_Model> getTagStreamArrayList() {
         return tagStreamArrayList;
     }
 
-    public void setTagStreamArrayList(ArrayList<TagStream_Model> tagStreamArrayList) {
+    public void setTagStreamArrayList(ArrayList<Event_Model> tagStreamArrayList) {
         this.tagStreamArrayList = tagStreamArrayList;
     }
 
@@ -34,9 +33,9 @@ public class ListResponseModel {
     @SerializedName("records")
 
     @Expose
-    private ArrayList<TagStream_Model> tagStreamArrayList;
+    private ArrayList<Event_Model> tagStreamArrayList;
 
-    public ListResponseModel(String status, ArrayList<TagStream_Model> tagStreamArrayList) {
+    public ListResponseModel(String status, ArrayList<Event_Model> tagStreamArrayList) {
         this.status = status;
         this.tagStreamArrayList = tagStreamArrayList;
     }

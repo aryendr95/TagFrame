@@ -82,8 +82,9 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:text="Tittle"
-               android:drawableLeft="@android:drawable/ic_menu_edit"
+               android:drawableLeft="@drawable/ic_edit"
                android:textSize="20dp"
+               android:padding="5dp"
                android:layout_margin="10dp"
                android:id="@+id/event_tittle"
                android:textColor="@color/white"/>
@@ -105,15 +106,14 @@
                <com.tagframe.tagframe.Utils.MyTextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:layout_alignParentRight="true"
+                  android:layout_below="@+id/event_description"
                    android:background="@drawable/button_transpareant"
                    android:text="Post"
-
                    android:id="@+id/postevent"
                    android:paddingLeft="10dp"
                    android:paddingRight="10dp"
                    android:paddingTop="5dp"
-                   android:layout_margin="5dp"
+                   android:layout_margin="10dp"
                    android:paddingBottom="5dp"
                    android:layout_marginLeft="30dp"
                    android:textColor="@color/white"
@@ -122,21 +122,38 @@
                <com.tagframe.tagframe.Utils.MyTextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:layout_alignParentRight="true"
-                   android:layout_below="@+id/postevent"
+                   android:layout_toRightOf="@+id/postevent"
+                   android:layout_below="@+id/event_description"
                    android:layout_gravity="right"
                    android:background="@drawable/button_transpareant"
                    android:text="Save"
                    android:paddingTop="5dp"
                    android:paddingBottom="5dp"
-                   android:layout_margin="5dp"
+                   android:layout_margin="10dp"
                    android:id="@+id/saveevent"
                    android:paddingLeft="10dp"
-
                    android:paddingRight="10dp"
                    android:layout_marginLeft="30dp"
                    android:textColor="@color/white"
                    android:gravity="center"/>
+
+           <com.tagframe.tagframe.Utils.MyTextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_toRightOf="@+id/saveevent"
+               android:layout_below="@+id/event_description"
+               android:layout_gravity="right"
+               android:background="@drawable/button_transpareant"
+               android:text="Tagged Users"
+               android:paddingTop="5dp"
+               android:paddingBottom="5dp"
+               android:layout_margin="10dp"
+               android:id="@+id/taguser_event"
+               android:paddingLeft="10dp"
+               android:paddingRight="10dp"
+               android:layout_marginLeft="30dp"
+               android:textColor="@color/white"
+               android:gravity="center"/>
 
 
 

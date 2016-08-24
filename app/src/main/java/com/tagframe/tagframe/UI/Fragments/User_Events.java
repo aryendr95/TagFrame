@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.TagStreamEventAdapter;
 import com.tagframe.tagframe.Models.ListResponseModel;
-import com.tagframe.tagframe.Models.TagStream_Model;
+import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -47,7 +46,7 @@ public class User_Events extends Fragment {
 
     private AppPrefs AppPrefs;
     private String user_id, user_name, user_pic;
-    private ArrayList<TagStream_Model> tagStream_models = new ArrayList<>();
+    private ArrayList<Event_Model> tagStream_models = new ArrayList<>();
     private int next_records = 0;
 
 
@@ -81,7 +80,7 @@ public class User_Events extends Fragment {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                tagStream_models = new ArrayList<TagStream_Model>();
+                tagStream_models = new ArrayList<Event_Model>();
                 next_records = 0;
                 loadUserEvents();
             }

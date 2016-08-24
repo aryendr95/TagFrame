@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:background="@color/colorPrimaryDark"></LinearLayout>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:id="@+id/dia_direct_caption"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="Username" />
+
+    <com.pkmmte.view.CircularImageView
+        android:id="@+id/dia_direct_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/dia_direct_message"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:gravity="left"
+        android:hint="Message"
+        android:layout_margin="10dp"
+        android:padding="10dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <com.tagframe.tagframe.Utils.MyButton
+            android:id="@+id/dia_direct_yesbtn"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_light"
+
+            android:text="Endorse" />
+
+        <com.tagframe.tagframe.Utils.MyButton
+            android:id="@+id/dia_direct_nobtn"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_red_light"
+
+            android:text="Cancel" />
+    </LinearLayout>
+
+
+</LinearLayout>

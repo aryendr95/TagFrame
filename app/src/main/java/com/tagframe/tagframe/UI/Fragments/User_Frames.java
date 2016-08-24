@@ -1,6 +1,6 @@
 package com.tagframe.tagframe.UI.Fragments;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,23 +9,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.ImageAdapter;
-import com.tagframe.tagframe.Models.FrameList_Model;
+import com.tagframe.tagframe.Models.UserFrameResponseModel;
 import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Retrofit.ApiClient;
+import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Utils.Constants;
-import com.tagframe.tagframe.Utils.MyToast;
-import com.tagframe.tagframe.Utils.WebServiceHandler;
+import com.tagframe.tagframe.Utils.Networkstate;
+import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+
+import in.srain.cube.views.GridViewWithHeaderAndFooter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by abhinav on 11/04/2016.
@@ -35,13 +39,15 @@ public class User_Frames extends Fragment {
     private View mview;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AppPrefs AppPrefs;
-    private GridView gridview;
+    private GridViewWithHeaderAndFooter gridview;
     private ProgressBar progressBar;
+    private RelativeLayout mLayout;
+    private View footerView;
+    private TextView mTxt_footer;
 
     private String user_id, user_name, user_pic;
-    loadeventtask loadeventtask = new loadeventtask();
-    int count = 0, flag = 0;
-    ArrayList<User_Frames_model> tagStream_models = new ArrayList<>();
+    ArrayList<User_Frames_model> user_frames_models = new ArrayList<>();
+    private int next_records = 0;
 
 
     @Nullable
@@ -49,28 +55,31 @@ public class User_Frames extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview = inflater.inflate(R.layout.layout_frames, container, false);
-        gridview = (GridView) mview.findViewById(R.id.grid_frame);
+        gridview = (GridViewWithHeaderAndFooter) mview.findViewById(R.id.grid_frame);
+        mLayout = (RelativeLayout) mview.findViewById(R.id.mlayout_user_frames);
 
         swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_framelist);
         progressBar = (ProgressBar) mview.findViewById(R.id.list_frame_progress);
 
         AppPrefs = new AppPrefs(getActivity());
+        addfooter();
+
+        gridview.setAdapter(new ImageAdapter(getActivity(), user_frames_models));
+
 
         user_id = getArguments().getString("user_id");
         user_name = getArguments().getString("user_name");
         user_pic = getArguments().getString("user_pic");
 
-        loadeventtask.execute();
+        loadUserFrames();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (loadeventtask.isCancelled()) {
-                    loadeventtask.execute();
-                } else {
-                    swipeRefreshLayout.setRefreshing(false);
-                    MyToast.popmessage("Please wait,data is loading..", getActivity());
-                }
+                swipeRefreshLayout.setRefreshing(true);
+                user_frames_models = new ArrayList<>();
+                next_records = 0;
+                loadUserFrames();
 
             }
         });
@@ -79,100 +88,73 @@ public class User_Frames extends Fragment {
         return mview;
     }
 
+    public void addfooter() {
+
+        //adding a footer to listview
+        View footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_layout, null, false);
+        gridview.addFooterView(footerView);
+        mTxt_footer = (TextView) footerView.findViewById(R.id.txt_footer);
+        mTxt_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadUserFrames();
+            }
+        });
+    }
+
     @Override
     public void onPause() {
-
-        if (!loadeventtask.isCancelled()) {
-            loadeventtask.cancel(true);
-        }
         super.onPause();
     }
 
-    class loadeventtask extends AsyncTask<String, String, String> {
-        WebServiceHandler webServiceHandler;
-        String status;
+    private void loadUserFrames() {
+        if (Networkstate.haveNetworkConnection(getActivity())) {
+            progressBar.setVisibility(View.VISIBLE);
+            ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
+            retrofitService.getUserFrames(user_id, String.valueOf(next_records)).enqueue(new Callback<UserFrameResponseModel>() {
+                @Override
+                public void onResponse(Call<UserFrameResponseModel> call, Response<UserFrameResponseModel> response) {
+
+                    progressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+                    try {
+                        if (response.body().getStatus().equals("success")) {
 
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+                            user_frames_models.addAll(response.body().getUser_frames_models());
+                            gridview.setAdapter(new ImageAdapter(getActivity(),user_frames_models));
 
-        }
 
-        @Override
-        protected String doInBackground(String... params) {
-            try {
+                            //detect more events are to be loaded or not
+                            if (response.body().getUser_frames_models().size() == Constants.PAGE_SIZE) {
+                                next_records = next_records + Constants.PAGE_SIZE;
+                                mTxt_footer.setText("Load more items...");
 
-                webServiceHandler = new WebServiceHandler(Constants.user_frame);
-                webServiceHandler.addFormField("user_id", user_id);
-                webServiceHandler.addFormField("next_records", count + "");
-                String result = webServiceHandler.finish();
-                JSONObject jsonObject = new JSONObject(result);
-                JSONObject jsonObject1 = jsonObject.getJSONObject("frames");
-                status = jsonObject1.getString("status");
+                            } else {
 
-                if (status.equals("success")) {
-                    JSONArray records = jsonObject1.getJSONArray("framedata");
-                    count = records.length();
-                    flag++;
+                                mTxt_footer.setOnClickListener(null);
+                                mTxt_footer.setText("No more items to load..");
+                            }
 
-                    for (int i = 0; i < records.length(); i++) {
-
-                        JSONObject rec = records.getJSONObject(i);
-                        User_Frames_model tagStream_model = new User_Frames_model();
-                        tagStream_model.setThumbnail_url(rec.getString("thumbnail_url"));
-                        tagStream_model.setData_url(rec.getString("data_url"));
-                        tagStream_model.setFrame_id(rec.getString("frame_id"));
-                        tagStream_model.setTitle(rec.getString("title"));
-
-                        tagStream_model.setNumber_of_frames(rec.getString("number_of_frames"));
-                        tagStream_model.setCreated_on(rec.getString("created_on"));
-
-                        JSONArray frames = rec.getJSONArray("frames");
-                        ArrayList<FrameList_Model> frameList_models = new ArrayList<>();
-                        for (int f = 0; f < frames.length(); f++) {
-                            JSONObject frameobject = frames.getJSONObject(f);
-                            FrameList_Model frameList_model = new FrameList_Model();
-
-                            frameList_model.setName(frameobject.getString("frame_title"));
-                            frameList_model.setImagepath(frameobject.getString("frame_thumbnail_url"));
-                            frameList_model.setStarttime(Integer.parseInt(frameobject.getString("frame_start_time")));
-                            frameList_model.setEndtime(Integer.parseInt(frameobject.getString("frame_end_time")));
-                            frameList_model.setProduct_id(frameobject.getString("product_id"));
-                            frameList_model.setProduct_path(frameobject.getString("product_image"));
-                            frameList_model.setFrametype((frameobject.getString("frame_media_type").equals("IMAGE") ? Constants.frametype_image : Constants.frametype_video));
-                            frameList_model.setFrame_resource_type(Constants.frame_resource_type_internet);
-                            frameList_models.add(frameList_model);
+                        } else {
+                            PopMessage.makesimplesnack(mLayout, response.body().getStatus());
                         }
-
-                        tagStream_model.setFrameList_modelArrayList(frameList_models);
-
-                        tagStream_models.add(tagStream_model);
+                    } catch (Exception e) {
+                        PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                     }
                 }
 
-            } catch (Exception E) {
-                Log.e("fas", E.getMessage());
-            }
-            return null;
-        }
+                @Override
+                public void onFailure(Call<UserFrameResponseModel> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+                    Log.e("das",t.getMessage());
+                }
+            });
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            //check if current fragment is user_events
-
-            Fragment f = getActivity().getSupportFragmentManager().findFragmentById(R.id.framelayout_profile);
-            if (f instanceof User_Frames) {
-                progressBar.setVisibility(View.GONE);
-
-                if (flag == 1)
-                    gridview.setAdapter(new ImageAdapter(getActivity(), tagStream_models));
-                swipeRefreshLayout.setRefreshing(false);
-
-            }
-
-
+        } else {
+            PopMessage.makesimplesnack(mLayout, "No Internet Connection");
         }
     }
+
 }

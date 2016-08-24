@@ -27,7 +27,7 @@ import android.widget.VideoView;
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Comment;
-import com.tagframe.tagframe.Models.TagStream_Model;
+import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
@@ -46,11 +46,11 @@ import java.util.ArrayList;
 public class TagStreamEventAdapter extends BaseAdapter {
 
     Context ctx;
-    ArrayList<TagStream_Model> tagStream_models;
+    ArrayList<Event_Model> tagStream_models;
     LayoutInflater inflater;
     AppPrefs user_data;
 
-    public TagStreamEventAdapter(Context ctx, ArrayList<TagStream_Model> tagStream_models) {
+    public TagStreamEventAdapter(Context ctx, ArrayList<Event_Model> tagStream_models) {
         this.ctx = ctx;
         this.tagStream_models = tagStream_models;
 
@@ -86,7 +86,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
 
-        final TagStream_Model tagStream = tagStream_models.get(position);
+        final Event_Model tagStream = tagStream_models.get(position);
 
 
         mViewHolder.tvTitlle.setText(tagStream.getTitle());

@@ -1,17 +1,35 @@
 package com.tagframe.tagframe.Models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by abhinav on 11/04/2016.
  */
 public class FollowModel {
 
+    @SerializedName("to_user_id")
+    @Expose
     private  String userid;
+    @SerializedName("first_name")
+    @Expose
     private  String first_name;
+    @SerializedName("username")
+    @Expose
     private  String user_name;
+    @SerializedName("email")
+    @Expose
     private  String email;
+    @SerializedName("image")
+    @Expose
     private  String image;
+
     private  String number;
+    @SerializedName("user_id")
+    @Expose
     private String from_user_id;
+    @SerializedName("followed")
+    @Expose
     private String is_followed;
 
     public String getIs_followed() {

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mlayout_direct_endorse"
+    tools:context=".UI.Acitivity.Productlist">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/layout_topBar_direct_endorse"
+        android:background="@color/colorPrimary">
+
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:orientation="vertical">
+
+            <com.tagframe.tagframe.Utils.Edittext
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search User"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:id="@+id/ed_search_text_direct_endorse"
+                android:paddingBottom="5dp"
+                android:imeOptions="actionSearch"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:background="@color/colorPrimary"
+                android:textColorHint="@color/white"/>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/ed_search_text_direct_endorse"
+                android:background="@color/white"/>
+        </RelativeLayout>
+
+
+
+
+
+
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="8"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:id="@+id/img_search_user"
+            android:src="@drawable/search"/>
+
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/layout_topBar_direct_endorse"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
+        android:id="@+id/list_direct_endorse_users"
+        android:visibility="gone"></ListView>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/direct_endorse_message"
+        android:id="@+id/txt_message_direct_endorse"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/pbar_direct_endorse"/>
+
+</RelativeLayout>

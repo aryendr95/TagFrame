@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tagframe.tagframe.Models.ListResponseModel;
-import com.tagframe.tagframe.Models.TagStream_Model;
+import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -202,7 +202,7 @@ public class Splash extends Fragment {
                 public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
                     try {
                         if (response.body().getStatus().equals("success")) {
-                            ArrayList<TagStream_Model> tagStream_models = response.body().getTagStreamArrayList();
+                            ArrayList<Event_Model> tagStream_models = response.body().getTagStreamArrayList();
                             AppPrefs.puttagstreamlist(tagStream_models);
 
                             Intent intent = new Intent(getActivity(), Modules.class);
