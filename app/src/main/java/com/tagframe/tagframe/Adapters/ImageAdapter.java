@@ -101,6 +101,7 @@ public class ImageAdapter extends BaseAdapter
                         intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
                         intent.putExtra("eventtype", Constants.eventtype_internet);
                         intent.putExtra("eventid", tagStream.getVideo_id());
+                        intent.putExtra("tagged_user_id",tagStream.getTaggedUserModelArrayList());
 
 
                         ctx.startActivity(intent);

@@ -56,7 +56,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
     //Bottom bar
     private LinearLayout mlevent, mltagstream, mlnotification, mlmarket, mlprofile, bottombar, topbar, mLayout;
-    private TextView mtxttagstream, mtxtevent, mtxtnotification, mtxtmarket, mtxtprofile;
+    private TextView mtxttagstream, mtxtevent, mtxtnotification, mtxtmarket, mtxtprofile,mtxt_no_of_events,mtxt_no_of_followers,mtxt_no_of_following;
     private ImageView mimgtagstream, mimgevent, mimgnotification, mimgmarket, mimgprofile;
 
     //Framelayout
@@ -290,6 +290,14 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
         mtxtprofile = (TextView) findViewById(R.id.mod_text_profile);
         mimgprofile = (ImageView) findViewById(R.id.mod_img_profile);
+
+        mtxt_no_of_events=(TextView)findViewById(R.id.txt_mod_number_of_events);
+        mtxt_no_of_followers=(TextView)findViewById(R.id.txt_mod_number_of_followers);
+        mtxt_no_of_following=(TextView)findViewById(R.id.txt_mod_number_of_followings);
+
+        mtxt_no_of_events.setText(userinfo.getString(Constants.total_events));
+        mtxt_no_of_following.setText(userinfo.getString(Constants.number_of_following));
+        mtxt_no_of_followers.setText(userinfo.getString(Constants.number_of_followers));
 
 
         frameLayout = (FrameLayout) findViewById(R.id.mod_frame_layout);

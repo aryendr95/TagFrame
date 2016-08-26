@@ -1,19 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:id="@+id/mLayout_notification">
 
-    <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/swiperefresh_notification">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/list_notification"
+
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbar_notification"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        />
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
         android:visibility="gone"
-        android:layout_margin="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/createevent_notifcation"
-        android:src="@drawable/camera"
-        android:background="@drawable/floatingbutton"/>
-
-
+        android:id="@+id/txt_message_notification"
+        android:layout_centerInParent="true"
+        android:text="@string/no_notification_message"/>
 </RelativeLayout>

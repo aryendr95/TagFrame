@@ -105,6 +105,19 @@ public class Event_Model implements Parcelable {
     @Expose
     private ArrayList<FrameList_Model> frameList_modelArrayList;
 
+    public ArrayList<TaggedUserModel> getTaggedUserModelArrayList() {
+        return taggedUserModelArrayList;
+    }
+
+    public void setTaggedUserModelArrayList(ArrayList<TaggedUserModel> taggedUserModelArrayList) {
+        this.taggedUserModelArrayList = taggedUserModelArrayList;
+    }
+
+    @SerializedName("tagged_user_id")
+
+    @Expose
+    private ArrayList<TaggedUserModel> taggedUserModelArrayList;
+
     public String getLike_video() {
         return like_video;
     }
@@ -254,6 +267,7 @@ public class Event_Model implements Parcelable {
         dest.writeString(this.tags);
         dest.writeString(this.like_video);
         dest.writeTypedList(this.frameList_modelArrayList);
+        dest.writeTypedList(this.taggedUserModelArrayList);
     }
 
     protected Event_Model(Parcel in) {
@@ -276,6 +290,7 @@ public class Event_Model implements Parcelable {
         this.tags = in.readString();
         this.like_video = in.readString();
         this.frameList_modelArrayList = in.createTypedArrayList(FrameList_Model.CREATOR);
+        this.taggedUserModelArrayList = in.createTypedArrayList(TaggedUserModel.CREATOR);
     }
 
     public static final Creator<Event_Model> CREATOR = new Creator<Event_Model>() {

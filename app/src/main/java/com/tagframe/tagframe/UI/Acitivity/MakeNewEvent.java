@@ -66,6 +66,10 @@ import com.tagframe.tagframe.Utils.SeekBarBackgroundDrawable;
 import com.tagframe.tagframe.Utils.SeekBarProgressDrawable;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -154,6 +158,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         if (event_type == Constants.eventtype_saved) {
             framedata_map = getIntent().getParcelableArrayListExtra("framelist");
+            list_taggerd_user=getIntent().getParcelableArrayListExtra("tagged_user_id");
             tittle = "Title:" + getIntent().getStringExtra("tittle");
             description = "Description:" + getIntent().getStringExtra("des");
 
@@ -165,6 +170,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         } else if (event_type == Constants.eventtype_internet) {
             framedata_map = getIntent().getParcelableArrayListExtra("framelist");
+            list_taggerd_user=getIntent().getParcelableArrayListExtra("tagged_user_id");
             tittle = "Title:" + getIntent().getStringExtra("tittle");
             description = "Description:" + getIntent().getStringExtra("des");
             event_id = getIntent().getStringExtra("eventid");
@@ -712,13 +718,13 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     public void method_post_event() {
-
         MyToast.popmessage("Posting...", this);
         Intent intent = new Intent(this, IntentServiceOperations.class);
         intent.putExtra("video_url", vidAddress);
         intent.putParcelableArrayListExtra("frame_list", framedata_map);
         intent.putExtra("operation", Constants.operation_post_event);
         intent.putExtra("title", label_tittle.getText().toString().replace("Title:", ""));
+        intent.putExtra("tagged_user_id", get_tagged_user_in_json());
         intent.putExtra("description", label_description.getText().toString().replace("Description:", ""));
         //intent.putExtra("access_type", type);
         intent.putExtra("duration", mediaPlayer.getDuration());
@@ -726,6 +732,21 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         intent.putExtra("user_id", user_data.getString(Constants.user_id));
 
         startService(intent);
+    }
+
+    private String get_tagged_user_in_json() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONArray tag_array=new JSONArray();
+            for (int i = 0; i < list_taggerd_user.size(); i++) {
+                tag_array.put(list_taggerd_user.get(i).getUser_id());
+            }
+            jsonObject.put("tag_array",tag_array);
+            Log.e("json",jsonObject.toString());
+            return jsonObject.toString();
+        } catch (JSONException E) {
+            return "";
+        }
     }
 
     private void method_post_internet_event() {
@@ -1185,6 +1206,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         frameList_model.setFrame_resource_type(Constants.frame_resource_type_local);
 
         frameList_model.setImagepath(selectedimage);
+        if (frametype == Constants.frametype_video)
+            frameList_model.setFrame_data_url(selectedimage);
 
         frameList_model.setStarttime((int) 0);
         frameList_model.setEndtime((int) (0));
@@ -1368,6 +1391,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             TaggedUserModel taggedUserModel = (TaggedUserModel) data.getParcelableExtra("tagged_user");
             if (searchForDuplicate(taggedUserModel)) {
                 PopMessage.makesimplesnack(mlayout, "User already added");
+
+
             } else {
                 list_taggerd_user.add(taggedUserModel);
                 show_tagged_user();
@@ -1448,13 +1473,22 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         FrameList_Model fm = framedata_map.get(position);
         if (mediaPlayer.getCurrentPosition() + 2000 <= mediaPlayer.getDuration()) {
 
-            fm.setStarttime(mediaPlayer.getCurrentPosition());
-            fm.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
-            if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_internet)) {
-                fm.setEdited(true);
+            FrameList_Model frameList_model = new FrameList_Model();
+            frameList_model.setStarttime(mediaPlayer.getCurrentPosition());
+            frameList_model.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
+
+            if (!isduplicate_frame(frameList_model)) {
+                fm.setStarttime(mediaPlayer.getCurrentPosition());
+                fm.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
+
+                if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_internet)) {
+                    fm.setEdited(true);
+                }
+                Collections.sort(framedata_map, new listsort());
+                ((BaseAdapter) framelist.getAdapter()).notifyDataSetChanged();
+            } else {
+                PopMessage.makesimplesnack(mlayout, "Frame Already Attached");
             }
-            Collections.sort(framedata_map, new listsort());
-            ((BaseAdapter) framelist.getAdapter()).notifyDataSetChanged();
             mediaPlayer.start();
 
 

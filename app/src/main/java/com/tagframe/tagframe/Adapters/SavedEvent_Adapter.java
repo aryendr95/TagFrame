@@ -165,6 +165,7 @@ public class SavedEvent_Adapter extends BaseAdapter
                         intent.putExtra("type", singleEventModel.getType());
                         intent.putParcelableArrayListExtra("framelist", singleEventModel.getFrameList_modelArrayList());
                         intent.putExtra("eventtype", Constants.eventtype_saved);
+                        intent.putExtra("tagged_user_id",singleEventModel.getTaggedUserModelArrayList());
 
                         ctx.startActivity(intent);
 

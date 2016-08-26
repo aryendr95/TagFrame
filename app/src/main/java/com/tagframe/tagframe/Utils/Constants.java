@@ -128,6 +128,9 @@ public class Constants {
     public static final String success_response="success";
     public static final String message_no_internet="No internet Connection";
 
+    public static String media_type_video="video";
+    public static String media_type_image="image";
+
 
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null) {

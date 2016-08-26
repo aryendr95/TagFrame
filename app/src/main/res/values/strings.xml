@@ -17,4 +17,7 @@
 
     <string name="no_items_message">There no items in this list</string>
     <string name="no_items_message_tagged_users">There no Tagged Users</string>
+    <string name="no_notification_message">There no notifications for you, search users to add them and recieve notifcations from them</string>
+
+
 </resources>

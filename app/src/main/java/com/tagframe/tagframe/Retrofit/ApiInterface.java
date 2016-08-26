@@ -1,15 +1,22 @@
 package com.tagframe.tagframe.Retrofit;
 
 import com.tagframe.tagframe.Models.EndorseListResponseModel;
+import com.tagframe.tagframe.Models.EventSuccessUploadResponseModel;
 import com.tagframe.tagframe.Models.GetProductResponseModel;
 import com.tagframe.tagframe.Models.ListResponseModel;
+import com.tagframe.tagframe.Models.NotificationResponseModel;
 import com.tagframe.tagframe.Models.ResponsePojo;
 import com.tagframe.tagframe.Models.SearchUserResponseModel;
 import com.tagframe.tagframe.Models.UserFrameResponseModel;
+import com.tagframe.tagframe.Utils.ProgressRequestBody;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -58,5 +65,31 @@ public interface ApiInterface {
 
     @GET("direct_endorse_list/{from_user_id}")
     Call<EndorseListResponseModel> getDirectEndorseList(@Query("from_user_id") String user_id);
+
+    @Multipart
+    @POST("upload_video/{user_id}/{title}/{description}/{duration}/{event_type}/media_file")
+    Call<EventSuccessUploadResponseModel> postEvent(@Part("user_id") RequestBody user_id,
+                                                    @Part("title") RequestBody title,
+                                                    @Part("description") RequestBody description,
+                                                    @Part("duration") RequestBody duration,
+                                                    @Part("event_type") RequestBody event_type,
+                                                    @Part("media_file\"; filename=\"media_file\" ") ProgressRequestBody media_file);
+
+    @Multipart
+    @POST("upload_video/{user_id}/{title}/{description}/{duration}/{event_type}/media_file")
+    Call<EventSuccessUploadResponseModel> postEventRe(@Part("user_id") RequestBody user_id,
+                                                    @Part("title") RequestBody title,
+                                                    @Part("description") RequestBody description,
+                                                    @Part("duration") RequestBody duration,
+                                                    @Part("event_type") RequestBody event_type,
+                                                    @Part("media_file\"; filename=\"media_file\" ") RequestBody media_file);
+
+
+
+    //  Notifications
+
+    @GET("get_notification/{user_id}")
+    Call<NotificationResponseModel> getNotifications(@Query("user_id") String user_id);
+
 
 }

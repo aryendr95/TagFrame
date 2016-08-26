@@ -11,9 +11,13 @@ import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.tagframe.tagframe.Models.EventSuccessUploadResponseModel;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Retrofit.ApiClient;
+import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.ProgressRequestBody;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 
 import org.json.JSONObject;
@@ -21,10 +25,17 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.http.Part;
+
 /**
  * Created by abhinav on 19/04/2016.
  */
-public class IntentServiceOperations extends IntentService {
+public class IntentServiceOperations extends IntentService implements WebServiceHandler.UploadCallbacks {
 
 
     private static final String TAG = "IntentServiceOperations";
@@ -82,8 +93,9 @@ public class IntentServiceOperations extends IntentService {
             // String access_type=intent.getStringExtra("access_type");
             int duration = intent.getIntExtra("duration", 0);
             String user_id = intent.getStringExtra("user_id");
+            String tagged_usr_id = intent.getStringExtra("tagged_user_id");
 
-            post_event(video_url, frameList_models, tittle, description, duration, user_id);
+            post_event(video_url, frameList_models, tittle, description, duration, user_id, tagged_usr_id);
 
         } else if (operation == Constants.operation_follow_profile) {
             String touser_id = intent.getStringExtra("to_userid");
@@ -142,7 +154,6 @@ public class IntentServiceOperations extends IntentService {
         String status = "";
 
 
-
         sendNotification("Uploading Frame:" + name, "uploading..");
 
 
@@ -164,7 +175,7 @@ public class IntentServiceOperations extends IntentService {
 
             status = wr.getString("status");
 
-            Log.e("edit_stats",status);
+            Log.e("edit_stats", status);
 
 
         } catch (Exception e) {
@@ -285,33 +296,62 @@ public class IntentServiceOperations extends IntentService {
     }
 
 
-    private void post_event(String video_url, ArrayList<FrameList_Model> frameList_models, String tittle, String descrip, int duration, String userid) {
+    private void post_event(String video_url, ArrayList<FrameList_Model> frameList_models, String tittle, String descrip, int duration, String user_id, String tag) {
         String status = "", event_id = "";
 
         sendNotification("Uploading Event:" + tittle, "uploading..");
 
 
+       /* ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
+
+        RequestBody user_id = RequestBody.create(MediaType.parse("text/plain"), userid);
+        RequestBody title = RequestBody.create(MediaType.parse("text/plain"), tittle);
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), descrip);
+        RequestBody durati = RequestBody.create(MediaType.parse("text/plain"), duration+"");
+        RequestBody event_type = RequestBody.create(MediaType.parse("text/plain"), "VIDEO");
+        ProgressRequestBody media_file= new ProgressRequestBody(new File(video_url),this,Constants.media_type_video);
+
+        apiInterface.postEvent(user_id,title,description,durati,event_type,media_file).enqueue(new Callback<EventSuccessUploadResponseModel>() {
+            @Override
+            public void onResponse(Call<EventSuccessUploadResponseModel> call, Response<EventSuccessUploadResponseModel> response) {
+                Log.i("status",response.body().getStatus()+" "+response.body().getEvent_id());
+            }
+
+            @Override
+            public void onFailure(Call<EventSuccessUploadResponseModel> call, Throwable t) {
+                Log.i("status",t.getMessage().toString());
+            }
+        });*/
+
+
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.upload_video);
-            webServiceHandler.addFormField("user_id", userid);
+
+            String dur = duration + "";
+            String event_type = "VIDEO";
+            File file = new File(video_url);
+
+            long size = tag.getBytes().length + user_id.getBytes().length + tittle.getBytes().length + descrip.getBytes().length +
+                    dur.getBytes().length + event_type.getBytes().length + file.length() + file.getName().getBytes().length;
+
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.upload_video, size, WebServiceHandler.upload_video_headers);
+            webServiceHandler.addFormField("user_id", user_id);
             webServiceHandler.addFormField("title", tittle);
             webServiceHandler.addFormField("description", descrip);
+            webServiceHandler.addFormField("tagged_user_id", tag);
+            webServiceHandler.addFormField("duration", dur);
+            webServiceHandler.addFormField("event_type", event_type);
 
-            webServiceHandler.addFormField("duration", duration + "");
-            webServiceHandler.addFormField("event_type", "VIDEO");
-            File file = new File(video_url);
-            webServiceHandler.addFilePart("media_file", file, MY_NOTIFICATION_ID, getApplicationContext());
+            webServiceHandler.addFilePart("media_file", file, MY_NOTIFICATION_ID, getApplicationContext(), this);
             String res = webServiceHandler.finish();
             status = res;
-            JSONObject wr = new JSONObject(res);
-            JSONObject upload = wr.getJSONObject("upload");
+            JSONObject upload = new JSONObject(res);
 
             status = upload.getString("status");
             event_id = upload.getString("event_id");
 
         } catch (Exception e) {
 
-            status = "error+" + e;
+            status = "error+" + e.getMessage().toString();
         }
         Log.e("csf", status);
         if (status.equals("success")) {
@@ -321,7 +361,7 @@ public class IntentServiceOperations extends IntentService {
                 for (int i = 0; i < frameList_models.size(); i++) {
                     FrameList_Model fm = frameList_models.get(i);
                     if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
-                        send_frames(userid, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
+                        send_frames(user_id, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
                     }
                 }
 
@@ -337,7 +377,16 @@ public class IntentServiceOperations extends IntentService {
         String status = "";
 
         sendNotification("Uploading Frame:" + name, "uploading..");
-
+        String start_Time = s_time + "";
+        String end_Time = e_time + "";
+        String media_type = "IMAGE";
+        File file = new File(imagepath);
+        long size = userid.getBytes().length + name.getBytes().length +
+                event_id.getBytes().length +
+                product_id.getBytes().length +
+                start_Time.getBytes().length + end_Time.getBytes().length +
+                media_type.getBytes().length +
+                file.getName().getBytes().length + file.length();
 
         try {
             WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.create_frame);
@@ -345,11 +394,9 @@ public class IntentServiceOperations extends IntentService {
             webServiceHandler.addFormField("title", name);
             webServiceHandler.addFormField("video_id", event_id);
             webServiceHandler.addFormField("product_id", product_id);
+            webServiceHandler.addFormField("start_time", start_Time);
+            webServiceHandler.addFormField("end_time", end_Time);
 
-
-            webServiceHandler.addFormField("start_time", s_time + "");
-            webServiceHandler.addFormField("end_time", e_time + "");
-            Log.e("frametime", s_time + " " + e_time);
 
             if (type == Constants.frametype_image) {
                 webServiceHandler.addFormField("media_type", "IMAGE");
@@ -359,7 +406,7 @@ public class IntentServiceOperations extends IntentService {
                 Log.e("dsa", "vdsa");
             }
 
-            File file = new File(imagepath);
+
             webServiceHandler.addFilePart("media_file", file, MY_NOTIFICATION_ID, getApplicationContext());
             String res = webServiceHandler.finish();
             status = res;
@@ -451,7 +498,6 @@ public class IntentServiceOperations extends IntentService {
                 .setContentTitle(tittle)
                 .setContentText(msg)
                 .setTicker(tittle)
-                .setProgress(100, progr, false)
                 .setSmallIcon(R.drawable.noti)
                 .setWhen(System.currentTimeMillis())
                 .setDefaults(Notification.DEFAULT_SOUND)
@@ -464,9 +510,10 @@ public class IntentServiceOperations extends IntentService {
     }
 
     private void sendNotification(int progr) {
+
         myNotification = new NotificationCompat.Builder(getApplicationContext())
                 .setContentTitle("Uploading")
-                .setContentText("")
+                .setContentText(progr + "")
                 .setTicker("")
                 .setProgress(100, progr, false)
                 .setSmallIcon(R.drawable.noti)
@@ -489,5 +536,21 @@ public class IntentServiceOperations extends IntentService {
 
     public void publishprocess(int progress) {
         sendNotification(progress);
+    }
+
+    @Override
+    public void onProgressUpdate(int percentage) {
+        sendNotification(percentage);
+        Log.e("Progress", "Progress" + percentage);
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onFinish() {
+        sendNotification(100);
     }
 }

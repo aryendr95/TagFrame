@@ -43,6 +43,18 @@ public class User_Frames_model {
     @Expose
     @SerializedName("frames")
     private ArrayList<FrameList_Model> frameList_modelArrayList;
+    @SerializedName("tagged_user_id")
+
+    @Expose
+    private ArrayList<TaggedUserModel> taggedUserModelArrayList;
+
+    public ArrayList<TaggedUserModel> getTaggedUserModelArrayList() {
+        return taggedUserModelArrayList;
+    }
+
+    public void setTaggedUserModelArrayList(ArrayList<TaggedUserModel> taggedUserModelArrayList) {
+        this.taggedUserModelArrayList = taggedUserModelArrayList;
+    }
 
     public ArrayList<FrameList_Model> getFrameList_modelArrayList() {
         return frameList_modelArrayList;

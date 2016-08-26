@@ -136,6 +136,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
                 intent.putExtra("eventtype", Constants.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
+                intent.putExtra("tagged_user_id",tagStream.getTaggedUserModelArrayList());
 
                 Log.e("data_url", tagStream.getDataurl());
                 ctx.startActivity(intent);

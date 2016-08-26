@@ -4,6 +4,9 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 /**
@@ -86,6 +89,16 @@ public class SingleEventModel implements Parcelable {
         this.tittle = tittle;
     }
 
+    public ArrayList<TaggedUserModel> getTaggedUserModelArrayList() {
+        return taggedUserModelArrayList;
+    }
+
+    public void setTaggedUserModelArrayList(ArrayList<TaggedUserModel> taggedUserModelArrayList) {
+        this.taggedUserModelArrayList = taggedUserModelArrayList;
+    }
+
+    private ArrayList<TaggedUserModel> taggedUserModelArrayList;
+
 
     public SingleEventModel() {
     }
@@ -104,7 +117,8 @@ public class SingleEventModel implements Parcelable {
         dest.writeInt(this.duration);
         dest.writeString(this.type);
         dest.writeString(this.description);
-        dest.writeTypedList(frameList_modelArrayList);
+        dest.writeTypedList(this.frameList_modelArrayList);
+        dest.writeTypedList(this.taggedUserModelArrayList);
     }
 
     protected SingleEventModel(Parcel in) {
@@ -116,6 +130,7 @@ public class SingleEventModel implements Parcelable {
         this.type = in.readString();
         this.description = in.readString();
         this.frameList_modelArrayList = in.createTypedArrayList(FrameList_Model.CREATOR);
+        this.taggedUserModelArrayList = in.createTypedArrayList(TaggedUserModel.CREATOR);
     }
 
     public static final Creator<SingleEventModel> CREATOR = new Creator<SingleEventModel>() {
