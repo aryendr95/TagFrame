@@ -3,7 +3,6 @@ package com.tagframe.tagframe.Services;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,26 +10,15 @@ import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.tagframe.tagframe.Models.EventSuccessUploadResponseModel;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.R;
-import com.tagframe.tagframe.Retrofit.ApiClient;
-import com.tagframe.tagframe.Retrofit.ApiInterface;
-import com.tagframe.tagframe.Utils.Constants;
-import com.tagframe.tagframe.Utils.ProgressRequestBody;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.http.Part;
 
 /**
  * Created by abhinav on 19/04/2016.
@@ -68,23 +56,23 @@ public class IntentServiceOperations extends IntentService implements WebService
 
         receiver = intent.getParcelableExtra("receiver");
         int operation = intent.getIntExtra("operation", 0);
-        if (operation == Constants.operation_remove_follower) {
+        if (operation == Utility.operation_remove_follower) {
             String touser_id = intent.getStringExtra("to_userid");
             String fromuser_id = intent.getStringExtra("from_userid");
             String type = intent.getStringExtra("type");
 
             removefollow_unfollow(touser_id, fromuser_id, type, operation);
-        } else if (operation == Constants.operation_unfollow) {
+        } else if (operation == Utility.operation_unfollow) {
             String touser_id = intent.getStringExtra("to_userid");
             String fromuser_id = intent.getStringExtra("from_userid");
             String type = intent.getStringExtra("type");
             removefollow_unfollow(touser_id, fromuser_id, type, operation);
-        } else if (operation == Constants.operation_follow) {
+        } else if (operation == Utility.operation_follow) {
             String touser_id = intent.getStringExtra("to_userid");
             String fromuser_id = intent.getStringExtra("from_userid");
             String type = intent.getStringExtra("type");
             follow(touser_id, fromuser_id, operation);
-        } else if (operation == Constants.operation_post_event) {
+        } else if (operation == Utility.operation_post_event) {
 
             String video_url = intent.getStringExtra("video_url");
             ArrayList<FrameList_Model> frameList_models = intent.getParcelableArrayListExtra("frame_list");
@@ -97,28 +85,28 @@ public class IntentServiceOperations extends IntentService implements WebService
 
             post_event(video_url, frameList_models, tittle, description, duration, user_id, tagged_usr_id);
 
-        } else if (operation == Constants.operation_follow_profile) {
+        } else if (operation == Utility.operation_follow_profile) {
             String touser_id = intent.getStringExtra("to_userid");
             String fromuser_id = intent.getStringExtra("from_userid");
             String type = intent.getStringExtra("type");
             follow(touser_id, fromuser_id, operation);
 
-        } else if (operation == Constants.operation_unfollow_profile) {
+        } else if (operation == Utility.operation_unfollow_profile) {
             String touser_id = intent.getStringExtra("to_userid");
             String fromuser_id = intent.getStringExtra("from_userid");
             String type = intent.getStringExtra("type");
             removefollow_unfollow(touser_id, fromuser_id, type, operation);
-        } else if (operation == Constants.operation_like) {
+        } else if (operation == Utility.operation_like) {
             String user_id = intent.getStringExtra("user_id");
             String event_id = intent.getStringExtra("event_id");
 
             like_event(user_id, event_id, operation);
-        } else if (operation == Constants.operation_unlike) {
+        } else if (operation == Utility.operation_unlike) {
             String user_id = intent.getStringExtra("user_id");
             String event_id = intent.getStringExtra("event_id");
 
             unlike_event(user_id, event_id, operation);
-        } else if (operation == Constants.operation_post_internet_event) {
+        } else if (operation == Utility.operation_post_internet_event) {
             String user_id = intent.getStringExtra("user_id");
             String event_id = intent.getStringExtra("event_id");
             ArrayList<FrameList_Model> frameList_models = intent.getParcelableArrayListExtra("frame_list");
@@ -128,7 +116,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
                     //send locally added frames or edited frames(resynced or added product)
                     FrameList_Model fm = frameList_models.get(i);
-                    if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
+                    if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                         send_frames(user_id, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
                     } else if (fm.isEdited()) {
                         send_edited_frames(event_id, fm.getFrame_id(), fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
@@ -137,7 +125,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
             }
 
-        } else if (operation == Constants.operation_comment) {
+        } else if (operation == Utility.operation_comment) {
             String user_id = intent.getStringExtra("user_id");
             String event_id = intent.getStringExtra("video_id");
             String parent_id = intent.getStringExtra("parent_id");
@@ -158,7 +146,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
 
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.edit_frame);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.edit_frame);
 
             webServiceHandler.addFormField("video_id", video_id);
             webServiceHandler.addFormField("title", name);
@@ -201,7 +189,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
 
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.URL_COMMENT);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.URL_COMMENT);
             webServiceHandler.addFormField("user_id", user_id);
             webServiceHandler.addFormField("video_id", event_id);
             webServiceHandler.addFormField("parent_id", parent_id);
@@ -234,7 +222,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
 
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.unlike_video);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.unlike_video);
             webServiceHandler.addFormField("user_id", user_id);
             webServiceHandler.addFormField("video_id", event_id);
 
@@ -267,7 +255,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
 
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.like_video);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.like_video);
             webServiceHandler.addFormField("user_id", user_id);
             webServiceHandler.addFormField("video_id", event_id);
             String res = webServiceHandler.finish();
@@ -309,7 +297,7 @@ public class IntentServiceOperations extends IntentService implements WebService
         RequestBody description = RequestBody.create(MediaType.parse("text/plain"), descrip);
         RequestBody durati = RequestBody.create(MediaType.parse("text/plain"), duration+"");
         RequestBody event_type = RequestBody.create(MediaType.parse("text/plain"), "VIDEO");
-        ProgressRequestBody media_file= new ProgressRequestBody(new File(video_url),this,Constants.media_type_video);
+        ProgressRequestBody media_file= new ProgressRequestBody(new File(video_url),this,Utility.media_type_video);
 
         apiInterface.postEvent(user_id,title,description,durati,event_type,media_file).enqueue(new Callback<EventSuccessUploadResponseModel>() {
             @Override
@@ -333,7 +321,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             long size = tag.getBytes().length + user_id.getBytes().length + tittle.getBytes().length + descrip.getBytes().length +
                     dur.getBytes().length + event_type.getBytes().length + file.length() + file.getName().getBytes().length;
 
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.upload_video, size, WebServiceHandler.upload_video_headers);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.upload_video, size, WebServiceHandler.upload_video_headers);
             webServiceHandler.addFormField("user_id", user_id);
             webServiceHandler.addFormField("title", tittle);
             webServiceHandler.addFormField("description", descrip);
@@ -360,7 +348,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             if (frameList_models.size() > 0 && !event_id.isEmpty()) {
                 for (int i = 0; i < frameList_models.size(); i++) {
                     FrameList_Model fm = frameList_models.get(i);
-                    if (fm.getFrame_resource_type().equals(Constants.frame_resource_type_local)) {
+                    if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                         send_frames(user_id, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
                     }
                 }
@@ -389,7 +377,7 @@ public class IntentServiceOperations extends IntentService implements WebService
                 file.getName().getBytes().length + file.length();
 
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.create_frame);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.create_frame);
             webServiceHandler.addFormField("user_id", userid);
             webServiceHandler.addFormField("title", name);
             webServiceHandler.addFormField("video_id", event_id);
@@ -398,7 +386,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             webServiceHandler.addFormField("end_time", end_Time);
 
 
-            if (type == Constants.frametype_image) {
+            if (type == Utility.frametype_image) {
                 webServiceHandler.addFormField("media_type", "IMAGE");
                 Log.e("dsa", "dsa");
             } else {
@@ -437,7 +425,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
 
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.unfollow);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.unfollow);
             webServiceHandler.addFormField("user_id", fromuser_id);
             webServiceHandler.addFormField("to_user_id", touser_id);
             webServiceHandler.addFormField("type", type);
@@ -468,7 +456,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
 
         try {
-            WebServiceHandler webServiceHandler = new WebServiceHandler(Constants.follow);
+            WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.follow);
             webServiceHandler.addFormField("user_id", fromuser_id);
             webServiceHandler.addFormField("to_user_id", touser_id);
 

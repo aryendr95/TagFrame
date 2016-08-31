@@ -2,7 +2,7 @@ package com.tagframe.tagframe.Retrofit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ApiClient {
 
-    public static final String BASE_URL = Constants.base_url;
+    public static final String BASE_URL = Utility.base_url;
     private static Retrofit retrofit = null;
 
 

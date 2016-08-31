@@ -19,7 +19,7 @@ import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
@@ -120,8 +120,8 @@ public class Time_Line_Adapter extends BaseAdapter
                     Broadcastresults mReceiver=((Modules)ctx).register_reviever();
 
                     Intent intent=new Intent(ctx, IntentServiceOperations.class);
-                    intent.putExtra("operation",Constants.operation_like);
-                    intent.putExtra("user_id",user_data.getString(Constants.user_id));
+                    intent.putExtra("operation", Utility.operation_like);
+                    intent.putExtra("user_id",user_data.getString(Utility.user_id));
                     intent.putExtra("event_id", tagStream.getEvent_id());
                     intent.putExtra("receiver", mReceiver);
 
@@ -136,8 +136,8 @@ public class Time_Line_Adapter extends BaseAdapter
                     Broadcastresults mReceiver=((Modules)ctx).register_reviever();
 
                     Intent intent=new Intent(ctx, IntentServiceOperations.class);
-                    intent.putExtra("operation",Constants.operation_unlike);
-                    intent.putExtra("user_id",user_data.getString(Constants.user_id));
+                    intent.putExtra("operation", Utility.operation_unlike);
+                    intent.putExtra("user_id",user_data.getString(Utility.user_id));
                     intent.putExtra("event_id", tagStream.getEvent_id());
                     intent.putExtra("receiver", mReceiver);
                     tagStream.setNumber_of_likes((Integer.parseInt(tagStream.getNumber_of_likes()) - 1) + "");
@@ -158,7 +158,7 @@ public class Time_Line_Adapter extends BaseAdapter
                 intent.putExtra("from", "tagstream");
                 intent.putExtra("description",tagStream.getDescription());
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-                intent.putExtra("eventtype", Constants.eventtype_internet);
+                intent.putExtra("eventtype", Utility.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
 
                 ctx.startActivity(intent);

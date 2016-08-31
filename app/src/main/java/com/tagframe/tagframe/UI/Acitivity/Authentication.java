@@ -61,7 +61,7 @@ public class Authentication extends FragmentActivity {
         ArrayList<String> names=new ArrayList<>();
 
         AppPrefs AppPrefs =new AppPrefs(this);
-        if(!AppPrefs.getString(Constants.loginstatuskey).equals(Constants.loginstatusvalue))
+        if(!AppPrefs.getString(Utility.loginstatuskey).equals(Utility.loginstatusvalue))
         {//if logged out
             fraglist.add(new Login());
             fraglist.add(new SignUp());

@@ -26,7 +26,7 @@ import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.SearchUserActivity;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
@@ -104,7 +104,7 @@ public class SearchAdapter extends BaseAdapter {
     private void adjust(MyViewHolder viewHolder, final int position, final int type, final FollowModel followModel) {
         //condition checks if profile visited of which user(self, other)
         if (ctx instanceof Modules) {
-            if (followModel.getFrom_user_id().equals(userinfo.getString(Constants.user_id))) {
+            if (followModel.getFrom_user_id().equals(userinfo.getString(Utility.user_id))) {
 
 
                 if (type == 2) {
@@ -143,7 +143,7 @@ public class SearchAdapter extends BaseAdapter {
                                         mReceiver = ((Modules) ctx).register_reviever();
 
                                         Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                                        intent.putExtra("operation", Constants.operation_follow);
+                                        intent.putExtra("operation", Utility.operation_follow);
                                         intent.putExtra("from_userid", followModel.getFrom_user_id());
                                         intent.putExtra("to_userid", followModel.getUserid());
                                         intent.putExtra("type", "following");
@@ -198,7 +198,7 @@ public class SearchAdapter extends BaseAdapter {
                                         mReceiver = ((Modules) ctx).register_reviever();
 
                                         Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                                        intent.putExtra("operation", Constants.operation_unfollow);
+                                        intent.putExtra("operation", Utility.operation_unfollow);
                                         intent.putExtra("from_userid", followModel.getFrom_user_id());
                                         intent.putExtra("to_userid", followModel.getUserid());
                                         intent.putExtra("type", "following");
@@ -224,7 +224,7 @@ public class SearchAdapter extends BaseAdapter {
                     viewHolder.removeuser.setVisibility(View.GONE);
                 }
             } else {
-                Log.e("das", followModel.getFrom_user_id() + " " + userinfo.getString(Constants.user_id));
+                Log.e("das", followModel.getFrom_user_id() + " " + userinfo.getString(Utility.user_id));
                 viewHolder.removeuser.setVisibility(View.GONE);
                 viewHolder.followbutton.setVisibility(View.GONE);
             }
@@ -248,9 +248,9 @@ public class SearchAdapter extends BaseAdapter {
             viewHolder.user_pic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onClick_operation == Constants.operation_onclicked_direct_endorse)
+                    if (onClick_operation == Utility.operation_onclicked_direct_endorse)
                         show_DirectEndorse_dialog(followModel);
-                    else if (onClick_operation == Constants.operation_onclicked_tagged_user)
+                    else if (onClick_operation == Utility.operation_onclicked_tagged_user)
                     {
                         Log.e("getting called","Yee");
                         TaggedUserModel taggedUserModel=new TaggedUserModel(followModel.getUser_name()
@@ -266,9 +266,9 @@ public class SearchAdapter extends BaseAdapter {
             viewHolder.tvusername.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onClick_operation == Constants.operation_onclicked_direct_endorse)
+                    if (onClick_operation == Utility.operation_onclicked_direct_endorse)
                         show_DirectEndorse_dialog(followModel);
-                    else if (onClick_operation == Constants.operation_onclicked_tagged_user)
+                    else if (onClick_operation == Utility.operation_onclicked_tagged_user)
                     {
                         TaggedUserModel taggedUserModel=new TaggedUserModel(followModel.getUser_name()
                                 ,followModel.getUserid(),followModel.getImage());

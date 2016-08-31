@@ -27,7 +27,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
@@ -132,7 +132,7 @@ public class Account extends Fragment {
 
         pro_pic = (CircularImageView) mview.findViewById(R.id.acc_proimage);
         try {
-            Picasso.with(getActivity()).load(AppPrefs.getString(Constants.user_pic)).into(pro_pic);
+            Picasso.with(getActivity()).load(AppPrefs.getString(Utility.user_pic)).into(pro_pic);
         } catch (Exception e) {
             pro_pic.setImageResource(R.drawable.pro_image);
         }
@@ -140,18 +140,18 @@ public class Account extends Fragment {
 
 
         ed_email = (EditText) mview.findViewById(R.id.acc_ed_email);
-        ed_email.setText(AppPrefs.getString(Constants.user_email));
+        ed_email.setText(AppPrefs.getString(Utility.user_email));
 
 
         ed_username = (EditText) mview.findViewById(R.id.acc_ed_username);
-        ed_username.setText(AppPrefs.getString(Constants.user_name));
+        ed_username.setText(AppPrefs.getString(Utility.user_name));
 
 
         ed_realname = (EditText) mview.findViewById(R.id.acc_ed_realname);
-        ed_realname.setText(AppPrefs.getString(Constants.user_realname));
+        ed_realname.setText(AppPrefs.getString(Utility.user_realname));
 
         ed_description = (EditText) mview.findViewById(R.id.acc_ed_description);
-        ed_description.setText(AppPrefs.getString(Constants.user_descrip));
+        ed_description.setText(AppPrefs.getString(Utility.user_descrip));
 
 
         Button save = (Button) mview.findViewById(R.id.acc_save_userinfo);
@@ -161,7 +161,7 @@ public class Account extends Fragment {
                 if (!ed_realname.getText().toString().isEmpty() && !ed_username.getText().toString().isEmpty() &&
                         !ed_email.getText().toString().isEmpty() && !ed_description.getText().toString().isEmpty()) {
 
-                    new changeuserinfo().execute(AppPrefs.getString(Constants.user_id), ed_email.getText().toString(), ed_username.getText().toString(), ed_realname.getText().toString(), ed_description.getText().toString(), picturePath);
+                    new changeuserinfo().execute(AppPrefs.getString(Utility.user_id), ed_email.getText().toString(), ed_username.getText().toString(), ed_realname.getText().toString(), ed_description.getText().toString(), picturePath);
                 } else {
                     MyToast.popmessage("Please fill in all fields", getActivity());
                 }
@@ -208,7 +208,7 @@ public class Account extends Fragment {
 
                 if (!oldpass.isEmpty() && !newpass.isEmpty() && !newpassconfirm.isEmpty()) {
                     if (newpass.equals(newpassconfirm)) {
-                        new changepassword().execute(AppPrefs.getString(Constants.user_id), oldpass, newpass);
+                        new changepassword().execute(AppPrefs.getString(Utility.user_id), oldpass, newpass);
 
                     } else {
                         MyToast.popmessage("Password does not match", getActivity());
@@ -253,8 +253,8 @@ public class Account extends Fragment {
         dialog.findViewById(R.id.forgot_send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Constants.isValidEmail(email.getText().toString())) {
-                    new forgotpassword().execute(Constants.forgot_password, email.getText().toString());
+                if (Utility.isValidEmail(email.getText().toString())) {
+                    new forgotpassword().execute(Utility.forgot_password, email.getText().toString());
                     dialog.dismiss();
                 } else {
                     mesage.setText("Please enter a valid email");
@@ -397,7 +397,7 @@ public class Account extends Fragment {
             try {
 
 
-                webServiceHandler = new WebServiceHandler(Constants.change_password);
+                webServiceHandler = new WebServiceHandler(Utility.change_password);
                 webServiceHandler.addFormField("user_id", params[0]);
                 webServiceHandler.addFormField("old_password", params[1]);
                 webServiceHandler.addFormField("new_password", params[2]);
@@ -442,7 +442,7 @@ public class Account extends Fragment {
             try {
 
 
-                webServiceHandler = new WebServiceHandler(Constants.update_identiy);
+                webServiceHandler = new WebServiceHandler(Utility.update_identiy);
                 webServiceHandler.addFormField("user_id", params[0]);
                 webServiceHandler.addFormField("email", params[1]);
                 webServiceHandler.addFormField("username", params[2]);
@@ -458,11 +458,11 @@ public class Account extends Fragment {
 
                 status = jsonObject.getString("status");
                 if (status.equals("success")) {
-                    AppPrefs.putString(Constants.user_email, userInfo.getString(Constants.user_email));
-                    AppPrefs.putString(Constants.user_name,userInfo.getString(Constants.user_name));
-                    AppPrefs.putString(Constants.user_realname, userInfo.getString(Constants.user_realname));
-                    AppPrefs.putString(Constants.user_descrip, userInfo.getString(Constants.user_descrip));
-                    AppPrefs.putString(Constants.user_pic, userInfo.getString(Constants.user_pic));
+                    AppPrefs.putString(Utility.user_email, userInfo.getString(Utility.user_email));
+                    AppPrefs.putString(Utility.user_name,userInfo.getString(Utility.user_name));
+                    AppPrefs.putString(Utility.user_realname, userInfo.getString(Utility.user_realname));
+                    AppPrefs.putString(Utility.user_descrip, userInfo.getString(Utility.user_descrip));
+                    AppPrefs.putString(Utility.user_pic, userInfo.getString(Utility.user_pic));
 
                 }
 
@@ -475,25 +475,28 @@ public class Account extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            pbarchangepassword.setVisibility(View.GONE);
-            if (status.equals("success")) {
-                //update sliderdata
 
-                ed_email.setText(AppPrefs.getString(Constants.user_email));
+            if (isAdded()) {
+                pbarchangepassword.setVisibility(View.GONE);
+                if (status.equals("success")) {
+                    //update sliderdata
 
-
-                ed_username.setText(AppPrefs.getString(Constants.user_name));
-
-
-                ed_realname.setText(AppPrefs.getString(Constants.user_realname));
+                    ed_email.setText(AppPrefs.getString(Utility.user_email));
 
 
-                ed_description.setText(AppPrefs.getString(Constants.user_descrip));
+                    ed_username.setText(AppPrefs.getString(Utility.user_name));
 
 
-                MyToast.popmessage("Successfully updated", getActivity());
-            } else {
-                MyToast.popmessage(status, getActivity());
+                    ed_realname.setText(AppPrefs.getString(Utility.user_realname));
+
+
+                    ed_description.setText(AppPrefs.getString(Utility.user_descrip));
+
+
+                    MyToast.popmessage("Successfully updated", getActivity());
+                } else {
+                    MyToast.popmessage(status, getActivity());
+                }
             }
         }
     }

@@ -17,7 +17,7 @@ import com.tagframe.tagframe.Adapters.SearchAdapter;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
@@ -97,9 +97,9 @@ public class Follow extends Fragment{
 
             try
             {
-                webServiceHandler=new WebServiceHandler(Constants.search);
+                webServiceHandler=new WebServiceHandler(Utility.search);
                 webServiceHandler.addFormField("keyword", params[0]);
-                webServiceHandler.addFormField("user_id", userinfo.getString(Constants.user_id));
+                webServiceHandler.addFormField("user_id", userinfo.getString(Utility.user_id));
                 JSONObject jsonObject=new JSONObject(webServiceHandler.finish());
 
                 status=jsonObject.getString("status");
@@ -113,7 +113,7 @@ public class Follow extends Fragment{
                         followModel.setUserid(res.getString("to_user_id"));
                         followModel.setImage(res.getString("image"));
                         followModel.setUser_name(res.getString("username"));
-                        followModel.setFrom_user_id(userinfo.getString(Constants.user_id));
+                        followModel.setFrom_user_id(userinfo.getString(Utility.user_id));
                         followModel.setIs_followed(res.getString("followed"));
 
                         followModelArrayList.add(followModel);
@@ -131,15 +131,15 @@ public class Follow extends Fragment{
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+                if(isAdded()) {
+                    progressBar.setVisibility(View.GONE);
+                    searchlist.setAdapter(new SearchAdapter(getActivity(), followModelArrayList, 2, Utility.operation_onclicked_direct_follow));
 
-            progressBar.setVisibility(View.GONE);
-            searchlist.setAdapter(new SearchAdapter(getActivity(), followModelArrayList, 2,Constants.operation_onclicked_direct_follow));
-
-            if(followModelArrayList.size()==0)
-            {
-                textview.setVisibility(View.VISIBLE);
-                textview.setText("There is no such user in TagFrame");
-            }
+                    if (followModelArrayList.size() == 0) {
+                        textview.setVisibility(View.VISIBLE);
+                        textview.setText("There is no such user in TagFrame");
+                    }
+                }
 
         }
     }

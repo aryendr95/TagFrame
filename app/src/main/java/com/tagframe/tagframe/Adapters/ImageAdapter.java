@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 
 import java.util.ArrayList;
 
@@ -99,7 +99,7 @@ public class ImageAdapter extends BaseAdapter
                         intent.putExtra("from", "profile");
                         intent.putExtra("description","");
                         intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-                        intent.putExtra("eventtype", Constants.eventtype_internet);
+                        intent.putExtra("eventtype", Utility.eventtype_internet);
                         intent.putExtra("eventid", tagStream.getVideo_id());
                         intent.putExtra("tagged_user_id",tagStream.getTaggedUserModelArrayList());
 
@@ -113,7 +113,7 @@ public class ImageAdapter extends BaseAdapter
                 Picasso.with(ctx).load(tagStream.getThumbnail_url()).into(frameimage);
 
                 tittle.setText(tagStream.getTitle());
-               // duration.setText(Constants.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Constants.milliSecondsToTimer(frameList_model.getEndtime()));
+               // duration.setText(Utility.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
 
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override

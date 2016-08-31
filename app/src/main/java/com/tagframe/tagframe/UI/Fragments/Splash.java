@@ -21,7 +21,7 @@ import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -60,7 +60,7 @@ public class Splash extends Fragment {
 
         AppPrefs =new AppPrefs(getActivity());
         txt=(TextView)mview.findViewById(R.id.txtsplashmessage);
-        new Logintask().execute(Constants.login, AppPrefs.getString(Constants.user_name), AppPrefs.getString(Constants.user_password));
+        new Logintask().execute(Utility.login, AppPrefs.getString(Utility.user_name), AppPrefs.getString(Utility.user_password));
 
         return mview;
     }
@@ -140,17 +140,17 @@ public class Splash extends Fragment {
                     try {
 
                         //storing the userinformation in persistant storage for later use
-                        AppPrefs.putString(Constants.user_id, userinfo.getString(Constants.user_id));
-                        AppPrefs.putString(Constants.user_name, userinfo.getString(Constants.user_name));
-                        AppPrefs.putString(Constants.user_email, userinfo.getString(Constants.user_email));
-                        AppPrefs.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
-                        AppPrefs.putString(Constants.user_pic, userinfo.getString(Constants.user_pic));
-                        AppPrefs.putString(Constants.user_descrip, userinfo.getString(Constants.user_descrip));
-                        AppPrefs.putString(Constants.total_events, userinfo.getString(Constants.total_events));
-                        AppPrefs.putString(Constants.total_frames, userinfo.getString(Constants.total_frames));
-                        AppPrefs.putString(Constants.number_of_followers, userinfo.getString(Constants.number_of_followers));
-                        AppPrefs.putString(Constants.number_of_following, userinfo.getString(Constants.number_of_following));
-                        AppPrefs.putString(Constants.loginstatuskey,Constants.loginstatusvalue);
+                        AppPrefs.putString(Utility.user_id, userinfo.getString(Utility.user_id));
+                        AppPrefs.putString(Utility.user_name, userinfo.getString(Utility.user_name));
+                        AppPrefs.putString(Utility.user_email, userinfo.getString(Utility.user_email));
+                        AppPrefs.putString(Utility.user_realname, userinfo.getString(Utility.user_realname));
+                        AppPrefs.putString(Utility.user_pic, userinfo.getString(Utility.user_pic));
+                        AppPrefs.putString(Utility.user_descrip, userinfo.getString(Utility.user_descrip));
+                        AppPrefs.putString(Utility.total_events, userinfo.getString(Utility.total_events));
+                        AppPrefs.putString(Utility.total_frames, userinfo.getString(Utility.total_frames));
+                        AppPrefs.putString(Utility.number_of_followers, userinfo.getString(Utility.number_of_followers));
+                        AppPrefs.putString(Utility.number_of_following, userinfo.getString(Utility.number_of_following));
+                        AppPrefs.putString(Utility.loginstatuskey, Utility.loginstatusvalue);
 
                         /*Intent intent=new Intent(getActivity(), Modules.class);
                         startActivity(intent);
@@ -178,7 +178,7 @@ public class Splash extends Fragment {
             {
                 /// generate code for telling the backend handling this json error
                 MyToast.popmessage("Oops, there seems to be an error", getActivity());
-                AppPrefs.putString(Constants.loginstatuskey, "");
+                AppPrefs.putString(Utility.loginstatuskey, "");
                 Log.e("das", "hg"+status);
             }
             else
@@ -196,7 +196,7 @@ public class Splash extends Fragment {
         if(Networkstate.haveNetworkConnection(getActivity()))
         {
             ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
-            Call<ListResponseModel> call=apiInterface.getTagStream(AppPrefs.getString(Constants.user_id));
+            Call<ListResponseModel> call=apiInterface.getTagStream(AppPrefs.getString(Utility.user_id));
             call.enqueue(new Callback<ListResponseModel>() {
                 @Override
                 public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {

@@ -8,6 +8,26 @@ import com.google.gson.annotations.SerializedName;
  */
 public class NotificationModel {
 
+    @SerializedName("user_id")
+    @Expose
+    private String user_id;
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getCreated_on() {
+        return created_on;
+    }
+
+    public void setCreated_on(String created_on) {
+        this.created_on = created_on;
+    }
+
     @SerializedName("id")
     @Expose
     private String id;

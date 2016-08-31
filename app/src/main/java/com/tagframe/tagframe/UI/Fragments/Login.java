@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
@@ -65,7 +65,7 @@ public class Login extends Fragment {
 
                 if(Networkstate.haveNetworkConnection(getActivity())) {
                     if (!uname.isEmpty() || !password.isEmpty()) {
-                        new Logintask().execute(Constants.login, uname, password);
+                        new Logintask().execute(Utility.login, uname, password);
                     } else {
                         MyToast.popmessage("Please input all the fields", getActivity());
                     }
@@ -113,7 +113,7 @@ public class Login extends Fragment {
                     public void onClick(View v) {
                         if(isValidEmail(email.getText().toString()))
                         {
-                            new forgotpassword().execute(Constants.forgot_password,email.getText().toString());
+                            new forgotpassword().execute(Utility.forgot_password,email.getText().toString());
                             dialog.dismiss();
                         }
                         else
@@ -219,17 +219,17 @@ public class Login extends Fragment {
                         try {
 
                             //storing the userinformation in persistant storage for later use
-                            AppPrefs.putString(Constants.user_id, userinfo.getString(Constants.user_id));
-                            AppPrefs.putString(Constants.user_name, userinfo.getString(Constants.user_name));
-                            AppPrefs.putString(Constants.user_email, userinfo.getString(Constants.user_email));
-                            AppPrefs.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
-                            AppPrefs.putString(Constants.user_pic, userinfo.getString(Constants.user_pic));
-                            AppPrefs.putString(Constants.total_events, userinfo.getString(Constants.total_events));
-                            AppPrefs.putString(Constants.total_frames, userinfo.getString(Constants.total_frames));
-                            AppPrefs.putString(Constants.number_of_followers, userinfo.getString(Constants.number_of_followers));
-                            AppPrefs.putString(Constants.number_of_following, userinfo.getString(Constants.number_of_following));
-                            AppPrefs.putString(Constants.loginstatuskey, Constants.loginstatusvalue);
-                            AppPrefs.putString(Constants.user_password, save);
+                            AppPrefs.putString(Utility.user_id, userinfo.getString(Utility.user_id));
+                            AppPrefs.putString(Utility.user_name, userinfo.getString(Utility.user_name));
+                            AppPrefs.putString(Utility.user_email, userinfo.getString(Utility.user_email));
+                            AppPrefs.putString(Utility.user_realname, userinfo.getString(Utility.user_realname));
+                            AppPrefs.putString(Utility.user_pic, userinfo.getString(Utility.user_pic));
+                            AppPrefs.putString(Utility.total_events, userinfo.getString(Utility.total_events));
+                            AppPrefs.putString(Utility.total_frames, userinfo.getString(Utility.total_frames));
+                            AppPrefs.putString(Utility.number_of_followers, userinfo.getString(Utility.number_of_followers));
+                            AppPrefs.putString(Utility.number_of_following, userinfo.getString(Utility.number_of_following));
+                            AppPrefs.putString(Utility.loginstatuskey, Utility.loginstatusvalue);
+                            AppPrefs.putString(Utility.user_password, save);
 
                         /*Intent intent=new Intent(getActivity(), Modules.class);
                         startActivity(intent);

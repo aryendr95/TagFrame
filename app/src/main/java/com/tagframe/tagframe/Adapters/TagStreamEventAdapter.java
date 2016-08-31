@@ -33,7 +33,7 @@ import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.LoadComment;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.AppPrefs;
@@ -134,7 +134,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 intent.putExtra("from", "tagstream");
                 intent.putExtra("description", tagStream.getDescription());
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-                intent.putExtra("eventtype", Constants.eventtype_internet);
+                intent.putExtra("eventtype", Utility.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
                 intent.putExtra("tagged_user_id",tagStream.getTaggedUserModelArrayList());
 
@@ -152,7 +152,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 intent.putExtra("from", "tagstream");
                 intent.putExtra("description", tagStream.getDescription());
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-                intent.putExtra("eventtype", Constants.eventtype_internet);
+                intent.putExtra("eventtype", Utility.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
 
 
@@ -184,8 +184,8 @@ public class TagStreamEventAdapter extends BaseAdapter {
                     Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
 
                     Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                    intent.putExtra("operation", Constants.operation_like);
-                    intent.putExtra("user_id", user_data.getString(Constants.user_id));
+                    intent.putExtra("operation", Utility.operation_like);
+                    intent.putExtra("user_id", user_data.getString(Utility.user_id));
                     intent.putExtra("event_id", tagStream.getEvent_id());
                     intent.putExtra("receiver", mReceiver);
                     ctx.startService(intent);
@@ -197,8 +197,8 @@ public class TagStreamEventAdapter extends BaseAdapter {
                     Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
 
                     Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                    intent.putExtra("operation", Constants.operation_unlike);
-                    intent.putExtra("user_id", user_data.getString(Constants.user_id));
+                    intent.putExtra("operation", Utility.operation_unlike);
+                    intent.putExtra("user_id", user_data.getString(Utility.user_id));
                     intent.putExtra("event_id", tagStream.getEvent_id());
                     intent.putExtra("receiver", mReceiver);
                     tagStream.setNumber_of_likes((Integer.parseInt(tagStream.getNumber_of_likes()) - 1) + "");
@@ -215,7 +215,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
         mViewHolder.llcomment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCommentDialog(ctx, tagStream.getEvent_id(), user_data.getString(Constants.user_id));
+                showCommentDialog(ctx, tagStream.getEvent_id(), user_data.getString(Utility.user_id));
             }
         });
 
@@ -226,7 +226,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
         //events might be of different user
 
         AppPrefs appPrefs = new AppPrefs(ctx);
-        final int user_type = getUser_Type(tagStream.getUser_id(), appPrefs.getString(Constants.user_id));
+        final int user_type = getUser_Type(tagStream.getUser_id(), appPrefs.getString(Utility.user_id));
 
 
         //click listners on profile photo and name
@@ -249,9 +249,9 @@ public class TagStreamEventAdapter extends BaseAdapter {
 
     private int getUser_Type(String user_id, String saved_user_id) {
         if (user_id.equals(saved_user_id))
-            return Constants.user_type_self;
+            return Utility.user_type_self;
         else
-            return Constants.user_type_following;
+            return Utility.user_type_following;
     }
 
     private void showCommentDialog(final Context ctx, final String video, final String user_id) {
@@ -261,6 +261,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
         dialog.setCancelable(true);
 
         final RecyclerView listview_comment = (RecyclerView) dialog.findViewById(R.id.list_comment);
+        listview_comment.setNestedScrollingEnabled(false);
         final EditText editext_comment = (EditText) dialog.findViewById(R.id.ed_dialog_comment);
         final LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.mlayout_dialog_comment);
         ImageButton img_send_comment = (ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
@@ -300,7 +301,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                         Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
 
                         Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                        intent.putExtra("operation", Constants.operation_comment);
+                        intent.putExtra("operation", Utility.operation_comment);
                         intent.putExtra("user_id", user_id);
                         intent.putExtra("video_id", video);
                         intent.putExtra("parent_id", "0");
@@ -315,8 +316,8 @@ public class TagStreamEventAdapter extends BaseAdapter {
                         comment.setVideo_id(video);
                         comment.setParent_id("-1");
                         comment.setComment(editext_comment.getText().toString());
-                        comment.setUsername(user_data.getString(Constants.user_name));
-                        comment.setProfile_image(user_data.getString(Constants.user_pic));
+                        comment.setUsername(user_data.getString(Utility.user_name));
+                        comment.setProfile_image(user_data.getString(Utility.user_pic));
                         comment.setReplyCommentArrayList(new ArrayList<Comment.ReplyComment>());
                         //adding the comment to the first postion of list
                         //find a workaround since too much time taken to  move the n-1 number of elements

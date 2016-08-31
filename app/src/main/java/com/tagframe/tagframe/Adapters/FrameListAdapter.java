@@ -23,7 +23,7 @@ import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.Utils.BitmapHelper;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -87,13 +87,13 @@ public class FrameListAdapter extends BaseAdapter {
 
         final FrameList_Model frame=frames.get(position);
 
-        mViewHolder.tvtime.setText(Constants.milliSecondsToTimer(frame.getStarttime())+"-"+Constants.milliSecondsToTimer(frame.getEndtime()));
+        mViewHolder.tvtime.setText(Utility.milliSecondsToTimer(frame.getStarttime())+"-"+ Utility.milliSecondsToTimer(frame.getEndtime()));
         mViewHolder.tvname.setText(frame.getName());
 
 
-                if (frame.getFrametype() == Constants.frametype_image) {
+                if (frame.getFrametype() == Utility.frametype_image) {
 
-                    if(frame.getFrame_resource_type().equals(Constants.frame_resource_type_local))
+                    if(frame.getFrame_resource_type().equals(Utility.frame_resource_type_local))
                     {
                         mViewHolder.iveventimage.setImageBitmap(BitmapHelper.decodeFile(ctx,new File(frame.getImagepath())));
                     }
@@ -103,7 +103,7 @@ public class FrameListAdapter extends BaseAdapter {
                     }
                 } else {
 
-                    if(frame.getFrame_resource_type().equals(Constants.frame_resource_type_local))
+                    if(frame.getFrame_resource_type().equals(Utility.frame_resource_type_local))
                     {
                         Bitmap thumb = ThumbnailUtils.createVideoThumbnail(frame.getImagepath(),
                                 MediaStore.Images.Thumbnails.MINI_KIND);

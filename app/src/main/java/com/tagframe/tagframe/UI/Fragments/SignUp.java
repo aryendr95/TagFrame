@@ -18,7 +18,7 @@ import android.widget.EditText;
 
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
@@ -111,8 +111,8 @@ public class SignUp extends Fragment {
                 if(Networkstate.haveNetworkConnection(getActivity())) {
                     if (!uname.isEmpty() && !password.isEmpty() &&!realname.isEmpty() && !email.isEmpty() ) {
 
-                        if(Constants.isValidEmail(email)) {
-                            new SignUpuser().execute(Constants.signup, email, uname,realname ,password);
+                        if(Utility.isValidEmail(email)) {
+                            new SignUpuser().execute(Utility.signup, email, uname,realname ,password);
                         }
                         else
                         {
@@ -217,13 +217,13 @@ public class SignUp extends Fragment {
                         try {
 
                             //storing the userinformation in persistant storage for later use
-                            AppPrefs.putString(Constants.user_id, userinfo.getString(Constants.user_id));
-                            AppPrefs.putString(Constants.user_name, userinfo.getString(Constants.user_name));
-                            AppPrefs.putString(Constants.user_email, userinfo.getString(Constants.user_email));
-                            AppPrefs.putString(Constants.user_realname, userinfo.getString(Constants.user_realname));
+                            AppPrefs.putString(Utility.user_id, userinfo.getString(Utility.user_id));
+                            AppPrefs.putString(Utility.user_name, userinfo.getString(Utility.user_name));
+                            AppPrefs.putString(Utility.user_email, userinfo.getString(Utility.user_email));
+                            AppPrefs.putString(Utility.user_realname, userinfo.getString(Utility.user_realname));
 
-                            AppPrefs.putString(Constants.loginstatuskey, Constants.loginstatusvalue);
-                            AppPrefs.putString(Constants.user_password, save);
+                            AppPrefs.putString(Utility.loginstatuskey, Utility.loginstatusvalue);
+                            AppPrefs.putString(Utility.user_password, save);
 
                         /*Intent intent=new Intent(getActivity(), Modules.class);
                         startActivity(intent);

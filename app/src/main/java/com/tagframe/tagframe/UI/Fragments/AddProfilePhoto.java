@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.pkmmte.view.CircularImageView;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
@@ -144,8 +144,8 @@ public class AddProfilePhoto extends Fragment {
 
             try {
 
-                webServiceHandler=new WebServiceHandler(Constants.upload_profile_photo);
-                webServiceHandler.addFormField("user_id", AppPrefs.getString(Constants.user_id));
+                webServiceHandler=new WebServiceHandler(Utility.upload_profile_photo);
+                webServiceHandler.addFormField("user_id", AppPrefs.getString(Utility.user_id));
                 if(!picturePath.isEmpty()) {
                     File file = new File(picturePath);
                     webServiceHandler.addFilePart("profile_photo",file,3,getActivity());
@@ -166,11 +166,12 @@ public class AddProfilePhoto extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             dialog.dismiss();
-            if(status.equals("success"))
-            {
-                Intent intent=new Intent(getActivity(), Modules.class);
-                startActivity(intent);
-                getActivity().finish();
+            if(isAdded()) {
+                if (status.equals("success")) {
+                    Intent intent = new Intent(getActivity(), Modules.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
             }
 
         }

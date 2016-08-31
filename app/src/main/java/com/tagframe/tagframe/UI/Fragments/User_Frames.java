@@ -19,7 +19,7 @@ import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.AppPrefs;
@@ -126,8 +126,8 @@ public class User_Frames extends Fragment {
 
 
                             //detect more events are to be loaded or not
-                            if (response.body().getUser_frames_models().size() == Constants.PAGE_SIZE) {
-                                next_records = next_records + Constants.PAGE_SIZE;
+                            if (response.body().getUser_frames_models().size() == Utility.PAGE_SIZE) {
+                                next_records = next_records + Utility.PAGE_SIZE;
                                 mTxt_footer.setText("Load more items...");
 
                             } else {

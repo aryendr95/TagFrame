@@ -36,9 +36,9 @@ public class ProgressRequestBody extends RequestBody {
     @Override
     public MediaType contentType() {
         // i want to upload only images
-        if (mediatype.equals(Constants.media_type_image))
+        if (mediatype.equals(Utility.media_type_image))
             return MediaType.parse("image/*");
-        else if (mediatype.equals(Constants.media_type_video))
+        else if (mediatype.equals(Utility.media_type_video))
             return MediaType.parse("video/*");
         else
             return MediaType.parse("video/*");

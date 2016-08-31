@@ -60,7 +60,7 @@ public class LoadComment extends AsyncTask<String,String,String> {
 
         try
         {
-            WebServiceHandler webServiceHandler=new WebServiceHandler(Constants.URL_COMMENT_LIST);
+            WebServiceHandler webServiceHandler=new WebServiceHandler(Utility.URL_COMMENT_LIST);
             webServiceHandler.addFormField("video_id",video_id);
             JSONObject resultobject=new JSONObject(webServiceHandler.finish());
 

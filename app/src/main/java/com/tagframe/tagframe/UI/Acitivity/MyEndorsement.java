@@ -16,7 +16,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Utils.AppPrefs;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 
@@ -54,9 +54,9 @@ public class MyEndorsement extends AppCompatActivity {
         list_endorseList = (RecyclerView) findViewById(R.id.endorse_list);
         if (Networkstate.haveNetworkConnection(this)) {
             AppPrefs appPrefs = new AppPrefs(this);
-            getEndorseList(appPrefs.getString(Constants.user_id));
+            getEndorseList(appPrefs.getString(Utility.user_id));
         } else {
-            PopMessage.makesimplesnack(mLayout, Constants.message_no_internet);
+            PopMessage.makesimplesnack(mLayout, Utility.message_no_internet);
         }
     }
 
@@ -69,7 +69,7 @@ public class MyEndorsement extends AppCompatActivity {
             @Override
             public void onResponse(Call<EndorseListResponseModel> call, Response<EndorseListResponseModel> response) {
                 pbar.setVisibility(View.GONE);
-                if(response.body().getStatus().equals(Constants.success_response)) {
+                if(response.body().getStatus().equals(Utility.success_response)) {
                     if (response.body().getEndorseListModels().size() > 0) {
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MyEndorsement.this);
                         list_endorseList.setLayoutManager(layoutManager);

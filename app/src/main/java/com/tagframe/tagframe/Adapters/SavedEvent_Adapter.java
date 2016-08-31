@@ -23,7 +23,7 @@ import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.SavedEvents;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
@@ -164,7 +164,7 @@ public class SavedEvent_Adapter extends BaseAdapter
                         intent.putExtra("des", singleEventModel.getDescription());
                         intent.putExtra("type", singleEventModel.getType());
                         intent.putParcelableArrayListExtra("framelist", singleEventModel.getFrameList_modelArrayList());
-                        intent.putExtra("eventtype", Constants.eventtype_saved);
+                        intent.putExtra("eventtype", Utility.eventtype_saved);
                         intent.putExtra("tagged_user_id",singleEventModel.getTaggedUserModelArrayList());
 
                         ctx.startActivity(intent);
@@ -177,7 +177,7 @@ public class SavedEvent_Adapter extends BaseAdapter
                         // sent to have the camera application capture an video and return it.
 
                         SingleEventModel sm = tagStream_models.get(p);
-                        method_post_event(ctx, sm.getVidaddress(), sm.getFrameList_modelArrayList(), sm.getTittle(), sm.getDescription(), sm.getDuration(), userdata.getString(Constants.user_id));
+                        method_post_event(ctx, sm.getVidaddress(), sm.getFrameList_modelArrayList(), sm.getTittle(), sm.getDescription(), sm.getDuration(), userdata.getString(Utility.user_id));
                         break;
 
                     case R.id.save_delete:
@@ -203,7 +203,7 @@ public class SavedEvent_Adapter extends BaseAdapter
         Intent intent=new Intent(ctx, IntentServiceOperations.class);
         intent.putExtra("video_url", vidAddress);
         intent.putParcelableArrayListExtra("frame_list", framedata_map);
-        intent.putExtra("operation", Constants.operation_post_event);
+        intent.putExtra("operation", Utility.operation_post_event);
         intent.putExtra("title", tittle);
         intent.putExtra("description", description);
         //intent.putExtra("access_type", type);

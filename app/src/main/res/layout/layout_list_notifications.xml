@@ -6,18 +6,19 @@
     android:id="@+id/notification_background"
     >
 
-    <com.pkmmte.view.CircularImageView
+    <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="5dp"
         android:id="@+id/notification_pro_pic"/>
 
 
-    <TextView
+    <com.tagframe.tagframe.Utils.MyTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/notification_user_name"
-        android:textStyle="bold"
+        android:textColor="@color/blACK"
+        android:gravity="center_vertical"
         android:layout_marginTop="10dp"
         android:textSize="16dp"
         android:layout_toRightOf="@+id/notification_pro_pic"
@@ -25,7 +26,9 @@
     <com.tagframe.tagframe.Utils.MyTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:layout_marginTop="10dp"
+        android:textSize="16dp"
         android:id="@+id/notification_action_type"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/notification_user_name"
@@ -37,11 +40,29 @@
         android:id="@+id/notification_sub_action_name"
         android:textStyle="bold"
         android:textSize="12dp"
+        android:layout_marginTop="5dp"
         android:textColor="@color/appblue"
         android:layout_toRightOf="@+id/notification_pro_pic"
 
         android:layout_below="@+id/notification_user_name"
         android:text="Sub action name"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/notification_date"
+        android:textSize="12dp"
+        android:layout_below="@+id/notification_sub_action_name"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:text="Sub action name"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray"
+        android:layout_below="@+id/notification_date"
+        android:layout_margin="10dp"/>
 
 
 

@@ -1,17 +1,13 @@
 package com.tagframe.tagframe.UI.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.ProductAdapter;
 import com.tagframe.tagframe.Models.GetProductResponseModel;
@@ -19,12 +15,10 @@ import com.tagframe.tagframe.Models.Product;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
-import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
 import retrofit2.Call;
@@ -136,8 +130,8 @@ public class MarketPlaceFragment extends Fragment {
             call.enqueue(new Callback<GetProductResponseModel>() {
                 @Override
                 public void onResponse(Call<GetProductResponseModel> call, Response<GetProductResponseModel> response) {
-
-
+                    if(isAdded())
+                    {
                     if (response.body().getStatus().equals("success")) {
                         if (response.body().getProductList().size() > 0) {
                             products.addAll(response.body().getProductList());
@@ -155,11 +149,13 @@ public class MarketPlaceFragment extends Fragment {
                         PopMessage.makesimplesnack(mLayout, response.body().getStatus());
 
                     }
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<GetProductResponseModel> call, Throwable t) {
-                    pbar.setVisibility(View.GONE);
+                    if (isAdded()){
+                    pbar.setVisibility(View.GONE);}
                 }
             });
         } else {

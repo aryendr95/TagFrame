@@ -22,7 +22,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyListView;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -44,7 +44,7 @@ public class TagStream extends Fragment {
     private MyListView listView;
     private AppPrefs AppPrefs;
     private ImageButton imgbtn;
-    private int next_records = Constants.PAGE_SIZE;
+    private int next_records = Utility.PAGE_SIZE;
     private ArrayList<Event_Model> tagStream_models;
     private ProgressBar footerbar;
     private TextView mTxt_footer;
@@ -143,7 +143,7 @@ public class TagStream extends Fragment {
 
             footerbar.setVisibility(View.VISIBLE);
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            Call<ListResponseModel> call = apiInterface.getTagStreamPaginated(AppPrefs.getString(Constants.user_id), String.valueOf(next_records));
+            Call<ListResponseModel> call = apiInterface.getTagStreamPaginated(AppPrefs.getString(Utility.user_id), String.valueOf(next_records));
             call.enqueue(new Callback<ListResponseModel>() {
                 @Override
                 public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
@@ -158,8 +158,8 @@ public class TagStream extends Fragment {
                         swipeRefreshLayout.setRefreshing(false);
                         footerbar.setVisibility(View.GONE);
                         //if there are more items to be loaded then increse the offset by pagesize
-                        if (continued_list.size() == Constants.PAGE_SIZE) {
-                            next_records = next_records + Constants.PAGE_SIZE;
+                        if (continued_list.size() == Utility.PAGE_SIZE) {
+                            next_records = next_records + Utility.PAGE_SIZE;
                             mTxt_footer.setText("Load more items..");
                         } else {
                             mTxt_footer.setOnClickListener(null);

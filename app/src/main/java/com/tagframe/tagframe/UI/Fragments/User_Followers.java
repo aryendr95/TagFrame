@@ -1,16 +1,13 @@
 package com.tagframe.tagframe.UI.Fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
@@ -24,15 +21,10 @@ import com.tagframe.tagframe.Models.SearchUserResponseModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
-import com.tagframe.tagframe.Utils.Constants;
-import com.tagframe.tagframe.Utils.MyToast;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
-import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -122,8 +114,8 @@ public class User_Followers extends Fragment {
                             ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
 
                             //detect more events are to be loaded or not
-                            if (response.body().getArrayList_search_user_model().size() == Constants.PAGE_SIZE) {
-                                next_records = next_records + Constants.PAGE_SIZE;
+                            if (response.body().getArrayList_search_user_model().size() == Utility.PAGE_SIZE) {
+                                next_records = next_records + Utility.PAGE_SIZE;
                                 mTxt_footer.setText("Load more items...");
                             } else {
                                 mTxt_footer.setOnClickListener(null);

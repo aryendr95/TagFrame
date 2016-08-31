@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,9 +17,8 @@ import com.tagframe.tagframe.Models.NotificationResponseModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
-import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.AppPrefs;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 
@@ -59,46 +57,43 @@ public class Notifications extends Fragment {
         if(Networkstate.haveNetworkConnection(getActivity()))
         {
             AppPrefs appPrefs=new AppPrefs(getActivity());
-            String user_id=appPrefs.getString(Constants.user_id);
+            String user_id=appPrefs.getString(Utility.user_id);
 
             pbar.setVisibility(View.VISIBLE);
             ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
             apiInterface.getNotifications(user_id).enqueue(new Callback<NotificationResponseModel>() {
                 @Override
                 public void onResponse(Call<NotificationResponseModel> call, Response<NotificationResponseModel> response) {
-                    String status=response.body().getStatus();
-                    pbar.setVisibility(View.GONE);
-                    if(status.equals(Constants.success_response))
-                    {
-                        if(response.body().getNotificationModelArrayList().size()>0)
-                        {
-                            RecyclerView.LayoutManager layoutManagers=new LinearLayoutManager(getActivity());
-                            list_notification.setLayoutManager(layoutManagers);
-                            list_notification.setAdapter(new NotificationAdapter(response.body().getNotificationModelArrayList(),getActivity()));
+                    if (isAdded()) {
+                        String status = response.body().getStatus();
+                        pbar.setVisibility(View.GONE);
+                        if (status.equals(Utility.success_response)) {
+                            if (response.body().getNotificationModelArrayList().size() > 0) {
+                                RecyclerView.LayoutManager layoutManagers = new LinearLayoutManager(getActivity());
+                                list_notification.setLayoutManager(layoutManagers);
+                                list_notification.setAdapter(new NotificationAdapter(response.body().getNotificationModelArrayList(), getActivity()));
+                            } else {
+                                txt_message.setVisibility(View.VISIBLE);
+                                //txt_message.setText(getActivity().getResources().getString(R.string.no_notification_message));
+                            }
+                        } else {
+                            PopMessage.makesimplesnack(mLayout, "Error, please try after some time..");
                         }
-                        else
-                        {
-                            txt_message.setVisibility(View.VISIBLE);
-                            //txt_message.setText(getActivity().getResources().getString(R.string.no_notification_message));
-                        }
-                    }
-                    else
-                    {
-                        PopMessage.makesimplesnack(mLayout,"Error, please try after some time..");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<NotificationResponseModel> call, Throwable t) {
+                    if (isAdded()){
                     pbar.setVisibility(View.GONE);
                     PopMessage.makesimplesnack(mLayout,"Error, please try after some time..");
 
-                }
+                }}
             });
         }
         else
         {
-            PopMessage.makesimplesnack(mLayout, Constants.message_no_internet);
+            PopMessage.makesimplesnack(mLayout, Utility.message_no_internet);
         }
     }
 }

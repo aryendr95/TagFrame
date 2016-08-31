@@ -28,7 +28,7 @@ import com.tagframe.tagframe.Models.Menu;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.SavedEvents;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 
 import java.util.ArrayList;
@@ -254,7 +254,7 @@ public class CreateEvent extends Fragment {
                     intent.putExtra("tittle",tittle);
                     intent.putExtra("des",des);
                     intent.putExtra("type",type);
-                    intent.putExtra("eventtype", Constants.eventtype_local);
+                    intent.putExtra("eventtype", Utility.eventtype_local);
                     startActivity(intent);
                 }
             }

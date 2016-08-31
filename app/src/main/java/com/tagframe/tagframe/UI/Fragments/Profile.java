@@ -27,7 +27,7 @@ import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Menu_Action;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
@@ -55,7 +55,7 @@ public class Profile extends Fragment {
 
     private ImageView edit_photo;
 
-    private TextView number_of_events, number_of_frames, number_of_following, number_of_followers;
+    private TextView number_of_events, number_of_frames, number_of_following, number_of_followers, number_of_timeline;
 
     private FrameLayout mlayout_profile;
 
@@ -66,7 +66,7 @@ public class Profile extends Fragment {
 
     String userid, username, userpic;
 
-    int height, usertype = Constants.user_type_self;
+    int height, usertype = Utility.user_type_self;
 
     String f_value = "No";
 
@@ -101,51 +101,51 @@ public class Profile extends Fragment {
         edit_photo = (ImageView) mview.findViewById(R.id.edit_profile_picture);
 
         pro_user_iamge = (CircularImageView) mview.findViewById(R.id.pro_user_pic);
-        //Picasso.with(getActivity()).load(userinfo.getString(Constants.user_pic)).into(pro_user_iamge);
+        //Picasso.with(getActivity()).load(userinfo.getString(Utility.user_pic)).into(pro_user_iamge);
 
         pro_user_name = (TextView) mview.findViewById(R.id.pro_user_name);
-        //pro_user_name.setText(userinfo.getString(Constants.user_name));
+        //pro_user_name.setText(userinfo.getString(Utility.user_name));
 
         pro_user_realname = (TextView) mview.findViewById(R.id.pro_user_realname);
-        // pro_user_realname.setText(userinfo.getString(Constants.user_realname));
+        // pro_user_realname.setText(userinfo.getString(Utility.user_realname));
 
         pro_description = (TextView) mview.findViewById(R.id.pro_user_description);
-        //pro_description.setText(userinfo.getString(Constants.user_descrip));
+        //pro_description.setText(userinfo.getString(Utility.user_descrip));
 
-        // Log.e("fasf", userinfo.getString(Constants.user_descrip));
+        // Log.e("fasf", userinfo.getString(Utility.user_descrip));
 
         pro_edit_profile = (Button) mview.findViewById(R.id.btn_edit_profile);
         pro_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (usertype == Constants.user_type_self) {
+                if (usertype == Utility.user_type_self) {
                     Intent intent = new Intent(getActivity(), Menu_Action.class);
                     intent.putExtra("name", "Edit Profile");
 
                     startActivity(intent);
                     getActivity().finish();
-                } else if (usertype == Constants.user_type_following) {
+                } else if (usertype == Utility.user_type_following) {
 
                     if (getActivity() instanceof Modules) {
                         progressBar.setVisibility(View.VISIBLE);
                         Broadcastresults mReciever = ((Modules) getActivity()).register_reviever();
                         Intent intent = new Intent(getActivity(), IntentServiceOperations.class);
-                        intent.putExtra("operation", Constants.operation_unfollow_profile);
-                        intent.putExtra("from_userid", userinfo_data.getString(Constants.user_id));
+                        intent.putExtra("operation", Utility.operation_unfollow_profile);
+                        intent.putExtra("from_userid", userinfo_data.getString(Utility.user_id));
                         intent.putExtra("to_userid", userid);
                         intent.putExtra("type", "following");
                         intent.putExtra("receiver", mReciever);
                         getActivity().startService(intent);
                     }
 
-                } else if (usertype == Constants.user_type_followers) {
+                } else if (usertype == Utility.user_type_followers) {
                     if (getActivity() instanceof Modules) {
                         progressBar.setVisibility(View.VISIBLE);
                         Broadcastresults mReciever = ((Modules) getActivity()).register_reviever();
                         Intent intent = new Intent(getActivity(), IntentServiceOperations.class);
-                        intent.putExtra("operation", Constants.operation_follow_profile);
-                        intent.putExtra("from_userid", userinfo_data.getString(Constants.user_id));
+                        intent.putExtra("operation", Utility.operation_follow_profile);
+                        intent.putExtra("from_userid", userinfo_data.getString(Utility.user_id));
                         intent.putExtra("to_userid", userid);
                         intent.putExtra("type", "following");
                         intent.putExtra("receiver", mReciever);
@@ -297,6 +297,7 @@ public class Profile extends Fragment {
         number_of_frames = (TextView) mview.findViewById(R.id.no_of_frames);
         number_of_following = (TextView) mview.findViewById(R.id.no_of_following);
         number_of_followers = (TextView) mview.findViewById(R.id.no_of_followers);
+        number_of_timeline = (TextView) mview.findViewById(R.id.no_of_timeline);
 
         mlayout_profile = (FrameLayout) mview.findViewById(R.id.framelayout_profile);
 
@@ -308,18 +309,18 @@ public class Profile extends Fragment {
         progressBar = (ProgressBar) mview.findViewById(R.id.loadprofileinformation);
 
 
-        userid = userinfo_data.getString(Constants.user_id);
+        userid = userinfo_data.getString(Utility.user_id);
         if (getArguments() != null) {
             userid = getArguments().getString("user_id");
 
 
             usertype = getArguments().getInt("type");
-            if (userid.equals(userinfo_data.getString(Constants.user_id))) {
-                usertype = Constants.user_type_self;
+            if (userid.equals(userinfo_data.getString(Utility.user_id))) {
+                usertype = Utility.user_type_self;
             }
 
             adjustview_wit_type();
-            if (usertype != Constants.user_type_self) {
+            if (usertype != Utility.user_type_self) {
                 //flush the profile cache
                 userinfo_data.flushProfileInformation();
 
@@ -333,16 +334,16 @@ public class Profile extends Fragment {
 
     private void adjustview_wit_type() {
 
-        if (usertype == Constants.user_type_following) {
+        if (usertype == Utility.user_type_following) {
             pro_edit_profile.setText("UnFollow");
             pro_edit_profile.setTextColor(getResources().getColor(R.color.white));
             pro_edit_profile.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
-        } else if (usertype == Constants.user_type_followers) {
+        } else if (usertype == Utility.user_type_followers) {
             pro_edit_profile.setText("Follow");
 
             pro_edit_profile.setTextColor(getResources().getColor(R.color.white));
             pro_edit_profile.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-        } else if (usertype == Constants.user_type_self) {
+        } else if (usertype == Utility.user_type_self) {
             pro_edit_profile.setText("Edit Profile");
 
             pro_edit_profile.setTextColor(getResources().getColor(R.color.GRAY));
@@ -352,9 +353,9 @@ public class Profile extends Fragment {
     }
 
     public void setprofilestat(int type, String value) {
-        if (type == Constants.user_type_followers) {
+        if (type == Utility.user_type_followers) {
             number_of_followers.setText(value);
-        } else if (type == Constants.user_type_following) {
+        } else if (type == Utility.user_type_following) {
             number_of_following.setText(value);
         }
 
@@ -474,9 +475,9 @@ public class Profile extends Fragment {
             try {
 
 
-                webServiceHandler = new WebServiceHandler(Constants.users_details);
+                webServiceHandler = new WebServiceHandler(Utility.users_details);
                 webServiceHandler.addFormField("user_id", userid);
-                webServiceHandler.addFormField("logged_user_id", userinfo_data.getString(Constants.user_id));
+                webServiceHandler.addFormField("logged_user_id", userinfo_data.getString(Utility.user_id));
                 JSONObject wrapper_object = new JSONObject(webServiceHandler.finish());
 
                 JSONObject top_level = wrapper_object.getJSONObject("profile");
@@ -497,6 +498,7 @@ public class Profile extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            if (isAdded()){
 
             if (status.equals("success")) {
                 try {
@@ -513,6 +515,8 @@ public class Profile extends Fragment {
                     number_of_frames.setText(userinfo.getString("number_of_frame"));
                     number_of_following.setText(userinfo.getString("number_of_following"));
                     number_of_followers.setText(userinfo.getString("number_of_followers"));
+                    number_of_timeline.setText(userinfo.getString("number_of_timeline"));
+
                     wholelayout.setVisibility(View.VISIBLE);
                     try {
                         Picasso.with(getActivity()).load(userinfo.getString("profile_image")).error(R.drawable.pro_image).into(pro_user_iamge);
@@ -525,14 +529,14 @@ public class Profile extends Fragment {
                     f_value = userinfo.getString("followed");
 
                     if (f_value.equals("followed")) {
-                        usertype = Constants.user_type_following;
+                        usertype = Utility.user_type_following;
                     } else if (f_value.equals("follower")) {
-                        usertype = Constants.user_type_followers;
+                        usertype = Utility.user_type_followers;
                     } else {
-                        if (userid.equals(userinfo_data.getString(Constants.user_id))) {
-                            usertype = Constants.user_type_self;
+                        if (userid.equals(userinfo_data.getString(Utility.user_id))) {
+                            usertype = Utility.user_type_self;
                         } else {
-                            usertype = Constants.user_type_followers;
+                            usertype = Utility.user_type_followers;
                         }
                     }
                     adjustview_wit_type();
@@ -560,4 +564,5 @@ public class Profile extends Fragment {
 
         }
     }
+        }
 }

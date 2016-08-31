@@ -1,16 +1,12 @@
 package com.tagframe.tagframe.UI.Acitivity;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -22,15 +18,8 @@ import com.tagframe.tagframe.Models.Product;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
-import com.tagframe.tagframe.UI.Fragments.Follow;
-import com.tagframe.tagframe.Utils.Constants;
-import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
-import com.tagframe.tagframe.Utils.WebServiceHandler;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 

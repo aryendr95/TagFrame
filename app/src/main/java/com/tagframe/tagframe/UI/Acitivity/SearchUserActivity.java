@@ -20,7 +20,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Utils.AppPrefs;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 
@@ -48,7 +48,7 @@ public class SearchUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_direct_endorse);
 
-        operation = getIntent().getIntExtra("operation", Constants.operation_onclicked_direct_endorse);
+        operation = getIntent().getIntExtra("operation", Utility.operation_onclicked_direct_endorse);
 
 
         product_id = getIntent().getStringExtra("product_id");
@@ -91,9 +91,9 @@ public class SearchUserActivity extends AppCompatActivity {
         });
 
         //set up the serach message
-        if (operation == Constants.operation_onclicked_tagged_user) {
+        if (operation == Utility.operation_onclicked_tagged_user) {
             txt_message.setText(getResources().getString(R.string.tag_user_message));
-        } else if (operation == Constants.operation_onclicked_direct_endorse) {
+        } else if (operation == Utility.operation_onclicked_direct_endorse) {
             txt_message.setText(getResources().getString(R.string.direct_endorse_message));
         }
     }
@@ -104,7 +104,7 @@ public class SearchUserActivity extends AppCompatActivity {
             pbar.setVisibility(View.VISIBLE);
             //get user_id to make the call
             AppPrefs appPrefs = new AppPrefs(this);
-            user_id = appPrefs.getString(Constants.user_id);
+            user_id = appPrefs.getString(Utility.user_id);
 
             ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
             retrofitService.searchUser(user_id, str).enqueue(new Callback<SearchUserResponseModel>() {
@@ -154,7 +154,7 @@ public class SearchUserActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
                     pbar.setVisibility(View.GONE);
-                    if (response.body().getStatus().equals(Constants.success_response)) {
+                    if (response.body().getStatus().equals(Utility.success_response)) {
                         PopMessage.makesimplesnack(mLayout, "Product is successfully endorsed.");
 
 

@@ -20,7 +20,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class FollowListAdapter extends BaseAdapter {
 
     private void adjust(MyViewHolder viewHolder, final int position, final int type, final FollowModel followModel) {
         //condition checks if profile visited of which user(self, other)
-        if (followModel.getFrom_user_id().equals(userinfo.getString(Constants.user_id))) {
+        if (followModel.getFrom_user_id().equals(userinfo.getString(Utility.user_id))) {
             if ((type == 0))//following
             {
                 viewHolder.removeuser.setVisibility(View.GONE);
@@ -110,7 +110,7 @@ public class FollowListAdapter extends BaseAdapter {
                        /* mReceiver=((Modules)ctx).register_reviever();
 
                         Intent intent=new Intent(ctx, IntentServiceOperations.class);
-                        intent.putExtra("operation",Constants.operation_remove_follower);
+                        intent.putExtra("operation",Utility.operation_remove_follower);
                         intent.putExtra("from_userid",followModel.getFrom_user_id());
                         intent.putExtra("to_userid",followModel.getUserid());
                         intent.putExtra("type","follower");
@@ -143,12 +143,12 @@ public class FollowListAdapter extends BaseAdapter {
                             public void onClick(View v) {
                                 followModelArrayList.remove(position);
                                 notifyDataSetChanged();
-                                ((Modules) ctx).setprofileparameter(Constants.user_type_followers, followModelArrayList.size() + "");
+                                ((Modules) ctx).setprofileparameter(Utility.user_type_followers, followModelArrayList.size() + "");
 
                                 mReceiver = ((Modules) ctx).register_reviever();
 
                                 Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                                intent.putExtra("operation", Constants.operation_remove_follower);
+                                intent.putExtra("operation", Utility.operation_remove_follower);
                                 intent.putExtra("from_userid", followModel.getFrom_user_id());
                                 intent.putExtra("to_userid", followModel.getUserid());
                                 intent.putExtra("type", "follower");
@@ -176,7 +176,7 @@ public class FollowListAdapter extends BaseAdapter {
                 viewHolder.removeuser.setVisibility(View.GONE);
             }
         } else {
-            Log.e("das", followModel.getFrom_user_id() + " " + userinfo.getString(Constants.user_id));
+            Log.e("das", followModel.getFrom_user_id() + " " + userinfo.getString(Utility.user_id));
             viewHolder.removeuser.setVisibility(View.GONE);
             viewHolder.followbutton.setVisibility(View.GONE);
         }
@@ -185,7 +185,7 @@ public class FollowListAdapter extends BaseAdapter {
         viewHolder.followbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type == Constants.user_type_following) {
+                if (type == Utility.user_type_following) {
                     final Dialog dialog = new Dialog(ctx);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_remove_follower);
@@ -209,12 +209,12 @@ public class FollowListAdapter extends BaseAdapter {
                         public void onClick(View v) {
                             followModelArrayList.remove(position);
                             notifyDataSetChanged();
-                            ((Modules) ctx).setprofileparameter(Constants.user_type_following, (followModelArrayList.size()) + "");
+                            ((Modules) ctx).setprofileparameter(Utility.user_type_following, (followModelArrayList.size()) + "");
 
                             mReceiver = ((Modules) ctx).register_reviever();
 
                             Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                            intent.putExtra("operation", Constants.operation_unfollow);
+                            intent.putExtra("operation", Utility.operation_unfollow);
                             intent.putExtra("from_userid", followModel.getFrom_user_id());
                             intent.putExtra("to_userid", followModel.getUserid());
                             intent.putExtra("type", "following");
@@ -234,7 +234,7 @@ public class FollowListAdapter extends BaseAdapter {
                     });
 
                     dialog.show();
-                } else if (type == Constants.user_type_followers) {
+                } else if (type == Utility.user_type_followers) {
 
                     final Dialog dialog = new Dialog(ctx);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -259,12 +259,12 @@ public class FollowListAdapter extends BaseAdapter {
                         public void onClick(View v) {
 
 
-                            ((Modules) ctx).setprofileparameter(Constants.user_type_following, (followModelArrayList.size()) + "");
+                            ((Modules) ctx).setprofileparameter(Utility.user_type_following, (followModelArrayList.size()) + "");
 
                             mReceiver = ((Modules) ctx).register_reviever();
 
                             Intent intent = new Intent(ctx, IntentServiceOperations.class);
-                            intent.putExtra("operation", Constants.operation_follow);
+                            intent.putExtra("operation", Utility.operation_follow);
                             intent.putExtra("from_userid", followModel.getFrom_user_id());
                             intent.putExtra("to_userid", followModel.getUserid());
                             intent.putExtra("type", "following");

@@ -44,7 +44,7 @@ import com.tagframe.tagframe.UI.Fragments.Notifications;
 import com.tagframe.tagframe.UI.Fragments.Profile;
 import com.tagframe.tagframe.UI.Fragments.TagStream;
 import com.tagframe.tagframe.Utils.AppPrefs;
-import com.tagframe.tagframe.Utils.Constants;
+import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -295,9 +295,9 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         mtxt_no_of_followers=(TextView)findViewById(R.id.txt_mod_number_of_followers);
         mtxt_no_of_following=(TextView)findViewById(R.id.txt_mod_number_of_followings);
 
-        mtxt_no_of_events.setText(userinfo.getString(Constants.total_events));
-        mtxt_no_of_following.setText(userinfo.getString(Constants.number_of_following));
-        mtxt_no_of_followers.setText(userinfo.getString(Constants.number_of_followers));
+        mtxt_no_of_events.setText(userinfo.getString(Utility.total_events));
+        mtxt_no_of_following.setText(userinfo.getString(Utility.number_of_following));
+        mtxt_no_of_followers.setText(userinfo.getString(Utility.number_of_followers));
 
 
         frameLayout = (FrameLayout) findViewById(R.id.mod_frame_layout);
@@ -420,8 +420,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                                         public void onClick(View v) {
                                             AppPrefs listops = new AppPrefs(Modules.this);
 
-                                            listops.putString(Constants.loginstatuskey, "");
-                                            Constants.flushuserinfo(Modules.this);
+                                            listops.putString(Utility.loginstatuskey, "");
+                                            Utility.flushuserinfo(Modules.this);
                                             Intent intent2 = new Intent(Modules.this, Authentication.class);
                                             startActivity(intent2);
                                             finish();
@@ -478,17 +478,17 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
         mod_pro_image = (CircularImageView) findViewById(R.id.mod_profile_image);
         try {
-            Picasso.with(this).load(userinfo.getString(Constants.user_pic)).error(R.drawable.pro_image).into(mod_pro_image);
-            Picasso.with(this).load(userinfo.getString(Constants.user_pic)).error(R.color.colorPrimaryDark).into(r_layout);
+            Picasso.with(this).load(userinfo.getString(Utility.user_pic)).error(R.drawable.pro_image).into(mod_pro_image);
+            Picasso.with(this).load(userinfo.getString(Utility.user_pic)).error(R.color.colorPrimaryDark).into(r_layout);
         } catch (Exception e) {
             mod_pro_image.setImageResource(R.drawable.pro_image);
             r_layout.setImageResource(R.drawable.pro_image);
         }
         mod_usrname = (TextView) findViewById(R.id.mod_usrname);
-        mod_usrname.setText(userinfo.getString(Constants.user_name));
+        mod_usrname.setText(userinfo.getString(Utility.user_name));
 
         mod_email = (TextView) findViewById(R.id.mod_email);
-        mod_email.setText(userinfo.getString(Constants.user_email));
+        mod_email.setText(userinfo.getString(Utility.user_email));
 
         bottombar = (LinearLayout) findViewById(R.id.bottom_bar);
         topbar = (LinearLayout) findViewById(R.id.topbar);
@@ -777,41 +777,41 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         int operation = resultData.getInt("operation");
         String userid = "";
         switch (operation) {
-            case Constants.operation_remove_follower:
+            case Utility.operation_remove_follower:
 
                 userid = resultData.getString("user_id");
                 if (resultCode == 1) {
 
                     MyToast.popmessage("Successfully Removed", this);
                 } else {
-                    setprofile(userid, Constants.user_type_self);
+                    setprofile(userid, Utility.user_type_self);
                     MyToast.popmessage("There was error removing this user", this);
                 }
                 break;
-            case Constants.operation_unfollow:
+            case Utility.operation_unfollow:
 
                 userid = resultData.getString("user_id");
                 if (resultCode == 1) {
 
                     MyToast.popmessage("Successfully UnFollowed", this);
                 } else {
-                    setprofile(userid, Constants.user_type_self);
+                    setprofile(userid, Utility.user_type_self);
                     MyToast.popmessage("There was error unfollowing this user", this);
                 }
                 break;
-            case Constants.operation_follow:
+            case Utility.operation_follow:
 
                 userid = resultData.getString("user_id");
                 if (resultCode == 1) {
 
                     MyToast.popmessage("Successfully Followed", this);
                 } else {
-                    setprofile(userid, Constants.user_type_self);
+                    setprofile(userid, Utility.user_type_self);
                     MyToast.popmessage("There was error unfollowing this user", this);
                 }
                 break;
 
-            case Constants.operation_follow_profile:
+            case Utility.operation_follow_profile:
 
                 Fragment f = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
                 if (f instanceof Profile)
@@ -819,7 +819,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                     ((Profile) f).changeprofile_ui(operation, resultCode);
 
                 break;
-            case Constants.operation_unfollow_profile:
+            case Utility.operation_unfollow_profile:
 
                 Fragment f1 = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
                 if (f1 instanceof Profile)
@@ -827,7 +827,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                     ((Profile) f1).changeprofile_ui(operation, resultCode);
 
                 break;
-            case Constants.operation_unlike:
+            case Utility.operation_unlike:
 
                 if (resultCode == 1) {
 
@@ -840,7 +840,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 break;
 
-            case Constants.operation_like:
+            case Utility.operation_like:
 
                 if (resultCode == 1) {
 
@@ -852,7 +852,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 break;
 
-            case Constants.operation_comment:
+            case Utility.operation_comment:
 
                 if (resultCode == 1) {
 
@@ -889,7 +889,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                     //intent.putExtra("tittle",tittle);
                     //intent.putExtra("des",des);
                     //intent.putExtra("type",type);
-                    intent.putExtra("eventtype", Constants.eventtype_local);
+                    intent.putExtra("eventtype", Utility.eventtype_local);
                     startActivity(intent);
                 }
             } else if (requestCode == TAKE_VIDEO) {
@@ -905,7 +905,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                     Intent intent = new Intent(this,
                             MakeNewEvent.class);
                     intent.putExtra("data_url", selectedImagePath);
-                    intent.putExtra("eventtype", Constants.eventtype_local);
+                    intent.putExtra("eventtype", Utility.eventtype_local);
                     // intent.putExtra("tittle",tittle);
                     // intent.putExtra("des",des);
                     //intent.putExtra("type",type);

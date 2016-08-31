@@ -86,6 +86,10 @@ public interface ApiInterface {
 
 
 
+    //timeline
+    @GET("timeline/{user_id}/{next_records}")
+    Call<ListResponseModel> getUserTimeLines(@Query("user_id") String user_id, @Query("next_records") String next_records);
+
     //  Notifications
 
     @GET("get_notification/{user_id}")
