@@ -131,6 +131,8 @@ public class Utility {
     public static String media_type_video="video";
     public static String media_type_image="image";
 
+    public static String test="var";
+
     //notification onclick operations
     public static String notification_op_watch_profile="watch_profile";
     public static String notification_op_watch_event="watch_event";
