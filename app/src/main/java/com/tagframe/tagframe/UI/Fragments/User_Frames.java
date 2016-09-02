@@ -34,7 +34,7 @@ import retrofit2.Response;
 /**
  * Created by abhinav on 11/04/2016.
  */
-public class User_Frames extends Fragment {
+public class User_Frames extends Fragment implements ScrollList{
 
     private View mview;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -46,7 +46,7 @@ public class User_Frames extends Fragment {
     private TextView mTxt_footer;
 
     private String user_id, user_name, user_pic;
-    ArrayList<User_Frames_model> user_frames_models = new ArrayList<>();
+    ArrayList<User_Frames_model> user_frames_models;
     private int next_records = 0;
 
 
@@ -55,6 +55,9 @@ public class User_Frames extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview = inflater.inflate(R.layout.layout_frames, container, false);
+
+        user_frames_models = new ArrayList<>();
+
         gridview = (GridViewWithHeaderAndFooter) mview.findViewById(R.id.grid_frame);
         mLayout = (RelativeLayout) mview.findViewById(R.id.mlayout_user_frames);
 
@@ -114,41 +117,44 @@ public class User_Frames extends Fragment {
             retrofitService.getUserFrames(user_id, String.valueOf(next_records)).enqueue(new Callback<UserFrameResponseModel>() {
                 @Override
                 public void onResponse(Call<UserFrameResponseModel> call, Response<UserFrameResponseModel> response) {
-
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
-                    try {
-                        if (response.body().getStatus().equals("success")) {
-
-
-                            user_frames_models.addAll(response.body().getUser_frames_models());
-                            gridview.setAdapter(new ImageAdapter(getActivity(),user_frames_models));
+                    if(isAdded()) {
+                        progressBar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
+                        try {
+                            if (response.body().getStatus().equals("success")) {
 
 
-                            //detect more events are to be loaded or not
-                            if (response.body().getUser_frames_models().size() == Utility.PAGE_SIZE) {
-                                next_records = next_records + Utility.PAGE_SIZE;
-                                mTxt_footer.setText("Load more items...");
+                                user_frames_models.addAll(response.body().getUser_frames_models());
+                                gridview.setAdapter(new ImageAdapter(getActivity(), user_frames_models));
+
+
+                                //detect more events are to be loaded or not
+                                if (response.body().getUser_frames_models().size() == Utility.PAGE_SIZE) {
+                                    next_records = next_records + Utility.PAGE_SIZE;
+                                    mTxt_footer.setText("Load more items...");
+
+                                } else {
+
+                                    mTxt_footer.setOnClickListener(null);
+                                    mTxt_footer.setText("No more items to load..");
+                                }
 
                             } else {
-
-                                mTxt_footer.setOnClickListener(null);
-                                mTxt_footer.setText("No more items to load..");
+                                PopMessage.makesimplesnack(mLayout, response.body().getStatus());
                             }
-
-                        } else {
-                            PopMessage.makesimplesnack(mLayout, response.body().getStatus());
+                        } catch (Exception e) {
+                            PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                         }
-                    } catch (Exception e) {
-                        PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserFrameResponseModel> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
-                    Log.e("das",t.getMessage());
+                    if(isAdded()) {
+                        progressBar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
+                        Log.e("das", t.getMessage());
+                    }
                 }
             });
 
@@ -157,4 +163,8 @@ public class User_Frames extends Fragment {
         }
     }
 
+    @Override
+    public void scrolltofirst() {
+        gridview.smoothScrollToPosition(0);
+    }
 }

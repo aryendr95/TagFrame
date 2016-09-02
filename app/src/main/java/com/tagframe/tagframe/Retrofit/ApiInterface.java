@@ -5,6 +5,7 @@ import com.tagframe.tagframe.Models.EventSuccessUploadResponseModel;
 import com.tagframe.tagframe.Models.GetProductResponseModel;
 import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.NotificationResponseModel;
+import com.tagframe.tagframe.Models.ProfileResponseModel;
 import com.tagframe.tagframe.Models.ResponsePojo;
 import com.tagframe.tagframe.Models.SearchUserResponseModel;
 import com.tagframe.tagframe.Models.UserFrameResponseModel;
@@ -94,6 +95,9 @@ public interface ApiInterface {
 
     @GET("get_notification/{user_id}")
     Call<NotificationResponseModel> getNotifications(@Query("user_id") String user_id);
+
+    @GET("profile/{user_id}/{logged_user_id}")
+    Call<ProfileResponseModel> getProfileInfo(@Query("user_id") String user_id,@Query("logged_user_id") String logged_user_id);
 
 
 }

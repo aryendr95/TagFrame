@@ -5,6 +5,10 @@
     android:background="@color/white"
     android:id="@+id/mLayout_following">
 
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="fill_parent"
@@ -12,17 +16,18 @@
         android:layout_marginTop="5dp"
         android:id="@+id/swiperefresh_following">
 
-        <ListView
+        <com.tagframe.tagframe.Utils.NestedScrollingListView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/list_following"
             android:dividerHeight="5dp"
             >
 
-        </ListView>
+        </com.tagframe.tagframe.Utils.NestedScrollingListView>
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <ProgressBar
         android:layout_width="30dp"

@@ -1,19 +1,54 @@
 package com.tagframe.tagframe.Models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Brajendr on 8/16/2016.
  */
 public class User {
 
+    @SerializedName("user_id")
+    @Expose
     private String user_id;
+    @SerializedName("username")
+    @Expose
     private String username;
+    @SerializedName("realname")
+    @Expose
     private String realname;
+    @SerializedName("description")
+    @Expose
     private String description;
+    @SerializedName("profile_image")
+    @Expose
     private String profile_image;
+    @SerializedName("number_of_event")
+    @Expose
     private String number_of_event;
+
+    public String getNumber_of_timeline() {
+        return number_of_timeline;
+    }
+
+    public void setNumber_of_timeline(String number_of_timeline) {
+        this.number_of_timeline = number_of_timeline;
+    }
+
+    @SerializedName("number_of_frame")
+    @Expose
     private String number_of_frame;
+    @SerializedName("number_of_following")
+    @Expose
     private String number_of_following;
+    @SerializedName("number_of_timeline")
+    @Expose
+    private String number_of_timeline;
+    @SerializedName("number_of_followers")
+    @Expose
     private String number_of_followers;
+    @SerializedName("followed")
+    @Expose
     private String followed;
 
     public String getUsername() {

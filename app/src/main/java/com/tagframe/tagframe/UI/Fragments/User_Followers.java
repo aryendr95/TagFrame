@@ -35,7 +35,7 @@ import retrofit2.Response;
 /**
  * Created by abhinav on 11/04/2016.
  */
-public class User_Followers extends Fragment {
+public class User_Followers extends Fragment implements ScrollList{
 
     private View mview;
     private ListView listView;
@@ -43,7 +43,7 @@ public class User_Followers extends Fragment {
     private ProgressBar progressBar, footerbar;
     private TextView mTxt_footer;
     private String user_id;
-    private ArrayList<FollowModel> followModelArrayList = new ArrayList<>();
+    private ArrayList<FollowModel> followModelArrayList;
     private RelativeLayout mLayout;
 
     private AppPrefs userinfo;
@@ -55,6 +55,7 @@ public class User_Followers extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview=inflater.inflate(R.layout.layout_followers,container,false);
+        followModelArrayList = new ArrayList<>();
 
         userinfo = new AppPrefs(getActivity());
 
@@ -106,35 +107,40 @@ public class User_Followers extends Fragment {
             retrofitService.getUserFollowers(user_id, String.valueOf(next_records)).enqueue(new Callback<SearchUserResponseModel>() {
                 @Override
                 public void onResponse(Call<SearchUserResponseModel> call, Response<SearchUserResponseModel> response) {
-                    try {
-                        if (response.body().getStatus().equals("success")) {
 
-                            progressBar.setVisibility(View.GONE);
-                            followModelArrayList.addAll(response.body().getArrayList_search_user_model());
-                            ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+                    if(isAdded()) {
+                        try {
+                            if (response.body().getStatus().equals("success")) {
 
-                            //detect more events are to be loaded or not
-                            if (response.body().getArrayList_search_user_model().size() == Utility.PAGE_SIZE) {
-                                next_records = next_records + Utility.PAGE_SIZE;
-                                mTxt_footer.setText("Load more items...");
+                                progressBar.setVisibility(View.GONE);
+                                swipeRefreshLayout.setRefreshing(false);
+                                followModelArrayList.addAll(response.body().getArrayList_search_user_model());
+                                ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+
+                                //detect more events are to be loaded or not
+                                if (response.body().getArrayList_search_user_model().size() == Utility.PAGE_SIZE) {
+                                    next_records = next_records + Utility.PAGE_SIZE;
+                                    mTxt_footer.setText("Load more items...");
+                                } else {
+                                    mTxt_footer.setOnClickListener(null);
+                                    mTxt_footer.setText("No more items to load..");
+                                }
+
                             } else {
-                                mTxt_footer.setOnClickListener(null);
-                                mTxt_footer.setText("No more items to load..");
+
                             }
-
-                        } else {
-
+                        } catch (Exception e) {
+                            PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                         }
-                    } catch (Exception e) {
-                        PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<SearchUserResponseModel> call, Throwable t) {
+                    if(isAdded()) {
                     progressBar.setVisibility(View.GONE);
                     swipeRefreshLayout.setRefreshing(false);
-                }
+                }}
             });
 
         } else {

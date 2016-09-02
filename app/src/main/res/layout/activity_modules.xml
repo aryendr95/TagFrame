@@ -159,7 +159,7 @@
         </ListView>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="left"
@@ -168,7 +168,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="50dp"
             android:layout_weight="5"
             android:id="@+id/topbar"
             android:orientation="horizontal"
@@ -238,14 +238,16 @@
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_above="@+id/bottom_bar"
+            android:layout_below="@+id/topbar"
             android:id="@+id/mod_frame_layout"
             >
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
             android:layout_weight="5"
             android:id="@+id/bottom_bar"
             android:background="@color/colorPrimaryDark"
@@ -429,7 +431,7 @@
             </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.v4.widget.SlidingPaneLayout>
 

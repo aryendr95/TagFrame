@@ -35,7 +35,7 @@ import retrofit2.Response;
 /**
  * Created by abhinav on 11/04/2016.
  */
-public class User_Events extends Fragment {
+public class User_Events extends Fragment implements ScrollList{
 
     private View mview;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -46,7 +46,7 @@ public class User_Events extends Fragment {
 
     private AppPrefs AppPrefs;
     private String user_id, user_name, user_pic;
-    private ArrayList<Event_Model> tagStream_models = new ArrayList<>();
+    private ArrayList<Event_Model> tagStream_models;
     private int next_records = 0;
 
 
@@ -55,6 +55,8 @@ public class User_Events extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview = inflater.inflate(R.layout.layout_events, container, false);
+
+        tagStream_models = new ArrayList<>();
 
         mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_user_events);
         progressBar = (ProgressBar) mview.findViewById(R.id.list_event_progress);
@@ -118,39 +120,44 @@ public class User_Events extends Fragment {
             retrofitService.getUserEvents(user_id, String.valueOf(next_records)).enqueue(new Callback<ListResponseModel>() {
                 @Override
                 public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
+
+                    if(isAdded()) {
+                        progressBar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
 
 
-                    try {
-                        if (response.body().getStatus().equals("success")) {
+                        try {
+                            if (response.body().getStatus().equals("success")) {
 
 
-                            tagStream_models.addAll(response.body().getTagStreamArrayList());
-                            AppPrefs.putusereventlist(tagStream_models);
-                            ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+                                tagStream_models.addAll(response.body().getTagStreamArrayList());
+                                AppPrefs.putusereventlist(tagStream_models);
+                                ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
 
-                            //detect more events are to be loaded or not
-                            if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
-                                next_records = next_records + Utility.PAGE_SIZE;
-                                mTxt_footer.setText("Load more items...");
+                                //detect more events are to be loaded or not
+                                if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
+                                    next_records = next_records + Utility.PAGE_SIZE;
+                                    mTxt_footer.setText("Load more items...");
+                                } else {
+                                    mTxt_footer.setOnClickListener(null);
+                                    mTxt_footer.setText("No more items to load..");
+                                }
+
                             } else {
-                                mTxt_footer.setOnClickListener(null);
-                                mTxt_footer.setText("No more items to load..");
+
                             }
-
-                        } else {
-
+                        } catch (Exception e) {
+                            PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                         }
-                    } catch (Exception e) {
-                        PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ListResponseModel> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
+                    if(isAdded()) {
+                        progressBar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             });
 
@@ -166,5 +173,6 @@ public class User_Events extends Fragment {
 
         listView.smoothScrollToPosition(0);
     }
+
 
 }

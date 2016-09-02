@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:id="@+id/layout"
+    android:background="@color/white"
+    >
+
+    <TextView
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/number"
+        android:text="0"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true" />
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:layout_marginBottom="5dp"
+        android:textSize="10dp"
+        android:id="@+id/title"
+        android:layout_below="@+id/number"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

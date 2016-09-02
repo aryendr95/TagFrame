@@ -42,6 +42,7 @@ import com.tagframe.tagframe.UI.Fragments.Follow;
 import com.tagframe.tagframe.UI.Fragments.MarketPlaceFragment;
 import com.tagframe.tagframe.UI.Fragments.Notifications;
 import com.tagframe.tagframe.UI.Fragments.Profile;
+//import com.tagframe.tagframe.UI.Fragments.ProfileCollapsing;
 import com.tagframe.tagframe.UI.Fragments.TagStream;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.Utility;
@@ -55,7 +56,8 @@ import java.util.ArrayList;
 public class Modules extends FragmentActivity implements Broadcastresults.Receiver {
 
     //Bottom bar
-    private LinearLayout mlevent, mltagstream, mlnotification, mlmarket, mlprofile, bottombar, topbar, mLayout;
+    private LinearLayout mlevent, mltagstream, mlnotification, mlmarket, mlprofile, bottombar, topbar;
+    RelativeLayout mLayout;
     private TextView mtxttagstream, mtxtevent, mtxtnotification, mtxtmarket, mtxtprofile,mtxt_no_of_events,mtxt_no_of_followers,mtxt_no_of_following;
     private ImageView mimgtagstream, mimgevent, mimgnotification, mimgmarket, mimgprofile;
 
@@ -102,7 +104,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
     private void init() {
 
-        mLayout = (LinearLayout) findViewById(R.id.mLayout_module);
+        mLayout = (RelativeLayout) findViewById(R.id.mLayout_module);
 
         mltagstream = (LinearLayout) findViewById(R.id.mod_tagstream);
         mltagstream.setOnClickListener(new View.OnClickListener() {
