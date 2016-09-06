@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:id="@+id/mlayout_user_frames">
+
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/swiperefresh_framelist">
+
+            <in.srain.cube.views.GridViewWithHeaderAndFooter
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/grid_frame"
+                android:layout_margin="10dp"
+                android:horizontalSpacing="0dp"
+                android:verticalSpacing="0dp"
+                android:numColumns="4"
+                >
+
+            </in.srain.cube.views.GridViewWithHeaderAndFooter>
+
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    <ProgressBar
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_frame_progress"
+        android:layout_centerInParent="true"
+
+        android:indeterminate="true"
+
+
+        />
+
+</RelativeLayout>

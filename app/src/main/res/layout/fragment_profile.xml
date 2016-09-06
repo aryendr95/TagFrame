@@ -21,7 +21,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="7"
+            android:layout_weight="9.5"
             android:id="@+id/profile_section"
             android:animateLayoutChanges="true"
             android:background="@color/white"
@@ -110,6 +110,11 @@
 
         </LinearLayout>
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -346,14 +351,12 @@
                 </LinearLayout>
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/GRAY"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/GRAY"/>
+                android:background="@color/light_gray"/>
+
 
             <FrameLayout
                 android:layout_width="fill_parent"

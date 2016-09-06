@@ -21,6 +21,7 @@ import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
+import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -129,7 +130,6 @@ public class TimeLine extends Fragment implements ScrollList {
                         try {
                             if (response.body().getStatus().equals("success")) {
 
-
                                 tagStream_models.addAll(response.body().getTagStreamArrayList());
                                 AppPrefs.putusereventlist(tagStream_models);
                                 ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
@@ -142,6 +142,7 @@ public class TimeLine extends Fragment implements ScrollList {
                                     mTxt_footer.setOnClickListener(null);
                                     mTxt_footer.setText("No more items to load..");
                                 }
+                                //((Modules)getActivity()).getPagerAdapter().notifyDataSetChanged();
 
                             } else {
 

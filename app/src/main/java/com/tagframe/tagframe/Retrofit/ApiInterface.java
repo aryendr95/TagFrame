@@ -1,6 +1,7 @@
 package com.tagframe.tagframe.Retrofit;
 
 import com.tagframe.tagframe.Models.EndorseListResponseModel;
+import com.tagframe.tagframe.Models.EventDetailResponseModel;
 import com.tagframe.tagframe.Models.EventSuccessUploadResponseModel;
 import com.tagframe.tagframe.Models.GetProductResponseModel;
 import com.tagframe.tagframe.Models.ListResponseModel;
@@ -93,11 +94,14 @@ public interface ApiInterface {
 
     //  Notifications
 
-    @GET("get_notification/{user_id}")
-    Call<NotificationResponseModel> getNotifications(@Query("user_id") String user_id);
+    @GET("get_notification/{user_id}/{next_records}")
+    Call<NotificationResponseModel> getNotifications(@Query("user_id") String user_id,@Query("next_records") String next_records);
 
+    //profile_information
     @GET("profile/{user_id}/{logged_user_id}")
     Call<ProfileResponseModel> getProfileInfo(@Query("user_id") String user_id,@Query("logged_user_id") String logged_user_id);
 
-
+    //event_details
+    @GET("event_details/{event_id}")
+    Call<EventDetailResponseModel> getEventDetails(@Query("event_id") String event_id);
 }

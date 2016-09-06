@@ -43,6 +43,7 @@ import com.tagframe.tagframe.UI.Fragments.MarketPlaceFragment;
 import com.tagframe.tagframe.UI.Fragments.Notifications;
 import com.tagframe.tagframe.UI.Fragments.Profile;
 //import com.tagframe.tagframe.UI.Fragments.ProfileCollapsing;
+import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 import com.tagframe.tagframe.UI.Fragments.TagStream;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.Utility;
@@ -269,8 +270,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 mlprofile.setBackgroundColor(getResources().getColor(R.color.light_gray));
                 mlevent.setBackgroundColor(getResources().getColor(R.color.white));*/
 
-                Profile fr = new Profile();
-                changefragment(fr);
+
+                changefragment(Utility.getProfileFragment());
 
             }
         });
@@ -342,7 +343,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 mtxtevent.setTextColor(getResources().getColor(R.color.light_gray));
                 mimgevent.setImageResource(R.drawable.event);
-                myf = new Profile();
+                myf = Utility.getProfileFragment();
 
             }
         }
@@ -720,7 +721,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
 
     public void setprofile(String user_id, int user_type) {
-        Profile fr = new Profile();
+        Fragment fr=Utility.getProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putString("user_id", user_id);
         bundle.putInt("type", user_type);
@@ -769,8 +770,21 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     }
 
     public void setprofileparameter(int s, String v) {
-        Profile profile = (Profile) getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
-        profile.setprofilestat(s, v);
+
+
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            // Do something for lollipop and above versions
+            Profile profile=(Profile) getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+            profile.setprofilestat(s, v);
+        } else{
+            // do something for phones running an SDK before lollipop
+            ProfileOld profile=(ProfileOld) getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+            profile.setprofilestat(s, v);
+        }
+
+
+
     }
 
     @Override
@@ -817,8 +831,10 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 Fragment f = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
                 if (f instanceof Profile)
-                    // do something with f
+
                     ((Profile) f).changeprofile_ui(operation, resultCode);
+                else if(f instanceof ProfileOld)
+                    ((ProfileOld)f).changeprofile_ui(operation,resultCode);
 
                 break;
             case Utility.operation_unfollow_profile:
@@ -827,6 +843,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 if (f1 instanceof Profile)
                     // do something with f
                     ((Profile) f1).changeprofile_ui(operation, resultCode);
+                else if(f1 instanceof ProfileOld)
+                    ((ProfileOld)f1).changeprofile_ui(operation,resultCode);
 
                 break;
             case Utility.operation_unlike:

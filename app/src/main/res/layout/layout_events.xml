@@ -1,31 +1,37 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/mLayout_user_events">
+    android:id="@+id/mLayout_user_events"
+    app:layout_behavior= "@string/appbar_scrolling_view_behavior">
 
 <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:scrollbars="none"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     >
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.tagframe.tagframe.Utils.MySwipeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/swiperefresh_eventlist">
+        android:id="@+id/swiperefresh_eventlist"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.tagframe.tagframe.Utils.NestedScrollingListView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:id="@+id/list_event"
-            android:dividerHeight="10dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:dividerHeight="1dp"
+
             >
 
         </com.tagframe.tagframe.Utils.NestedScrollingListView>
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.tagframe.tagframe.Utils.MySwipeLayout>
 
 </android.support.v4.widget.NestedScrollView>
 

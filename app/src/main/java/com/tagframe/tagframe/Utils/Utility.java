@@ -1,6 +1,8 @@
 package com.tagframe.tagframe.Utils;
 
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -8,6 +10,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.tagframe.tagframe.Models.Event_Model;
+import com.tagframe.tagframe.UI.Fragments.Profile;
+import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -299,5 +303,19 @@ public class Utility {
             return Utility.user_type_self;
         else
             return Utility.user_type_following;
+    }
+
+    public static Fragment getProfileFragment()
+    {
+        Fragment fragment=null;
+        int currentapiVersion = Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP){
+            // Do something for lollipop and above versions
+            fragment=new Profile();
+        } else{
+            // do something for phones running an SDK before lollipop
+            fragment=new ProfileOld();
+        }
+        return fragment;
     }
 }

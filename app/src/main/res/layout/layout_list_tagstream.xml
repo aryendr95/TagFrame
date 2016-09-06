@@ -120,7 +120,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
-        android:background="@color/GRAY" />
+        android:background="@color/light_gray" />
 
 
     <LinearLayout

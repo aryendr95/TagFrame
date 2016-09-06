@@ -332,5 +332,10 @@ public class Profile extends Fragment {
         }
     }
 
+    public ViewPagerAdapter getPagerAdapter()
+    {
+        return viewPagerAdapter;
+    }
+
 
 }

@@ -117,7 +117,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();
-
+    private Handler mControlsVisibilityHandler=new Handler();
 
     private String vidAddress = "";
     private String tittle, description, type, event_id;
@@ -136,7 +136,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     //set this to true while retriving the data from the savedinstancestate
     //then check on bufferingfinished listener if flag is set
     //perform the mediaplayer seek to operation
-    private boolean isfromsavedinstance = false;
+    private boolean isfromsavedinstance = false,isControlVisible=true;
     private long sav_instance_current_duration = 0;
 
 
@@ -206,6 +206,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     public void onConfigurationChanged(Configuration newConfig) {
         mPlayer.resizeSurface(getWindowManager().getDefaultDisplay());
         mHandler.removeCallbacks(mUpdateTimeTask);
+        mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
         super.onConfigurationChanged(newConfig);
     }
 
@@ -277,6 +278,19 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         ll_top_bar = (RelativeLayout) findViewById(R.id.topbar);
         ll_bottom_bar = (LinearLayout) findViewById(R.id.ll_mp_tools);
         mlayout = (LinearLayout) findViewById(R.id.mlayout_makenew_event);
+        mlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isControlVisible)
+                {
+                    mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
+                    isControlVisible=true;
+                    ll_bottom_bar.setVisibility(View.VISIBLE);
+                    ll_top_bar.setVisibility(View.VISIBLE);
+                    setControlsVisibilty();
+                }
+            }
+        });
 
         //VIDEO SURFUCE
         vidSurface = (SurfaceView) findViewById(R.id.surfaceviewnewevent);
@@ -463,6 +477,10 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             isfromsavedinstance = true;
 
         }
+
+
+        //controlvisible
+        setControlsVisibilty();
 
 
     }
@@ -806,6 +824,24 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
+
+    public void setControlsVisibilty()
+    {
+        mControlsVisibilityHandler.postDelayed(setVisibiltyTask,4000);
+    }
+
+    private Runnable setVisibiltyTask=new Runnable() {
+        @Override
+        public void run() {
+            if(isControlVisible)
+            {
+                isControlVisible=false;
+                ll_top_bar.setVisibility(View.GONE);
+                ll_bottom_bar.setVisibility(View.GONE);
+            }
+            mControlsVisibilityHandler.postDelayed(setVisibiltyTask,4000);
+        }
+    };
 
     /**
      * Background Runnable thread

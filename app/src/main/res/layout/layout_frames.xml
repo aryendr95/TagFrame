@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.tagframe.tagframe.Utils.MySwipeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/swiperefresh_framelist">
@@ -28,7 +28,7 @@
         </in.srain.cube.views.GridViewWithHeaderAndFooter>
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.tagframe.tagframe.Utils.MySwipeLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <ProgressBar

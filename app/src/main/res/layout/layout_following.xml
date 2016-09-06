@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.tagframe.tagframe.Utils.MySwipeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="5dp"
@@ -20,13 +20,13 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/list_following"
-            android:dividerHeight="5dp"
+            android:dividerHeight="1dp"
             >
 
         </com.tagframe.tagframe.Utils.NestedScrollingListView>
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.tagframe.tagframe.Utils.MySwipeLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <ProgressBar

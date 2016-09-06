@@ -123,7 +123,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        app:layout_behavior= "@string/appbar_scrolling_view_behavior"
+      >
 
    <View
        android:layout_width="match_parent"
@@ -149,6 +150,7 @@
         android:id="@+id/htab_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

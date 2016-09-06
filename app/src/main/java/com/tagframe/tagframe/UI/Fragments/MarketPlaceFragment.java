@@ -132,6 +132,25 @@ public class MarketPlaceFragment extends Fragment {
                 public void onResponse(Call<GetProductResponseModel> call, Response<GetProductResponseModel> response) {
                     if(isAdded())
                     {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     if (response.body().getStatus().equals("success")) {
                         if (response.body().getProductList().size() > 0) {
                             products.addAll(response.body().getProductList());

@@ -55,7 +55,7 @@
             android:background="@color/GRAY"/>
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:id="@+id/follow_remove"
             android:layout_marginRight="10dp"
