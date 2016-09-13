@@ -35,7 +35,7 @@ import retrofit2.Response;
 /**
  * Created by abhinav on 11/04/2016.
  */
-public class User_Followers extends Fragment implements ScrollList{
+public class User_Followers extends Fragment implements ScrollList {
 
     private View mview;
     private ListView listView;
@@ -54,7 +54,11 @@ public class User_Followers extends Fragment implements ScrollList{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview=inflater.inflate(R.layout.layout_followers,container,false);
+        if (Utility.isLollipop())
+            mview = inflater.inflate(R.layout.layout_followers, container, false);
+        else
+            mview = inflater.inflate(R.layout.layout_followers_below_21, container, false);
+
         followModelArrayList = new ArrayList<>();
 
         userinfo = new AppPrefs(getActivity());
@@ -72,6 +76,7 @@ public class User_Followers extends Fragment implements ScrollList{
                 swipeRefreshLayout.setRefreshing(true);
                 next_records = 0;
                 followModelArrayList = new ArrayList<FollowModel>();
+                listView.setAdapter(new FollowListAdapter(getActivity(), followModelArrayList, 1));
                 loadUserFollower();
             }
         });
@@ -108,7 +113,7 @@ public class User_Followers extends Fragment implements ScrollList{
                 @Override
                 public void onResponse(Call<SearchUserResponseModel> call, Response<SearchUserResponseModel> response) {
 
-                    if(isAdded()) {
+                    if (isAdded()) {
                         try {
                             if (response.body().getStatus().equals("success")) {
 
@@ -120,10 +125,10 @@ public class User_Followers extends Fragment implements ScrollList{
                                 //detect more events are to be loaded or not
                                 if (response.body().getArrayList_search_user_model().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more items...");
+                                    mTxt_footer.setText("Load more followers...");
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
-                                    mTxt_footer.setText("No more items to load..");
+                                    mTxt_footer.setText("No more followers fo you..");
                                 }
 
                             } else {
@@ -137,10 +142,11 @@ public class User_Followers extends Fragment implements ScrollList{
 
                 @Override
                 public void onFailure(Call<SearchUserResponseModel> call, Throwable t) {
-                    if(isAdded()) {
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
-                }}
+                    if (isAdded()) {
+                        progressBar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
             });
 
         } else {

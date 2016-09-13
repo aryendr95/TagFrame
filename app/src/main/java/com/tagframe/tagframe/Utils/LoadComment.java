@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.CommentsRecyclerViewAdapter;
 import com.tagframe.tagframe.Models.Comment;
@@ -30,6 +31,7 @@ public class LoadComment extends AsyncTask<String,String,String> {
     private String video_id;
     private Dialog dialog;
     private Context context;
+    private TextView txt_message;
 
 
     public ArrayList<Comment> getCommentArrayList() {

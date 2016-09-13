@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,9 @@ import android.widget.TextView;
 import com.pkmmte.view.CircularImageView;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
+import com.tagframe.tagframe.Utils.BitmapHelper;
+import com.tagframe.tagframe.Utils.GetPaths;
+import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
@@ -44,33 +48,33 @@ public class AddProfilePhoto extends Fragment {
     EditText descrip;
 
     private static int RESULT_LOAD_IMAGE = 1;
-    String picturePath="";
+    String picturePath = "";
 
     AppPrefs AppPrefs;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mview=inflater.inflate(R.layout.add_profile_photo,container,false);
+        mview = inflater.inflate(R.layout.add_profile_photo, container, false);
 
-        AppPrefs =new AppPrefs(getActivity());
+        AppPrefs = new AppPrefs(getActivity());
 
-        descrip=(EditText)mview.findViewById(R.id.add_description);
+        descrip = (EditText) mview.findViewById(R.id.add_description);
 
-        skip=(TextView)mview.findViewById(R.id.skip);
+        skip = (TextView) mview.findViewById(R.id.skip);
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), Modules.class);
+                Intent intent = new Intent(getActivity(), Modules.class);
                 startActivity(intent);
                 getActivity().finish();
             }
         });
 
-        pro_image=(CircularImageView)mview.findViewById(R.id.addpic);
+        pro_image = (CircularImageView) mview.findViewById(R.id.addpic);
         pro_image.setImageResource(R.drawable.pro_image);
 
-        changeimage=(ImageView)mview.findViewById(R.id.chanepic);
+        changeimage = (ImageView) mview.findViewById(R.id.chanepic);
         changeimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,17 +86,15 @@ public class AddProfilePhoto extends Fragment {
             }
         });
 
-        mbuttonsumbit=(Button)mview.findViewById(R.id.Save);
+        mbuttonsumbit = (Button) mview.findViewById(R.id.Save);
         mbuttonsumbit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String des=descrip.getText().toString();
-                if(!des.isEmpty()&&!picturePath.isEmpty()) {
+                String des = descrip.getText().toString();
+                if (!des.isEmpty() && !picturePath.isEmpty()) {
                     new saveprofilephoto().execute(des);
-                }
-                else
-                {
-                    MyToast.popmessage("Please provide a image or enter description",getActivity());
+                } else {
+                    MyToast.popmessage("Please provide a image or enter description", getActivity());
                 }
             }
         });
@@ -105,34 +107,25 @@ public class AddProfilePhoto extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == getActivity().RESULT_OK && null != data) {
+
+
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-
-            pro_image.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            picturePath = GetPaths.getPath(getActivity(), selectedImage);
+            pro_image.setImageBitmap(BitmapHelper.decodeFile(getActivity(),new File(picturePath)));
 
         }
 
 
     }
 
-    class saveprofilephoto extends AsyncTask<String,String,String>
-    {
-        String status="";
+    class saveprofilephoto extends AsyncTask<String, String, String> {
+        String status = "", profilephoto, description;
         WebServiceHandler webServiceHandler;
         ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
-           dialog=new ProgressDialog(getActivity());
+            dialog = new ProgressDialog(getActivity());
             dialog.setMessage("Saving..");
             dialog.show();
             super.onPreExecute();
@@ -143,20 +136,23 @@ public class AddProfilePhoto extends Fragment {
         protected String doInBackground(String... params) {
 
             try {
+                description = params[0];
 
-                webServiceHandler=new WebServiceHandler(Utility.upload_profile_photo);
+                webServiceHandler = new WebServiceHandler(Utility.upload_profile_photo);
                 webServiceHandler.addFormField("user_id", AppPrefs.getString(Utility.user_id));
-                if(!picturePath.isEmpty()) {
+                if (!picturePath.isEmpty()) {
                     File file = new File(picturePath);
-                    webServiceHandler.addFilePart("profile_photo",file,3,getActivity());
+                    webServiceHandler.addFilePart("profile_photo", file, 3, getActivity());
                 }
                 webServiceHandler.addFormField("description", params[0]);
-                JSONObject jsonObject=new JSONObject(webServiceHandler.finish());
-                status=jsonObject.getString("success");
-            }
-            catch (Exception e)
-            {
+                String result = webServiceHandler.finish();
+                JSONObject jsonObject = new JSONObject(result);
 
+                status = jsonObject.getString("status");
+                profilephoto = jsonObject.getString("profile_photo");
+
+            } catch (Exception e) {
+                Log.e("get", e.getMessage());
             }
 
             return null;
@@ -166,11 +162,15 @@ public class AddProfilePhoto extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             dialog.dismiss();
-            if(isAdded()) {
+            if (isAdded()) {
                 if (status.equals("success")) {
+                    AppPrefs.putString(Utility.user_descrip, description);
+                    AppPrefs.putString(Utility.user_pic, profilephoto);
                     Intent intent = new Intent(getActivity(), Modules.class);
                     startActivity(intent);
                     getActivity().finish();
+                } else {
+                    PopMessage.makeshorttoast(getActivity(), "Error, please try after some time" + status + profilephoto);
                 }
             }
 

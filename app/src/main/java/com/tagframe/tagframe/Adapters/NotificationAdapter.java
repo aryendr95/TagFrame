@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.EventDetailResponseModel;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.NotificationModel;
+import com.tagframe.tagframe.Models.Product;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -38,6 +39,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private List<NotificationModel> ListModels;
     private Context context;
+    private ProgressDialog dialog;
 
     public NotificationAdapter(List<NotificationModel> ListModels, Context context) {
         this.ListModels = ListModels;
@@ -53,7 +55,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final NotificationModel ListModel = ListModels.get(position);
 
         holder.txt_username.setText(ListModel.getUser_name());
@@ -76,9 +78,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             public void onClick(View v) {
                 if (ListModel.getSub_action_type().equals(Utility.notification_op_watch_event)) {
                     //show event
-                    final ProgressDialog dialog = new ProgressDialog(context);
-                    dialog.setMessage("Loading Event..");
-                    dialog.show();
+                    showProgress();
 
                     ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
                     apiInterface.getEventDetails(ListModel.getSub_action_id()).enqueue(new Callback<EventDetailResponseModel>() {
@@ -107,11 +107,31 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         @Override
                         public void onFailure(Call<EventDetailResponseModel> call, Throwable t) {
                             PopMessage.makeshorttoast(context, "Error loading, try after some time");
-                            dialog.dismiss();
+                            hideProgress();
                         }
                     });
                 } else if (ListModel.getSub_action_type().equals(Utility.notification_op_watch_profile)) {
                     ((Modules) context).setprofile(ListModel.getSub_action_id(), user_type);
+                }
+                else if(ListModel.getSub_action_type().equals(Utility.notification_op_watch_profile))
+                {
+                    showProgress();
+
+                    ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+                    apiInterface.getProductDetails(ListModel.getSub_action_id()).enqueue(new Callback<Product>() {
+                        @Override
+                        public void onResponse(Call<Product> call, Response<Product> response) {
+                            hideProgress();
+                            Product product=(Product)response.body();
+                            ProductAdapter.showProductDialog(context,product);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Product> call, Throwable t) {
+                            hideProgress();
+                            PopMessage.makeshorttoast(context,"Error loading product");
+                        }
+                    });
                 }
             }
         });
@@ -131,6 +151,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 ((Modules) context).setprofile(ListModel.getUser_id(), user_type);
             }
         });
+    }
+
+    private void hideProgress() {
+        dialog.dismiss();
+    }
+
+    public void showProgress()
+    {
+        dialog = new ProgressDialog(context);
+        dialog.setMessage("Loading Event..");
+        dialog.show();
     }
 
     @Override

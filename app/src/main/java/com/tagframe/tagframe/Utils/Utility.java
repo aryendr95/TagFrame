@@ -140,6 +140,7 @@ public class Utility {
     //notification onclick operations
     public static String notification_op_watch_profile="watch_profile";
     public static String notification_op_watch_event="watch_event";
+    public static String notification_op_watch_product="watch_product";
 
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null) {
@@ -317,5 +318,11 @@ public class Utility {
             fragment=new ProfileOld();
         }
         return fragment;
+    }
+
+    public static boolean isLollipop()
+    {
+        int currentapiVersion = Build.VERSION.SDK_INT;
+        return (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP);
     }
 }

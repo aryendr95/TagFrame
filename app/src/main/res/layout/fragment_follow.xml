@@ -30,6 +30,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/txtmsg"
           android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:textColor="@color/colorPrimaryDark"
 
             android:text="Type Username or Email to search for a user"/>
 

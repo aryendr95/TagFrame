@@ -57,7 +57,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/GRAY"
         android:text="General Information"
         android:textSize="20dp"
         android:layout_margin="10dp"
@@ -95,6 +96,7 @@
                android:layout_width="fill_parent"
                android:layout_height="fill_parent"
                android:text="Username:"
+               android:textColor="@color/colorPrimaryDark"
                android:gravity="center"
                android:layout_weight="2"
                />
@@ -103,6 +105,8 @@
                android:layout_width="fill_parent"
                android:layout_height="fill_parent"
                android:id="@+id/acc_ed_username"
+               android:textColor="@color/colorPrimaryDark"
+               android:textColorHint="@color/GRAY"
                android:layout_weight="1"/>
        </LinearLayout>
 
@@ -117,6 +121,7 @@
                 android:layout_height="fill_parent"
                 android:text="Realname:"
                 android:gravity="center"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_weight="2"
                 />
 
@@ -124,6 +129,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:id="@+id/acc_ed_realname"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="@color/GRAY"
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
@@ -136,6 +143,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="Email:"
+                android:textColor="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:layout_weight="2"
                 />
@@ -144,6 +152,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:id="@+id/acc_ed_email"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="@color/GRAY"
                 android:layout_weight="1"/>
         </LinearLayout>
 
@@ -158,6 +168,8 @@
                 android:layout_height="fill_parent"
                 android:text="Description:"
                 android:gravity="center"
+                android:textColor="@color/colorPrimaryDark"
+
                 android:layout_weight="2"
                 />
 
@@ -165,6 +177,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:id="@+id/acc_ed_description"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="@color/GRAY"
+
                 android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
@@ -178,6 +193,7 @@
                 android:layout_height="fill_parent"
                 android:text="If you edit your Username or RealName, it may be harder for other users to find you"
                 android:gravity="center"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_weight="1"
                 />
 
@@ -230,7 +246,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="@color/GRAY"
                 android:text="Change Password"
                 android:textSize="20dp"
                 android:layout_margin="10dp"
@@ -267,6 +284,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:text="Current Password:"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textColorHint="@color/GRAY"
                     android:gravity="center"
                     android:layout_weight="2"
                     />
@@ -274,6 +293,8 @@
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textColorHint="@color/GRAY"
                     android:id="@+id/acc_ed_current_pass"
                     android:layout_weight="1"/>
             </LinearLayout>
@@ -289,6 +310,8 @@
                     android:layout_height="fill_parent"
                     android:text="New Password:"
                     android:gravity="center"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textColorHint="@color/GRAY"
                     android:layout_weight="2"
                     />
 
@@ -296,6 +319,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:id="@+id/acc_ed_new_pass"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textColorHint="@color/GRAY"
                     android:layout_weight="1"/>
             </LinearLayout>
             <LinearLayout
@@ -309,6 +334,8 @@
                     android:layout_height="fill_parent"
                     android:text="Confirm Password:"
                     android:gravity="center"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textColorHint="@color/GRAY"
                     android:layout_weight="2"
                     />
 
@@ -316,7 +343,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:id="@+id/acc_ed_confirm_pass"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textColorHint="@color/GRAY"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -329,6 +358,8 @@
                     android:layout_height="fill_parent"
                     android:text="Forgot Password?"
                     android:gravity="center"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textColorHint="@color/GRAY"
                     android:id="@+id/acc_forgot_password"
                     android:layout_weight="1"
                     />

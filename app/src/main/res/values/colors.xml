@@ -16,7 +16,9 @@
     <color name="GRAYtrans">#9090A4AE</color>
     <color name="blACK">#000000</color>
 
+
     <color name="black">#000000</color>
+    <color name="black_event">#302D2D</color>
 
     <color name="light_bl">#37474f</color>
     <color name="light_gray">#e8e8e8</color>

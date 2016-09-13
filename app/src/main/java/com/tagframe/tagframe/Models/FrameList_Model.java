@@ -32,9 +32,25 @@ public class FrameList_Model implements Parcelable {
         this.edited = edited;
     }
 
+
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
     @SerializedName("frame_id")
     @Expose
     private String frame_id;
+    @SerializedName("user_id")
+    @Expose
+    private String user_id="77";
+
+
+
     @SerializedName("frame_thumbnail_url")
     @Expose
     private String imagepath;
@@ -170,13 +186,12 @@ public class FrameList_Model implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.edited ? (byte) 1 : (byte) 0);
         dest.writeString(this.frame_id);
+        dest.writeString(this.user_id);
         dest.writeString(this.imagepath);
         dest.writeInt(this.starttime);
         dest.writeInt(this.endtime);
         dest.writeString(this.name);
-
         dest.writeString(this.product_path);
-
         dest.writeString(this.product_id);
         dest.writeString(this.product_url);
         dest.writeString(this.frame_resource_type);
@@ -187,13 +202,12 @@ public class FrameList_Model implements Parcelable {
     protected FrameList_Model(Parcel in) {
         this.edited = in.readByte() != 0;
         this.frame_id = in.readString();
+        this.user_id = in.readString();
         this.imagepath = in.readString();
         this.starttime = in.readInt();
         this.endtime = in.readInt();
         this.name = in.readString();
-
         this.product_path = in.readString();
-
         this.product_id = in.readString();
         this.product_url = in.readString();
         this.frame_resource_type = in.readString();

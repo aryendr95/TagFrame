@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
+    android:background="@color/white"
     android:focusableInTouchMode="true"
     android:id="@+id/mlayout_dialog_comment">
 
@@ -75,6 +76,7 @@
                     android:layout_centerHorizontal="true"
                     android:id="@+id/txt_footer"
                     android:textSize="10dp"
+                    android:textColor="@color/colorPrimaryDark"
                     android:layout_marginTop="5dp"
                     android:layout_below="@+id/pbar_footer"
                     android:text="Loading Items..."/>
@@ -107,6 +109,8 @@
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
             android:hint="Reply"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="@color/GRAY"
             android:layout_toLeftOf="@+id/img_dialog_send_comment"/>
 
         <ImageButton

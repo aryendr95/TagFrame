@@ -1,11 +1,15 @@
 package com.tagframe.tagframe.Models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 /**
  * Created by Brajendr on 7/7/2016.
  */
 public class Comment {
+
     public String getComment() {
         return comment;
     }
@@ -46,7 +50,12 @@ public class Comment {
         this.replyCommentArrayList = replyCommentArrayList;
     }
 
+    @SerializedName("comment")
+    @Expose
     private String comment;
+
+    @SerializedName("created_on")
+    @Expose
     private String created_on;
 
     public boolean isViewallreply() {
@@ -57,8 +66,14 @@ public class Comment {
         this.viewallreply = viewallreply;
     }
 
+    @SerializedName("username")
+    @Expose
     private String username;
+
+    @SerializedName("profile_image")
+    @Expose
     private String profile_image;
+
     private boolean viewallreply=false;
 
     public String getVideo_id() {
@@ -69,6 +84,8 @@ public class Comment {
         this.video_id = video_id;
     }
 
+    @SerializedName("video_id")
+    @Expose
     private String video_id;
 
     public String getParent_id() {
@@ -79,13 +96,26 @@ public class Comment {
         this.parent_id = parent_id;
     }
 
+    @SerializedName("parent_id")
+    @Expose
     private String parent_id;
+
+    @SerializedName("replycomments")
+    @Expose
     private ArrayList<ReplyComment> replyCommentArrayList;
 
    public static class ReplyComment
    {
+       @SerializedName("comment")
+       @Expose
        private String comment;
+
+       @SerializedName("created_on")
+       @Expose
        private String created_on;
+
+       @SerializedName("username")
+       @Expose
        private String username;
 
        public String getComment() {
@@ -120,6 +150,8 @@ public class Comment {
            this.profile_image = profile_image;
        }
 
+       @SerializedName("profile_image")
+       @Expose
        private String profile_image;
    }
 

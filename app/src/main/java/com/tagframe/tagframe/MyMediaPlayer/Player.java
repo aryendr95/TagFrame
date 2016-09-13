@@ -178,6 +178,9 @@ public class Player implements IPlayer {
     private MediaPlayer.OnCompletionListener mOnCompletion = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
+            if (mListener != null) {
+                mListener.onCompletion();
+            }
 
         }
     };

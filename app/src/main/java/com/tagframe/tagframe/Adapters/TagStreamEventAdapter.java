@@ -1,5 +1,7 @@
 package com.tagframe.tagframe.Adapters;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +11,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,10 +33,13 @@ import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Comment;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Retrofit.ApiClient;
+import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
+import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.LoadComment;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -40,15 +47,22 @@ import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by abhinav on 08/04/2016.
  */
 public class TagStreamEventAdapter extends BaseAdapter {
 
-    Context ctx;
-    ArrayList<Event_Model> tagStream_models;
-    LayoutInflater inflater;
-    AppPrefs user_data;
+    private Context ctx;
+    private ArrayList<Event_Model> tagStream_models;
+    private LayoutInflater inflater;
+    private AppPrefs user_data;
+    private int next_rec = 0;
+    private boolean isAdded = false;
+    private boolean areCommentsLoaded = false;
 
     public TagStreamEventAdapter(Context ctx, ArrayList<Event_Model> tagStream_models) {
         this.ctx = ctx;
@@ -115,7 +129,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
         }
 
 
-        mViewHolder.tvlike.setText(tagStream.getNumber_of_likes());
+        mViewHolder.tvlike.setText(tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
 
 
         try {
@@ -136,10 +150,17 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
                 intent.putExtra("eventtype", Utility.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
-                intent.putExtra("tagged_user_id",tagStream.getTaggedUserModelArrayList());
-
-                Log.e("data_url", tagStream.getDataurl());
-                ctx.startActivity(intent);
+                intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
+                ActivityOptions options =null;
+                if(Utility.isLollipop()) {
+                    options=ActivityOptions.makeSceneTransitionAnimation((Modules) ctx, v, "surfaceviewnewevent");
+                }
+                else
+                {
+                    options = ActivityOptions.makeScaleUpAnimation(v, 0,
+                            0, v.getWidth(), v.getHeight());
+                }
+                ctx.startActivity(intent,options.toBundle());
             }
         });
 
@@ -220,9 +241,6 @@ public class TagStreamEventAdapter extends BaseAdapter {
         });
 
 
-        mViewHolder.tvframetext.setText(tagStream.getFrameList_modelArrayList().size() + "/" + "5" + " " + "Frames");
-
-
         //events might be of different user
 
         AppPrefs appPrefs = new AppPrefs(ctx);
@@ -256,6 +274,9 @@ public class TagStreamEventAdapter extends BaseAdapter {
 
     private void showCommentDialog(final Context ctx, final String video, final String user_id) {
 
+        next_rec = 0;
+        isAdded = true;
+
         final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         dialog.setContentView(R.layout.dialog_comment);
         dialog.setCancelable(true);
@@ -265,24 +286,33 @@ public class TagStreamEventAdapter extends BaseAdapter {
         final EditText editext_comment = (EditText) dialog.findViewById(R.id.ed_dialog_comment);
         final LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.mlayout_dialog_comment);
         ImageButton img_send_comment = (ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
-        ProgressBar progressbar = (ProgressBar) dialog.findViewById(R.id.pbar_comment);
+        final ProgressBar progressbar = (ProgressBar) dialog.findViewById(R.id.pbar_comment);
 
+        final TextView m_txt_footer = (TextView) dialog.findViewById(R.id.txt_footer);
+
+        //set Adapter to commentList
+        final ArrayList<Comment> commentArrayList = new ArrayList<>();
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ctx.getApplicationContext());
+        listview_comment.setLayoutManager(mLayoutManager);
+        listview_comment.setItemAnimator(new DefaultItemAnimator());
+        listview_comment.setAdapter(new CommentsRecyclerViewAdapter(commentArrayList, ctx));
         //load comment task
-        final LoadComment loadComment = new LoadComment(progressbar, listview_comment, video, dialog, ctx);
-        loadComment.execute();
 
-        //cancel load dialog task
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                loadComment.cancel(true);
-            }
-        });
+        m_txt_footer.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                loadComments(video, String.valueOf(next_rec), progressbar, m_txt_footer, listview_comment, commentArrayList);
+                                            }
+                                        }
 
+        );
+
+        loadComments(video, String.valueOf(next_rec), progressbar, m_txt_footer, listview_comment, commentArrayList);
         //cancelling dialog
         dialog.findViewById(R.id.img_comment_dialog_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isAdded = false;
                 dialog.cancel();
             }
         });
@@ -295,7 +325,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 if (!editext_comment.getText().toString().isEmpty()) {
 
 
-                    if (loadComment.getStatus() == AsyncTask.Status.FINISHED) {
+                    if (areCommentsLoaded) {
                         // My AsyncTask is done and onPostExecute was called
 
                         Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
@@ -310,7 +340,6 @@ public class TagStreamEventAdapter extends BaseAdapter {
                         intent.putExtra("receiver", mReceiver);
                         ctx.startService(intent);
 
-                        ArrayList<Comment> commentArrayList = loadComment.getCommentArrayList();
 
                         Comment comment = new Comment();
                         comment.setVideo_id(video);
@@ -337,11 +366,6 @@ public class TagStreamEventAdapter extends BaseAdapter {
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
 
-                    } else {
-                        InputMethodManager imm = (InputMethodManager) v.getContext()
-                                .getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        PopMessage.makesimplesnack(layout, "Comments are loading..");
                     }
                 } else {
                     InputMethodManager imm = (InputMethodManager) v.getContext()
@@ -359,11 +383,61 @@ public class TagStreamEventAdapter extends BaseAdapter {
     }
 
 
+    public void loadComments(String video_id, String next_records, final ProgressBar progressBar, final TextView textView, final RecyclerView recyclerView, final ArrayList<Comment> commentArrayList) {
+        if (Networkstate.haveNetworkConnection(ctx)) {
+
+            areCommentsLoaded = false;
+            progressBar.setVisibility(View.VISIBLE);
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            apiInterface.getCommentList(video_id, next_records).enqueue(new Callback<CommentsResponseModel>() {
+                @Override
+                public void onResponse(Call<CommentsResponseModel> call, Response<CommentsResponseModel> response) {
+                    if (response.body().getStatus().equals(Utility.success_response)) {
+                        progressBar.setVisibility(View.GONE);
+                        if (isAdded) {
+                            if (response.body().getCommentArrayList().size() > 0) {
+                                commentArrayList.addAll(response.body().getCommentArrayList());
+                                recyclerView.getAdapter().notifyDataSetChanged();
+
+                                if (response.body().getCommentArrayList().size() == 3) {
+                                    next_rec = next_rec + 3;
+                                    textView.setText("Load More Comments..");
+                                } else {
+                                    textView.setOnClickListener(null);
+                                    textView.setText("No More Comments..");
+                                }
+
+                            } else {
+                                textView.setText("No Comments to load..");
+                            }
+
+                            areCommentsLoaded = true;
+                        } else {
+                            textView.setText("Error..");
+                            PopMessage.makeshorttoast(ctx, "Error+ " + response.body().getStatus());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommentsResponseModel> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    textView.setText("Error..");
+                    Log.e("call failed", t.getMessage());
+                }
+            });
+        } else {
+            textView.setText(Utility.message_no_internet);
+            PopMessage.makeshorttoast(ctx, Utility.message_no_internet);
+        }
+    }
+
+
     private class MyViewHolder {
-        TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct, tvframetext;
+        TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct;
         ImageView iveventimage, ivlike;
         VideoView iveventvideo;
-        LinearLayout ll_like, ll_share, llcomment, ll_frame;
+        LinearLayout ll_like, ll_share, llcomment;
         CircularImageView ivpropic;
 
         public MyViewHolder(View item) {
@@ -375,14 +449,12 @@ public class TagStreamEventAdapter extends BaseAdapter {
             ll_like = (LinearLayout) item.findViewById(R.id.lllike);
             ll_share = (LinearLayout) item.findViewById(R.id.llshare);
             llcomment = (LinearLayout) item.findViewById(R.id.llcomment);
-            ll_frame = (LinearLayout) item.findViewById(R.id.lladd_frame);
 
             tvlike_direct = (TextView) item.findViewById(R.id.txt_like_directive);
             ivpropic = (CircularImageView) item.findViewById(R.id.list_pro_image);
 
             tvlike = (TextView) item.findViewById(R.id.txt_likes);
             ivlike = (ImageView) item.findViewById(R.id.imglike);
-            tvframetext = (TextView) item.findViewById(R.id.txt_number_of_frames);
 
             iveventvideo = (VideoView) item.findViewById(R.id.list_event_video);
 

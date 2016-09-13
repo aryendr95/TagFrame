@@ -34,7 +34,7 @@ import retrofit2.Response;
 /**
  * Created by abhinav on 11/04/2016.
  */
-public class User_Frames extends Fragment implements ScrollList{
+public class User_Frames extends Fragment implements ScrollList {
 
     private View mview;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -54,7 +54,10 @@ public class User_Frames extends Fragment implements ScrollList{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview = inflater.inflate(R.layout.layout_frames, container, false);
+        if (Utility.isLollipop())
+            mview = inflater.inflate(R.layout.layout_frames, container, false);
+        else
+            mview = inflater.inflate(R.layout.layout_frames_below_21, container, false);
 
         user_frames_models = new ArrayList<>();
 
@@ -81,6 +84,7 @@ public class User_Frames extends Fragment implements ScrollList{
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
                 user_frames_models = new ArrayList<>();
+                gridview.setAdapter(new ImageAdapter(getActivity(), user_frames_models));
                 next_records = 0;
                 loadUserFrames();
 
@@ -117,7 +121,7 @@ public class User_Frames extends Fragment implements ScrollList{
             retrofitService.getUserFrames(user_id, String.valueOf(next_records)).enqueue(new Callback<UserFrameResponseModel>() {
                 @Override
                 public void onResponse(Call<UserFrameResponseModel> call, Response<UserFrameResponseModel> response) {
-                    if(isAdded()) {
+                    if (isAdded()) {
                         progressBar.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
                         try {
@@ -131,12 +135,12 @@ public class User_Frames extends Fragment implements ScrollList{
                                 //detect more events are to be loaded or not
                                 if (response.body().getUser_frames_models().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more items...");
+                                    mTxt_footer.setText("Load frames items...");
 
                                 } else {
 
                                     mTxt_footer.setOnClickListener(null);
-                                    mTxt_footer.setText("No more items to load..");
+                                    mTxt_footer.setText("No more frames for you..");
                                 }
 
                             } else {
@@ -150,10 +154,10 @@ public class User_Frames extends Fragment implements ScrollList{
 
                 @Override
                 public void onFailure(Call<UserFrameResponseModel> call, Throwable t) {
-                    if(isAdded()) {
+                    if (isAdded()) {
                         progressBar.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
-                        Log.e("das", t.getMessage());
+
                     }
                 }
             });

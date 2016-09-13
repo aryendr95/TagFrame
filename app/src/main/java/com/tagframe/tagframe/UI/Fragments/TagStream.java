@@ -71,7 +71,15 @@ public class TagStream extends Fragment {
 
 
         if (AppPrefs.gettagstreamlist("tagstream").size() == 0) {
-            mTxt_footer.setText("No items to load..");
+            mTxt_footer.setText("No feeds for you..");
+        }
+        else if(AppPrefs.gettagstreamlist("tagstream").size()==Utility.PAGE_SIZE)
+        {
+            mTxt_footer.setText("Load more feeds..");
+        }
+        else
+        {
+            mTxt_footer.setText("No more feeds for you..");
         }
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -79,6 +87,7 @@ public class TagStream extends Fragment {
             public void onRefresh() {
 
                 tagStream_models = new ArrayList<Event_Model>();
+                listView.setAdapter(new TagStreamEventAdapter(getActivity(), tagStream_models));
                 next_records = 0;
                 //load a new list
                 loadTagStream();
@@ -96,20 +105,6 @@ public class TagStream extends Fragment {
                 ((Modules) getActivity()).generate_media_chooser(imgbtn);
             }
         });
-
-
-        /*listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-
-            }
-        });*/
 
         return mview;
     }
@@ -160,10 +155,10 @@ public class TagStream extends Fragment {
                         //if there are more items to be loaded then increse the offset by pagesize
                         if (continued_list.size() == Utility.PAGE_SIZE) {
                             next_records = next_records + Utility.PAGE_SIZE;
-                            mTxt_footer.setText("Load more items..");
+                            mTxt_footer.setText("Load more feeds..");
                         } else {
                             mTxt_footer.setOnClickListener(null);
-                            mTxt_footer.setText("No more items to load..");
+                            mTxt_footer.setText("No more feeds fo you..");
                         }
 
                     } else {

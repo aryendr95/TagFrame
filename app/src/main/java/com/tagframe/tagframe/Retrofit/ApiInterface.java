@@ -1,11 +1,13 @@
 package com.tagframe.tagframe.Retrofit;
 
+import com.tagframe.tagframe.Adapters.CommentsResponseModel;
 import com.tagframe.tagframe.Models.EndorseListResponseModel;
 import com.tagframe.tagframe.Models.EventDetailResponseModel;
 import com.tagframe.tagframe.Models.EventSuccessUploadResponseModel;
 import com.tagframe.tagframe.Models.GetProductResponseModel;
 import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.NotificationResponseModel;
+import com.tagframe.tagframe.Models.Product;
 import com.tagframe.tagframe.Models.ProfileResponseModel;
 import com.tagframe.tagframe.Models.ResponsePojo;
 import com.tagframe.tagframe.Models.SearchUserResponseModel;
@@ -104,4 +106,14 @@ public interface ApiInterface {
     //event_details
     @GET("event_details/{event_id}")
     Call<EventDetailResponseModel> getEventDetails(@Query("event_id") String event_id);
+
+    //load Comments
+    @GET("comment_list/{video_id}/{next_records}")
+    Call<CommentsResponseModel> getCommentList(@Query("video_id")String video_id,@Query("next_records") String next_records);
+
+    //get product details
+    @GET("product_details/{product_id}")
+    Call<Product> getProductDetails(@Query("product_id")String product_id);
+
+
 }

@@ -9,5 +9,6 @@ public interface IPlayerListener {
     public void onBufferingStarted();
     public void onBufferingFinished();
     public void onRendereingstarted();
+    void onCompletion();
 
 }

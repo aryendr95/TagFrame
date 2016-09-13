@@ -26,6 +26,7 @@
         android:layout_marginBottom="5dp"
         android:textSize="10dp"
         android:id="@+id/title"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_below="@+id/number"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

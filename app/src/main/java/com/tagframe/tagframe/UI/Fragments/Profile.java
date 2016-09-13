@@ -58,7 +58,7 @@ public class Profile extends Fragment {
     private View mview;
     private ImageView pro_user_iamge;
     private TextView pro_user_name, pro_description;
-    ;
+
     private Button pro_edit_profile, pro_save_profile, pro_cancel_profile;
 
 
@@ -88,6 +88,7 @@ public class Profile extends Fragment {
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    private ArrayList<String> numbers;
 
 
     @Nullable
@@ -124,6 +125,8 @@ public class Profile extends Fragment {
 
         // Log.e("fasf", userinfo.getString(Utility.user_descrip));
 
+        progressBar=(ProgressBar)mview.findViewById(R.id.pbar_profile);
+
         pro_edit_profile = (Button) mview.findViewById(R.id.btn_edit_profile);
         pro_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +142,7 @@ public class Profile extends Fragment {
 
                     if (getActivity() instanceof Modules) {
                         progressBar.setVisibility(View.VISIBLE);
+
                         Broadcastresults mReciever = ((Modules) getActivity()).register_reviever();
                         Intent intent = new Intent(getActivity(), IntentServiceOperations.class);
                         intent.putExtra("operation", Utility.operation_unfollow_profile);
@@ -151,7 +155,7 @@ public class Profile extends Fragment {
 
                 } else if (usertype == Utility.user_type_followers) {
                     if (getActivity() instanceof Modules) {
-                        progressBar.setVisibility(View.VISIBLE);
+                         progressBar.setVisibility(View.VISIBLE);
                         Broadcastresults mReciever = ((Modules) getActivity()).register_reviever();
                         Intent intent = new Intent(getActivity(), IntentServiceOperations.class);
                         intent.putExtra("operation", Utility.operation_follow_profile);
@@ -187,24 +191,23 @@ public class Profile extends Fragment {
 
     }
 
+
+
     private void loadUserInformation() {
 
-        final ProgressDialog progressDialog=new ProgressDialog(getActivity());
-        progressDialog.setMessage("Loading Info..");
-        progressDialog.show();
+       progressBar.setVisibility(View.VISIBLE);
 
-          viewPager = (ViewPager) mview.findViewById(R.id.htab_viewpager);
+        viewPager = (ViewPager) mview.findViewById(R.id.htab_viewpager);
 
-          tabLayout = (TabLayout) mview.findViewById(R.id.htab_tabs);
-
+        tabLayout = (TabLayout) mview.findViewById(R.id.htab_tabs);
 
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         apiInterface.getProfileInfo(userid, userinfo_data.getString(Utility.user_id)).enqueue(new Callback<ProfileResponseModel>() {
             @Override
             public void onResponse(Call<ProfileResponseModel> call, Response<ProfileResponseModel> response) {
-                if(isAdded()) {
-                    progressDialog.hide();
+                if (isAdded()) {
+                   progressBar.setVisibility(View.GONE);
                     if (response.body().getStatus().equals(Utility.success_response)) {
                         User user = response.body().getUsers();
 
@@ -218,7 +221,7 @@ public class Profile extends Fragment {
                             pro_user_iamge.setImageResource(R.drawable.pro_image);
                         }
                         //setting tabs
-                        ArrayList<String> numbers = new ArrayList<String>();
+                        numbers = new ArrayList<String>();
                         numbers.add(user.getNumber_of_timeline());
                         numbers.add(user.getNumber_of_event());
                         numbers.add(user.getNumber_of_frame());
@@ -238,8 +241,8 @@ public class Profile extends Fragment {
 
             @Override
             public void onFailure(Call<ProfileResponseModel> call, Throwable t) {
-                if(isAdded()) {
-                    progressDialog.hide();
+                if (isAdded()) {
+                    progressBar.setVisibility(View.GONE);
                     Log.e("ds", "failure" + t.getMessage());
                 }
             }
@@ -247,7 +250,7 @@ public class Profile extends Fragment {
 
     }
 
-    private void setupTabLayout(ViewPager viewPager,TabLayout tabLayout) {
+    private void setupTabLayout(ViewPager viewPager, TabLayout tabLayout) {
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
@@ -259,10 +262,9 @@ public class Profile extends Fragment {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 super.onTabReselected(tab);
-                Fragment fragment =(Fragment) viewPagerAdapter.getItem(tab.getPosition());
-                if(fragment instanceof ScrollList)
-                {
-                    ((ScrollList)fragment).scrolltofirst();
+                Fragment fragment = (Fragment) viewPagerAdapter.getItem(tab.getPosition());
+                if (fragment instanceof ScrollList) {
+                    ((ScrollList) fragment).scrolltofirst();
                 }
             }
         });
@@ -295,12 +297,13 @@ public class Profile extends Fragment {
 
     public void setprofilestat(int type, String value) {
         if (type == Utility.user_type_followers) {
-            number_of_followers.setText(value);
+            numbers.set(4, value);
         } else if (type == Utility.user_type_following) {
-            number_of_following.setText(value);
+            numbers.set(3, value);
         }
 
-
+        setupViewPager(viewPager, numbers);
+        setupTabLayout(viewPager, tabLayout);
     }
 
     private void setupViewPager(ViewPager viewPager, ArrayList<String> number) {
@@ -332,8 +335,7 @@ public class Profile extends Fragment {
         }
     }
 
-    public ViewPagerAdapter getPagerAdapter()
-    {
+    public ViewPagerAdapter getPagerAdapter() {
         return viewPagerAdapter;
     }
 

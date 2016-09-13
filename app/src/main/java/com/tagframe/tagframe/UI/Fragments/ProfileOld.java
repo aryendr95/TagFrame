@@ -478,10 +478,8 @@ public class ProfileOld extends Fragment {
                 webServiceHandler = new WebServiceHandler(Utility.users_details);
                 webServiceHandler.addFormField("user_id", userid);
                 webServiceHandler.addFormField("logged_user_id", userinfo_data.getString(Utility.user_id));
-                JSONObject wrapper_object = new JSONObject(webServiceHandler.finish());
+                JSONObject top_level = new JSONObject(webServiceHandler.finish());
 
-                JSONObject top_level = wrapper_object.getJSONObject("profile");
-                Log.e("dsd", top_level.toString());
 
                 status = top_level.getString("status");
                 if (status.equals("success")) {

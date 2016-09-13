@@ -27,6 +27,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
+import com.tagframe.tagframe.Utils.BitmapHelper;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
@@ -233,7 +234,7 @@ public class Account extends Fragment {
             picturePath = GetPaths.getPath(getActivity(), selectedImage);
 
 
-            pro_pic.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            pro_pic.setImageBitmap(BitmapHelper.decodeFile(getActivity(),new File(picturePath)));
 
         }
 

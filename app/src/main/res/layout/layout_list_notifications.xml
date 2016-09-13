@@ -20,7 +20,7 @@
         android:textColor="@color/blACK"
         android:gravity="center_vertical"
         android:layout_marginTop="10dp"
-        android:textSize="16dp"
+        android:textSize="13dp"
         android:layout_toRightOf="@+id/notification_pro_pic"
         android:text="Username"/>
     <com.tagframe.tagframe.Utils.MyTextView
@@ -28,7 +28,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_marginTop="10dp"
-        android:textSize="16dp"
+        android:textSize="12dp"
+        android:textColor="@color/colorPrimaryDark"
         android:id="@+id/notification_action_type"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/notification_user_name"
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/notification_sub_action_name"
         android:textStyle="bold"
-        android:textSize="12dp"
+        android:textSize="10dp"
         android:layout_marginTop="5dp"
         android:textColor="@color/appblue"
         android:layout_toRightOf="@+id/notification_pro_pic"
@@ -52,6 +53,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/notification_date"
         android:textSize="12dp"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_below="@+id/notification_sub_action_name"
         android:layout_alignParentRight="true"
         android:layout_margin="5dp"
@@ -62,7 +64,7 @@
         android:layout_height="1dp"
         android:background="@color/light_gray"
         android:layout_below="@+id/notification_date"
-        android:layout_margin="10dp"/>
+        android:layout_margin="5dp"/>
 
 
 

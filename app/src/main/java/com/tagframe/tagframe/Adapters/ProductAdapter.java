@@ -88,7 +88,7 @@ public class ProductAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void showProductDialog(final Context ctx, final Product product) {
+    static void showProductDialog(final Context ctx, final Product product) {
         final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         dialog.setContentView(R.layout.dialog_see_product);
         dialog.setCancelable(true);

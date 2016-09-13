@@ -133,24 +133,6 @@ public class MarketPlaceFragment extends Fragment {
                     if(isAdded())
                     {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     if (response.body().getStatus().equals("success")) {
                         if (response.body().getProductList().size() > 0) {
                             products.addAll(response.body().getProductList());

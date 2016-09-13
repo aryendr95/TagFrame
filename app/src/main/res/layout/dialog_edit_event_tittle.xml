@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:hint="Title"
             android:layout_margin="10dp"
-
+             android:textColor="@color/colorPrimaryDark"
             android:layout_toRightOf="@+id/rl"
             android:id="@+id/dia_frametittle"/>
         <com.tagframe.tagframe.Utils.Edittext
@@ -37,6 +37,8 @@
             android:hint="Description"
             android:layout_marginLeft="10dp"
             android:visibility="gone"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="@color/GRAY"
             android:layout_marginRight="10dp"
             android:layout_toRightOf="@+id/rl"
             android:id="@+id/dia_framedescription"

@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="AnimatingRelativeLayout">
+        <attr name="inAnimation" format="integer" />
+        <attr name="outAnimation" format="integer"/>
+    </declare-styleable>
+</resources>

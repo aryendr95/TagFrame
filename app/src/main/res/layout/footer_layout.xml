@@ -23,6 +23,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/txt_footer"
         android:textSize="10dp"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_marginTop="5dp"
         android:layout_below="@+id/pbar_footer"
         android:text="Loading Items..."/>

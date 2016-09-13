@@ -55,7 +55,10 @@ public class TimeLine extends Fragment implements ScrollList {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        if(Utility.isLollipop())
         mview = inflater.inflate(R.layout.layout_timeline, container, false);
+        else
+        mview= inflater.inflate(R.layout.layout_timeline_below_21, container, false);
 
         tagStream_models = new ArrayList<>();
         mLayout = (RelativeLayout) mview.findViewById(R.id.mlayout_timeline);
@@ -83,6 +86,7 @@ public class TimeLine extends Fragment implements ScrollList {
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
                 tagStream_models = new ArrayList<Event_Model>();
+                listView.setAdapter(new TagStreamEventAdapter(getActivity(), tagStream_models));
                 next_records = 0;
                 loadEvents();
             }
@@ -137,10 +141,10 @@ public class TimeLine extends Fragment implements ScrollList {
                                 //detect more events are to be loaded or not
                                 if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more items...");
+                                    mTxt_footer.setText("Load more feeds...");
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
-                                    mTxt_footer.setText("No more items to load..");
+                                    mTxt_footer.setText("No more feeds to load..");
                                 }
                                 //((Modules)getActivity()).getPagerAdapter().notifyDataSetChanged();
 

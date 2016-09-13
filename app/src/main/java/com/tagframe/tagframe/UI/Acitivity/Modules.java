@@ -756,7 +756,6 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 android.R.anim.slide_out_right);
         transaction.replace(R.id.mod_frame_layout, fr);
 
-
         transaction.commit();
     }
 
@@ -808,7 +807,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 userid = resultData.getString("user_id");
                 if (resultCode == 1) {
-
+                    setprofile(userid, Utility.user_type_followers);
                     MyToast.popmessage("Successfully UnFollowed", this);
                 } else {
                     setprofile(userid, Utility.user_type_self);
@@ -819,7 +818,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
                 userid = resultData.getString("user_id");
                 if (resultCode == 1) {
-
+                    setprofile(userid, Utility.user_type_following);
                     MyToast.popmessage("Successfully Followed", this);
                 } else {
                     setprofile(userid, Utility.user_type_self);
@@ -946,5 +945,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

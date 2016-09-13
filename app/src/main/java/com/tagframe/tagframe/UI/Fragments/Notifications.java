@@ -117,14 +117,15 @@ public class Notifications extends Fragment {
 
                                 if (response.body().getNotificationModelArrayList().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more items...");
+                                    mTxt_footer.setText("Load more notifications...");
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
-                                    mTxt_footer.setText("No more items to load..");
+                                    mTxt_footer.setText("No more notifications fo you");
                                 }
 
                             } else {
                                 txt_message.setVisibility(View.VISIBLE);
+                                mTxt_footer.setText("No notifications for you..");
                                 //txt_message.setText(getActivity().getResources().getString(R.string.no_notification_message));
                             }
                         } else {

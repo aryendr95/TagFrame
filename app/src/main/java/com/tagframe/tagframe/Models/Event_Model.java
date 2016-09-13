@@ -13,6 +13,18 @@ import java.util.ArrayList;
  */
 public class Event_Model implements Parcelable {
 
+    public String getNum_of_comments() {
+        return num_of_comments;
+    }
+
+    public void setNum_of_comments(String num_of_comments) {
+        this.num_of_comments = num_of_comments;
+    }
+
+    @SerializedName("num_of_comments")
+    @Expose
+    private String num_of_comments;
+
     @SerializedName("user_id")
     @Expose
     private String user_id;
@@ -248,6 +260,7 @@ public class Event_Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.num_of_comments);
         dest.writeString(this.user_id);
         dest.writeString(this.name);
         dest.writeString(this.profile_picture);
@@ -271,6 +284,7 @@ public class Event_Model implements Parcelable {
     }
 
     protected Event_Model(Parcel in) {
+        this.num_of_comments = in.readString();
         this.user_id = in.readString();
         this.name = in.readString();
         this.profile_picture = in.readString();

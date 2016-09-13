@@ -35,7 +35,7 @@ import retrofit2.Response;
 /**
  * Created by abhinav on 11/04/2016.
  */
-public class User_Following extends Fragment implements ScrollList{
+public class User_Following extends Fragment implements ScrollList {
 
 
     private View mview;
@@ -44,7 +44,7 @@ public class User_Following extends Fragment implements ScrollList{
     private ProgressBar progressBar, footerbar;
     private TextView mTxt_footer;
     private String user_id;
-    private ArrayList<FollowModel> followModelArrayList ;
+    private ArrayList<FollowModel> followModelArrayList;
     private RelativeLayout mLayout;
 
     private AppPrefs userinfo;
@@ -55,9 +55,12 @@ public class User_Following extends Fragment implements ScrollList{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview = inflater.inflate(R.layout.layout_following, container, false);
+        if (Utility.isLollipop())
+            mview = inflater.inflate(R.layout.layout_following, container, false);
+        else
+            mview = inflater.inflate(R.layout.layout_below_following_21, container, false);
 
-        followModelArrayList= new ArrayList<>();
+        followModelArrayList = new ArrayList<>();
 
         userinfo = new AppPrefs(getActivity());
 
@@ -110,7 +113,7 @@ public class User_Following extends Fragment implements ScrollList{
             retrofitService.getUserFollowing(user_id, String.valueOf(next_records)).enqueue(new Callback<SearchUserResponseModel>() {
                 @Override
                 public void onResponse(Call<SearchUserResponseModel> call, Response<SearchUserResponseModel> response) {
-                    if(isAdded()) {
+                    if (isAdded()) {
                         try {
                             if (response.body().getStatus().equals("success")) {
 
@@ -122,10 +125,10 @@ public class User_Following extends Fragment implements ScrollList{
                                 //detect more events are to be loaded or not
                                 if (response.body().getArrayList_search_user_model().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more items...");
+                                    mTxt_footer.setText("Load more followings...");
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
-                                    mTxt_footer.setText("No more items to load..");
+                                    mTxt_footer.setText("No more followings for you..");
                                 }
 
                             } else {
@@ -140,10 +143,11 @@ public class User_Following extends Fragment implements ScrollList{
                 @Override
                 public void onFailure(Call<SearchUserResponseModel> call, Throwable t) {
 
-                    if(isAdded()) {
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
-                }}
+                    if (isAdded()) {
+                        progressBar.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
             });
 
         } else {
