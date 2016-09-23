@@ -11,7 +11,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/swiperefresh_followers"
-            android:layout_marginTop="5dp">
+            >
 
             <ListView
                 android:layout_width="fill_parent"

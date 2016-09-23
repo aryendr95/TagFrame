@@ -1,29 +1,22 @@
 package com.tagframe.tagframe.UI.Fragments;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.ViewPagerAdapter;
 import com.tagframe.tagframe.Models.ProfileResponseModel;
@@ -35,15 +28,10 @@ import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Menu_Action;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
-import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
-import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -216,7 +204,7 @@ public class Profile extends Fragment {
                         pro_description.setText(user.getDescription());
                         //setting user_image
                         try {
-                            Picasso.with(getActivity()).load(user.getProfile_image()).into(pro_user_iamge);
+                            Picasso.with(getActivity()).load(user.getProfile_image()).resize(100,100).into(pro_user_iamge);
                         } catch (Exception e) {
                             pro_user_iamge.setImageResource(R.drawable.pro_image);
                         }

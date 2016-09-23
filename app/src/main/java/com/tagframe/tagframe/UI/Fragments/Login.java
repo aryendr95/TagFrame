@@ -29,6 +29,7 @@ import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.provider.Settings.Secure;
 
 import java.io.IOException;
 
@@ -43,6 +44,7 @@ public class Login extends Fragment {
     private EditText ed_username,ed_password;
     private Button bt_login;
     private TextView txt_forgotpassword;
+    private String android_id;
 
 
     @Nullable
@@ -50,11 +52,15 @@ public class Login extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mview=inflater.inflate(R.layout.fragment_login,container,false);
 
+        android_id=Secure.getString(getActivity().getContentResolver(),
+                Secure.ANDROID_ID);
         //recognising views
         ed_username=(EditText)mview.findViewById(R.id.login_usrname);
         ed_password=(EditText)mview.findViewById(R.id.login_password);
 
         bt_login=(Button)mview.findViewById(R.id.login_action);
+        android_id=Secure.getString(getActivity().getContentResolver(),
+                Secure.ANDROID_ID);
 
         bt_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +181,8 @@ public class Login extends Fragment {
                     webServiceHandler = new WebServiceHandler(params[0]);
                     webServiceHandler.addFormField("username", params[1]);
                     webServiceHandler.addFormField("password", params[2]);
+                    webServiceHandler.addFormField("device_id",android_id);
+                    webServiceHandler.addFormField(Utility.shp_user_Token,AppPrefs.getString(Utility.shp_user_Token));
 
 
 

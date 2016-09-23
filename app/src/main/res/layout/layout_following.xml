@@ -13,7 +13,6 @@
     <com.tagframe.tagframe.Utils.MySwipeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="5dp"
         android:id="@+id/swiperefresh_following">
 
         <com.tagframe.tagframe.Utils.NestedScrollingListView

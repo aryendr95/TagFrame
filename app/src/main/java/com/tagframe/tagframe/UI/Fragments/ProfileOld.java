@@ -20,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
@@ -517,7 +516,7 @@ public class ProfileOld extends Fragment {
 
                     wholelayout.setVisibility(View.VISIBLE);
                     try {
-                        Picasso.with(getActivity()).load(userinfo.getString("profile_image")).error(R.drawable.pro_image).into(pro_user_iamge);
+                        Picasso.with(getActivity()).load(userinfo.getString("profile_image")).resize(100,100).error(R.drawable.pro_image).into(pro_user_iamge);
                     } catch (Exception E) {
                         pro_user_iamge.setImageResource(R.drawable.pro_image);
 

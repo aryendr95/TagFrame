@@ -5,7 +5,7 @@ import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,7 +37,9 @@ import com.tagframe.tagframe.Utils.AppPrefs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -451,10 +453,28 @@ public class Account extends Fragment {
                 webServiceHandler.addFormField("description", params[4]);
                 if (!picturePath.isEmpty()) {
                     File file = new File(picturePath);
-                    webServiceHandler.addFilePart("profile_photo", file, 2, getActivity());
+                    Log.e("length",file.length()+"");
+                    if(file.length()/1000>512)
+                    {
+                        File fileCache = new File(getActivity().getCacheDir(), "temp.png");
+                        Bitmap loadBitmap=BitmapHelper.decodeFile(getActivity(),file);
+                        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                        loadBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+                        byte[] bitmapData=byteArrayOutputStream.toByteArray();
+
+                        FileOutputStream fileOutputStream=new FileOutputStream(fileCache);
+                        fileOutputStream.write(bitmapData);
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+
+                        file=fileCache;
+
+                    }
+                    webServiceHandler.addFilePart("profile_photo", file, 3, getActivity());
                 }
 
                 JSONObject jsonObject = new JSONObject(webServiceHandler.finish());
+                Log.e("error",jsonObject.toString());
                 JSONObject userInfo=jsonObject.getJSONObject("userinfo");
 
                 status = jsonObject.getString("status");

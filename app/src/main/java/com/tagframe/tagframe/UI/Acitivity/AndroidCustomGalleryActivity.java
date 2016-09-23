@@ -257,6 +257,7 @@ public class AndroidCustomGalleryActivity extends Activity {
             imagecursor.close();
         }
     }
+
 }
 
 

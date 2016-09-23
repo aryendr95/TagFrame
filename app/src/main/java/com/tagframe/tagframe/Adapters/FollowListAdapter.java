@@ -81,7 +81,7 @@ public class FollowListAdapter extends BaseAdapter {
 
         mViewHolder.tvrealname.setText(followModel.getFirst_name());
         try {
-            Picasso.with(ctx).load(followModel.getImage()).into(mViewHolder.user_pic);
+            Picasso.with(ctx).load(followModel.getImage()).resize(50,50).into(mViewHolder.user_pic);
         } catch (Exception e) {
             mViewHolder.user_pic.setImageResource(R.drawable.pro_image);
         }

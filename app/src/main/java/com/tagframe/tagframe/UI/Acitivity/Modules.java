@@ -36,7 +36,11 @@ import android.widget.TextView;
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.Menulistadapter;
+import com.tagframe.tagframe.Application.TagFrame;
+import com.tagframe.tagframe.Models.ResponsePojo;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Retrofit.ApiClient;
+import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.UI.Fragments.Follow;
 import com.tagframe.tagframe.UI.Fragments.MarketPlaceFragment;
@@ -53,6 +57,11 @@ import com.tagframe.tagframe.Utils.PopMessage;
 
 
 import java.util.ArrayList;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Modules extends FragmentActivity implements Broadcastresults.Receiver {
 
@@ -346,6 +355,23 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                 myf = Utility.getProfileFragment();
 
             }
+            else if(getIntent().getStringExtra(Utility.NAVIGATE_TO).equals(Utility.NAVIGATE_TO_NOTIFICATION))
+            {
+                mtxttagstream.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgtagstream.setImageResource(R.drawable.tagstream);
+
+                mtxtnotification.setTextColor(getResources().getColor(R.color.white));
+                mimgnotification.setImageResource(R.drawable.nofication_hover);
+
+                mtxtmarket.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgmarket.setImageResource(R.drawable.market);
+
+                mtxtprofile.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgprofile.setImageResource(R.drawable.user);
+                mtxtevent.setTextColor(getResources().getColor(R.color.light_gray));
+                mimgevent.setImageResource(R.drawable.event);
+                myf=new Notifications();
+            }
         }
 
 
@@ -417,17 +443,52 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                                 public void run() {
                                     final Dialog dialog = new Dialog(Modules.this);
                                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    dialog.setCancelable(false);
                                     dialog.setContentView(R.layout.dialog_logout);
+                                    final LinearLayout controls=(LinearLayout)dialog.findViewById(R.id.layout_logout_controls);
+                                    final LinearLayout progress=(LinearLayout)dialog.findViewById(R.id.layout_logging_out);
+
+
                                     dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            AppPrefs listops = new AppPrefs(Modules.this);
+                                            final AppPrefs listops = new AppPrefs(Modules.this);
 
-                                            listops.putString(Utility.loginstatuskey, "");
-                                            Utility.flushuserinfo(Modules.this);
-                                            Intent intent2 = new Intent(Modules.this, Authentication.class);
-                                            startActivity(intent2);
-                                            finish();
+
+                                            controls.setVisibility(View.GONE);
+                                            progress.setVisibility(View.VISIBLE);
+
+
+
+
+                                            ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
+                                            apiInterface.logout(listops.getString(Utility.user_id), TagFrame.android_id).enqueue(new Callback<ResponsePojo>() {
+                                                @Override
+                                                public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
+
+
+                                                    if(response.body().getStatus().equals(Utility.success_response))
+                                                    {
+                                                        listops.putString(Utility.loginstatuskey, "");
+                                                        Utility.flushuserinfo(Modules.this);
+                                                        Intent intent2 = new Intent(Modules.this, Authentication.class);
+                                                        startActivity(intent2);
+                                                        finish();
+                                                    }
+                                                    else
+                                                    {
+                                                        PopMessage.makeshorttoast(Modules.this,"Error Logging out.."+listops.getString(Utility.user_id)+ TagFrame.android_id);
+                                                        dialog.dismiss();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<ResponsePojo> call, Throwable t) {
+                                                    PopMessage.makeshorttoast(Modules.this,"Error Logging out..");
+                                                    dialog.dismiss();
+
+                                                }
+                                            });
                                         }
                                     });
                                     dialog.findViewById(R.id.nobtn).setOnClickListener(new View.OnClickListener() {

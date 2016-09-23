@@ -2,12 +2,10 @@ package com.tagframe.tagframe.UI.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -32,7 +30,9 @@ import com.tagframe.tagframe.Utils.AppPrefs;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * Created by abhinav on 18/04/2016.
@@ -142,6 +142,22 @@ public class AddProfilePhoto extends Fragment {
                 webServiceHandler.addFormField("user_id", AppPrefs.getString(Utility.user_id));
                 if (!picturePath.isEmpty()) {
                     File file = new File(picturePath);
+                    if(file.length()/1000>512)
+                    {
+                        File fileCache = new File(getActivity().getCacheDir(), "temp.png");
+                        Bitmap loadBitmap=BitmapHelper.decodeFile(getActivity(),file);
+                        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                        loadBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+                        byte[] bitmapData=byteArrayOutputStream.toByteArray();
+
+                        FileOutputStream fileOutputStream=new FileOutputStream(fileCache);
+                        fileOutputStream.write(bitmapData);
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+
+                        file=fileCache;
+
+                    }
                     webServiceHandler.addFilePart("profile_photo", file, 3, getActivity());
                 }
                 webServiceHandler.addFormField("description", params[0]);

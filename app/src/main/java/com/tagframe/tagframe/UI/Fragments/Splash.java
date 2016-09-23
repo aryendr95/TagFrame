@@ -1,10 +1,10 @@
 package com.tagframe.tagframe.UI.Fragments;
 
 
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -46,28 +46,29 @@ public class Splash extends Fragment {
 
     private View mview;
     AppPrefs AppPrefs;
-    ProgressBar progressBar;
-    TextView txt;
-
+    private ProgressBar progressBar;
+    private TextView txt;
+    private String android_id;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mview=inflater.inflate(R.layout.fragment_splash,container,false);
+        mview = inflater.inflate(R.layout.fragment_splash, container, false);
 
-        progressBar=(ProgressBar)mview.findViewById(R.id.splashbar);
+        android_id= Settings.Secure.getString(getActivity().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        progressBar = (ProgressBar) mview.findViewById(R.id.splashbar);
 
 
-        AppPrefs =new AppPrefs(getActivity());
-        txt=(TextView)mview.findViewById(R.id.txtsplashmessage);
+        AppPrefs = new AppPrefs(getActivity());
+        txt = (TextView) mview.findViewById(R.id.txtsplashmessage);
         new Logintask().execute(Utility.login, AppPrefs.getString(Utility.user_name), AppPrefs.getString(Utility.user_password));
 
         return mview;
     }
 
     //background task for logging in
-    class Logintask extends AsyncTask<String,String,String>
-    {
+    class Logintask extends AsyncTask<String, String, String> {
 
 
         WebServiceHandler webServiceHandler;
@@ -77,9 +78,6 @@ public class Splash extends Fragment {
 
         @Override
         protected void onPreExecute() {
-
-
-
 
 
             super.onPreExecute();
@@ -95,28 +93,24 @@ public class Splash extends Fragment {
                 webServiceHandler = new WebServiceHandler(params[0]);
                 webServiceHandler.addFormField("username", params[1]);
                 webServiceHandler.addFormField("password", params[2]);
+                webServiceHandler.addFormField("device_id",android_id);
+                webServiceHandler.addFormField(Utility.shp_user_Token,AppPrefs.getString(Utility.shp_user_Token));
 
 
-                JSONObject toplevel=new JSONObject(webServiceHandler.finish());
-                status=toplevel.getString("status");
-                if(status.equals("success"))
-                {
-                    userinfo=toplevel.getJSONObject("userinfo");
+                JSONObject toplevel = new JSONObject(webServiceHandler.finish());
+                status = toplevel.getString("status");
+                if (status.equals("success")) {
+                    userinfo = toplevel.getJSONObject("userinfo");
 
                 }
 
 
-
-            }
-            catch (IOException q)
-            {
-                status="url_error";
+            } catch (IOException q) {
+                status = "url_error";
                 Log.e("das", q.getMessage());
-            }
-            catch(JSONException e)
-            {
-                status="json_error";
-                Log.e("das",e.getMessage());
+            } catch (JSONException e) {
+                status = "json_error";
+                Log.e("das", e.getMessage());
             }
             return null;
 
@@ -125,18 +119,14 @@ public class Splash extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(status.equals("success"))
-            {
-                if(userinfo==null)
-                {
+            if (status.equals("success")) {
+                if (userinfo == null) {
                     // generate code for telling the backend handling this json error
                     MyToast.popmessage("Oops, there seems to be an error", getActivity());
 
                     Log.e("das", "hg");
 
-                }
-                else
-                {
+                } else {
                     try {
 
                         //storing the userinformation in persistant storage for later use
@@ -158,45 +148,35 @@ public class Splash extends Fragment {
 
                         txt.setText("Loading..");
                         loadTagStream();
-                    }
-                    catch (JSONException e)
-                    {
-                        Log.e("das",e.getMessage());
+                    } catch (JSONException e) {
+                        Log.e("das", e.getMessage());
                         // generate code for telling the backend handling this json error
                         MyToast.popmessage("Oops, there seems to be an error", getActivity());
                     }
                 }
-            }
-            else if(status.equals("url_error"))
-            {
+            } else if (status.equals("url_error")) {
                 //generate code for telling backend handling bad url
                 MyToast.popmessage("Oops, there seems to be an error", getActivity());
 
-                Log.e("das", "hgj"+status);
-            }
-            else if(status.equals("json_error"))
-            {
+                Log.e("das", "hgj" + status);
+            } else if (status.equals("json_error")) {
                 /// generate code for telling the backend handling this json error
                 MyToast.popmessage("Oops, there seems to be an error", getActivity());
                 AppPrefs.putString(Utility.loginstatuskey, "");
-                Log.e("das", "hg"+status);
-            }
-            else
-            {
+                Log.e("das", "hg" + status);
+            } else {
                 MyToast.popmessage(status, getActivity());
 
-                ((Authentication)getActivity()).setadapter();
+                ((Authentication) getActivity()).setadapter();
             }
         }
 
     }
 
-    public void loadTagStream()
-    {
-        if(Networkstate.haveNetworkConnection(getActivity()))
-        {
-            ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
-            Call<ListResponseModel> call=apiInterface.getTagStream(AppPrefs.getString(Utility.user_id));
+    public void loadTagStream() {
+        if (Networkstate.haveNetworkConnection(getActivity())) {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<ListResponseModel> call = apiInterface.getTagStream(AppPrefs.getString(Utility.user_id));
             call.enqueue(new Callback<ListResponseModel>() {
                 @Override
                 public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
@@ -211,10 +191,8 @@ public class Splash extends Fragment {
                         } else {
                             PopMessage.makeshorttoast(getActivity(), response.body().getStatus());
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        PopMessage.makeshorttoast(getActivity(),"There is some error, try after some time..");
+                    } catch (Exception e) {
+                        PopMessage.makeshorttoast(getActivity(), "There is some error, try after some time..");
                         getActivity().finish();
                     }
                 }
@@ -224,16 +202,11 @@ public class Splash extends Fragment {
 
                 }
             });
-        }
-        else
-        {
-            PopMessage.makeshorttoast(getActivity(),"No Internet Connection");
+        } else {
+            PopMessage.makeshorttoast(getActivity(), "No Internet Connection");
             getActivity().finish();
         }
     }
-
-
-
 
 
 }

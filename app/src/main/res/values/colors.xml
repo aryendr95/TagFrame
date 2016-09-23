@@ -10,7 +10,7 @@
 
     <color name="colorAccenttrans">#952196F3</color>
     <color name="white">#FFFFFF</color>
-    <color name="White">#FFFFFF</color>
+    <color name="white_dull">#F8F8F8</color>
     <color name="bluegray">#263238</color>
     <color name="GRAY">#90A4AE</color>
     <color name="GRAYtrans">#9090A4AE</color>

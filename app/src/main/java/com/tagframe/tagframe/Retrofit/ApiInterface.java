@@ -115,5 +115,10 @@ public interface ApiInterface {
     @GET("product_details/{product_id}")
     Call<Product> getProductDetails(@Query("product_id")String product_id);
 
+    @GET("logout/{user_id}/{device_id}")
+    Call<ResponsePojo> logout(@Query("user_id")String user_id,@Query("device_id") String devide_id);
+
+    @GET("update_token/{user_id}/{device_id}/{reg_token}")
+    Call<ResponsePojo> update_Token(@Query("user_id")String user_id,@Query("device_id") String devide_id,@Query("reg_token") String token);
 
 }

@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.NotificationAdapter;
-import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.NotificationModel;
 import com.tagframe.tagframe.Models.NotificationResponseModel;
 import com.tagframe.tagframe.R;

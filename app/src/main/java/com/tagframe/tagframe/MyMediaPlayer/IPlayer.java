@@ -25,5 +25,6 @@ public interface IPlayer {
     public MediaPlayer getMediaPlayer();
 
 
+
 }
 

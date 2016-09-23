@@ -16,7 +16,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.easyandroidanimations.library.PuffOutAnimation;
 import com.squareup.picasso.Picasso;

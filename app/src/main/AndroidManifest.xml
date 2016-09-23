@@ -17,6 +17,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".Application.TagFrame"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -61,9 +62,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
-        <service
-            android:name=".Services.IntentServiceOperations"
-            android:exported="false" />
+
 
         <activity
             android:name=".UI.Acitivity.SavedEvents"
@@ -82,6 +81,24 @@
         </activity>
         <activity android:name=".UI.Acitivity.SearchUserActivity" />
         <activity android:name=".UI.Acitivity.MyEndorsement"></activity>
+
+        <service
+            android:name=".Services.IntentServiceOperations"
+            android:exported="false" />
+
+        <service
+            android:name=".PushNotification.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".PushNotification.FirebaseIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

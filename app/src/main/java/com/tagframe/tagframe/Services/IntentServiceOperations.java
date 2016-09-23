@@ -353,7 +353,7 @@ public class IntentServiceOperations extends IntentService implements WebService
                     }
                 }
 
-                sendNotification("Uploading Event:" + tittle, "Event uploaded Succesfull");
+                sendNotification("Uploading Event:" + tittle, "Event uploaded Succesful");
             }
         } else {
             sendNotification("Uploading Event:" + tittle, "Oops an error occured");

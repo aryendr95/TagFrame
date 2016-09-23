@@ -9,10 +9,12 @@ import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.UI.Fragments.Profile;
 import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -142,6 +144,11 @@ public class Utility {
     public static String notification_op_watch_event="watch_event";
     public static String notification_op_watch_product="watch_product";
 
+    public static String NAVIGATE_TO="name";
+    public static String NAVIGATE_TO_NOTIFICATION="notification";
+
+    public static String  shp_user_Token="reg_token";
+
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null) {
             return false;
@@ -164,6 +171,13 @@ public class Utility {
         userinfo.putString(Utility.total_frames, "");
         userinfo.putString(Utility.total_events, "");
         userinfo.putString(Utility.user_pic, "");
+        try {
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        }
+        catch (IOException E)
+        {
+
+        }
     }
 
 
