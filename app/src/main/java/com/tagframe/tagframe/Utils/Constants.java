@@ -1,27 +1,21 @@
 package com.tagframe.tagframe.Utils;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.tagframe.tagframe.Models.Event_Model;
-import com.tagframe.tagframe.UI.Fragments.Profile;
-import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by abhinav on 04/04/2016.
  */
-public class Utility {
+public class Constants {
 
 
     //URL
@@ -134,22 +128,6 @@ public class Utility {
     public static final String success_response="success";
     public static final String message_no_internet="No internet Connection";
 
-    public static String media_type_video="video";
-    public static String media_type_image="image";
-
-    public static String test="var";
-
-    //notification onclick operations
-    public static String notification_op_watch_profile="watch_profile";
-    public static String notification_op_watch_event="watch_event";
-    public static String notification_op_watch_product="watch_product";
-
-    public static String NAVIGATE_TO="name";
-    public static String NAVIGATE_TO_NOTIFICATION="notification";
-
-    public static int PRODUCT_LIST_FLAG;
-
-    public static String  shp_user_Token="reg_token";
 
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null) {
@@ -162,24 +140,17 @@ public class Utility {
     public final static void flushuserinfo(Context context) {
         AppPrefs userinfo = new AppPrefs(context);
         userinfo.puttagstreamlist(new ArrayList<Event_Model>());
-        userinfo.putString(Utility.user_pic, "");
-        userinfo.putString(Utility.user_name, "");
-        userinfo.putString(Utility.user_realname, "");
-        userinfo.putString(Utility.user_email, "");
-        userinfo.putString(Utility.user_id, "");
-        userinfo.putString(Utility.user_descrip, "");
-        userinfo.putString(Utility.number_of_following, "");
-        userinfo.putString(Utility.number_of_followers, "");
-        userinfo.putString(Utility.total_frames, "");
-        userinfo.putString(Utility.total_events, "");
-        userinfo.putString(Utility.user_pic, "");
-        try {
-            FirebaseInstanceId.getInstance().deleteInstanceId();
-        }
-        catch (IOException E)
-        {
-
-        }
+        userinfo.putString(Constants.user_pic, "");
+        userinfo.putString(Constants.user_name, "");
+        userinfo.putString(Constants.user_realname, "");
+        userinfo.putString(Constants.user_email, "");
+        userinfo.putString(Constants.user_id, "");
+        userinfo.putString(Constants.user_descrip, "");
+        userinfo.putString(Constants.number_of_following, "");
+        userinfo.putString(Constants.number_of_followers, "");
+        userinfo.putString(Constants.total_frames, "");
+        userinfo.putString(Constants.total_events, "");
+        userinfo.putString(Constants.user_pic, "");
     }
 
 
@@ -315,30 +286,4 @@ public class Utility {
         return (int) (24 * res.getDisplayMetrics().density);
     }
 
-    public static int getUser_Type(String user_id, String saved_user_id) {
-        if (user_id.equals(saved_user_id))
-            return Utility.user_type_self;
-        else
-            return Utility.user_type_following;
-    }
-
-    public static Fragment getProfileFragment()
-    {
-        Fragment fragment=null;
-        int currentapiVersion = Build.VERSION.SDK_INT;
-        if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP){
-            // Do something for lollipop and above versions
-            fragment=new Profile();
-        } else{
-            // do something for phones running an SDK before lollipop
-            fragment=new ProfileOld();
-        }
-        return fragment;
-    }
-
-    public static boolean isLollipop()
-    {
-        int currentapiVersion = Build.VERSION.SDK_INT;
-        return (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP);
-    }
 }

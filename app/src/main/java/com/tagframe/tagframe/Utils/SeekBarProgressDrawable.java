@@ -35,30 +35,29 @@ public class SeekBarProgressDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        if (datamap.size() == 0) {
+        if (datamap.size() == 0||totalduration==0) {
             //no frame attached
             canvas.drawRect(getBounds().left, getBounds().centerY() - dy / 2, getBounds().right, getBounds().centerY() + dy / 2, mPaint);
 
         }
         else
         {
-            int left=getBounds().left;
-            int right=getBounds().right;
-            int tot=left+right;
-            int i;
 
-            for(i=0;i<datamap.size();i++)
-            {
-                FrameList_Model frameList_model=datamap.get(i);
+                int left = getBounds().left;
+                int right = getBounds().right;
+                int tot = left + right;
+                int i;
 
-                canvas.drawRect(left, getBounds().centerY() - dy / 2, givebound(frameList_model.getStarttime(),tot,totalduration), getBounds().centerY() + dy / 2, mPaint);
-                canvas.drawRect(givebound(frameList_model.getStarttime(),tot,totalduration), getBounds().centerY() - dy / 2, givebound(frameList_model.getEndtime(),tot,totalduration), getBounds().centerY() + dy / 2, blue);
-                left=givebound(frameList_model.getEndtime(),tot,totalduration);
-            }
+                for (i = 0; i < datamap.size(); i++) {
+                    FrameList_Model frameList_model = datamap.get(i);
 
-            FrameList_Model frameList_model=datamap.get((i-1));
-            canvas.drawRect(givebound(frameList_model.getEndtime(),tot,totalduration), getBounds().centerY() - dy / 2, right, getBounds().centerY() + dy / 2, mPaint);
+                    canvas.drawRect(left, getBounds().centerY() - dy / 2, givebound(frameList_model.getStarttime(), tot, totalduration), getBounds().centerY() + dy / 2, mPaint);
+                    canvas.drawRect(givebound(frameList_model.getStarttime(), tot, totalduration), getBounds().centerY() - dy / 2, givebound(frameList_model.getEndtime(), tot, totalduration), getBounds().centerY() + dy / 2, blue);
+                    left = givebound(frameList_model.getEndtime(), tot, totalduration);
+                }
 
+                FrameList_Model frameList_model = datamap.get((i - 1));
+                canvas.drawRect(givebound(frameList_model.getEndtime(), tot, totalduration), getBounds().centerY() - dy / 2, right, getBounds().centerY() + dy / 2, mPaint);
         }
     }
 

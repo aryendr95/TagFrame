@@ -17,6 +17,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.SearchUserActivity;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Productlist;
+import com.tagframe.tagframe.Utils.Utility;
 
 import java.util.ArrayList;
 
@@ -141,7 +142,7 @@ public class ProductAdapter extends BaseAdapter {
                     intent.putExtra("product_id", product.getId());
                     intent.putExtra("product_image", product.getImage());
                     intent.putExtra("product_url", product.getUrl());
-                    ((Productlist) ctx).setResult(MakeNewEvent.Flag_product_list_result, intent);
+                    ((Productlist) ctx).setResult(Utility.PRODUCT_LIST_FLAG, intent);
                     ((Productlist) ctx).finish();
 
                 } else {

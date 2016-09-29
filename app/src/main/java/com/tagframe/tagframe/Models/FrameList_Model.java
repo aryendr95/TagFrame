@@ -16,6 +16,16 @@ public class FrameList_Model implements Parcelable {
 
     private boolean edited = false;
 
+    public boolean isAProductFrame() {
+        return isAProductFrame;
+    }
+
+    public void setAProductFrame(boolean AProductFrame) {
+        isAProductFrame = AProductFrame;
+    }
+
+    private boolean isAProductFrame=false;
+
     public String getFrame_id() {
         return frame_id;
     }
@@ -185,6 +195,7 @@ public class FrameList_Model implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.edited ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isAProductFrame ? (byte) 1 : (byte) 0);
         dest.writeString(this.frame_id);
         dest.writeString(this.user_id);
         dest.writeString(this.imagepath);
@@ -201,6 +212,7 @@ public class FrameList_Model implements Parcelable {
 
     protected FrameList_Model(Parcel in) {
         this.edited = in.readByte() != 0;
+        this.isAProductFrame = in.readByte() != 0;
         this.frame_id = in.readString();
         this.user_id = in.readString();
         this.imagepath = in.readString();

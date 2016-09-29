@@ -15,6 +15,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -29,6 +30,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -94,14 +96,14 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private SurfaceHolder vidHolder;
     private SurfaceView vidSurface;
     private ProgressBar pbar_mediaplayer;
-    private ImageButton imageButton_play,imageButton_screen_resolution;
+    private ImageButton imageButton_play, imageButton_screen_resolution;
     private CustomSeekBar seekbar;
     private TextView txt_tagged_user, label_seekbar_currentduration, label_seekbar_totalduration, label_tittle, label_description, post_event, save_event, txt_tutorial_msg;
     private TextView txt_percent;
     private Button btn_tut_got_it;
-    private LinearLayout ll_add_frame , mlayout,btn_add_frame;
-    private RelativeLayout  ll_seekbar_frame_container, ll_tutorial;
-    private AnimatingRelativeLayout ll_top_bar,ll_bottom_bar,ll_container_frames;
+    private LinearLayout ll_add_frame, mlayout, btn_add_frame;
+    private RelativeLayout ll_seekbar_frame_container, ll_tutorial;
+    private AnimatingRelativeLayout ll_top_bar, ll_bottom_bar, ll_container_frames;
     private RelativeLayout.LayoutParams params;
     private Point p = new Point();
     private HorizontalListView framelist;
@@ -147,6 +149,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private ArrayList<FrameList_Model> framedata_map;
     private ArrayList<TaggedUserModel> list_taggerd_user;
     private boolean isTutvisible = false;
+    private int FLAG_ADD_PRODUCT = 910;
 
     //lifecycles methods
     @Override
@@ -179,6 +182,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             tittle = "Title:" + getIntent().getStringExtra("tittle");
             description = "Description:" + getIntent().getStringExtra("des");
             event_id = getIntent().getStringExtra("eventid");
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
 
@@ -296,7 +300,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             @Override
             public void onClick(View v) {
 
-                if((framedata_map.size()==0))
+                if ((framedata_map.size() == 0))
                     toggleControlsVisibilty();
             }
         });
@@ -314,7 +318,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         //setupcontrols
 
         imageButton_play = (ImageButton) findViewById(R.id.btn_play_stop);
-        imageButton_screen_resolution=(ImageButton) findViewById(R.id.btn_screen_resolution);
+        imageButton_screen_resolution = (ImageButton) findViewById(R.id.btn_screen_resolution);
         label_seekbar_currentduration = (TextView) findViewById(R.id.txtcurrentduration);
         label_seekbar_totalduration = (TextView) findViewById(R.id.txttotalduration);
         label_tittle = (TextView) findViewById(R.id.event_tittle);
@@ -499,27 +503,25 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     private void toggleScreenResolution() {
-        int orientation=getScreenOrientation();
-        if(orientation==1)//portrait
+        int orientation = getScreenOrientation();
+        if (orientation == 1)//portrait
         {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-        else if(orientation==2)//landscape
+        } else if (orientation == 2)//landscape
         {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
-    public int getScreenOrientation()
-    {
+    public int getScreenOrientation() {
         Display getOrient = getWindowManager().getDefaultDisplay();
         int orientation = Configuration.ORIENTATION_UNDEFINED;
-        if(getOrient.getWidth()==getOrient.getHeight()){
+        if (getOrient.getWidth() == getOrient.getHeight()) {
             orientation = Configuration.ORIENTATION_SQUARE;
-        } else{
-            if(getOrient.getWidth() < getOrient.getHeight()){
+        } else {
+            if (getOrient.getWidth() < getOrient.getHeight()) {
                 orientation = Configuration.ORIENTATION_PORTRAIT;
-            }else {
+            } else {
                 orientation = Configuration.ORIENTATION_LANDSCAPE;
             }
         }
@@ -532,8 +534,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             isControlVisible = true;
             ll_bottom_bar.show();
             ll_top_bar.show();
-            if(framedata_map.size()>0)
-            ll_container_frames.show();
+            if (framedata_map.size() > 0)
+                ll_container_frames.show();
             setControlsVisibilty();
         } else
 
@@ -542,8 +544,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             isControlVisible = false;
             ll_bottom_bar.hide();
             ll_top_bar.hide();
-            if(framedata_map.size()>0)
-            ll_container_frames.hide();
+            if (framedata_map.size() > 0)
+                ll_container_frames.hide();
             setControlsVisibilty();
         }
     }
@@ -584,7 +586,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
             }
         });
-
 
 
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -661,6 +662,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             // VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
             final ImageView frameimage = (ImageView) dialog.findViewById(R.id.framelist_image);
             ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
+            ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
 
             TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
             final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
@@ -690,18 +692,26 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
 
             frameimage.setVisibility(View.VISIBLE);
+            //if there is product
             if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id().equals("0")) {
-                Picasso.with(MakeNewEvent.this).load(frameList_model.getProduct_path()).into(frameimage);
-                tvaddproduct.setText("Buy Product");
-
-            } else {
-                if (frameList_model.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
-                    Picasso.with(MakeNewEvent.this).load(frameList_model.getImagepath()).into(frameimage);
-                } else {
-                    frameimage.setImageBitmap(BitmapHelper.decodeFile(MakeNewEvent.this, new File(frameList_model.getImagepath())));
+                //checking if it is a product frame
+                if (!frameList_model.isAProductFrame()) {
+                    product_image.setVisibility(View.VISIBLE);
+                    Picasso.with(MakeNewEvent.this).load(frameList_model.getProduct_path()).into(product_image);
 
                 }
+                tvaddproduct.setText("Buy Product");
             }
+            if (frameList_model.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
+                Picasso.with(MakeNewEvent.this).load(frameList_model.getImagepath()).into(frameimage);
+            } else {
+                try {
+                    frameimage.setImageBitmap(BitmapHelper.decodeFile(MakeNewEvent.this, new File(frameList_model.getImagepath())));
+                } catch (Exception e) {
+                    Picasso.with(MakeNewEvent.this).load(frameList_model.getImagepath()).into(frameimage);
+                }
+            }
+
             tittle.setText(frameList_model.getName());
             duration.setText(Utility.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
 
@@ -726,25 +736,62 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         } else {
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            WindowManager.LayoutParams a = dialog.getWindow().getAttributes();
+            a.dimAmount = 0;
+            dialog.getWindow().setAttributes(a);
 
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.dialog_show_video_frame);
 
             VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
-            //ImageView frameimage = (ImageView) dialog.findViewById(R.id.framelist_image);
+            framevideo.setZOrderOnTop(true);
+
+            ImageView frameimage = (ImageView) dialog.findViewById(R.id.image_product);
             ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
+            ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
 
             TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
             final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
 
+            TextView tvaddproduct = (TextView) dialog.findViewById(R.id.add_product);
+            tvaddproduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id().equals("0")) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(frameList_model.getProduct_url()));
+                        startActivity(browserIntent);
 
+                        ll_top_bar.setVisibility(View.VISIBLE);
+                        ll_bottom_bar.setVisibility(View.VISIBLE);
+                        ll_seekbar_frame_container.setVisibility(View.VISIBLE);
+
+                        dialog.dismiss();
+                    } else {
+                        addproduct(pos);
+                        ll_top_bar.setVisibility(View.VISIBLE);
+                        ll_bottom_bar.setVisibility(View.VISIBLE);
+                        ll_seekbar_frame_container.setVisibility(View.VISIBLE);
+                        dialog.dismiss();
+                    }
+                }
+            });
+
+
+            if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id().equals("0")) {
+                frameimage.setVisibility(View.VISIBLE);
+                product_image.setVisibility(View.VISIBLE);
+                Picasso.with(MakeNewEvent.this).load(frameList_model.getProduct_path()).fit().into(product_image);
+                tvaddproduct.setText("Buy Product");
+
+            }
             try {
                 Log.e("ds", frameList_model.getFrame_data_url());
                 framevideo.setVideoURI(Uri.parse(frameList_model.getFrame_data_url()));
+                framevideo.start();
             } catch (Exception e) {
                 Log.e("Dsa", e.getMessage() + frameList_model.getFrame_data_url());
             }
-            framevideo.start();
+
 
             tittle.setText(frameList_model.getName());
             duration.setText(Utility.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
@@ -908,7 +955,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private Runnable setVisibiltyTask = new Runnable() {
         @Override
         public void run() {
-            if ((framedata_map.size()==0)) {
+            if ((framedata_map.size() == 0)) {
                 if (isControlVisible) {
                     isControlVisible = false;
                     ll_top_bar.hide();
@@ -976,37 +1023,44 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                     }
 
                     //if a product is attached to the frame
-                    if (!fm.getProduct_id().isEmpty() && !fm.getProduct_id().equals("0")) {
+                   /* if (!fm.getProduct_id().isEmpty() && !fm.getProduct_id().equals("0")) {
                         Picasso.with(MakeNewEvent.this).load(fm.getProduct_path()).into(img_frame_to_show);
 
 
-                    } else {
+                    } else */
 
-                        if (fm.getFrametype() == Utility.frametype_image) {
+                    if (fm.getFrametype() == Utility.frametype_image) {
 
-                            if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
+                        if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
 
+
+                            try {
                                 Bitmap bitmap = BitmapHelper.decodeFile(MakeNewEvent.this, new File(fm.getImagepath()));
                                 bitmap = getResizedBitmap(bitmap, 200, 200);
                                 img_frame_to_show.setImageBitmap(bitmap);
-                            } else {
+
+                            } catch (Exception e) {
                                 Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
                             }
+
                         } else {
-                            img_play_video.setVisibility(View.VISIBLE);
-                            if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
-                                Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
-                                        MediaStore.Images.Thumbnails.MINI_KIND);
-
-                                thumb = getResizedBitmap(thumb, 200, 200);
-
-                                img_frame_to_show.setImageBitmap(thumb);
-                            } else {
-                                Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
-                            }
-
+                            Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
                         }
+                    } else {
+                        img_play_video.setVisibility(View.VISIBLE);
+                        if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
+                            Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
+                                    MediaStore.Images.Thumbnails.MINI_KIND);
+
+                            thumb = getResizedBitmap(thumb, 200, 200);
+
+                            img_frame_to_show.setImageBitmap(thumb);
+                        } else {
+                            Picasso.with(MakeNewEvent.this).load(fm.getImagepath()).resize(200, 200).into(img_frame_to_show);
+                        }
+
                     }
+
                     img_frame_to_show.setTag(i + "");
                     int prog = (int) (Utility.getProgressPercentage(fm.getEndtime(), totalDurationn));
                     if (prog > 80) {
@@ -1168,6 +1222,15 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                         startActivityForResult(intent12, 901);
 
                         break;
+
+                    case R.id.add_product:
+                        mHandler.removeCallbacks(mUpdateTimeTask);
+
+                        Intent addintent = new Intent(MakeNewEvent.this, Productlist.class);
+                        Utility.PRODUCT_LIST_FLAG = FLAG_ADD_PRODUCT;
+                        startActivityForResult(addintent, Utility.PRODUCT_LIST_FLAG);
+
+
                 }
                 return true;
             }
@@ -1517,6 +1580,37 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             //show the frame
             show_synced_frame(position);
 
+        } else if (requestCode == FLAG_ADD_PRODUCT && data != null) {
+
+            FrameList_Model frameList_model = new FrameList_Model();
+            frameList_model.setFrametype(Utility.frametype_image);
+            frameList_model.setName("");
+
+            frameList_model.setFrame_resource_type(Utility.frame_resource_type_local);
+
+            frameList_model.setImagepath(data.getStringExtra("product_image"));
+            frameList_model.setProduct_id(data.getStringExtra("product_id"));
+            frameList_model.setProduct_path(data.getStringExtra("product_image"));
+            frameList_model.setProduct_url(data.getStringExtra("product_url"));
+
+            frameList_model.setStarttime((int) 0);
+            frameList_model.setEndtime((int) (0));
+            frameList_model.setAProductFrame(true);
+
+            if (addframe(frameList_model, (int) totalduration)) {
+
+                if (count == 0) {
+                    start_tut("Synch a Frame by holding it and moving it up");
+                    count++;
+                }
+
+
+            } else {
+                MyToast.popmessage("Frame is already attached to this duration", this);
+            }
+            updateProgressBar();
+
+
         } else if (requestCode == Flag_Get_Tagged_User && data != null) {
             TaggedUserModel taggedUserModel = (TaggedUserModel) data.getParcelableExtra("tagged_user");
             if (searchForDuplicate(taggedUserModel)) {
@@ -1599,6 +1693,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     //this method is used for resncing the frame
     public void resync_frame(int position) {
 
+
         long startTime = System.currentTimeMillis();
         FrameList_Model fm = framedata_map.get(position);
         if (mediaPlayer.getCurrentPosition() + 2000 <= mediaPlayer.getDuration()) {
@@ -1615,7 +1710,10 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                     fm.setEdited(true);
                 }
                 Collections.sort(framedata_map, new listsort());
+
                 ((BaseAdapter) framelist.getAdapter()).notifyDataSetChanged();
+
+
             } else {
                 PopMessage.makesimplesnack(mlayout, "Frame Already Attached");
             }
@@ -1630,9 +1728,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         } else {
             MyToast.popmessage("Cannot Sync the frame at this duration", this);
         }
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        Log.e("resyc", elapsedTime + "");
 
 
     }
@@ -1644,8 +1739,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         Utility.framepostion = pos;
         Intent intent = new Intent(this, Productlist.class);
-        intent.putExtra("frame_position", pos);
-        startActivityForResult(intent, Flag_product_list_result);
+        Utility.PRODUCT_LIST_FLAG = Flag_product_list_result;
+        startActivityForResult(intent, Utility.PRODUCT_LIST_FLAG);
     }
 
     @Override

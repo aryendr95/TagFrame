@@ -300,6 +300,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:background="#00000000"
+                    android:visibility="gone"
                     android:src="@drawable/screen_resolution" />
             </LinearLayout>
 

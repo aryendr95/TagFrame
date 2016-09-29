@@ -19,4 +19,9 @@
         android:icon="@android:drawable/ic_menu_more"
         />
 
+    <item android:title="Add Product"
+        android:id="@+id/add_product"
+        android:icon="@android:drawable/ic_menu_more"
+        />
+
 </menu>

@@ -50,7 +50,7 @@ android:id="@+id/rl_list_frame"
         android:text="00:00"
         android:textSize="17dp"
         android:layout_alignParentBottom="true"
-
+        android:singleLine="true"
         android:id="@+id/framelist_name"
         android:gravity="center_horizontal"
         />

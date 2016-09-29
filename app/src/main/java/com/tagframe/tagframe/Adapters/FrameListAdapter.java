@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class FrameListAdapter extends BaseAdapter {
     private Context ctx;
     private LayoutInflater inflater;
     private int event_type;
+
 
 
     public FrameListAdapter(Context ctx, ArrayList<FrameList_Model> frameList_models, int event_type1) {
@@ -101,7 +103,15 @@ public class FrameListAdapter extends BaseAdapter {
         if (frame.getFrametype() == Utility.frametype_image) {
 
             if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
-                mViewHolder.iveventimage.setImageBitmap(BitmapHelper.decodeFile(ctx, new File(frame.getImagepath())));
+                try {
+                    Bitmap thumb=BitmapHelper.decodeFile(ctx, new File(frame.getImagepath()));
+                    thumb=MakeNewEvent.getResizedBitmap(thumb, 150, 200);
+                    mViewHolder.iveventimage.setImageBitmap(thumb);
+                }
+                catch (Exception e)
+                {
+                    Picasso.with(ctx).load(frame.getImagepath()).into(mViewHolder.iveventimage);
+                }
             } else {
                 Picasso.with(ctx).load(frame.getImagepath()).into(mViewHolder.iveventimage);
             }
@@ -141,7 +151,7 @@ public class FrameListAdapter extends BaseAdapter {
                 }
                 else
                 {
-                    PopMessage.makeshorttoast(ctx,"You cant edit this frame");
+                    PopMessage.makeshorttoast(ctx,"You can not edit this frame");
                 }
                     return true;
 
@@ -155,52 +165,51 @@ public class FrameListAdapter extends BaseAdapter {
 
 
                 long startTime = System.currentTimeMillis();
+
                 switch (event.getAction()) {
 
                     case DragEvent.ACTION_DRAG_STARTED:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
+                       // Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
 
                         break;
 
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_enteR");
+                        //Log.e("TAG", "Action is DragEvent.ACTION_DRAG_enteR");
 
                         break;
 
                     case DragEvent.ACTION_DRAG_EXITED:
 
-                        long stopTime = System.currentTimeMillis();
+                       /* long stopTime = System.currentTimeMillis();
                         long elapsedTime = stopTime - startTime;
-                        Log.e("Dragexited", elapsedTime + "");
-
+                        Log.e("Dragexited", elapsedTime + "");*/
 
                         if (ctx instanceof MakeNewEvent) {
+                            Log.e("p",position+"");
                             ((MakeNewEvent) ctx).resync_frame(position);
+
                         }
+
+
 
 
                         break;
 
                     case DragEvent.ACTION_DRAG_LOCATION:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_lo");
+                       // Log.e("TAG", "Action is DragEvent.ACTION_DRAG_lo");
 
                         break;
 
                     case DragEvent.ACTION_DRAG_ENDED:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_emded");
-                        long stopTime2 = System.currentTimeMillis();
-                        long elapsedTime2 = stopTime2 - startTime;
-                        Log.e("Dragended", elapsedTime2 + "");
+                        //Log.e("TAG", "Action is DragEvent.ACTION_DRAG_emded");
+
 
 
                         // Do nothing
                         break;
 
                     case DragEvent.ACTION_DROP:
-                        Log.e("TAG", "Action is DragEvent.ACTION_DRAG_drop");
-                        long stopTime1 = System.currentTimeMillis();
-                        long elapsedTime1 = stopTime1 - startTime;
-                        Log.e("actiondrop", elapsedTime1 + "");
+
 
 
                         // Do nothing

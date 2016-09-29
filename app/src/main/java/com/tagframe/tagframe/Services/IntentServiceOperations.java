@@ -117,7 +117,7 @@ public class IntentServiceOperations extends IntentService implements WebService
                     //send locally added frames or edited frames(resynced or added product)
                     FrameList_Model fm = frameList_models.get(i);
                     if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
-                        send_frames(user_id, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
+                        send_frames(user_id, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id(),fm.isAProductFrame());
                     } else if (fm.isEdited()) {
                         send_edited_frames(event_id, fm.getFrame_id(), fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
                     }
@@ -332,6 +332,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             webServiceHandler.addFilePart("media_file", file, MY_NOTIFICATION_ID, getApplicationContext(), this);
             String res = webServiceHandler.finish();
             status = res;
+
             JSONObject upload = new JSONObject(res);
 
             status = upload.getString("status");
@@ -339,7 +340,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
         } catch (Exception e) {
 
-            status = "error+" + e.getMessage().toString();
+            status = "error+" + e.getMessage().toString() + status;
         }
         Log.e("csf", status);
         if (status.equals("success")) {
@@ -349,7 +350,12 @@ public class IntentServiceOperations extends IntentService implements WebService
                 for (int i = 0; i < frameList_models.size(); i++) {
                     FrameList_Model fm = frameList_models.get(i);
                     if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
-                        send_frames(user_id, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
+
+                        //check whether this is product frame or not, if it is treat it differently like send only the url of image not the file
+
+                        send_frames(user_id, event_id, fm.getFrametype(), fm.getName(), fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id(), fm.isAProductFrame());
+
+
                     }
                 }
 
@@ -360,7 +366,7 @@ public class IntentServiceOperations extends IntentService implements WebService
         }
     }
 
-    private void send_frames(String userid, String event_id, int type, String name, int s_time, int e_time, String imagepath, String product_id) {
+    private void send_frames(String userid, String event_id, int type, String name, int s_time, int e_time, String imagepath, String product_id, boolean isproductframe) {
 
         String status = "";
 
@@ -368,14 +374,32 @@ public class IntentServiceOperations extends IntentService implements WebService
         String start_Time = s_time + "";
         String end_Time = e_time + "";
         String media_type = "IMAGE";
-        File file = new File(imagepath);
-        long size = userid.getBytes().length + name.getBytes().length +
-                event_id.getBytes().length +
-                product_id.getBytes().length +
-                start_Time.getBytes().length + end_Time.getBytes().length +
-                media_type.getBytes().length +
-                file.getName().getBytes().length + file.length();
+        String is_a_product_frame = isproductframe ? "yes" : "no";
+        String product_image_url = imagepath;
 
+        long size = 0;
+        File file = null;
+        if (isproductframe) {
+
+
+            file = new File(imagepath);
+            size = userid.getBytes().length + name.getBytes().length +
+                    event_id.getBytes().length +
+                    product_id.getBytes().length +
+                    start_Time.getBytes().length + end_Time.getBytes().length +
+                    is_a_product_frame.getBytes().length +
+                    media_type.getBytes().length +
+                    file.getName().getBytes().length + file.length();
+
+        } else {
+            size = userid.getBytes().length + name.getBytes().length +
+                    event_id.getBytes().length +
+                    product_id.getBytes().length +
+                    start_Time.getBytes().length + end_Time.getBytes().length +
+                    is_a_product_frame.getBytes().length +
+                    media_type.getBytes().length +
+                    product_image_url.getBytes().length;
+        }
         try {
             WebServiceHandler webServiceHandler = new WebServiceHandler(Utility.create_frame);
             webServiceHandler.addFormField("user_id", userid);
@@ -383,6 +407,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             webServiceHandler.addFormField("video_id", event_id);
             webServiceHandler.addFormField("product_id", product_id);
             webServiceHandler.addFormField("start_time", start_Time);
+            webServiceHandler.addFormField("is_product_frame", is_a_product_frame);
             webServiceHandler.addFormField("end_time", end_Time);
 
 
@@ -394,8 +419,11 @@ public class IntentServiceOperations extends IntentService implements WebService
                 Log.e("dsa", "vdsa");
             }
 
-
-            webServiceHandler.addFilePart("media_file", file, MY_NOTIFICATION_ID, getApplicationContext());
+            if (isproductframe) {
+                webServiceHandler.addFormField("media_file",product_image_url);
+            } else {
+                webServiceHandler.addFilePart("media_file", file, MY_NOTIFICATION_ID, getApplicationContext());
+            }
             String res = webServiceHandler.finish();
             status = res;
             JSONObject wr = new JSONObject(res);
