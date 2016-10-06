@@ -60,7 +60,7 @@ public class Follow extends Fragment{
 
         textview=(TextView)mview.findViewById(R.id.txtmsg);
         textview.setVisibility(View.VISIBLE);
-        textview.setText("Search user through realname or username, follow users to get live feed from them");
+        textview.setText("Search for users by their Real Name or their username, then follow them to get their live feeds");
 
         progressBar=(ProgressBar)mview.findViewById(R.id.pbarsearch);
 

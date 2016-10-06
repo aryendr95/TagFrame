@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -43,6 +44,7 @@ public class User_Following extends Fragment implements ScrollList {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar, footerbar;
     private TextView mTxt_footer;
+    private ImageView img_footer;
     private String user_id;
     private ArrayList<FollowModel> followModelArrayList;
     private RelativeLayout mLayout;
@@ -104,11 +106,19 @@ public class User_Following extends Fragment implements ScrollList {
                 loadUserFollowing();
             }
         });
+        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
+        img_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadUserFollowing();
+            }
+        });
     }
 
     private void loadUserFollowing() {
         if (Networkstate.haveNetworkConnection(getActivity())) {
             progressBar.setVisibility(View.VISIBLE);
+            img_footer.setImageResource(R.drawable.ic_loading);
             ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
             retrofitService.getUserFollowing(user_id, String.valueOf(next_records)).enqueue(new Callback<SearchUserResponseModel>() {
                 @Override
@@ -126,8 +136,11 @@ public class User_Following extends Fragment implements ScrollList {
                                 if (response.body().getArrayList_search_user_model().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
                                     mTxt_footer.setText("Load more followings...");
+                                    img_footer.setImageResource(R.drawable.ic_load_more);
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
+                                    img_footer.setOnClickListener(null);
+                                    img_footer.setImageResource(R.drawable.ic_done);
                                     mTxt_footer.setText("No more followings for you..");
                                 }
 

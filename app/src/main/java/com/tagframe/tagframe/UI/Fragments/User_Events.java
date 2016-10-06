@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -42,6 +43,7 @@ public class User_Events extends Fragment implements ScrollList {
     private ListView listView;
     private ProgressBar progressBar, footerbar;
     private TextView mTxt_footer;
+    private ImageView img_footer;
     private RelativeLayout mLayout;
 
     private AppPrefs AppPrefs;
@@ -109,6 +111,13 @@ public class User_Events extends Fragment implements ScrollList {
                 loadUserEvents();
             }
         });
+        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
+        img_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadUserEvents();
+            }
+        });
     }
 
     @Override
@@ -120,6 +129,7 @@ public class User_Events extends Fragment implements ScrollList {
     public void loadUserEvents() {
         if (Networkstate.haveNetworkConnection(getActivity())) {
             progressBar.setVisibility(View.VISIBLE);
+            img_footer.setImageResource(R.drawable.ic_loading);
             ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
             retrofitService.getUserEvents(user_id, String.valueOf(next_records)).enqueue(new Callback<ListResponseModel>() {
                 @Override
@@ -141,8 +151,11 @@ public class User_Events extends Fragment implements ScrollList {
                                 if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
                                     mTxt_footer.setText("Load more events...");
+                                    img_footer.setImageResource(R.drawable.ic_load_more);
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
+                                    img_footer.setOnClickListener(null);
+                                    img_footer.setImageResource(R.drawable.ic_done);
                                     mTxt_footer.setText("No more events to load..");
                                 }
 

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public class Notifications extends Fragment {
     private ArrayList<NotificationModel> notificationModels;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView mTxt_footer;
+    private ImageView img_footer;
 
     @Nullable
     @Override
@@ -58,6 +60,13 @@ public class Notifications extends Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_notification);
         mTxt_footer = (TextView) mview.findViewById(R.id.txt_footer);
         mTxt_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getNotifications();
+            }
+        });
+        img_footer = (ImageView) mview.findViewById(R.id.img_footer);
+        img_footer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getNotifications();
@@ -87,6 +96,12 @@ public class Notifications extends Fragment {
                         getNotifications();
                     }
                 });
+                img_footer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getNotifications();
+                    }
+                });
                 getNotifications();
             }
         });
@@ -101,6 +116,7 @@ public class Notifications extends Fragment {
             String user_id = appPrefs.getString(Utility.user_id);
 
             pbar.setVisibility(View.VISIBLE);
+            img_footer.setImageResource(R.drawable.ic_loading);
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             apiInterface.getNotifications(user_id, String.valueOf(next_records)).enqueue(new Callback<NotificationResponseModel>() {
                 @Override
@@ -117,9 +133,13 @@ public class Notifications extends Fragment {
                                 if (response.body().getNotificationModelArrayList().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
                                     mTxt_footer.setText("Load more notifications...");
+                                    img_footer.setImageResource(R.drawable.ic_load_more);
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
                                     mTxt_footer.setText("No more notifications fo you");
+                                    img_footer.setImageResource(R.drawable.ic_done);
+                                    img_footer.setOnClickListener(null);
+
                                 }
 
                             } else {

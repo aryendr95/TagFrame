@@ -1,311 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res/com.tagframe.tagframe"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mlayout_makenew_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/mlayout_makenew_event"
     tools:context="com.tagframe.tagframe.UI.Acitivity.MakeNewEvent">
 
     <RelativeLayout
+        android:id="@+id/rl_main"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_above="@+id/container_frames"
         android:layout_weight="1"
         android:background="@color/black_event">
 
         <SurfaceView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/surfaceviewnewevent"/>
+            android:id="@+id/surfaceviewnewevent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true" />
 
         <ProgressBar
+            android:id="@+id/pbarmediaplayer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/pbarmediaplayer"
-            />
+            android:layout_centerInParent="true" />
 
         <com.tagframe.tagframe.Utils.MyTextView
+            android:id="@+id/txt_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_percent"
-            android:textColor="@color/white"
-            android:text="0"
             android:layout_below="@+id/pbarmediaplayer"
             android:layout_centerInParent="true"
-            />
+            android:text="0"
+            android:textColor="@color/white" />
+
         <RelativeLayout
+            android:id="@+id/layout_tutorials"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="#70000000"
-            android:id="@+id/layout_tutorials"
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/txt_tutorial_msg"
                 android:layout_width="fill_parent"
-                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textSize="25dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
                 android:textColor="@color/white"
-                android:id="@+id/txt_tutorial_msg"
-                />
+                android:textSize="25dp" />
 
             <Button
+                android:id="@+id/txt_tutorial_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
                 android:background="@drawable/button_transpareant"
+                android:padding="5dp"
                 android:text="Got it"
                 android:textColor="@color/white"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:id="@+id/txt_tutorial_button"
 
                 />
         </RelativeLayout>
 
         <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
             android:id="@+id/topbar"
-            custom:inAnimation="@anim/in_animation"
-            custom:outAnimation="@anim/out_animation"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:background="#50302D2D"
             android:orientation="vertical"
-            android:layout_alignParentTop="true">
+            custom:inAnimation="@anim/in_animation"
+            custom:outAnimation="@anim/out_animation">
 
-            <TextView
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tittle"
-                android:drawableLeft="@drawable/ic_edit"
-                android:textSize="20dp"
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:maxLength="65"
-                android:ellipsize="end"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:id="@+id/ll_time">
+
+                <TextView
+                    android:id="@+id/txtcurrentduration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="00:00"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="/"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txttotalduration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:text="00:00"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btn_play_stop"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#00000000"
+                    android:src="@android:drawable/ic_media_pause" />
+            </LinearLayout>
+
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/event_tittle"
-                android:textColor="@color/white"/>
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/postevent"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="23dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ic_edit" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:ellipsize="end"
+                    android:maxLength="25"
+                    android:visibility="gone"
+                    android:id="@+id/txt_event_tittle"
+                    android:text="Tittle"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    />
+            </LinearLayout>
 
 
             <TextView
+                android:id="@+id/event_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Description"
-                android:textSize="15dp"
-                android:layout_toRightOf="@+id/event_tittle"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:visibility="gone"
-                android:id="@+id/event_description"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/event_tittle"
-                android:background="@drawable/button_transpareant"
-                android:text="Post"
-                android:textStyle="bold"
+                android:text="Description"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:visibility="gone" />
+
+            <ImageView
                 android:id="@+id/postevent"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:layout_margin="10dp"
-                android:paddingBottom="5dp"
-                android:layout_marginLeft="30dp"
-                android:textColor="@color/white"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/postevent"
-                android:layout_below="@+id/event_description"
-                android:layout_gravity="right"
-                android:textStyle="bold"
-                android:background="@drawable/button_transpareant"
-                android:text="Save"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_margin="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/saveevent"
+                android:contentDescription="Post Event"
+                android:gravity="center"
+                android:src="@drawable/ic_post"
+                android:text="Post"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <ImageView
                 android:id="@+id/saveevent"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_marginLeft="30dp"
-                android:textColor="@color/white"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/saveevent"
                 android:layout_below="@+id/event_description"
+                android:layout_centerVertical="true"
                 android:layout_gravity="right"
-                android:background="@drawable/button_transpareant"
-                android:text="Tagged Users"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_margin="10dp"
-                android:id="@+id/taguser_event"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_marginLeft="30dp"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/taguser_event"
+                android:contentDescription="Save Event"
+                android:src="@drawable/ic_save"
+                android:text="Save"
                 android:textColor="@color/white"
-                android:gravity="center"/>
+                android:textStyle="bold" />
 
+            <ImageView
+                android:id="@+id/taguser_event"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/event_description"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/add_frame"
+                android:contentDescription="Tag Users"
+                android:gravity="center"
+                android:src="@drawable/ic_tag_user"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/add_frame"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/event_description"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:contentDescription="Tag Users"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:src="@drawable/ic_add_frame"
+                android:textColor="@color/white" />
 
 
         </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layout_frame_at_time_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/ll_mp_tools"
-            android:background="#00000000"
-            android:id="@+id/layout_frame_at_time_container"
-            >
+            android:background="#00000000">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
                 android:id="@+id/img_frame_to_show"
-                />
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
 
             <ImageView
+                android:id="@+id/img_play_video"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/playvideo"
-                android:visibility="gone"
-                android:id="@+id/img_play_video"/>
+                android:visibility="gone" />
         </RelativeLayout>
 
 
         <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
+            android:id="@+id/ll_mp_tools"
             android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:background="#50302D2D"
-            custom:inAnimation="@anim/slide_up"
-            custom:outAnimation="@anim/slide_down"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="#50302D2D"
             android:orientation="vertical"
-            android:id="@+id/ll_mp_tools">
+            custom:inAnimation="@anim/slide_up"
+            custom:outAnimation="@anim/slide_down">
 
             <LinearLayout
+                android:id="@+id/bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/bar"
-                android:layout_marginBottom="2dp">
-
-
+                android:orientation="horizontal">
 
                 <com.tagframe.tagframe.Utils.CustomSeekBar
+                    android:id="@+id/seekbar"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/seekbar"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical" />
             </LinearLayout>
-
-
-
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="horizontal"
-                android:layout_below="@+id/bar"
-                android:id="@+id/ll_add_frame"
-                >
-
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/white"
-                    android:id="@+id/txtcurrentduration"
-                    android:text="00:00"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="10dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/white"
-                    android:text="/"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/white"
-                    android:id="@+id/txttotalduration"
-                    android:textStyle="bold"
-                    android:text="00:00"
-                    android:layout_marginRight="10dp"/>
-
-                <ImageButton
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/btn_play_stop"
-                    android:background="#00000000"
-                    android:src="@drawable/stop"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    />
-
-
-                <LinearLayout
-                    android:id="@+id/btn_add_frame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/button_transpareant"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/addframe" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center"
-                        android:text="Add Frame"
-
-                        android:textColor="@color/white"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/btn_screen_resolution"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#00000000"
-                    android:visibility="gone"
-                    android:src="@drawable/screen_resolution" />
-            </LinearLayout>
-
-
-
 
 
 
@@ -315,25 +284,30 @@
     </RelativeLayout>
 
     <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
+        android:id="@+id/container_frames"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="3"
+        android:layout_height="100dp"
+        android:background="@color/black_event"
         android:elevation="5dp"
         android:visibility="gone"
+        android:layout_alignParentBottom="true"
         custom:inAnimation="@anim/slide_up"
-        custom:outAnimation="@anim/slide_down"
-        android:id="@+id/container_frames"
-        android:background="@color/black_event">
+        custom:outAnimation="@anim/slide_down">
 
 
-
-        <com.tagframe.tagframe.Utils.HorizontalListView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/framelist"
-            ></com.tagframe.tagframe.Utils.HorizontalListView>
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"></android.support.v7.widget.RecyclerView>
 
 
     </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
 
-</LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/dimer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"></RelativeLayout>
+</RelativeLayout>

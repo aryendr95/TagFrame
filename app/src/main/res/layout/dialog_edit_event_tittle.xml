@@ -64,16 +64,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="10dp"
-                android:background="@android:color/holo_green_light"
-                android:text="Edit"
-
+                android:textStyle="bold"
+                android:background="@color/colorPrimaryDark"
+                android:text="Save"
                 android:id="@+id/dia_rem_yesbtn"/>
             <com.tagframe.tagframe.Utils.MyButton
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textStyle="bold"
                 android:layout_margin="10dp"
-                android:background="@android:color/holo_red_light"
+                android:background="@color/colorPrimaryDark"
                 android:text="Cancel"
 
                 android:id="@+id/dia_rem_nobtn"/>

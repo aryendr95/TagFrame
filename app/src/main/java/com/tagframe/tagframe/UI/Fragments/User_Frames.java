@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +45,7 @@ public class User_Frames extends Fragment implements ScrollList {
     private RelativeLayout mLayout;
     private View footerView;
     private TextView mTxt_footer;
-
+    private ImageView img_footer;
     private String user_id, user_name, user_pic;
     ArrayList<User_Frames_model> user_frames_models;
     private int next_records = 0;
@@ -98,10 +99,17 @@ public class User_Frames extends Fragment implements ScrollList {
     public void addfooter() {
 
         //adding a footer to listview
-        View footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_layout, null, false);
+        View footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.layout_user_frames_footerview, null, false);
         gridview.addFooterView(footerView);
         mTxt_footer = (TextView) footerView.findViewById(R.id.txt_footer);
         mTxt_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadUserFrames();
+            }
+        });
+        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
+        img_footer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loadUserFrames();
@@ -117,6 +125,7 @@ public class User_Frames extends Fragment implements ScrollList {
     private void loadUserFrames() {
         if (Networkstate.haveNetworkConnection(getActivity())) {
             progressBar.setVisibility(View.VISIBLE);
+            img_footer.setImageResource(R.drawable.ic_loading);
             ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
             retrofitService.getUserFrames(user_id, String.valueOf(next_records)).enqueue(new Callback<UserFrameResponseModel>() {
                 @Override
@@ -136,10 +145,13 @@ public class User_Frames extends Fragment implements ScrollList {
                                 if (response.body().getUser_frames_models().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
                                     mTxt_footer.setText("Load frames items...");
+                                    img_footer.setImageResource(R.drawable.ic_load_more);
 
                                 } else {
 
                                     mTxt_footer.setOnClickListener(null);
+                                    img_footer.setOnClickListener(null);
+                                    img_footer.setImageResource(R.drawable.ic_done);
                                     mTxt_footer.setText("No more frames for you..");
                                 }
 

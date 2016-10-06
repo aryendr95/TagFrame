@@ -2,6 +2,7 @@ package com.tagframe.tagframe.UI.Acitivity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -165,6 +166,7 @@ public class SearchUserActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResponsePojo> call, Throwable t) {
+                    Log.e("error",t.getMessage());
                     pbar.setVisibility(View.GONE);
                 }
             });

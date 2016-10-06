@@ -379,7 +379,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
         long size = 0;
         File file = null;
-        if (isproductframe) {
+        if (!isproductframe) {
 
 
             file = new File(imagepath);
@@ -413,10 +413,10 @@ public class IntentServiceOperations extends IntentService implements WebService
 
             if (type == Utility.frametype_image) {
                 webServiceHandler.addFormField("media_type", "IMAGE");
-                Log.e("dsa", "dsa");
+
             } else {
                 webServiceHandler.addFormField("media_type", "VIDEO");
-                Log.e("dsa", "vdsa");
+
             }
 
             if (isproductframe) {

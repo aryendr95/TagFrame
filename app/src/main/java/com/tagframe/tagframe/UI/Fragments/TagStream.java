@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class TagStream extends Fragment {
     private ArrayList<Event_Model> tagStream_models;
     private ProgressBar footerbar;
     private TextView mTxt_footer;
+    private ImageView img_footer;
     private RelativeLayout mLayout;
 
 
@@ -72,14 +74,17 @@ public class TagStream extends Fragment {
 
         if (AppPrefs.gettagstreamlist("tagstream").size() == 0) {
             mTxt_footer.setText("No feeds for you..");
+            img_footer.setImageResource(R.drawable.ic_empty);
         }
         else if(AppPrefs.gettagstreamlist("tagstream").size()==Utility.PAGE_SIZE)
         {
             mTxt_footer.setText("Load more feeds..");
+            img_footer.setImageResource(R.drawable.ic_load_more);
         }
         else
         {
             mTxt_footer.setText("No more feeds for you..");
+            img_footer.setImageResource(R.drawable.ic_done);
         }
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -122,6 +127,13 @@ public class TagStream extends Fragment {
                 loadTagStream();
             }
         });
+        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
+        img_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadTagStream();
+            }
+        });
 
 
     }
@@ -137,6 +149,7 @@ public class TagStream extends Fragment {
         if (Networkstate.haveNetworkConnection(getActivity())) {
 
             footerbar.setVisibility(View.VISIBLE);
+            img_footer.setImageResource(R.drawable.ic_loading);
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<ListResponseModel> call = apiInterface.getTagStreamPaginated(AppPrefs.getString(Utility.user_id), String.valueOf(next_records));
             call.enqueue(new Callback<ListResponseModel>() {
@@ -156,9 +169,11 @@ public class TagStream extends Fragment {
                         if (continued_list.size() == Utility.PAGE_SIZE) {
                             next_records = next_records + Utility.PAGE_SIZE;
                             mTxt_footer.setText("Load more feeds..");
+                            img_footer.setImageResource(R.drawable.ic_load_more);
                         } else {
                             mTxt_footer.setOnClickListener(null);
                             mTxt_footer.setText("No more feeds fo you..");
+                            img_footer.setImageResource(R.drawable.ic_done);
                         }
 
                     } else {

@@ -142,6 +142,7 @@ public class ProductAdapter extends BaseAdapter {
                     intent.putExtra("product_id", product.getId());
                     intent.putExtra("product_image", product.getImage());
                     intent.putExtra("product_url", product.getUrl());
+                    intent.putExtra("product_name",product.getName());
                     ((Productlist) ctx).setResult(Utility.PRODUCT_LIST_FLAG, intent);
                     ((Productlist) ctx).finish();
 

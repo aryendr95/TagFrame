@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/layout_tutorials"
+    android:layout_width="300dp"
+    android:layout_height="fill_parent"
+    android:background="#00000000"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:id="@+id/txt_tutorial_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/txt_tutorial_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/button_transpareant"
+        android:padding="5dp"
+        android:text="Got it"
+        android:textColor="@color/white"
+
+        />
+</RelativeLayout>

@@ -208,6 +208,22 @@ public class Profile extends Fragment {
                         } catch (Exception e) {
                             pro_user_iamge.setImageResource(R.drawable.pro_image);
                         }
+
+                        f_value=user.getFollowed();
+                        //making view
+                        if (f_value.equals("followed")) {
+                            usertype = Utility.user_type_following;
+                        } else if (f_value.equals("follower")) {
+                            usertype = Utility.user_type_followers;
+                        } else {
+                            if (userid.equals(userinfo_data.getString(Utility.user_id))) {
+                                usertype = Utility.user_type_self;
+                            } else {
+                                usertype = Utility.user_type_followers;
+                            }
+                        }
+                        adjustview_wit_type();
+
                         //setting tabs
                         numbers = new ArrayList<String>();
                         numbers.add(user.getNumber_of_timeline());

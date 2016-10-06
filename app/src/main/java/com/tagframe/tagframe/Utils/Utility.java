@@ -1,6 +1,7 @@
 package com.tagframe.tagframe.Utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -138,11 +139,13 @@ public class Utility {
     public static String media_type_image="image";
 
     public static String test="var";
+    public static boolean isResumeFromActivityResult=false;
+    public static int SCREEEN_ORIENTATION_INTERNET=0;
 
     //notification onclick operations
     public static String notification_op_watch_profile="watch_profile";
     public static String notification_op_watch_event="watch_event";
-    public static String notification_op_watch_product="watch_product";
+    public static String notification_op_watch_product="Watch_product";
 
     public static String NAVIGATE_TO="name";
     public static String NAVIGATE_TO_NOTIFICATION="notification";
@@ -340,5 +343,9 @@ public class Utility {
     {
         int currentapiVersion = Build.VERSION.SDK_INT;
         return (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP);
+    }
+    public static int dpToPx(int dp)
+    {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 }

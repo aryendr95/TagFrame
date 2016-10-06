@@ -65,7 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
 
         try {
-            Picasso.with(context).load(ListModel.getProfile_pic()).into(holder.img_user);
+            Picasso.with(context).load(ListModel.getProfile_pic()).resize(50,50).into(holder.img_user);
         } catch (Exception e) {
             holder.img_user.setImageResource(R.drawable.pro_image);
         }
@@ -78,7 +78,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             public void onClick(View v) {
                 if (ListModel.getSub_action_type().equals(Utility.notification_op_watch_event)) {
                     //show event
-                    showProgress();
+                    showProgress("Loading Event");
 
                     ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
                     apiInterface.getEventDetails(ListModel.getSub_action_id()).enqueue(new Callback<EventDetailResponseModel>() {
@@ -113,15 +113,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 } else if (ListModel.getSub_action_type().equals(Utility.notification_op_watch_profile)) {
                     ((Modules) context).setprofile(ListModel.getSub_action_id(), user_type);
                 }
-                else if(ListModel.getSub_action_type().equals(Utility.notification_op_watch_profile))
+                else if(ListModel.getSub_action_type().equals(Utility.notification_op_watch_product))
                 {
-                    showProgress();
+                    showProgress("Loading Product");
 
                     ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
                     apiInterface.getProductDetails(ListModel.getSub_action_id()).enqueue(new Callback<Product>() {
                         @Override
                         public void onResponse(Call<Product> call, Response<Product> response) {
                             hideProgress();
+                            System.out.print(response.body().toString());
                             Product product=(Product)response.body();
                             ProductAdapter.showProductDialog(context,product);
                         }
@@ -157,10 +158,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         dialog.dismiss();
     }
 
-    public void showProgress()
+    public void showProgress(String message)
     {
         dialog = new ProgressDialog(context);
-        dialog.setMessage("Loading Event..");
+        dialog.setMessage(message);
         dialog.show();
     }
 

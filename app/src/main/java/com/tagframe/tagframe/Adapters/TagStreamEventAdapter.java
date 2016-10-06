@@ -147,16 +147,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 intent.putExtra("eventtype", Utility.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
                 intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
-                ActivityOptions options =null;
-                if(Utility.isLollipop()) {
-                    options=ActivityOptions.makeSceneTransitionAnimation((Modules) ctx, v, "surfaceviewnewevent");
-                }
-                else
-                {
-                    options = ActivityOptions.makeScaleUpAnimation(v, 0,
-                            0, v.getWidth(), v.getHeight());
-                }
-                ctx.startActivity(intent,options.toBundle());
+                ctx.startActivity(intent);
             }
         });
 

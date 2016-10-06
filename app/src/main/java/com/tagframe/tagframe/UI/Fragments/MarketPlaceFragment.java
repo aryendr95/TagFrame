@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.ProductAdapter;
 import com.tagframe.tagframe.Models.GetProductResponseModel;
@@ -37,6 +39,8 @@ public class MarketPlaceFragment extends Fragment {
     private ProgressBar pbar;
     private RelativeLayout mLayout;
     private View footerView;
+    private TextView txt_footer;
+    private ImageView img_footer;
 
 
     @Nullable
@@ -51,8 +55,10 @@ public class MarketPlaceFragment extends Fragment {
         LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
         footerView = layoutInflater.inflate(R.layout.layout_gridview_product_footer, null);
         mGridProduct.addFooterView(footerView);
+        txt_footer=(TextView)footerView.findViewById(R.id.load_more_products);
+        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
 
-        footerView.findViewById(R.id.load_more_products).setOnClickListener(new View.OnClickListener() {
+        img_footer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 page_number++;
@@ -65,6 +71,20 @@ public class MarketPlaceFragment extends Fragment {
                 }
             }
         });
+        txt_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                page_number++;
+                if (getArguments() != null) {
+
+                    searchProduct(getArguments().getString("keyword"));
+                } else {
+
+                    getProducts();
+                }
+            }
+        });
+
 
         //check if the prodcut is searched
         if (getArguments() != null) {
@@ -83,6 +103,7 @@ public class MarketPlaceFragment extends Fragment {
 
 
         pbar.setVisibility(View.VISIBLE);
+        img_footer.setImageResource(R.drawable.ic_loading);
 
         if (Networkstate.haveNetworkConnection(getActivity())) {
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -98,11 +119,14 @@ public class MarketPlaceFragment extends Fragment {
                             ProductAdapter productAdapter = new ProductAdapter(getActivity(), products);
                             mGridProduct.setAdapter(productAdapter);
                             pbar.setVisibility(View.GONE);
+                            txt_footer.setText("Load more products..");
+                            img_footer.setImageResource(R.drawable.ic_load_more);
                         } else {
                             pbar.setVisibility(View.GONE);
-                            mGridProduct.removeFooterView(footerView);
-                            PopMessage.makesimplesnack(mLayout, "No products to load");
-
+                            txt_footer.setText("No more products to load..");
+                            img_footer.setImageResource(R.drawable.ic_done);
+                            txt_footer.setOnClickListener(null);
+                            img_footer.setOnClickListener(null);
                         }
                     } else {
 
@@ -139,10 +163,14 @@ public class MarketPlaceFragment extends Fragment {
                             ProductAdapter productAdapter = new ProductAdapter(getActivity(), products);
                             mGridProduct.setAdapter(productAdapter);
                             pbar.setVisibility(View.GONE);
+                            txt_footer.setText("Load more products..");
+                            img_footer.setImageResource(R.drawable.ic_load_more);
                         } else {
                             pbar.setVisibility(View.GONE);
-                            mGridProduct.removeFooterView(footerView);
-                            PopMessage.makesimplesnack(mLayout, "No products to load");
+                            txt_footer.setText("No more products to load..");
+                            img_footer.setImageResource(R.drawable.ic_done);
+                            txt_footer.setOnClickListener(null);
+                            img_footer.setOnClickListener(null);
 
                         }
                     } else {

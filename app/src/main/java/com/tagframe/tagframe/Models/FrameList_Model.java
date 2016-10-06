@@ -82,7 +82,7 @@ public class FrameList_Model implements Parcelable {
     @SerializedName("product_id")
     @Expose
     private String product_id="";
-    @SerializedName("product_url")
+    @SerializedName("frame_product_url")
     @Expose
     private String product_url;
     @SerializedName("frame_resource_type")

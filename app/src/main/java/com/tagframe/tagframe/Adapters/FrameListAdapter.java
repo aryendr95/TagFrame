@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.DragEvent;
@@ -43,7 +44,6 @@ public class FrameListAdapter extends BaseAdapter {
     private Context ctx;
     private LayoutInflater inflater;
     private int event_type;
-
 
 
     public FrameListAdapter(Context ctx, ArrayList<FrameList_Model> frameList_models, int event_type1) {
@@ -104,12 +104,10 @@ public class FrameListAdapter extends BaseAdapter {
 
             if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                 try {
-                    Bitmap thumb=BitmapHelper.decodeFile(ctx, new File(frame.getImagepath()));
-                    thumb=MakeNewEvent.getResizedBitmap(thumb, 150, 200);
+                    Bitmap thumb = BitmapHelper.decodeFile(ctx, new File(frame.getImagepath()));
+                    thumb = MakeNewEvent.getResizedBitmap(thumb, 150, 200);
                     mViewHolder.iveventimage.setImageBitmap(thumb);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     Picasso.with(ctx).load(frame.getImagepath()).into(mViewHolder.iveventimage);
                 }
             } else {
@@ -136,7 +134,8 @@ public class FrameListAdapter extends BaseAdapter {
         mViewHolder.iveventimage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if ((frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet) && (appPrefs.getString(Utility.user_id).equals(frame.getUser_id())))||frame.getFrame_resource_type().equals(Utility.frame_resource_type_local))  {
+
+                if ((frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet) && (appPrefs.getString(Utility.user_id).equals(frame.getUser_id()))) || frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                     if (ctx instanceof MakeNewEvent) {
                         ((MakeNewEvent) ctx).pause_mediaplayer();
                     }
@@ -148,28 +147,28 @@ public class FrameListAdapter extends BaseAdapter {
                     View.DragShadowBuilder myShadow = new View.DragShadowBuilder(mViewHolder.iveventimage);
 
                     v.startDrag(dragData, myShadow, null, 0);
-                }
-                else
-                {
-                    PopMessage.makeshorttoast(ctx,"You can not edit this frame");
-                }
-                    return true;
 
+                    MakeNewEvent.RESYC_FRAME_POSITION = position;
+                } else {
+                    PopMessage.makeshorttoast(ctx, "You can not edit this frame");
                 }
+                return true;
+
+            }
 
         });
 
         mViewHolder.iveventimage.setOnDragListener(new View.OnDragListener() {
             @Override
-            public boolean onDrag(View v, DragEvent event) {
+            public boolean onDrag(final View v, DragEvent event) {
 
 
                 long startTime = System.currentTimeMillis();
-
+                int call_once = 0;
                 switch (event.getAction()) {
 
                     case DragEvent.ACTION_DRAG_STARTED:
-                       // Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
+                        // Log.e("TAG", "Action is DragEvent.ACTION_DRAG_STARTED");
 
                         break;
 
@@ -184,32 +183,25 @@ public class FrameListAdapter extends BaseAdapter {
                         long elapsedTime = stopTime - startTime;
                         Log.e("Dragexited", elapsedTime + "");*/
 
-                        if (ctx instanceof MakeNewEvent) {
-                            Log.e("p",position+"");
-                            ((MakeNewEvent) ctx).resync_frame(position);
-
-                        }
-
-
-
 
                         break;
 
                     case DragEvent.ACTION_DRAG_LOCATION:
-                       // Log.e("TAG", "Action is DragEvent.ACTION_DRAG_lo");
+                        // Log.e("TAG", "Action is DragEvent.ACTION_DRAG_lo");
 
                         break;
 
                     case DragEvent.ACTION_DRAG_ENDED:
                         //Log.e("TAG", "Action is DragEvent.ACTION_DRAG_emded");
+                        if (ctx instanceof MakeNewEvent) {
 
-
+                            ((MakeNewEvent) ctx).resync_frame(position);
+                        }
 
                         // Do nothing
                         break;
 
                     case DragEvent.ACTION_DROP:
-
 
 
                         // Do nothing

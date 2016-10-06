@@ -10,11 +10,15 @@ import android.media.MediaFormat;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+
+import com.tagframe.tagframe.Utils.Utility;
 
 import java.io.IOException;
 
@@ -42,6 +46,7 @@ public class Player implements IPlayer {
     private Handler mHandler=new Handler();
     private boolean IsVideoResized;
 
+
     public Player(SurfaceView view, Activity activity) {
         mSurfaceView = view;
         mActivity = activity;
@@ -65,6 +70,7 @@ public class Player implements IPlayer {
 
     @Override
     public void setSource(Context context, String url) {
+
         try {
             if (mPlayer != null) {
                 if (mIsPrepared) {
@@ -194,6 +200,8 @@ public class Player implements IPlayer {
             IsVideoResized=true;
         }
     };
+
+
 
 
     public void resizeSurface(Display display) {

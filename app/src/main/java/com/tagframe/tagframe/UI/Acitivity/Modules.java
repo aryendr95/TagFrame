@@ -477,7 +477,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
                                                     }
                                                     else
                                                     {
-                                                        PopMessage.makeshorttoast(Modules.this,"Error Logging out.."+listops.getString(Utility.user_id)+ TagFrame.android_id);
+                                                        PopMessage.makeshorttoast(Modules.this,"Error Logging out..");
                                                         dialog.dismiss();
                                                     }
                                                 }
