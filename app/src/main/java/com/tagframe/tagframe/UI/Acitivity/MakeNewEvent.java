@@ -2,6 +2,7 @@ package com.tagframe.tagframe.UI.Acitivity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -57,6 +60,7 @@ import com.darsh.multipleimageselect.models.Image;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.FrameListAdapter;
 import com.tagframe.tagframe.Adapters.FrameListRecyclerAdapter;
+import com.tagframe.tagframe.Adapters.PostEventListAdapter;
 import com.tagframe.tagframe.Adapters.TaggedUserAdapter;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.SingleEventModel;
@@ -78,6 +82,7 @@ import com.tagframe.tagframe.Utils.ProcessnaImages;
 import com.tagframe.tagframe.Utils.SeekBarBackgroundDrawable;
 import com.tagframe.tagframe.Utils.SeekBarProgressDrawable;
 import com.tagframe.tagframe.Utils.AppPrefs;
+import com.tagframe.tagframe.Utils.Validation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,17 +112,18 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     private ProgressBar pbar_mediaplayer;
     private ImageButton imageButton_play, imageButton_screen_resolution;
     private CustomSeekBar seekbar;
-    private TextView  label_seekbar_currentduration, label_seekbar_totalduration, label_tittle, label_description, txt_tutorial_msg;
+    private TextView label_seekbar_currentduration, label_seekbar_totalduration, label_tittle, label_description, txt_tutorial_msg;
     private TextView txt_percent;
     private Button btn_tut_got_it;
-    private LinearLayout  btn_add_frame,ll_title_edit,ll_time_container;
-    private RelativeLayout ll_seekbar_frame_container, ll_tutorial, ll_dimer,mlayout,mSurfacecontainer;
+    private LinearLayout btn_add_frame, ll_title_edit, ll_time_container;
+    private RelativeLayout ll_seekbar_frame_container, ll_tutorial, ll_dimer, mlayout, mSurfacecontainer;
     private AnimatingRelativeLayout ll_top_bar, ll_bottom_bar, ll_container_frames;
     private RelativeLayout.LayoutParams params;
     private Point p = new Point();
 
+    private AppPrefs appPrefs;
     private RecyclerView framelist;
-    private ImageView img_frame_to_show, img_play_video, post_event, save_event,ll_add_frame,txt_tagged_user;
+    private ImageView img_frame_to_show, img_play_video, post_event, save_event, ll_add_frame, txt_tagged_user;
 
 
     //Utility
@@ -133,9 +139,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();
-    private Handler mControlsVisibilityHandler = new Handler();
 
     private String vidAddress = "";
+    public static String user_id = "0";
     private String tittle, description, type, event_id;
     private long totalduration;
     private String s_current_duration;
@@ -164,13 +170,14 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     public static int RESYC_FRAME_POSITION;
     private int mTimecontainerwidth;
     private Dialog mtutDialog;
+    private boolean isLayoutSet = false;
 
     //lifecycles methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_new_event);
-
+        appPrefs = new AppPrefs(this);
         //getting the intents
         vidAddress = getIntent().getStringExtra("data_url");
 
@@ -183,12 +190,13 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             list_taggerd_user = getIntent().getParcelableArrayListExtra("tagged_user_id");
             tittle = "Title:" + getIntent().getStringExtra("tittle");
             description = "Description:" + getIntent().getStringExtra("des");
-
+            user_id = appPrefs.getString(Utility.user_id);
         } else if (event_type == Utility.eventtype_local) {
             framedata_map = new ArrayList<>();
-            tittle = "Title:";
+            tittle = "";
             description = "Description:";
             list_taggerd_user = new ArrayList<>();
+            user_id = appPrefs.getString(Utility.user_id);
 
         } else if (event_type == Utility.eventtype_internet) {
             framedata_map = getIntent().getParcelableArrayListExtra("framelist");
@@ -196,6 +204,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             tittle = "Title:" + getIntent().getStringExtra("tittle");
             description = "Description:" + getIntent().getStringExtra("des");
             event_id = getIntent().getStringExtra("eventid");
+            user_id = getIntent().getStringExtra("user_id");
         }
 
 
@@ -225,6 +234,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
     @Override
     protected void onDestroy() {
+        mHandler.removeCallbacks(mUpdateTimeTask);
         mPlayer.release();
         super.onDestroy();
 
@@ -234,7 +244,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     public void onConfigurationChanged(Configuration newConfig) {
         mPlayer.resizeSurface(getWindowManager().getDefaultDisplay());
         mHandler.removeCallbacks(mUpdateTimeTask);
-        mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
+
         super.onConfigurationChanged(newConfig);
     }
 
@@ -246,12 +256,18 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         outState.putParcelableArrayList(FRAMELIST, framedata_map);
         outState.putParcelableArrayList(TAGGED_USER_LIST, list_taggerd_user);
         outState.putString(TAG_TITTLE, tittle);
-        Utility.SCREEEN_ORIENTATION_INTERNET = getScreenOrientation();
+        Utility.SCREEEN_ORIENTATION_INTERNET = Utility.getScreenOrientation(this);
 
         super.onSaveInstanceState(outState);
     }
 
     //*lifecycle methods
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mSurfacecontainer = (RelativeLayout) findViewById(R.id.rl_event);
+    }
 
 
     //utility methods
@@ -279,9 +295,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             txt_percent.setVisibility(View.GONE);
             pbar_mediaplayer.setVisibility(View.GONE);
             //controlvisible
-            mSurfacecontainer.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,vidSurface.getHeight()));
 
-            setControlsVisibilty();
 
             if (isfromsavedinstance || isFromPause) {
                 mHandler.removeCallbacks(mUpdateTimeTask);
@@ -307,7 +321,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         @Override
         public void onCompletion() {
 
-            mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
             isControlVisible = true;
             ll_bottom_bar.show();
             ll_top_bar.show();
@@ -323,15 +336,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         ll_top_bar = (AnimatingRelativeLayout) findViewById(R.id.topbar);
         ll_bottom_bar = (AnimatingRelativeLayout) findViewById(R.id.ll_mp_tools);
         mlayout = (RelativeLayout) findViewById(R.id.mlayout_makenew_event);
-        mSurfacecontainer = (RelativeLayout) findViewById(R.id.rl_event);
-        mlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if (!containsLocalFrame())
-                    toggleControlsVisibilty();
-            }
-        });
 
         //VIDEO SURFUCE
         vidSurface = (SurfaceView) findViewById(R.id.surfaceviewnewevent);
@@ -354,8 +359,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         txt_tagged_user = (ImageView) findViewById(R.id.taguser_event);
         label_tittle.setText(tittle);
         label_description.setText(description);
-        ll_title_edit=(LinearLayout)findViewById(R.id.event_tittle);
-        ll_time_container=(LinearLayout)findViewById(R.id.ll_time);
+        ll_title_edit = (LinearLayout) findViewById(R.id.event_tittle);
+        ll_time_container = (LinearLayout) findViewById(R.id.ll_time);
 
         ll_title_edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -393,8 +398,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         });
 
 
-
-
         ll_add_frame = (ImageView) findViewById(R.id.add_frame);
 
 
@@ -426,6 +429,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         framelist.setLayoutManager(linearLayoutManager);
+        framelist.setItemAnimator(new DefaultItemAnimator());
 
         framelist.setAdapter(new FrameListRecyclerAdapter(this, framedata_map));
 
@@ -529,10 +533,10 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             label_tittle.setText(tittle);
             sav_instance_current_duration = savedstate.getLong(CURRENT_DURATION);
             long total = savedstate.getLong(TOTAL_DURATION);
-            if (containsLocalFrame()) {
-                ll_container_frames.setVisibility(View.VISIBLE);
-                framelist.setAdapter(new FrameListRecyclerAdapter(this, framedata_map));
-            }
+
+            ll_container_frames.setVisibility(View.VISIBLE);
+            framelist.setAdapter(new FrameListRecyclerAdapter(this, framedata_map));
+
             label_seekbar_currentduration.setText(Utility.milliSecondsToTimer(sav_instance_current_duration));
             label_seekbar_totalduration.setText(Utility.milliSecondsToTimer(total));
 
@@ -551,7 +555,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     private void toggleScreenResolution() {
-        int orientation = getScreenOrientation();
+        int orientation = Utility.getScreenOrientation(this);
         if (orientation == 1)//portrait
         {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -561,22 +565,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         }
     }
 
-    public int getScreenOrientation() {
-        Display getOrient = getWindowManager().getDefaultDisplay();
-        int orientation = Configuration.ORIENTATION_UNDEFINED;
-        if (getOrient.getWidth() == getOrient.getHeight()) {
-            orientation = Configuration.ORIENTATION_SQUARE;
-        } else {
-            if (getOrient.getWidth() < getOrient.getHeight()) {
-                orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-            } else {
-                orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-            }
-        }
-        return orientation;
-    }
 
-    private void toggleControlsVisibilty() {
+   /* private void toggleControlsVisibilty() {
         if (!isControlVisible) {
             mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
             isControlVisible = true;
@@ -593,7 +583,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 ll_container_frames.hide();
             setControlsVisibilty();
         }
-    }
+    }*/
 
     private void show_tagged_user() {
         mediaPlayer.pause();
@@ -693,7 +683,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     public void show_synced_frame(final int pos) {
 
         mediaPlayer.pause();
-        if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (Utility.getScreenOrientation(this) == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             ll_top_bar.setVisibility(View.GONE);
             ll_bottom_bar.setVisibility(View.GONE);
             ll_seekbar_frame_container.setVisibility(View.GONE);
@@ -754,12 +744,12 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 tvaddproduct.setText("Buy Product");
             }
             if (frameList_model.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
-                Picasso.with(MakeNewEvent.this).load(frameList_model.getImagepath()).into(frameimage);
+                Picasso.with(MakeNewEvent.this).load(frameList_model.getFrame_image_url()).into(frameimage);
             } else {
                 try {
                     frameimage.setImageBitmap(BitmapHelper.decodeFile(MakeNewEvent.this, new File(frameList_model.getImagepath())));
                 } catch (Exception e) {
-                    Picasso.with(MakeNewEvent.this).load(frameList_model.getImagepath()).into(frameimage);
+                    Picasso.with(MakeNewEvent.this).load(frameList_model.getFrame_image_url()).into(frameimage);
                 }
             }
 
@@ -966,14 +956,14 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     public void start_tut(String msg) {
 
         isTutvisible = true;
-        if (mediaPlayer != null)
-            mediaPlayer.pause();
+        mediaPlayer = mPlayer.getMediaPlayer();
+        mediaPlayer.pause();
 
-        mtutDialog=new Dialog(this);
+        mtutDialog = new Dialog(this);
         mtutDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mtutDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         mtutDialog.setContentView(R.layout.dialog_tutorial);
-        TextView message=(TextView)mtutDialog.findViewById(R.id.txt_tutorial_msg);
+        TextView message = (TextView) mtutDialog.findViewById(R.id.txt_tutorial_msg);
         message.setText(msg);
         mtutDialog.findViewById(R.id.txt_tutorial_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -985,9 +975,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         mtutDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                isTutvisible=false;
-                if (mediaPlayer != null)
-                    mediaPlayer.start();
+                isTutvisible = false;
+                mediaPlayer.start();
             }
         });
         mtutDialog.show();
@@ -1001,7 +990,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         ll_dimer.setVisibility(View.GONE);
 
     }
-
 
 
     public void method_save_event() {
@@ -1025,20 +1013,49 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     public void method_post_event() {
-        MyToast.popmessage("Posting...", this);
-        Intent intent = new Intent(this, IntentServiceOperations.class);
-        intent.putExtra("video_url", vidAddress);
-        intent.putParcelableArrayListExtra("frame_list", framedata_map);
-        intent.putExtra("operation", Utility.operation_post_event);
-        intent.putExtra("title", label_tittle.getText().toString().replace("Title:", ""));
-        intent.putExtra("tagged_user_id", get_tagged_user_in_json());
-        intent.putExtra("description", label_description.getText().toString().replace("Description:", ""));
-        //intent.putExtra("access_type", type);
-        intent.putExtra("duration", mediaPlayer.getDuration());
-        intent.putExtra("receiver", register_reviever());
-        intent.putExtra("user_id", user_data.getString(Utility.user_id));
-
-        startService(intent);
+        if(Validation.hasText(tittle)) {
+            if(framedata_map.size()>0) {
+                if(Validation.hasFrameInformation(framedata_map)) {
+                    MyToast.popmessage("Posting...", MakeNewEvent.this);
+                    Intent intent = new Intent(MakeNewEvent.this, IntentServiceOperations.class);
+                    intent.putExtra("video_url", vidAddress);
+                    intent.putParcelableArrayListExtra("frame_list", framedata_map);
+                    intent.putExtra("operation", Utility.operation_post_event);
+                    intent.putExtra("title", label_tittle.getText().toString().replace("Title:", ""));
+                    intent.putExtra("tagged_user_id", get_tagged_user_in_json());
+                    intent.putExtra("description", label_description.getText().toString().replace("Description:", ""));
+                    intent.putExtra("duration", mediaPlayer.getDuration());
+                    intent.putExtra("receiver", register_reviever());
+                    intent.putExtra("user_id", user_data.getString(Utility.user_id));
+                    startService(intent);
+                    finish();
+                }
+                else
+                {
+                    PopMessage.makesimplesnack(mlayout,"Please sync frames and add a title to them");
+                }
+            }
+            else
+            {
+                MyToast.popmessage("Posting...", MakeNewEvent.this);
+                Intent intent = new Intent(MakeNewEvent.this, IntentServiceOperations.class);
+                intent.putExtra("video_url", vidAddress);
+                intent.putParcelableArrayListExtra("frame_list", framedata_map);
+                intent.putExtra("operation", Utility.operation_post_event);
+                intent.putExtra("title", label_tittle.getText().toString().replace("Title:", ""));
+                intent.putExtra("tagged_user_id", get_tagged_user_in_json());
+                intent.putExtra("description", label_description.getText().toString().replace("Description:", ""));
+                intent.putExtra("duration", mediaPlayer.getDuration());
+                intent.putExtra("receiver", register_reviever());
+                intent.putExtra("user_id", user_data.getString(Utility.user_id));
+                startService(intent);
+                finish();
+            }
+        }
+        else
+        {
+            PopMessage.makesimplesnack(mlayout,"Provide a title to your event");
+        }
     }
 
     private String get_tagged_user_in_json() {
@@ -1058,16 +1075,25 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
     private void method_post_internet_event() {
 
-        MyToast.popmessage("Posting Frames..", this);
-        Intent intent = new Intent(this, IntentServiceOperations.class);
+        if(framedata_map.size()>0) {
+            if(Validation.hasFrameInformation(framedata_map)) {
+                MyToast.popmessage("Posting Frames..", this);
+                Intent intent = new Intent(this, IntentServiceOperations.class);
 
-        intent.putParcelableArrayListExtra("frame_list", framedata_map);
-        intent.putExtra("operation", Utility.operation_post_internet_event);
+                intent.putParcelableArrayListExtra("frame_list", framedata_map);
+                intent.putExtra("operation", Utility.operation_post_internet_event);
 
-        intent.putExtra("user_id", user_data.getString(Utility.user_id));
-        intent.putExtra("event_id", event_id);
+                intent.putExtra("user_id", user_data.getString(Utility.user_id));
+                intent.putExtra("event_id", event_id);
 
-        startService(intent);
+                startService(intent);
+            }
+            else
+            {
+                PopMessage.makesimplesnack(mlayout,"Please sync frames and add a title to them");
+            }
+        }
+
     }
 
 
@@ -1099,24 +1125,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
 
-    public void setControlsVisibilty() {
-            mControlsVisibilityHandler.postDelayed(setVisibiltyTask, 4000);
-    }
-
-    private Runnable setVisibiltyTask = new Runnable() {
-        @Override
-        public void run() {
-            if (!containsLocalFrame()) {
-                if (isControlVisible) {
-                    isControlVisible = false;
-                    ll_container_frames.setVisibility(View.GONE);
-                }
-                mControlsVisibilityHandler.postDelayed(setVisibiltyTask, 4000);
-            } else {
-                mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
-            }
-        }
-    };
 
     public boolean containsLocalFrame() {
         for (int i = 0; i < framedata_map.size(); i++) {
@@ -1127,11 +1135,43 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         return false;
     }
 
+
     /**
      * Background Runnable thread
      */
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
+            try {
+
+                if (Utility.getScreenOrientation(MakeNewEvent.this) == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && !isLayoutSet) {
+
+                    Point size = new Point();
+                    getWindowManager().getDefaultDisplay().getSize(size);
+                    int height = size.y - Utility.getStatusBarHeight(MakeNewEvent.this);
+                    if ((vidSurface.getHeight() <= height - Utility.dpToPx(150))) {
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(MakeNewEvent.this, getGridColumns());
+                        framelist.setLayoutManager(gridLayoutManager);
+                        RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                        mSurfacecontainer.setLayoutParams(layoutParams1);
+                        RelativeLayout.LayoutParams layoutParams2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+                        layoutParams2.addRule(RelativeLayout.BELOW, R.id.rl_event);
+                        ll_container_frames.show();
+                        ll_container_frames.setGravity(Gravity.TOP);
+                        ll_container_frames.setLayoutParams(layoutParams2);
+                    }
+
+
+                    isLayoutSet = true;
+
+                }
+                mediaPlayer = mPlayer.getMediaPlayer();
+
+            } catch (NullPointerException e) {
+
+            }
+
+
             long totalDurationn = 0;
             long currentDuration = 0;
             try {
@@ -1142,8 +1182,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 currentDuration = 0;
             }
 
-
-            setControlsVisibilty();
 
             if (framedata_map.size() == 0) {
                 ll_container_frames.hide();
@@ -1173,12 +1211,10 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                     img_frame_to_show.setVisibility(View.VISIBLE);
                     //set controls visibity
                     if (!isTutvisible) {
-                        mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
                         isControlVisible = true;
                         ll_bottom_bar.show();
                         ll_top_bar.show();
-                        if (containsLocalFrame())
-                            ll_container_frames.show();
+                        ll_container_frames.show();
                     }
 
                     //if a product is attached to the frame
@@ -1195,7 +1231,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
                             try {
                                 Bitmap bitmap = BitmapHelper.decodeFile(MakeNewEvent.this, new File(fm.getImagepath()));
-                                bitmap = getResizedBitmap(bitmap, 200, 200);
+                                bitmap = Utility.getResizedBitmap(bitmap, 200, 200);
                                 img_frame_to_show.setImageBitmap(bitmap);
 
                             } catch (Exception e) {
@@ -1211,7 +1247,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
                                     MediaStore.Images.Thumbnails.MINI_KIND);
 
-                            thumb = getResizedBitmap(thumb, 200, 200);
+                            thumb = Utility.getResizedBitmap(thumb, 200, 200);
 
                             img_frame_to_show.setImageBitmap(thumb);
                         } else {
@@ -1230,10 +1266,11 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                     show_frame_on_seekbar(prog - (int) (Utility.getProgressPercentage(2000, totalDurationn)));
 
                 }
-                if (totalDurationn != 0)
-                    updateseekbar(seekbar, mediaPlayer.getDuration());
+
 
             }
+            if (totalDurationn != 0)
+                Utility.updateseekbar(seekbar, mediaPlayer.getDuration(), MakeNewEvent.this, framedata_map);
 
 
             // Running this thread after 100 milliseconds
@@ -1241,29 +1278,11 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         }
     };
 
-    public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
 
     /**
      *
      * */
     public void show_frame_on_seekbar(final int progress) {
-
-
 
         int measure = (int) ((((float) progress * p.x) / 100) - (progress));
 
@@ -1307,7 +1326,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
 
-    public float dipToPixels( float dipValue) {
+    public float dipToPixels(float dipValue) {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
@@ -1328,7 +1347,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         // update timer progress again
         updateProgressBar();
     }
-
 
 
     public void generate_pop_up_add_frame(View v) {
@@ -1411,157 +1429,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
     public void set_frames_to_container(final String selectedimage, final int frametype) {
 
-        /*final int starttime;
-        final int endtime;
-        final Dialog dialog=new Dialog(this,R.style.AppTheme);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_addframe);
-
-
-        final ImageView frameimage = (ImageView) dialog.findViewById(R.id.dia_frameimage);
-        VideoView framevideo=(VideoView) dialog.findViewById(R.id.dia_framevideo);
-
-        final EditText ed_start_time=(EditText)dialog.findViewById(R.id.dia_frame_start_time);
-        final EditText ed_end_time=(EditText)dialog.findViewById(R.id.dia_frame_end_time);
-        final EditText ed_frame_tittle=(EditText)dialog.findViewById(R.id.dia_frametittle);
-
-        final TextView txt_current=(TextView)dialog.findViewById(R.id.dia_txtcurrentduration);
-        final TextView txt_total=(TextView)dialog.findViewById(R.id.dia_txttotalduration);
-        final TextView txt_msg=(TextView)dialog.findViewById(R.id.dia_frame_msg);
-
-
-
-        final SeekBar dia_seekbar=(SeekBar)dialog.findViewById(R.id.dia_seekbar_starttime);
-
-
-
-        updateseekbar(dia_seekbar, (int) totalduration);
-
-        Button yesbutton=(Button)dialog.findViewById(R.id.dia_rem_yesbtn);
-        Button nobutton=(Button)dialog.findViewById(R.id.dia_rem_nobtn);
-
-        if(frametype==Utility.frametype_image) {
-
-            Picasso.with(this).load(new File(selectedimage)).into(frameimage);
-        }
-        else
-        {
-            frameimage.setVisibility(View.GONE);
-            framevideo.setVisibility(View.VISIBLE);
-            framevideo.setVideoURI(Uri.parse(selectedimage));
-            framevideo.start();
-        }
-
-        txt_total.setText(label_seekbar_totalduration.getText().toString());
-        txt_current.setText(s_current_duration);
-
-        totalduration = Utility.stringtomillisecond(label_seekbar_totalduration.getText().toString());
-        long current=Utility.stringtomillisecond(s_current_duration);
-        int progress=(int)Utility.getProgressPercentage(current,totalduration);
-
-        dia_seekbar.setProgress(progress);
-        long current_time = Utility.progressToTimer(progress, (int) totalduration);
-
-
-        ed_start_time.setText("" + Utility.milliSecondsToTimer(current_time));
-        txt_current.setText("" + Utility.milliSecondsToTimer(current_time));
-
-
-        ed_end_time.setText("" + Utility.milliSecondsToTimer(current_time + 2000));
-
-        dia_seekbar.setMax(100);
-        dia_seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar6) {
-
-                int progress = seekBar6.getProgress();
-                totalduration = Utility.stringtomillisecond(label_seekbar_totalduration.getText().toString());
-                long current_time = Utility.progressToTimer(progress, (int) totalduration);
-                txt_total.setText("" + Utility.milliSecondsToTimer(current_time));
-
-                ed_start_time.setText("" + Utility.milliSecondsToTimer(current_time));
-                txt_current.setText("" + Utility.milliSecondsToTimer(current_time));
-
-
-                ed_end_time.setText("" + Utility.milliSecondsToTimer(current_time + 2000));
-
-
-            }
-        });
-
-        yesbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(!ed_frame_tittle.getText().toString().isEmpty()&&!ed_end_time.getText().toString().isEmpty())
-
-                {
-
-
-                    int progress = dia_seekbar.getProgress();
-                    totalduration = Utility.stringtomillisecond(label_seekbar_totalduration.getText().toString());
-                    long current_time = Utility.progressToTimer(progress, (int) totalduration);
-                    long end_time=current_time+2000;
-                    if(end_time<=totalduration) {
-
-                        FrameList_Model frameList_model = new FrameList_Model();
-                        frameList_model.setFrametype(frametype);
-                        frameList_model.setName(ed_frame_tittle.getText().toString());
-
-                        frameList_model.setImagepath(selectedimage);
-
-                        frameList_model.setStarttime((int) current_time);
-                        frameList_model.setEndtime((int) (current_time + 2000));
-
-                        if (addframe(frameList_model, (int) totalduration)) {
-
-                            if(count==0)
-                                {
-                                    start_tut("You can also resync frame by holding it and swiping it to the event");
-                                    count++;
-                                }
-                            dialog.dismiss();
-
-
-                        } else {
-                            txt_msg.setText("Frame is already synced at this duration.");
-                        }
-                    }
-                    else
-                    {
-                        txt_msg.setText("You can only attach a frame within the time-limit of frame");
-                    }
-
-
-                }
-                else
-                {
-                    MyToast.popmessage("Please input all fields",MakeNewEvent.this);
-                }
-            }
-        });
-        nobutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-
-
-        //ll_container_frames.setVisibility(View.VISIBLE);*/
-
         FrameList_Model frameList_model = new FrameList_Model();
         frameList_model.setFrametype(frametype);
         frameList_model.setName("");
@@ -1594,15 +1461,13 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         if (!isduplicate_frame(frameList_model)) {
 
             framedata_map.add(frameList_model);
-            updateseekbar(seekbar, totalduration);
+            Utility.updateseekbar(seekbar, totalduration, this, framedata_map);
 
-            displaylistdata();
             if (framedata_map.size() > 1) {
                 Collections.sort(framedata_map, new listsort());
-                displaylistdata();
             }
 
-            framelist.getAdapter().notifyDataSetChanged();
+            framelist.setAdapter(new FrameListRecyclerAdapter(this, framedata_map));
             ll_container_frames.setVisibility(View.VISIBLE);
             return true;
         } else {
@@ -1610,11 +1475,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         }
     }
 
-    public void displaylistdata() {
-        for (int i = 0; i < framedata_map.size(); i++) {
-            Log.e("frame:", framedata_map.get(i).getName());
-        }
-    }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
@@ -1833,30 +1693,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             return null;
     }
 
-    public void updateseekbar(SeekBar seekBar, int total) {
-
-          /*  LayerDrawable localLayerDrawable = new LayerDrawable(new Drawable[] {new SeekBarBackgroundDrawable(this),new SeekBarProgressDrawable(new ColorDrawable(Color.WHITE),3,1,this)});
-            localLayerDrawable.setId(0, android.R.id.background);
-            localLayerDrawable.setId(1, android.R.id.progress);
-            seekbar.setProgressDrawable(localLayerDrawable);*/
-
-
-        // ColorDrawable backDrawable = new ColorDrawable(Color.WHITE);
-        SeekBarBackgroundDrawable backgroundDrawable = new SeekBarBackgroundDrawable(this);
-        // ColorDrawable progressDrawable = new ColorDrawable(Color.BLUE);
-        //Custom seek bar progress drawable. Also allows you to modify appearance.
-        SeekBarProgressDrawable clipProgressDrawable = new SeekBarProgressDrawable(this, framedata_map, total);
-        Drawable[] drawables = new Drawable[]{backgroundDrawable, clipProgressDrawable};
-
-        //Create layer drawables with android pre-defined ids
-        LayerDrawable layerDrawable = new LayerDrawable(drawables);
-        layerDrawable.setId(0, android.R.id.background);
-        layerDrawable.setId(1, android.R.id.progress);
-
-        //Set to seek bar
-        seekBar.setProgressDrawable(layerDrawable);
-
-    }
 
     public void pause_mediaplayer() {
         mediaPlayer.pause();
@@ -1871,7 +1707,24 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             FrameList_Model fm = framedata_map.get(position);
             if (mediaPlayer.getCurrentPosition() + 2000 <= mediaPlayer.getDuration()) {
 
+                int start_time, end_time;
                 FrameList_Model frameList_model = new FrameList_Model();
+                try {
+                    start_time = Math.round(mediaPlayer.getCurrentPosition() / 1000);
+                    end_time = start_time + 2000;
+                } catch (NullPointerException e) {
+                    try {
+                        mediaPlayer = mPlayer.getMediaPlayer();
+                        start_time = Math.round(mediaPlayer.getCurrentPosition() / 1000);
+                        end_time = start_time + 2000;
+                    } catch (ArithmeticException e1) {
+                        start_time = 0;
+                        end_time = start_time + 2000;
+                    }
+                } catch (ArithmeticException e) {
+                    start_time = 0;
+                    end_time = start_time + 2000;
+                }
                 frameList_model.setStarttime(mediaPlayer.getCurrentPosition());
                 frameList_model.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
 
@@ -1883,7 +1736,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                         fm.setEdited(true);
                     }
 
-                        Collections.sort(framedata_map, new listsort());
+                    Collections.sort(framedata_map, new listsort());
 
                     framelist.getAdapter().notifyDataSetChanged();
 
@@ -1955,5 +1808,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
         finish();
+    }
+
+    public void showlog(String id) {
+        Log.e("frames user id", id);
     }
 }

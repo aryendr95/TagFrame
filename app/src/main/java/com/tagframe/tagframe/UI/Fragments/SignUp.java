@@ -221,7 +221,10 @@ public class SignUp extends Fragment {
                             AppPrefs.putString(Utility.user_name, userinfo.getString(Utility.user_name));
                             AppPrefs.putString(Utility.user_email, userinfo.getString(Utility.user_email));
                             AppPrefs.putString(Utility.user_realname, userinfo.getString(Utility.user_realname));
-
+                            AppPrefs.putString(Utility.total_events, userinfo.getString(Utility.total_events));
+                            AppPrefs.putString(Utility.total_frames, userinfo.getString(Utility.total_frames));
+                            AppPrefs.putString(Utility.number_of_followers, userinfo.getString(Utility.number_of_followers));
+                            AppPrefs.putString(Utility.number_of_following, userinfo.getString(Utility.number_of_following));
                             AppPrefs.putString(Utility.loginstatuskey, Utility.loginstatusvalue);
                             AppPrefs.putString(Utility.user_password, save);
 

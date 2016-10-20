@@ -73,6 +73,10 @@
             android:label="@string/title_activity_saved_events"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".UI.Acitivity.WatchEventActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name="com.darsh.multipleimageselect.activities.AlbumSelectActivity"
             android:theme="@style/MultipleImageSelectTheme">
             <intent-filter>

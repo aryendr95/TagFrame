@@ -10,6 +10,18 @@ import java.util.ArrayList;
  */
 public class User_Frames_model {
 
+    @SerializedName("image_url")
+    @Expose
+    private String frame_image_url;
+
+    public String getFrame_image_url() {
+        return frame_image_url;
+    }
+
+    public void setFrame_image_url(String frame_image_url) {
+        this.frame_image_url = frame_image_url;
+    }
+
     @Expose
     @SerializedName("frame_id")
     private String frame_id;

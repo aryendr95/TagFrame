@@ -194,7 +194,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             webServiceHandler.addFormField("video_id", event_id);
             webServiceHandler.addFormField("parent_id", parent_id);
             webServiceHandler.addFormField("comment", comment);
-
+            Log.e("u_id + v_id + p_id ",user_id+" "+event_id +" "+ parent_id);
             JSONObject jsonObject = new JSONObject(webServiceHandler.finish());
 
             status = jsonObject.getString("status");
@@ -288,7 +288,7 @@ public class IntentServiceOperations extends IntentService implements WebService
         String status = "", event_id = "";
 
         sendNotification("Uploading Event:" + tittle, "uploading..");
-
+        Log.e("user_id",user_id);
 
        /* ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
 
@@ -331,6 +331,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
             webServiceHandler.addFilePart("media_file", file, MY_NOTIFICATION_ID, getApplicationContext(), this);
             String res = webServiceHandler.finish();
+            Log.e("status",res);
             status = res;
 
             JSONObject upload = new JSONObject(res);
@@ -426,6 +427,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             }
             String res = webServiceHandler.finish();
             status = res;
+            Log.e("status",status);
             JSONObject wr = new JSONObject(res);
 
 
@@ -436,6 +438,7 @@ public class IntentServiceOperations extends IntentService implements WebService
 
             status = "error+" + e;
         }
+
 
         if (status.equals("success")) {
 

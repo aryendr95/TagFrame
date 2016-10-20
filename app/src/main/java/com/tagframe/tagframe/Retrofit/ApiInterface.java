@@ -122,6 +122,9 @@ public interface ApiInterface {
     @GET("update_token/{user_id}/{device_id}/{reg_token}")
     Call<ResponsePojo> update_Token(@Query("user_id")String user_id,@Query("device_id") String devide_id,@Query("reg_token") String token);
 
+    @GET("remove_user/{user_id}")
+    Call<ResponsePojo> removeUser(@Query("user_id")String user_id);
+
 
 
 }

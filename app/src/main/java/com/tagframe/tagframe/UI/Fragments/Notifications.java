@@ -136,7 +136,7 @@ public class Notifications extends Fragment {
                                     img_footer.setImageResource(R.drawable.ic_load_more);
                                 } else {
                                     mTxt_footer.setOnClickListener(null);
-                                    mTxt_footer.setText("No more notifications fo you");
+                                    mTxt_footer.setText("No more notifications for you");
                                     img_footer.setImageResource(R.drawable.ic_done);
                                     img_footer.setOnClickListener(null);
 

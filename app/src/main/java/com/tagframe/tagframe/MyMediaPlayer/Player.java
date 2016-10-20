@@ -16,8 +16,10 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.Utils.Utility;
 
 import java.io.IOException;
@@ -27,7 +29,7 @@ import java.io.IOException;
 /**
  * Created by interview on 16/07/15.
  */
-public class Player implements IPlayer {
+public class Player implements IPlayer,SurfaceHolder.Callback {
 
     private static final String TAG = Player.class.getSimpleName();
     private static boolean USE_BUFFERING_WORKAROUND = true;
@@ -39,7 +41,6 @@ public class Player implements IPlayer {
     private SurfaceView mSurfaceView;
     private boolean mIsPrepared;
     private IPlayerListener mListener;
-    private SurfaceHolderCallback mSurfaceHolderCallback;
     private DisplayUtils mDisplayUtils;
     private int mStatusBarHeight;
     private Activity mActivity;
@@ -60,8 +61,8 @@ public class Player implements IPlayer {
         mPlayer.setOnPreparedListener(mOnPrepared);
         mPlayer.setOnVideoSizeChangedListener(mOnVideoSize);
 
-        mSurfaceHolderCallback = new SurfaceHolderCallback();
-        mSurfaceView.getHolder().addCallback(mSurfaceHolderCallback);
+
+        mSurfaceView.getHolder().addCallback(this);
         // Initially 16:9
         resizeSurface(activity.getWindowManager().getDefaultDisplay());
     }
@@ -117,8 +118,9 @@ public class Player implements IPlayer {
             if(mPlayer.isPlaying()) {
                 mPlayer.stop();
             }
+            mPlayer.setDisplay(null);
             mPlayer.release();
-            mSurfaceView.getHolder().removeCallback(mSurfaceHolderCallback);
+            mSurfaceView.getHolder().removeCallback(this);
         }
         mPlayer = null;
     }
@@ -138,6 +140,7 @@ public class Player implements IPlayer {
                     mListener.onRendereingstarted();
                 }
             }
+            Log.e("what",what+extra+"");
 
             return false;
         }
@@ -174,6 +177,7 @@ public class Player implements IPlayer {
                     @Override
                     public void run() {
                         if(mIsPrepared&&IsVideoResized)
+                            mSurfaceView.setVisibility(View.VISIBLE);
                             mp.start();
                     }
                 },500);
@@ -229,8 +233,13 @@ public class Player implements IPlayer {
         Point size = new Point();
         display.getSize(size);
         result.x = size.x;
-        result.y = size.y - getStatusBarHeight();
-
+        if(mActivity instanceof MakeNewEvent) {
+            result.y = size.y - getStatusBarHeight();
+        }
+        else
+        {
+            result.y=result.x;
+        }
         return result;
     }
 
@@ -257,34 +266,34 @@ public class Player implements IPlayer {
         mListener = listener;
     }
 
-    private class SurfaceHolderCallback implements SurfaceHolder.Callback {
-
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-            Log.d(TAG, "Surface created");
-            if (mPlayer != null) {
-                mPlayer.setDisplay(holder);
-                if (mIsPrepared) {
-                    mPlayer.start();
-                }
-            } else {
-                Log.e(TAG, "FATAL player is null!");
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.e(TAG, "Surface created");
+        if (mPlayer != null) {
+            mPlayer.setDisplay(holder);
+            if (mIsPrepared) {
+                mPlayer.start();
             }
-        }
-
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
-            // nothing to do
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            Log.d(TAG, "surface destroyed");
-            if (mPlayer!=null) {
-                mPlayer.setDisplay(null);
-            } else {
-                Log.e(TAG, "FATAL player is null!");
-            }
+        } else {
+            Log.e(TAG, "FATAL player is null!");
         }
     }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.e(TAG, "surface destroyed");
+        if (mPlayer!=null) {
+            mPlayer.setDisplay(null);
+        } else {
+            Log.e(TAG, "FATAL player is null!");
+        }
+    }
+
+
+
 }

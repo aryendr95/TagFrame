@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
+import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
 import com.tagframe.tagframe.Utils.Utility;
 
 import java.util.ArrayList;
@@ -94,6 +95,7 @@ public class ImageAdapter extends BaseAdapter
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ctx, MakeNewEvent.class);
+
                         intent.putExtra("data_url", tagStream.getData_url());
                         intent.putExtra("tittle", tagStream.getTitle());
                         intent.putExtra("from", "profile");
@@ -110,7 +112,7 @@ public class ImageAdapter extends BaseAdapter
 
 
                 frameimage.setVisibility(View.VISIBLE);
-                Picasso.with(ctx).load(tagStream.getThumbnail_url()).into(frameimage);
+                Picasso.with(ctx).load(tagStream.getFrame_image_url()).into(frameimage);
 
                 tittle.setText(tagStream.getTitle());
                // duration.setText(Utility.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Utility.milliSecondsToTimer(frameList_model.getEndtime()));

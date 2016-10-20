@@ -21,6 +21,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
+import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.AppPrefs;
@@ -177,13 +178,13 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
                 String str_comment=mViewHolder.ed_comment.getText().toString();
 
                 if (!str_comment.isEmpty()) {
-                    Broadcastresults mReceiver = ((Modules) context).register_reviever();
+                    Broadcastresults mReceiver = ((WatchEventActivity) context).register_reviever();
 
                     Intent intent = new Intent(context, IntentServiceOperations.class);
                     intent.putExtra("operation", Utility.operation_comment);
                     intent.putExtra("user_id", user_data.getString(Utility.user_id));
                     intent.putExtra("video_id", comment1.getVideo_id());
-                    intent.putExtra("parent_id", comment1.getParent_id());
+                    intent.putExtra("parent_id", comment1.getId());
                     intent.putExtra("comment", mViewHolder.ed_comment.getText().toString());
 
                     intent.putExtra("receiver", mReceiver);

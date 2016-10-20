@@ -23,6 +23,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.BitmapHelper;
+import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 
@@ -55,10 +56,20 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
         mViewHolder.videoIndicator.setVisibility(View.GONE);
 
         final AppPrefs appPrefs = new AppPrefs(context);
+        Log.e("gone", frame.getUser_id());
 
-        if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet) && !(appPrefs.getString(Utility.user_id).equals(frame.getUser_id()))) {
-            mViewHolder.ivDelete.setVisibility(View.GONE);
+        if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
+            if (appPrefs.getString(Utility.user_id).equals(frame.getUser_id()) || appPrefs.getString(Utility.user_id).equals(MakeNewEvent.user_id)) {
+                mViewHolder.ivDelete.setVisibility(View.VISIBLE);
+            } else {
+                mViewHolder.ivDelete.setVisibility(View.GONE);
+            }
         }
+        if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
+            mViewHolder.ivDelete.setVisibility(View.VISIBLE);
+
+        }
+
         String time = Utility.milliSecondsToTimer(frame.getStarttime()) + "-" + Utility.milliSecondsToTimer(frame.getEndtime());
         mViewHolder.tvTime.setText(time);
         mViewHolder.tvName.setText(frame.getName());
@@ -69,7 +80,7 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
             if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                 try {
                     Bitmap thumb = BitmapHelper.decodeFile(context, new File(frame.getImagepath()));
-                    thumb = MakeNewEvent.getResizedBitmap(thumb, 150, 200);
+                    thumb = Utility.getResizedBitmap(thumb, 150, 200);
                     mViewHolder.ivFrameImage.setImageBitmap(thumb);
                 } catch (Exception e) {
                     Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
@@ -83,7 +94,7 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                 Bitmap thumb = ThumbnailUtils.createVideoThumbnail(frame.getImagepath(),
                         MediaStore.Images.Thumbnails.MINI_KIND);
 
-                thumb = MakeNewEvent.getResizedBitmap(thumb, 150, 200);
+                thumb = Utility.getResizedBitmap(thumb, 150, 200);
 
                 mViewHolder.ivFrameImage.setImageBitmap(thumb);
                 mViewHolder.videoIndicator.setVisibility(View.VISIBLE);
@@ -99,23 +110,19 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
             @Override
             public boolean onLongClick(View v) {
 
-                if ((frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet) && (appPrefs.getString(Utility.user_id).equals(frame.getUser_id()))) || frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
-                    if (context instanceof MakeNewEvent) {
-                        ((MakeNewEvent) context).pause_mediaplayer();
+
+                if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
+                    if (appPrefs.getString(Utility.user_id).equals(frame.getUser_id()) || appPrefs.getString(Utility.user_id).equals(MakeNewEvent.user_id)) {
+                        resyncFrame(v, position, mViewHolder);
+                    } else {
+                        PopMessage.makeshorttoast(context, "You can not edit this frame");
                     }
-
-                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-
-                    ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
-                    View.DragShadowBuilder myShadow = new View.DragShadowBuilder(mViewHolder.ivFrameImage);
-
-                    v.startDrag(dragData, myShadow, null, 0);
-
-                    MakeNewEvent.RESYC_FRAME_POSITION = position;
-                } else {
-                    PopMessage.makeshorttoast(context, "You can not edit this frame");
                 }
+                if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
+                    resyncFrame(v, position, mViewHolder);
+
+                }
+
                 return true;
 
             }
@@ -202,6 +209,22 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
             }
         });
 
+    }
+
+    private void resyncFrame(View v, int position, MyViewHolder mViewHolder) {
+        if (context instanceof MakeNewEvent) {
+            ((MakeNewEvent) context).pause_mediaplayer();
+        }
+
+        ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+
+        ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
+        View.DragShadowBuilder myShadow = new View.DragShadowBuilder(mViewHolder.ivFrameImage);
+
+        v.startDrag(dragData, myShadow, null, 0);
+
+        MakeNewEvent.RESYC_FRAME_POSITION = position;
     }
 
     @Override

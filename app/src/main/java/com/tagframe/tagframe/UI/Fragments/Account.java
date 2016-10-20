@@ -25,9 +25,14 @@ import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
+import com.tagframe.tagframe.Application.TagFrame;
+import com.tagframe.tagframe.Models.ResponsePojo;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.Retrofit.ApiClient;
+import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
 import com.tagframe.tagframe.Utils.BitmapHelper;
+import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
@@ -42,37 +47,31 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by abhinav on 06/04/2016.
  */
 public class Account extends Fragment {
 
     private View mview;
-
-    LinearLayout mLinearLayout, mLinear_chan;
-    LinearLayout mLinearLayoutHeader_userinfo, mLinearhear_change;
-
-    ImageView expand_userinfo, expand_change;
-
-    CircularImageView pro_pic;
-    TextView username;
-
-    AppPrefs AppPrefs;
-    ImageView changepropic;
-
-
-    EditText ed_username, ed_realname, ed_email, ed_description;
-
-
-    //change password
-
-    EditText ed_oldpass, ed_newpass, ed_confirmpass;
-    TextView forgotpassword;
-    ProgressBar pbarchangepassword;
-
+    private LinearLayout mLinearLayout, mLinear_chan;
+    private LinearLayout mLinearLayoutHeader_userinfo, mLinearhear_change;
+    private ImageView expand_userinfo, expand_change;
+    private CircularImageView pro_pic;
+    private TextView username;
+    private ImageView changepropic;
+    private EditText ed_username, ed_realname, ed_email, ed_description;
+    private EditText ed_oldpass, ed_newpass, ed_confirmpass;
+    private TextView forgotpassword;
+    private ProgressBar pbarchangepassword;
+    private Button btDeleteAccount;
 
     private static int RESULT_LOAD_IMAGE = 1;
-    String picturePath = "";
+    private AppPrefs AppPrefs;
+    private String picturePath = "";
 
 
     @Nullable
@@ -80,6 +79,16 @@ public class Account extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview = inflater.inflate(R.layout.fragment_account, container, false);
+
+        AppPrefs = new AppPrefs(getActivity());
+
+        btDeleteAccount = (Button) mview.findViewById(R.id.acc_btn_delete_pass);
+        btDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccount();
+            }
+        });
 
         mLinearLayout = (LinearLayout) mview.findViewById(R.id.expandable_userinfo);
         //mLinearLayout.setVisibility(View.GONE);
@@ -131,7 +140,6 @@ public class Account extends Fragment {
             }
         });
 
-        AppPrefs = new AppPrefs(getActivity());
 
         pro_pic = (CircularImageView) mview.findViewById(R.id.acc_proimage);
         try {
@@ -226,6 +234,61 @@ public class Account extends Fragment {
         return mview;
     }
 
+    private void deleteAccount() {
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_delete_account);
+        final LinearLayout controls = (LinearLayout) dialog.findViewById(R.id.layout_logout_controls);
+        final LinearLayout progress = (LinearLayout) dialog.findViewById(R.id.layout_logging_out);
+
+
+        dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AppPrefs listops = new AppPrefs(getActivity());
+
+
+                controls.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+                apiInterface.removeUser(AppPrefs.getString(Utility.user_id)).enqueue(new Callback<ResponsePojo>() {
+                    @Override
+                    public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
+
+                        if (response.body().getStatus().equals(Utility.success_response)) {
+                            AppPrefs.putString(Utility.loginstatuskey, "");
+                            Utility.flushuserinfo(getActivity());
+                            Intent intent2 = new Intent(getActivity(), Authentication.class);
+                            startActivity(intent2);
+                            getActivity().finish();
+                        } else {
+                            PopMessage.makeshorttoast(getActivity(), "There is a problem deleting account");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponsePojo> call, Throwable t) {
+                        PopMessage.makeshorttoast(getActivity(), "There is a problem deleting account");
+                        dialog.dismiss();
+                    }
+                });
+
+
+            }
+        });
+        dialog.findViewById(R.id.nobtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -236,7 +299,7 @@ public class Account extends Fragment {
             picturePath = GetPaths.getPath(getActivity(), selectedImage);
 
 
-            pro_pic.setImageBitmap(BitmapHelper.decodeFile(getActivity(),new File(picturePath)));
+            pro_pic.setImageBitmap(BitmapHelper.decodeFile(getActivity(), new File(picturePath)));
 
         }
 
@@ -453,34 +516,33 @@ public class Account extends Fragment {
                 webServiceHandler.addFormField("description", params[4]);
                 if (!picturePath.isEmpty()) {
                     File file = new File(picturePath);
-                    Log.e("length",file.length()+"");
-                    if(file.length()/1000>512)
-                    {
+                    Log.e("length", file.length() + "");
+                    if (file.length() / 1000 > 512) {
                         File fileCache = new File(getActivity().getCacheDir(), "temp.png");
-                        Bitmap loadBitmap=BitmapHelper.decodeFile(getActivity(),file);
-                        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-                        loadBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
-                        byte[] bitmapData=byteArrayOutputStream.toByteArray();
+                        Bitmap loadBitmap = BitmapHelper.decodeFile(getActivity(), file);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        loadBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] bitmapData = byteArrayOutputStream.toByteArray();
 
-                        FileOutputStream fileOutputStream=new FileOutputStream(fileCache);
+                        FileOutputStream fileOutputStream = new FileOutputStream(fileCache);
                         fileOutputStream.write(bitmapData);
                         fileOutputStream.flush();
                         fileOutputStream.close();
 
-                        file=fileCache;
+                        file = fileCache;
 
                     }
                     webServiceHandler.addFilePart("profile_photo", file, 3, getActivity());
                 }
 
                 JSONObject jsonObject = new JSONObject(webServiceHandler.finish());
-                Log.e("error",jsonObject.toString());
-                JSONObject userInfo=jsonObject.getJSONObject("userinfo");
+                Log.e("error", jsonObject.toString());
+                JSONObject userInfo = jsonObject.getJSONObject("userinfo");
 
                 status = jsonObject.getString("status");
                 if (status.equals("success")) {
                     AppPrefs.putString(Utility.user_email, userInfo.getString(Utility.user_email));
-                    AppPrefs.putString(Utility.user_name,userInfo.getString(Utility.user_name));
+                    AppPrefs.putString(Utility.user_name, userInfo.getString(Utility.user_name));
                     AppPrefs.putString(Utility.user_realname, userInfo.getString(Utility.user_realname));
                     AppPrefs.putString(Utility.user_descrip, userInfo.getString(Utility.user_descrip));
                     AppPrefs.putString(Utility.user_pic, userInfo.getString(Utility.user_pic));

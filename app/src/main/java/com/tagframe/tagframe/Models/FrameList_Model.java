@@ -13,6 +13,14 @@ import java.io.Serializable;
  */
 public class FrameList_Model implements Parcelable {
 
+    public String getFrame_image_url() {
+        return frame_image_url;
+    }
+
+    public void setFrame_image_url(String frame_image_url) {
+        this.frame_image_url = frame_image_url;
+    }
+
 
     private boolean edited = false;
 
@@ -64,6 +72,11 @@ public class FrameList_Model implements Parcelable {
     @SerializedName("frame_thumbnail_url")
     @Expose
     private String imagepath;
+
+    @SerializedName("frame_image_url")
+    @Expose
+    private String frame_image_url;
+
     @SerializedName("frame_start_time")
     @Expose
     private int starttime;
@@ -199,6 +212,7 @@ public class FrameList_Model implements Parcelable {
         dest.writeString(this.frame_id);
         dest.writeString(this.user_id);
         dest.writeString(this.imagepath);
+        dest.writeString(this.frame_image_url);
         dest.writeInt(this.starttime);
         dest.writeInt(this.endtime);
         dest.writeString(this.name);
@@ -216,6 +230,7 @@ public class FrameList_Model implements Parcelable {
         this.frame_id = in.readString();
         this.user_id = in.readString();
         this.imagepath = in.readString();
+        this.frame_image_url = in.readString();
         this.starttime = in.readInt();
         this.endtime = in.readInt();
         this.name = in.readString();

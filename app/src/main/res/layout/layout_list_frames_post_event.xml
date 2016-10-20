@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="5dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/image_frame"/>
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/synctime"
+        android:text="00:00"
+        android:paddingLeft="5dp"
+        android:layout_toRightOf="@+id/image_frame"
+        android:layout_margin="5dp"/>
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frame_tittle"
+        android:hint="Enter Frame tittle"
+        android:textColorHint="@color/GRAY"
+        android:layout_below="@+id/synctime"
+        android:layout_toRightOf="@+id/image_frame"
+        android:layout_margin="5dp"/>
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/status"
+        android:text="Synched"
+        android:layout_below="@+id/frame_tittle"
+        android:paddingLeft="5dp"
+        android:layout_toRightOf="@+id/image_frame"
+        android:layout_margin="5dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/status"
+        android:background="@color/GRAY"/>
+</RelativeLayout>

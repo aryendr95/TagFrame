@@ -62,7 +62,7 @@ public class WebServiceHandler {
         httpConn.setFixedLengthStreamingMode((int) (size + header_size));
 
         httpConn.setRequestMethod("POST");
-        httpConn.setRequestProperty("Connection", "Kee");
+        httpConn.setRequestProperty("Connection", "Keep-Alive");
         httpConn.setRequestProperty("Cache-Control", "no-cache");
         httpConn.setRequestProperty(
                 "Content-Type", "multipart/form-data;boundary=" + this.boundary);

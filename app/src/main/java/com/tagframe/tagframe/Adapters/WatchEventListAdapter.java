@@ -1,8 +1,8 @@
 package com.tagframe.tagframe.Adapters;
 
-import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,10 +36,10 @@ import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
-import com.tagframe.tagframe.Utils.Networkstate;
-import com.tagframe.tagframe.Utils.Utility;
-import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.AppPrefs;
+import com.tagframe.tagframe.Utils.Networkstate;
+import com.tagframe.tagframe.Utils.PopMessage;
+import com.tagframe.tagframe.Utils.Utility;
 
 import java.util.ArrayList;
 
@@ -49,56 +48,34 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by abhinav on 08/04/2016.
+ * Created by Brajendr on 10/14/2016.
  */
-public class TagStreamEventAdapter extends BaseAdapter {
-
-    private Context ctx;
-    private ArrayList<Event_Model> tagStream_models;
-    private LayoutInflater inflater;
+public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAdapter.MyViewHolder> {
+    private Context context;
+    private ArrayList<Event_Model> eventModels;
     private AppPrefs user_data;
     private int next_rec = 0;
     private boolean isAdded = false;
     private boolean areCommentsLoaded = false;
 
-    public TagStreamEventAdapter(Context ctx, ArrayList<Event_Model> tagStream_models) {
-        this.ctx = ctx;
-        this.tagStream_models = tagStream_models;
-
-        user_data = new AppPrefs(ctx);
-        inflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public WatchEventListAdapter(Context context, ArrayList<Event_Model> event_models) {
+        this.context = context;
+        this.eventModels = event_models;
+        user_data=new AppPrefs(context);
     }
 
     @Override
-    public int getCount() {
-        return tagStream_models.size();
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_list_tagstream, parent, false);
+
+        return new MyViewHolder(itemView);
     }
 
     @Override
-    public Object getItem(int position) {
-        return tagStream_models.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        MyViewHolder mViewHolder;
-
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.layout_list_tagstream, parent, false);
-            mViewHolder = new MyViewHolder(convertView);
-            convertView.setTag(mViewHolder);
-        } else {
-            mViewHolder = (MyViewHolder) convertView.getTag();
-        }
-
-        final Event_Model tagStream = tagStream_models.get(position);
-
+    public void onBindViewHolder(MyViewHolder mViewHolder, int position) {
+        final Event_Model tagStream = eventModels.get(position);
+        final Context ctx=context;
 
         mViewHolder.tvTitlle.setText(tagStream.getTitle());
         mViewHolder.tvname.setText(tagStream.getName());
@@ -119,7 +96,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
             mViewHolder.iveventvideo.setVisibility(View.GONE);
 
             try {
-                Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
+                Picasso.with(context).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
             } catch (Exception e) {
                 mViewHolder.iveventimage.setImageDrawable(new ColorDrawable(Color.GRAY));
             }
@@ -130,7 +107,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
 
 
         try {
-            Picasso.with(ctx).load(tagStream.getProfile_picture()).into(mViewHolder.ivpropic);
+            Picasso.with(context).load(tagStream.getProfile_picture()).into(mViewHolder.ivpropic);
         } catch (Exception e) {
             mViewHolder.ivpropic.setImageResource(R.drawable.pro_image);
         }
@@ -139,7 +116,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
         mViewHolder.iveventimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ctx, WatchEventActivity.class);
+                Intent intent = new Intent(context,WatchEventActivity.class);
                 intent.putExtra("name",tagStream.getName());
                 //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
                 intent.putExtra("likes", tagStream.getNumber_of_likes());
@@ -153,34 +130,26 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
                 intent.putExtra("eventtype", Utility.eventtype_internet);
                 intent.putExtra("eventid", tagStream.getEvent_id());
-                intent.putExtra("sharelink", tagStream.getSharelink());
-                intent.putExtra("likevideo", tagStream.getLike_video());
                 intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
-                ctx.startActivity(intent);
+                intent.putExtra("position", ((WatchEventActivity)ctx).getCurrentListPosition());
+                intent.putExtra("sharelink", tagStream.getSharelink());
+                intent.putExtra("likevideo",tagStream.getLike_video());
+               /* if(context instanceof WatchEventActivity)
+                {
+                    ((WatchEventActivity)context).getIntentData(intent);
+                    ((WatchEventActivity)context).setDatatoView();
+                    ((WatchEventActivity)context).resetMediaPlayer();
+                }*/
+                context.startActivity(intent);
+                ((WatchEventActivity)context).finish();
             }
         });
 
-        mViewHolder.iveventvideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ctx, MakeNewEvent.class);
-                intent.putExtra("data_url", tagStream.getDataurl());
-                intent.putExtra("tittle", tagStream.getTitle());
-                intent.putExtra("from", "tagstream");
-                intent.putExtra("description", tagStream.getDescription());
-                intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-                intent.putExtra("eventtype", Utility.eventtype_internet);
-                intent.putExtra("eventid", tagStream.getEvent_id());
-
-
-                ctx.startActivity(intent);
-            }
-        });
 
         mViewHolder.ll_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                share(tagStream.getSharelink(), ctx);
+                share(tagStream.getSharelink(), context);
             }
         });
 
@@ -195,10 +164,14 @@ public class TagStreamEventAdapter extends BaseAdapter {
         mViewHolder.ll_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Broadcastresults mReceiver;
+                if(ctx instanceof Modules)
+                    mReceiver = ((Modules) ctx).register_reviever();
+                else
+                mReceiver=((WatchEventActivity)ctx).register_reviever();
 
                 if (tagStream.getLike_video().equals("No")) {
-                    Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
+
 
                     Intent intent = new Intent(ctx, IntentServiceOperations.class);
                     intent.putExtra("operation", Utility.operation_like);
@@ -211,7 +184,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                     notifyDataSetChanged();
 
                 } else {
-                    Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
+
 
                     Intent intent = new Intent(ctx, IntentServiceOperations.class);
                     intent.putExtra("operation", Utility.operation_unlike);
@@ -257,8 +230,41 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
             }
         });
+    }
 
-        return convertView;
+    @Override
+    public int getItemCount() {
+        return eventModels.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct;
+        ImageView iveventimage, ivlike;
+        VideoView iveventvideo;
+        LinearLayout ll_like, ll_share, llcomment;
+        CircularImageView ivpropic;
+
+        public MyViewHolder(View item) {
+            super(item);
+            tvTitlle = (TextView) item.findViewById(R.id.list_event_tittle);
+            tvname = (TextView) item.findViewById(R.id.list_user_name);
+            tvcurrentduration = (TextView) item.findViewById(R.id.list_user_duration);
+            iveventimage = (ImageView) item.findViewById(R.id.list_event_image);
+
+            ll_like = (LinearLayout) item.findViewById(R.id.lllike);
+            ll_share = (LinearLayout) item.findViewById(R.id.llshare);
+            llcomment = (LinearLayout) item.findViewById(R.id.llcomment);
+
+            tvlike_direct = (TextView) item.findViewById(R.id.txt_like_directive);
+            ivpropic = (CircularImageView) item.findViewById(R.id.list_pro_image);
+
+            tvlike = (TextView) item.findViewById(R.id.txt_likes);
+            ivlike = (ImageView) item.findViewById(R.id.imglike);
+
+            iveventvideo = (VideoView) item.findViewById(R.id.list_event_video);
+
+
+        }
     }
 
     private int getUser_Type(String user_id, String saved_user_id) {
@@ -268,7 +274,12 @@ public class TagStreamEventAdapter extends BaseAdapter {
             return Utility.user_type_following;
     }
 
-    private void showCommentDialog(final Context ctx, final String video, final String user_id) {
+    public void showCommentDialog(final Context ctx, final String video, final String user_id) {
+
+        if(ctx instanceof WatchEventActivity)
+        {
+            ((WatchEventActivity)ctx).pauseMediaPlayer();
+        }
 
         next_rec = 0;
         isAdded = true;
@@ -313,6 +324,17 @@ public class TagStreamEventAdapter extends BaseAdapter {
             }
         });
 
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+
+                if(ctx instanceof WatchEventActivity)
+                {
+                    ((WatchEventActivity)ctx).playMediaPlayer();
+                }
+
+            }
+        });
 
         //send the comment
         img_send_comment.setOnClickListener(new View.OnClickListener() {
@@ -324,7 +346,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                     if (areCommentsLoaded) {
                         // My AsyncTask is done and onPostExecute was called
 
-                        Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
+                        Broadcastresults mReceiver = ((WatchEventActivity) ctx).register_reviever();
 
                         Intent intent = new Intent(ctx, IntentServiceOperations.class);
                         intent.putExtra("operation", Utility.operation_comment);
@@ -380,7 +402,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
 
 
     public void loadComments(String video_id, String next_records, final ProgressBar progressBar, final TextView textView, final RecyclerView recyclerView, final ArrayList<Comment> commentArrayList) {
-        if (Networkstate.haveNetworkConnection(ctx)) {
+        if (Networkstate.haveNetworkConnection(context)) {
 
             areCommentsLoaded = false;
             progressBar.setVisibility(View.VISIBLE);
@@ -410,7 +432,7 @@ public class TagStreamEventAdapter extends BaseAdapter {
                             areCommentsLoaded = true;
                         } else {
                             textView.setText("Error..");
-                            PopMessage.makeshorttoast(ctx, "Error+ " + response.body().getStatus());
+                            PopMessage.makeshorttoast(context, "Error+ " + response.body().getStatus());
                         }
                     }
                 }
@@ -419,42 +441,12 @@ public class TagStreamEventAdapter extends BaseAdapter {
                 public void onFailure(Call<CommentsResponseModel> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     textView.setText("Error..");
-                    Log.e("call failed", t.getMessage());
+
                 }
             });
         } else {
             textView.setText(Utility.message_no_internet);
-            PopMessage.makeshorttoast(ctx, Utility.message_no_internet);
-        }
-    }
-
-
-    private class MyViewHolder {
-        TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct;
-        ImageView iveventimage, ivlike;
-        VideoView iveventvideo;
-        LinearLayout ll_like, ll_share, llcomment;
-        CircularImageView ivpropic;
-
-        public MyViewHolder(View item) {
-            tvTitlle = (TextView) item.findViewById(R.id.list_event_tittle);
-            tvname = (TextView) item.findViewById(R.id.list_user_name);
-            tvcurrentduration = (TextView) item.findViewById(R.id.list_user_duration);
-            iveventimage = (ImageView) item.findViewById(R.id.list_event_image);
-
-            ll_like = (LinearLayout) item.findViewById(R.id.lllike);
-            ll_share = (LinearLayout) item.findViewById(R.id.llshare);
-            llcomment = (LinearLayout) item.findViewById(R.id.llcomment);
-
-            tvlike_direct = (TextView) item.findViewById(R.id.txt_like_directive);
-            ivpropic = (CircularImageView) item.findViewById(R.id.list_pro_image);
-
-            tvlike = (TextView) item.findViewById(R.id.txt_likes);
-            ivlike = (ImageView) item.findViewById(R.id.imglike);
-
-            iveventvideo = (VideoView) item.findViewById(R.id.list_event_video);
-
-
+            PopMessage.makeshorttoast(context, Utility.message_no_internet);
         }
     }
 

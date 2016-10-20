@@ -1,17 +1,27 @@
 package com.tagframe.tagframe.Utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.v4.app.Fragment;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tagframe.tagframe.Models.Event_Model;
+import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.UI.Fragments.Profile;
 import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 
@@ -347,5 +357,64 @@ public class Utility {
     public static int dpToPx(int dp)
     {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static void updateseekbar(SeekBar seekBar, int total, Context context, ArrayList<FrameList_Model> framedata_map) {
+
+        // ColorDrawable backDrawable = new ColorDrawable(Color.WHITE);
+        SeekBarBackgroundDrawable backgroundDrawable = new SeekBarBackgroundDrawable(context);
+        // ColorDrawable progressDrawable = new ColorDrawable(Color.BLUE);
+        //Custom seek bar progress drawable. Also allows you to modify appearance.
+        SeekBarProgressDrawable clipProgressDrawable = new SeekBarProgressDrawable(context, framedata_map, total);
+        Drawable[] drawables = new Drawable[]{backgroundDrawable, clipProgressDrawable};
+
+        //Create layer drawables with android pre-defined ids
+        LayerDrawable layerDrawable = new LayerDrawable(drawables);
+        layerDrawable.setId(0, android.R.id.background);
+        layerDrawable.setId(1, android.R.id.progress);
+
+        //Set to seek bar
+        seekBar.setProgressDrawable(layerDrawable);
+
+    }
+    public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
+    public static int getScreenOrientation(Activity activity) {
+        Display getOrient = activity.getWindowManager().getDefaultDisplay();
+        int orientation = Configuration.ORIENTATION_UNDEFINED;
+        if (getOrient.getWidth() == getOrient.getHeight()) {
+            orientation = Configuration.ORIENTATION_SQUARE;
+        } else {
+            if (getOrient.getWidth() < getOrient.getHeight()) {
+                orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            } else {
+                orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            }
+        }
+        return orientation;
+    }
+
+    public static int getStatusBarHeight(Activity activity) {
+        int result = 0;
+        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = activity.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

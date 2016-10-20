@@ -26,6 +26,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.BitmapHelper;
+import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 
@@ -92,7 +93,7 @@ public class FrameListAdapter extends BaseAdapter {
         final FrameList_Model frame = frames.get(position);
         final AppPrefs appPrefs = new AppPrefs(ctx);
 
-        if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet) && !(appPrefs.getString(Utility.user_id).equals(frame.getUser_id()))) {
+        if ((frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet) && !(appPrefs.getString(Utility.user_id).equals(frame.getUser_id()))) || appPrefs.getString(Constants.user_id).equals(MakeNewEvent.user_id)) {
             mViewHolder.ivdelete.setVisibility(View.GONE);
         }
 
@@ -105,7 +106,7 @@ public class FrameListAdapter extends BaseAdapter {
             if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                 try {
                     Bitmap thumb = BitmapHelper.decodeFile(ctx, new File(frame.getImagepath()));
-                    thumb = MakeNewEvent.getResizedBitmap(thumb, 150, 200);
+                    thumb = Utility.getResizedBitmap(thumb, 150, 200);
                     mViewHolder.iveventimage.setImageBitmap(thumb);
                 } catch (Exception e) {
                     Picasso.with(ctx).load(frame.getImagepath()).into(mViewHolder.iveventimage);
@@ -119,7 +120,7 @@ public class FrameListAdapter extends BaseAdapter {
                 Bitmap thumb = ThumbnailUtils.createVideoThumbnail(frame.getImagepath(),
                         MediaStore.Images.Thumbnails.MINI_KIND);
 
-                thumb = MakeNewEvent.getResizedBitmap(thumb, 150, 200);
+                thumb = Utility.getResizedBitmap(thumb, 150, 200);
 
                 mViewHolder.iveventimage.setImageBitmap(thumb);
                 mViewHolder.relativeLayout.setVisibility(View.VISIBLE);

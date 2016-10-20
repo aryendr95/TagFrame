@@ -100,6 +100,18 @@ public class Comment {
     @Expose
     private String parent_id;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @SerializedName("id")
+    @Expose
+    private String id;
+
     @SerializedName("replycomments")
     @Expose
     private ArrayList<ReplyComment> replyCommentArrayList;

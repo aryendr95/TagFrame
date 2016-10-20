@@ -21,6 +21,18 @@ public class Event_Model implements Parcelable {
         this.num_of_comments = num_of_comments;
     }
 
+    @SerializedName("frame_image_url")
+    @Expose
+    private String frame_image_url;
+
+    public String getFrame_image_url() {
+        return frame_image_url;
+    }
+
+    public void setFrame_image_url(String frame_image_url) {
+        this.frame_image_url = frame_image_url;
+    }
+
     @SerializedName("num_of_comments")
     @Expose
     private String num_of_comments;
