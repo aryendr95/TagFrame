@@ -40,7 +40,7 @@ public class EndorseListAdapter extends RecyclerView.Adapter<EndorseListAdapter.
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         EndorseListModel endorseListModel=endorseListModels.get(position);
-        holder.txt_date.setText("Endorsed on: "+endorseListModel.getDate());
+        holder.txt_date.setText(endorseListModel.getDate());
         holder.txt_username.setText(endorseListModel.getUser_name());
         holder.txt_productname.setText(endorseListModel.getProduct_name());
 

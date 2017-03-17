@@ -11,14 +11,14 @@
         android:layout_height="fill_parent"
         android:id="@+id/swiperefresh_tagstream">
 
-        <com.tagframe.tagframe.Utils.MyListView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/list_tagstream"
             android:dividerHeight="1dp"
             >
 
-        </com.tagframe.tagframe.Utils.MyListView>
+        </android.support.v7.widget.RecyclerView>
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
@@ -31,16 +31,5 @@
         android:visibility="gone"
         android:layout_below="@+id/swiperefresh_tagstream"
         />
-
-    <ImageButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/createevent_tagstream"
-        android:src="@drawable/camera"
-        android:visibility="gone"
-        android:background="@drawable/floatingbutton"/>
 
 </RelativeLayout>

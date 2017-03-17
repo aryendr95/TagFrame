@@ -5,23 +5,22 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.tagframe.tagframe.Adapters.TagStreamEventAdapter;
+
+import com.tagframe.tagframe.Adapters.EventListRecyclerAdapter;
 import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
+import com.tagframe.tagframe.Utils.EndlessRecyclerViewScrollListener;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -37,158 +36,118 @@ import retrofit2.Response;
  * Created by abhinav on 11/04/2016.
  */
 public class User_Events extends Fragment implements ScrollList {
+  private View mview;
+  private SwipeRefreshLayout swipeRefreshLayout;
+  private RecyclerView rcEvents;
+  private ProgressBar progressBar;
+  private RelativeLayout mLayout;
+  //variables
+  private AppPrefs appPrefs;
+  private String user_id, user_name, user_pic;
+  private ArrayList<Event_Model> events_models;
+  private int next_records = 0;
+  private boolean shouldLoad = false;
 
-    private View mview;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ListView listView;
-    private ProgressBar progressBar, footerbar;
-    private TextView mTxt_footer;
-    private ImageView img_footer;
-    private RelativeLayout mLayout;
+  @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    prepare();
+    mview = inflater.inflate(R.layout.layout_events, container, false);
+    initViews();
+    functionalizeList();
+    setUpSwipeReferesh();
+    loadUserEvents();
+    return mview;
+  }
 
-    private AppPrefs AppPrefs;
-    private String user_id, user_name, user_pic;
-    private ArrayList<Event_Model> tagStream_models;
-    private int next_records = 0;
+  private void initViews() {
+    mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_user_events);
+    progressBar = (ProgressBar) mview.findViewById(R.id.list_event_progress);
+    swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_eventlist);
+    rcEvents = (RecyclerView) mview.findViewById(R.id.list_event);
+  }
 
+  private void prepare() {
+    appPrefs = new AppPrefs(getActivity());
+    events_models = new ArrayList<>();
+    user_id = getArguments().getString("user_id");
+    user_name = getArguments().getString("user_name");
+    user_pic = getArguments().getString("user_pic");
+  }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        if (Utility.isLollipop())
-            mview = inflater.inflate(R.layout.layout_events, container, false);
-        else
-            mview = inflater.inflate(R.layout.layout_events_below_21, container, false);
-
-        tagStream_models = new ArrayList<>();
-
-        mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_user_events);
-        progressBar = (ProgressBar) mview.findViewById(R.id.list_event_progress);
-        swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_eventlist);
-        listView = (ListView) mview.findViewById(R.id.list_event);
-        addfooter();
-
-
-        AppPrefs = new AppPrefs(getActivity());
-
-
-        user_id = getArguments().getString("user_id");
-        user_name = getArguments().getString("user_name");
-        user_pic = getArguments().getString("user_pic");
-        tagStream_models = new ArrayList<>();
-
-        listView.setAdapter(new TagStreamEventAdapter(getActivity(), tagStream_models));
-        //load_user_events
-        loadUserEvents();
-
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                tagStream_models = new ArrayList<Event_Model>();
-                listView.setAdapter(new TagStreamEventAdapter(getActivity(), tagStream_models));
-                next_records = 0;
-                loadUserEvents();
-            }
-        });
-
-
-        return mview;
-    }
-
-    public void addfooter() {
-
-        //adding a footer to listview
-        View footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_layout, null, false);
-        listView.addFooterView(footerView);
-        footerbar = (ProgressBar) footerView.findViewById(R.id.pbar_footer);
-        mTxt_footer = (TextView) footerView.findViewById(R.id.txt_footer);
-        mTxt_footer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadUserEvents();
-            }
-        });
-        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
-        img_footer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadUserEvents();
-            }
-        });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-
-    public void loadUserEvents() {
-        if (Networkstate.haveNetworkConnection(getActivity())) {
-            progressBar.setVisibility(View.VISIBLE);
-            img_footer.setImageResource(R.drawable.ic_loading);
-            ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
-            retrofitService.getUserEvents(user_id, String.valueOf(next_records)).enqueue(new Callback<ListResponseModel>() {
-                @Override
-                public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
-
-                    if (isAdded()) {
-                        progressBar.setVisibility(View.GONE);
-                        swipeRefreshLayout.setRefreshing(false);
-
-
-                        try {
-                            if (response.body().getStatus().equals("success")) {
-
-                                tagStream_models.addAll(response.body().getTagStreamArrayList());
-                                AppPrefs.putusereventlist(tagStream_models);
-                                ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
-
-                                //detect more events are to be loaded or not
-                                if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
-                                    next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more events...");
-                                    img_footer.setImageResource(R.drawable.ic_load_more);
-                                } else {
-                                    mTxt_footer.setOnClickListener(null);
-                                    img_footer.setOnClickListener(null);
-                                    img_footer.setImageResource(R.drawable.ic_done);
-                                    mTxt_footer.setText("No more events to load..");
-                                }
-
-                            } else {
-
-                            }
-                        } catch (Exception e) {
-                            PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ListResponseModel> call, Throwable t) {
-                    if (isAdded()) {
-                        progressBar.setVisibility(View.GONE);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-            });
-
-        } else {
-            PopMessage.makesimplesnack(mLayout, "No Internet Connection");
+  private void functionalizeList() {
+    LinearLayoutManager llayoutManager = new LinearLayoutManager(getActivity());
+    rcEvents.setLayoutManager(llayoutManager);
+    rcEvents.setAdapter(new EventListRecyclerAdapter(getActivity(), events_models));
+    rcEvents.addOnScrollListener(new EndlessRecyclerViewScrollListener(llayoutManager) {
+      @Override public void onLoadMore(int page, int totalItemsCount) {
+        if (shouldLoad) {
+          loadUserEvents();
         }
+      }
+    });
+  }
+
+  private void setUpSwipeReferesh() {
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        events_models = new ArrayList<Event_Model>();
+        next_records = 0;
+        functionalizeList();
+        loadUserEvents();
+      }
+    });
+  }
+
+  public void loadUserEvents() {
+    if (Networkstate.haveNetworkConnection(getActivity())) {
+      progressBar.setVisibility(View.VISIBLE);
+      ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
+      retrofitService.getUserEvents(user_id, String.valueOf(next_records))
+          .enqueue(new Callback<ListResponseModel>() {
+            @Override public void onResponse(Call<ListResponseModel> call,
+                Response<ListResponseModel> response) {
+
+              if (isAdded()) {
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                try {
+                  if (response.body().getStatus().equals("success")) {
+
+                    events_models.addAll(response.body().getTagStreamArrayList());
+                    rcEvents.getAdapter().notifyDataSetChanged();
+                    //detect more events are to be loaded or not
+                    if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
+                      next_records = next_records + Utility.PAGE_SIZE;
+                      shouldLoad = true;
+                    } else {
+                      shouldLoad = false;
+                    }
+                  } else {
+
+                  }
+                } catch (Exception e) {
+                  PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
+                }
+              }
+            }
+
+            @Override public void onFailure(Call<ListResponseModel> call, Throwable t) {
+              if (isAdded()) {
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+              }
+            }
+          });
+    } else {
+      PopMessage.makesimplesnack(mLayout, "No Internet Connection");
     }
+  }
 
-    //scroll to fisrt
+  //scroll to fisrt
 
+  public void scrolltofirst() {
 
-    public void scrolltofirst() {
-
-        listView.smoothScrollToPosition(0);
-    }
-
-
+    rcEvents.smoothScrollToPosition(0);
+  }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -14,7 +14,9 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:orientation="vertical"
-        android:gravity="left"
+        android:layout_toLeftOf="@+id/layout_follow"
+        android:gravity="left|center_vertical"
+        android:layout_toRightOf="@+id/follow_pro_pic"
         android:layout_marginLeft="10dp">
 
         <TextView
@@ -24,47 +26,51 @@
             android:text="Username"
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginTop="5dp"
-            android:textSize="15dp"/>
+            style="@style/TextAppearance.AppCompat.Medium"/>
 
         <com.tagframe.tagframe.Utils.MyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/GRAY"
             android:text="Username"
             android:layout_gravity="left"
-            android:textSize="12dp"
+            style="@style/TextAppearance.AppCompat.Small"
             android:id="@+id/follow_realname"/>
 
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:gravity="right"
+        android:id="@+id/layout_follow"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical|right"
         >
 
-        <com.tagframe.tagframe.Utils.MyButton
+        <com.tagframe.tagframe.Utils.MyTextView
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:text="Follow"
-            android:textSize="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:textAllCaps="false"
+            style="@style/TextAppearance.AppCompat.Small"
             android:id="@+id/follow_button"
-            android:background="@color/GRAY"/>
+            android:background="@drawable/btn_gray"/>
 
         <ImageView
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/follow_remove"
-            android:layout_marginRight="10dp"
+            android:padding="10dp"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/follow_button"
-            android:src="@android:drawable/ic_delete"/>
+            android:src="@drawable/ic_remove_circle_red_300_24dp"/>
 
     </RelativeLayout>
 
 
 
-</LinearLayout>
+</RelativeLayout>

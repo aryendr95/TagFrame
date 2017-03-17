@@ -1,89 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="300dp"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    >
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="20dp"
+      >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="left"
+        android:text="Edit event title"
+        android:textColor="@color/colorPrimaryDark"
+        style="@style/TextAppearance.AppCompat.Medium"
+        />
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:orientation="vertical"
+      >
+
+    <com.tagframe.tagframe.Utils.Edittext
+        android:id="@+id/dia_frametittle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_toRightOf="@+id/rl"
+        android:hint="Title"
+        android:textColor="@color/colorPrimaryDark"
+        />
+    <com.tagframe.tagframe.Utils.Edittext
+        android:id="@+id/dia_framedescription"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dia_frametittle"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/rl"
+        android:hint="Description"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/GRAY"
+        android:visibility="gone"
+        />
+
 
     <LinearLayout
+        android:id="@+id/lls"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:background="@color/bluegray">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="right"
+        android:orientation="horizontal"
+        >
 
-        <com.tagframe.tagframe.Utils.MyTextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:text="Edit Event"
+      <com.tagframe.tagframe.Utils.MyButton
+          android:id="@+id/dia_rem_yesbtn"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="20dp"
+          android:background="@drawable/bt_dark_gray"
+          android:text="Save"
+          android:textStyle="bold"
+          />
+      <com.tagframe.tagframe.Utils.MyButton
+          android:id="@+id/dia_rem_nobtn"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="20dp"
+          android:background="@drawable/bt_dark_gray"
+          android:text="Cancel"
 
-            android:textColor="@color/white"/>
+          android:textStyle="bold"
+          />
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
-
-         <com.tagframe.tagframe.Utils.Edittext
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:hint="Title"
-            android:layout_margin="10dp"
-             android:textColor="@color/colorPrimaryDark"
-            android:layout_toRightOf="@+id/rl"
-            android:id="@+id/dia_frametittle"/>
-        <com.tagframe.tagframe.Utils.Edittext
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description"
-            android:layout_marginLeft="10dp"
-            android:visibility="gone"
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/GRAY"
-            android:layout_marginRight="10dp"
-            android:layout_toRightOf="@+id/rl"
-            android:id="@+id/dia_framedescription"
-            android:layout_below="@+id/dia_frametittle"/>
-
-
-
-
-
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:layout_margin="10dp"
-            android:id="@+id/lls"
-            android:layout_alignParentBottom="true"
-
-            >
-
-            <com.tagframe.tagframe.Utils.MyButton
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:textStyle="bold"
-                android:background="@color/colorPrimaryDark"
-                android:text="Save"
-                android:id="@+id/dia_rem_yesbtn"/>
-            <com.tagframe.tagframe.Utils.MyButton
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
-                android:layout_margin="10dp"
-                android:background="@color/colorPrimaryDark"
-                android:text="Cancel"
-
-                android:id="@+id/dia_rem_nobtn"/>
-        </LinearLayout>
-
 
 
   </LinearLayout>
-
 
 
 </LinearLayout>

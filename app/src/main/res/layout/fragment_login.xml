@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="10dp"
-android:gravity="center"
+        android:gravity="center"
         android:orientation="vertical"
         >
 
@@ -18,7 +18,7 @@ android:gravity="center"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="Username"
-
+            style="@style/TextAppearance.AppCompat.Medium"
 
             android:textColorHint="@color/white"
             android:textColor="@color/white"
@@ -31,6 +31,7 @@ android:gravity="center"
             android:hint="Password"
             android:textColorHint="@color/white"
             android:textColor="@color/white"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:inputType="textPassword"
             android:id="@+id/login_password"
 
@@ -46,21 +47,25 @@ android:gravity="center"
             android:layout_marginRight="10dp"
             android:id="@+id/login_show"
             android:text="Show Password"
-
+            style="@style/TextAppearance.AppCompat.Small"
             android:textColorHint="@color/white"
             android:textColor="@color/white"/>
 
         <com.tagframe.tagframe.Utils.MyButton
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
             android:text="Login"
             android:textColorHint="@color/white"
             android:textColor="@color/white"
             android:textStyle="bold"
+            android:textAllCaps="false"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:id="@+id/login_action"
-            android:background="@color/GRAY"/>
+            android:background="@drawable/btn_gray"/>
 
         <com.tagframe.tagframe.Utils.MyTextView
             android:layout_width="fill_parent"
@@ -69,6 +74,7 @@ android:gravity="center"
             android:layout_margin="10dp"
             android:text="Forgot Password?"
             android:gravity="center"
+            style="@style/TextAppearance.AppCompat.Small"
             android:textColorHint="@color/white"
             android:textColor="@color/white"/>
 

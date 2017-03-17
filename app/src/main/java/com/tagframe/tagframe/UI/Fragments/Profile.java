@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.tagframe.tagframe.Adapters.ImageAdapter;
 import com.tagframe.tagframe.Adapters.ViewPagerAdapter;
 import com.tagframe.tagframe.Models.ProfileResponseModel;
 import com.tagframe.tagframe.Models.User;
@@ -28,6 +29,7 @@ import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Menu_Action;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
+import com.tagframe.tagframe.Utils.ImageLoader;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.AppPrefs;
@@ -61,7 +63,7 @@ public class Profile extends Fragment {
 
     private FrameLayout mlayout_profile;
 
-    private ProgressBar progressBar;
+    private ProgressBar progressBar,pbarProImage;
 
 
     AppPrefs userinfo_data;
@@ -96,6 +98,7 @@ public class Profile extends Fragment {
     private void init() {
 
         //edit_profile_options=(LinearLayout)mview.findViewById(R.id.edit_profile_options);
+        pbarProImage=(ProgressBar)mview.findViewById(R.id.pbar_proImage);
 
         edit_photo = (ImageView) mview.findViewById(R.id.edit_profile_picture);
 
@@ -114,7 +117,7 @@ public class Profile extends Fragment {
         // Log.e("fasf", userinfo.getString(Utility.user_descrip));
 
         progressBar=(ProgressBar)mview.findViewById(R.id.pbar_profile);
-
+        profile_section=(LinearLayout)mview.findViewById(R.id.profile_section);
         pro_edit_profile = (Button) mview.findViewById(R.id.btn_edit_profile);
         pro_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,11 +203,13 @@ public class Profile extends Fragment {
                         User user = response.body().getUsers();
 
                         //setting username and description
+                        profile_section.setVisibility(View.VISIBLE);
                         pro_user_name.setText(user.getUsername() + ", " + user.getRealname());
                         pro_description.setText(user.getDescription());
                         //setting user_image
                         try {
-                            Picasso.with(getActivity()).load(user.getProfile_image()).resize(100,100).into(pro_user_iamge);
+                            ImageLoader.loadImageOnline(getContext(),user.getProfile_image(),pro_user_iamge,pbarProImage);
+                            //Picasso.with(getActivity()).load(user.getProfile_image()).resize(100,100).into(pro_user_iamge);
                         } catch (Exception e) {
                             pro_user_iamge.setImageResource(R.drawable.pro_image);
                         }
@@ -284,17 +289,17 @@ public class Profile extends Fragment {
         if (usertype == Utility.user_type_following) {
             pro_edit_profile.setText("UnFollow");
             pro_edit_profile.setTextColor(getResources().getColor(R.color.white));
-            pro_edit_profile.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            pro_edit_profile.setBackgroundResource(R.drawable.btn_red);
         } else if (usertype == Utility.user_type_followers) {
             pro_edit_profile.setText("Follow");
 
             pro_edit_profile.setTextColor(getResources().getColor(R.color.white));
-            pro_edit_profile.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            pro_edit_profile.setBackgroundResource(R.drawable.btn_green);
         } else if (usertype == Utility.user_type_self) {
             pro_edit_profile.setText("Edit Profile");
 
-            pro_edit_profile.setTextColor(getResources().getColor(R.color.GRAY));
-            pro_edit_profile.setBackgroundColor(getResources().getColor(R.color.bluegray));
+            pro_edit_profile.setTextColor(getResources().getColor(R.color.white));
+            pro_edit_profile.setBackgroundResource(R.drawable.btn_gray);
         }
 
     }
@@ -312,11 +317,17 @@ public class Profile extends Fragment {
 
     private void setupViewPager(ViewPager viewPager, ArrayList<String> number) {
         viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
-        viewPagerAdapter.addFragment(new TimeLine(), getBundle(), "TimeLine", number.get(0));
+       /* viewPagerAdapter.addFragment(new TimeLine(), getBundle(), "TimeLine", number.get(0));
         viewPagerAdapter.addFragment(new User_Events(), getBundle(), "Events", number.get(1));
         viewPagerAdapter.addFragment(new User_Frames(), getBundle(), "Frames", number.get(2));
-        viewPagerAdapter.addFragment(new User_Following(), getBundle(), "Followings", number.get(3));
-        viewPagerAdapter.addFragment(new User_Followers(), getBundle(), "Followers", number.get(4));
+        viewPagerAdapter.addFragment(new User_Following(), getBundle(), "Following", number.get(3));
+        viewPagerAdapter.addFragment(new User_Followers(), getBundle(), "Followers", number.get(4));*/
+
+        viewPagerAdapter.addFragment(new TimeLine(), getBundle(), R.drawable.ic_timeline_blue_grey_600_18dp, "Timeline",number.get(0));
+        viewPagerAdapter.addFragment(new User_Events(), getBundle(), R.drawable.ic_video_library_blue_grey_600_18dp, "Events",number.get(1));
+        viewPagerAdapter.addFragment(new User_Frame_new(), getBundle(), R.drawable.ic_filter_frames_blue_grey_600_18dp, "Frames",number.get(2));
+        viewPagerAdapter.addFragment(new User_Following(), getBundle(), R.drawable.ic_directions_run_blue_grey_600_18dp, "Following",number.get(3));
+        viewPagerAdapter.addFragment(new User_Followers(), getBundle(), R.drawable.ic_favorite_blue_grey_600_18dp,"Followers", number.get(4));
         viewPager.setAdapter(viewPagerAdapter);
     }
 

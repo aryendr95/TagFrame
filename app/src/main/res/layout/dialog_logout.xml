@@ -9,34 +9,47 @@
     <com.tagframe.tagframe.Utils.MyTextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
+        android:layout_margin="20dp"
+        android:gravity="left"
+        style="@style/TextAppearance.AppCompat.Small"
         android:text="Are you sure you want to logout?"
-        android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/layout_logout_controls"
         android:layout_width="fill_parent"
+        android:gravity="right"
         android:layout_height="wrap_content">
 
-        <com.tagframe.tagframe.Utils.MyButton
+        <com.tagframe.tagframe.Utils.MyTextView
             android:id="@+id/yesbtn"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/bt_dark_gray"
             android:text="Yes"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:paddingTop="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="5dp"
             android:textStyle="bold" />
 
-        <com.tagframe.tagframe.Utils.MyButton
+        <com.tagframe.tagframe.Utils.MyTextView
             android:id="@+id/nobtn"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/white"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/bt_dark_gray"
             android:text="No"
             android:textStyle="bold" />
     </LinearLayout>
@@ -45,6 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_margin="20dp"
         android:visibility="gone"
         android:id="@+id/layout_logging_out">
 
@@ -57,7 +71,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="Logging Out.."
+            android:text="Logging out.."
             android:paddingBottom="10dp"/>
     </LinearLayout>
 

@@ -75,6 +75,8 @@
             android:layout_alignParentTop="true"
             android:background="#50302D2D"
             android:orientation="vertical"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             custom:inAnimation="@anim/in_animation"
             custom:outAnimation="@anim/out_animation">
 
@@ -136,11 +138,7 @@
                 android:layout_centerVertical="true"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="23dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_edit" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -171,62 +169,82 @@
                 android:visibility="gone" />
 
             <ImageView
+                android:layout_width="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:id="@+id/editTittle"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_mode_edit_white_24dp"
+                android:layout_toLeftOf="@+id/postevent"
+                />
+
+            <ImageView
                 android:id="@+id/postevent"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
                 android:layout_toLeftOf="@+id/saveevent"
                 android:contentDescription="Post Event"
                 android:gravity="center"
-                android:src="@drawable/ic_post"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:src="@drawable/ic_cloud_upload_white_24dp"
                 android:text="Post"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                />
 
             <ImageView
                 android:id="@+id/saveevent"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/event_description"
                 android:layout_centerVertical="true"
                 android:layout_gravity="right"
-                android:layout_marginRight="20dp"
                 android:layout_toLeftOf="@+id/taguser_event"
                 android:contentDescription="Save Event"
-                android:src="@drawable/ic_save"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:src="@drawable/ic_save_white_24dp"
                 android:text="Save"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                />
 
             <ImageView
                 android:id="@+id/taguser_event"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/event_description"
                 android:layout_centerVertical="true"
                 android:layout_gravity="right"
-                android:layout_marginRight="20dp"
                 android:layout_toLeftOf="@+id/add_frame"
+
+
                 android:contentDescription="Tag Users"
+
                 android:gravity="center"
-                android:src="@drawable/ic_tag_user"
-                android:textColor="@color/white" />
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+
+                android:src="@drawable/ic_group_add_white_24dp"
+                android:textColor="@color/white"
+                />
 
             <ImageView
                 android:id="@+id/add_frame"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/event_description"
                 android:layout_centerVertical="true"
                 android:layout_gravity="right"
-                android:layout_marginRight="20dp"
-                android:contentDescription="Tag Users"
+                android:layout_marginRight="10dp"
+                android:contentDescription="Add Frames"
                 android:gravity="center"
-                android:paddingBottom="5dp"
-                android:src="@drawable/ic_add_frame"
-                android:textColor="@color/white" />
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:src="@drawable/ic_frame_white_24dp"
+                android:textColor="@color/white"
+                />
 
 
         </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
@@ -240,8 +258,8 @@
 
             <ImageView
                 android:id="@+id/img_frame_to_show"
-                android:layout_width="70dp"
-                android:layout_height="70dp" />
+                android:layout_width="@dimen/frame_size"
+                android:layout_height="@dimen/frame_size" />
 
             <ImageView
                 android:id="@+id/img_play_video"

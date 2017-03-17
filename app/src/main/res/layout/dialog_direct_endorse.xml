@@ -5,17 +5,12 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:background="@color/colorPrimaryDark"></LinearLayout>
-
     <com.tagframe.tagframe.Utils.MyTextView
         android:id="@+id/dia_direct_caption"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:textColor="@color/colorPrimaryDark"
+       style="@style/TextAppearance.AppCompat.Medium"
         android:gravity="center_horizontal"
         android:text="Username" />
 
@@ -34,33 +29,33 @@
         android:textColor="@color/colorPrimaryDark"
         android:textColorHint="@color/GRAY"
         android:hint="Message"
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:padding="10dp" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="right">
 
         <com.tagframe.tagframe.Utils.MyButton
             android:id="@+id/dia_direct_yesbtn"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@android:color/holo_green_light"
-
+            android:layout_margin="20dp"
+            android:background="@drawable/btn_green"
+            android:textAllCaps="false"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:text="Endorse" />
 
         <com.tagframe.tagframe.Utils.MyButton
             android:id="@+id/dia_direct_nobtn"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@android:color/holo_red_light"
-
+            android:layout_margin="20dp"
+            android:background="@drawable/btn_red"
+            android:textAllCaps="false"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:text="Cancel" />
     </LinearLayout>
 

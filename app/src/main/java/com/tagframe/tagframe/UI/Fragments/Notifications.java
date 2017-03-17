@@ -21,6 +21,7 @@ import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Utils.AppPrefs;
+import com.tagframe.tagframe.Utils.EndlessRecyclerViewScrollListener;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -43,44 +44,20 @@ public class Notifications extends Fragment {
     private int next_records = 0;
     private ArrayList<NotificationModel> notificationModels;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private TextView mTxt_footer;
-    private ImageView img_footer;
+    private boolean shouldLoad=false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         mview = inflater.inflate(R.layout.fragment_notification, container, false);
-
-        list_notification = (RecyclerView) mview.findViewById(R.id.list_notification);
-        list_notification.setNestedScrollingEnabled(false);
-        pbar = (ProgressBar) mview.findViewById(R.id.pbar_notification);
-        txt_message = (TextView) mview.findViewById(R.id.txt_message_notification);
-        mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_notification);
-        swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_notification);
-        mTxt_footer = (TextView) mview.findViewById(R.id.txt_footer);
-        mTxt_footer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getNotifications();
-            }
-        });
-        img_footer = (ImageView) mview.findViewById(R.id.img_footer);
-        img_footer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getNotifications();
-            }
-        });
-
-        notificationModels = new ArrayList<>();
-        RecyclerView.LayoutManager layoutManagers = new LinearLayoutManager(getActivity());
-        list_notification.setLayoutManager(layoutManagers);
-        list_notification.setAdapter(new NotificationAdapter(notificationModels, getActivity()));
-
-
+        initViews(mview);
+        setUpNotificationList();
+        setUpSwipeRefresh();
         getNotifications();
+        return mview;
+    }
 
+    private void setUpSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -90,39 +67,53 @@ public class Notifications extends Fragment {
                 list_notification.setLayoutManager(layoutManagers);
                 list_notification.setAdapter(new NotificationAdapter(notificationModels, getActivity()));
                 next_records = 0;
-                mTxt_footer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getNotifications();
-                    }
-                });
-                img_footer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getNotifications();
-                    }
-                });
                 getNotifications();
             }
         });
+    }
 
-        return mview;
+    private void setUpNotificationList() {
+        notificationModels = new ArrayList<>();
+        LinearLayoutManager layoutManagers = new LinearLayoutManager(getActivity());
+        list_notification.setLayoutManager(layoutManagers);
+        list_notification.setAdapter(new NotificationAdapter(notificationModels, getActivity()));
+        list_notification.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManagers) {
+            @Override public void onLoadMore(int page, int totalItemsCount) {
+                if (shouldLoad) {
+                    getNotifications();
+                }
+                else
+                {
+                    PopMessage.makesimplesnack(mLayout,"No more notifications for you..");
+                }
+            }
+        });
+    }
+
+    private void initViews(View mview) {
+        list_notification = (RecyclerView) mview.findViewById(R.id.list_notification);
+        list_notification.setNestedScrollingEnabled(false);
+        pbar = (ProgressBar) mview.findViewById(R.id.pbar_notification);
+        txt_message = (TextView) mview.findViewById(R.id.txt_message_notification);
+        mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_notification);
+        swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_notification);
     }
 
     private void getNotifications() {
 
         if (Networkstate.haveNetworkConnection(getActivity())) {
-            AppPrefs appPrefs = new AppPrefs(getActivity());
+            final AppPrefs appPrefs = new AppPrefs(getActivity());
             String user_id = appPrefs.getString(Utility.user_id);
 
             pbar.setVisibility(View.VISIBLE);
-            img_footer.setImageResource(R.drawable.ic_loading);
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             apiInterface.getNotifications(user_id, String.valueOf(next_records)).enqueue(new Callback<NotificationResponseModel>() {
                 @Override
                 public void onResponse(Call<NotificationResponseModel> call, Response<NotificationResponseModel> response) {
                     if (isAdded()) {
                         String status = response.body().getStatus();
+                        String unread_notifications=response.body().getUnread_notifications();
+                        appPrefs.putString(Utility.unread_notifications,unread_notifications);
                         pbar.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
                         if (status.equals(Utility.success_response)) {
@@ -132,19 +123,13 @@ public class Notifications extends Fragment {
 
                                 if (response.body().getNotificationModelArrayList().size() == Utility.PAGE_SIZE) {
                                     next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more notifications...");
-                                    img_footer.setImageResource(R.drawable.ic_load_more);
+
                                 } else {
-                                    mTxt_footer.setOnClickListener(null);
-                                    mTxt_footer.setText("No more notifications for you");
-                                    img_footer.setImageResource(R.drawable.ic_done);
-                                    img_footer.setOnClickListener(null);
 
                                 }
 
                             } else {
                                 txt_message.setVisibility(View.VISIBLE);
-                                mTxt_footer.setText("No notifications for you..");
                                 //txt_message.setText(getActivity().getResources().getString(R.string.no_notification_message));
                             }
                         } else {

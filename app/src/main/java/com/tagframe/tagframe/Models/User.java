@@ -8,12 +8,36 @@ import com.google.gson.annotations.SerializedName;
  */
 public class User {
 
+
+    private boolean isLoggedin=false;
+
+    public boolean isLoggedin() {
+        return isLoggedin;
+    }
+
+    public void setLoggedin(boolean loggedin) {
+        isLoggedin = loggedin;
+    }
+
     @SerializedName("user_id")
     @Expose
     private String user_id;
     @SerializedName("username")
     @Expose
     private String username;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @SerializedName("password")
+    @Expose
+
+    private String password;
     @SerializedName("realname")
     @Expose
     private String realname;
@@ -50,6 +74,30 @@ public class User {
     @SerializedName("followed")
     @Expose
     private String followed;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @SerializedName("email")
+    @Expose
+    private String email;
+
+    @SerializedName("unread_notifications")
+    @Expose
+    private String unreadnotifications;
+
+    public String getUnreadnotifications() {
+        return unreadnotifications;
+    }
+
+    public void setUnreadnotifications(String unreadnotifications) {
+        this.unreadnotifications = unreadnotifications;
+    }
 
     public String getUsername() {
         return username;

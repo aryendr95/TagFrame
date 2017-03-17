@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:elevation="10dp"
+   >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+
+        <com.tagframe.tagframe.Utils.Edittext
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            style="@style/TextAppearance.AppCompat.Medium"
+
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/login_usrname"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+
+        <com.tagframe.tagframe.Utils.Edittext
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:inputType="textPassword"
+            android:id="@+id/login_password"
+
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/login_show"
+            android:text="Show Password"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"/>
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_forgot"
+            android:text="Forgot Password?"
+            android:layout_marginRight="20dp"
+            android:gravity="right"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <com.tagframe.tagframe.Utils.MyButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="right"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Login"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:id="@+id/login_action"
+            android:background="@drawable/btn_gray"/>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

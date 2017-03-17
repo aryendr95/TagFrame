@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tagframe.tagframe.Adapters.EventListRecyclerAdapter;
 import com.tagframe.tagframe.Adapters.FollowListAdapter;
+import com.tagframe.tagframe.Adapters.FollowRecyclerAdapter;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.Models.SearchUserResponseModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
+import com.tagframe.tagframe.Utils.EndlessRecyclerViewScrollListener;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
@@ -37,139 +42,118 @@ import retrofit2.Response;
  * Created by abhinav on 11/04/2016.
  */
 public class User_Followers extends Fragment implements ScrollList {
+  private View mview;
+  private RecyclerView rcFollwers;
+  private SwipeRefreshLayout swipeRefreshLayout;
+  private ProgressBar progressBar;
+  //variables
+  private String user_id;
+  private ArrayList<FollowModel> followModelArrayList;
+  private RelativeLayout mLayout;
+  private AppPrefs userinfo;
+  private int next_records = 0;
+  private boolean shouldLoad = false;
 
-    private View mview;
-    private ListView listView;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar progressBar, footerbar;
-    private TextView mTxt_footer;
-    private ImageView img_footer;
-    private String user_id;
-    private ArrayList<FollowModel> followModelArrayList;
-    private RelativeLayout mLayout;
+  @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    prepare();
+    mview = inflater.inflate(R.layout.layout_followers, container, false);
+    initViews();
+    functionalizeList();
+    setUpSwipeReferesh();
+    loadUserFollower();
+    return mview;
+  }
 
-    private AppPrefs userinfo;
-    private int next_records = 0;
+  private void prepare() {
+    followModelArrayList = new ArrayList<>();
+    userinfo = new AppPrefs(getActivity());
+    user_id = getArguments().getString("user_id");
+  }
 
+  private void initViews() {
+    mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_followers);
+    rcFollwers = (RecyclerView) mview.findViewById(R.id.list_followers);
+    swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_followers);
+    progressBar = (ProgressBar) mview.findViewById(R.id.list_followers_progress);
+  }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        if (Utility.isLollipop())
-            mview = inflater.inflate(R.layout.layout_followers, container, false);
-        else
-            mview = inflater.inflate(R.layout.layout_followers_below_21, container, false);
-
-        followModelArrayList = new ArrayList<>();
-
-        userinfo = new AppPrefs(getActivity());
-
-        mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_followers);
-        listView = (ListView) mview.findViewById(R.id.list_followers);
-        addfooter();
-
-        listView.setAdapter(new FollowListAdapter(getActivity(), followModelArrayList, 1));
-
-        swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_followers);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                next_records = 0;
-                followModelArrayList = new ArrayList<FollowModel>();
-                listView.setAdapter(new FollowListAdapter(getActivity(), followModelArrayList, 1));
-                loadUserFollower();
-            }
-        });
-
-        progressBar = (ProgressBar) mview.findViewById(R.id.list_followers_progress);
-
-        user_id = getArguments().getString("user_id");
-
-        loadUserFollower();
-
-        return mview;
-    }
-
-    public void addfooter() {
-
-        //adding a footer to listview
-        View footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_layout, null, false);
-        listView.addFooterView(footerView);
-        footerbar = (ProgressBar) footerView.findViewById(R.id.pbar_footer);
-        mTxt_footer = (TextView) footerView.findViewById(R.id.txt_footer);
-        mTxt_footer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadUserFollower();
-            }
-        });
-        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
-        img_footer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadUserFollower();
-            }
-        });
-    }
-
-    private void loadUserFollower() {
-        if (Networkstate.haveNetworkConnection(getActivity())) {
-            progressBar.setVisibility(View.VISIBLE);
-            img_footer.setImageResource(R.drawable.ic_loading);
-            ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
-            retrofitService.getUserFollowers(user_id, String.valueOf(next_records)).enqueue(new Callback<SearchUserResponseModel>() {
-                @Override
-                public void onResponse(Call<SearchUserResponseModel> call, Response<SearchUserResponseModel> response) {
-
-                    if (isAdded()) {
-                        try {
-                            if (response.body().getStatus().equals("success")) {
-
-                                progressBar.setVisibility(View.GONE);
-                                swipeRefreshLayout.setRefreshing(false);
-                                followModelArrayList.addAll(response.body().getArrayList_search_user_model());
-                                ((BaseAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
-
-                                //detect more events are to be loaded or not
-                                if (response.body().getArrayList_search_user_model().size() == Utility.PAGE_SIZE) {
-                                    next_records = next_records + Utility.PAGE_SIZE;
-                                    mTxt_footer.setText("Load more followers...");
-                                    img_footer.setImageResource(R.drawable.ic_load_more);
-                                } else {
-                                    mTxt_footer.setOnClickListener(null);
-                                    img_footer.setOnClickListener(null);
-                                    img_footer.setImageResource(R.drawable.ic_done);
-                                    mTxt_footer.setText("No more followers fo you..");
-                                }
-
-                            } else {
-
-                            }
-                        } catch (Exception e) {
-                            PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<SearchUserResponseModel> call, Throwable t) {
-                    if (isAdded()) {
-                        progressBar.setVisibility(View.GONE);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-            });
-
-        } else {
-            PopMessage.makesimplesnack(mLayout, "No Internet Connection");
+  private void functionalizeList() {
+    LinearLayoutManager llayoutManager = new LinearLayoutManager(getActivity());
+    rcFollwers.setLayoutManager(llayoutManager);
+    rcFollwers.setAdapter(new FollowRecyclerAdapter(getActivity(), followModelArrayList, 1));
+    rcFollwers.addOnScrollListener(new EndlessRecyclerViewScrollListener(llayoutManager) {
+      @Override public void onLoadMore(int page, int totalItemsCount) {
+        if (shouldLoad) {
+          loadUserFollower();
         }
-    }
+      }
+    });
+  }
 
-    //scroll to fisrt
-    public void scrolltofirst() {
+  private void setUpSwipeReferesh() {
+    swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_followers);
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        next_records = 0;
+        followModelArrayList = new ArrayList<FollowModel>();
+        functionalizeList();
+        loadUserFollower();
+      }
+    });
+  }
 
-        listView.smoothScrollToPosition(0);
+  private void loadUserFollower() {
+    if (Networkstate.haveNetworkConnection(getActivity())) {
+      progressBar.setVisibility(View.VISIBLE);
+      ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
+      retrofitService.getUserFollowers(user_id, String.valueOf(next_records))
+          .enqueue(new Callback<SearchUserResponseModel>() {
+            @Override public void onResponse(Call<SearchUserResponseModel> call,
+                Response<SearchUserResponseModel> response) {
+
+              if (isAdded()) {
+                try {
+                  if (response.body().getStatus().equals("success")) {
+
+                    progressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+                    followModelArrayList.addAll(response.body().getArrayList_search_user_model());
+                    rcFollwers.getAdapter().notifyDataSetChanged();
+
+                    //detect more events are to be loaded or not
+                    if (response.body().getArrayList_search_user_model().size()
+                        == Utility.PAGE_SIZE) {
+                      next_records = next_records + Utility.PAGE_SIZE;
+                      shouldLoad = true;
+                    } else {
+                      shouldLoad = false;
+                    }
+                  } else {
+
+                  }
+                } catch (Exception e) {
+                  PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
+                }
+              }
+            }
+
+            @Override public void onFailure(Call<SearchUserResponseModel> call, Throwable t) {
+              if (isAdded()) {
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+              }
+            }
+          });
+    } else {
+      PopMessage.makesimplesnack(mLayout, "No Internet Connection");
     }
+  }
+
+  //scroll to fisrt
+  public void scrolltofirst() {
+
+    rcFollwers.smoothScrollToPosition(0);
+  }
 }

@@ -13,6 +13,18 @@ public class NotificationResponseModel {
     @Expose
     private String status;
 
+    @SerializedName("unread_notifications")
+    @Expose
+    private String unread_notifications;
+
+    public String getUnread_notifications() {
+        return unread_notifications;
+    }
+
+    public void setUnread_notifications(String unread_notifications) {
+        this.unread_notifications = unread_notifications;
+    }
+
     public String getStatus() {
         return status;
     }

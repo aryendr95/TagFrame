@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:padding="10dp"
+        android:padding="10sp"
         android:gravity="center"
         android:orientation="vertical"
        >
@@ -71,12 +71,16 @@
         <com.tagframe.tagframe.Utils.MyButton
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
             android:textColor="@color/white"
             android:textStyle="bold"
+            android:textAllCaps="false"
             android:text="Sign Up"
             android:id="@+id/sign_action"
-            android:background="@color/GRAY"/>
+            android:background="@drawable/btn_gray"/>
 
     </LinearLayout>
 

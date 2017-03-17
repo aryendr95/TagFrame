@@ -5,330 +5,363 @@
     android:id="@+id/mlayout_makenew_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="top"
     android:layout_gravity="top"
     android:background="@color/black_event"
-    tools:context="com.tagframe.tagframe.UI.Acitivity.MakeNewEvent">
+    android:gravity="top"
+    android:orientation="vertical"
+    tools:context="com.tagframe.tagframe.UI.Acitivity.MakeNewEvent"
+    >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/container_frames"
-        android:id="@+id/rl_event"
-        android:background="@color/black_event">
+  <RelativeLayout
+      android:id="@+id/rl_event"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_above="@+id/container_frames"
+      android:background="@color/black_event"
+      >
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-       >
-        <SurfaceView
-            android:id="@+id/surfaceviewnewevent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+        >
+      <SurfaceView
+          android:id="@+id/surfaceviewnewevent"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          />
+
+
+      <RelativeLayout
+          android:id="@+id/layout_frame_at_time_container"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:layout_marginBottom="50dp"
+          android:background="#00000000"
+          >
+
+        <ImageView
+            android:id="@+id/img_frame_to_show"
+            android:layout_width="@dimen/frame_size"
+            android:layout_height="@dimen/frame_size"
+            android:scaleType="centerCrop"
             />
 
+        <ImageView
+            android:id="@+id/img_play_video"
+            android:layout_width="30dp"
 
-        <RelativeLayout
-            android:id="@+id/layout_frame_at_time_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="50dp"
-            android:background="#00000000">
-
-            <ImageView
-                android:id="@+id/img_frame_to_show"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop" />
-
-            <ImageView
-                android:id="@+id/img_play_video"
-                android:layout_width="30dp"
-
-                android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/playvideo"
-                android:visibility="gone" />
-        </RelativeLayout>
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/playvideo"
+            android:visibility="gone"
+            />
+      </RelativeLayout>
 
 
-        <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
-            android:id="@+id/ll_mp_tools"
+      <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
+          android:id="@+id/ll_mp_tools"
+          android:layout_width="fill_parent"
+          android:layout_height="50dp"
+          android:layout_gravity="bottom"
+          android:background="#50302D2D"
+          android:gravity="center"
+          android:orientation="vertical"
+          custom:inAnimation="@anim/slide_up"
+          custom:outAnimation="@anim/slide_down"
+          >
+
+        <LinearLayout
+            android:id="@+id/bar"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:background="#50302D2D"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_gravity="bottom"
-            custom:inAnimation="@anim/slide_up"
-            custom:outAnimation="@anim/slide_down">
-
-            <LinearLayout
-                android:id="@+id/bar"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="horizontal"
-                android:gravity="bottom">
-
-
-
-                <com.tagframe.tagframe.Utils.CustomSeekBar
-                    android:id="@+id/seekbar"
-
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical" />
-            </LinearLayout>
-        </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
-        <ProgressBar
-            android:id="@+id/pbarmediaplayer"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
+            android:layout_marginBottom="5dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            >
 
-        <com.tagframe.tagframe.Utils.MyTextView
-            android:id="@+id/txt_percent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/pbarmediaplayer"
-            android:text="0"
-            android:layout_gravity="center"
-            android:textColor="@color/white" />
 
+          <com.tagframe.tagframe.Utils.CustomSeekBar
+              android:id="@+id/seekbar"
+
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"
+              />
+        </LinearLayout>
+      </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
+      <ProgressBar
+          android:id="@+id/pbarmediaplayer"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          />
+
+      <com.tagframe.tagframe.Utils.MyTextView
+          android:id="@+id/txt_percent"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/pbarmediaplayer"
+          android:layout_gravity="center"
+          android:text="0"
+          android:textColor="@color/white"
+          />
 
 
     </FrameLayout>
-        <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
-            android:id="@+id/topbar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="#50302D2D"
-            android:orientation="vertical"
-            custom:inAnimation="@anim/in_animation"
-            custom:outAnimation="@anim/out_animation">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_centerVertical="true"
-                android:id="@+id/ll_time">
-                <TextView
-                    android:id="@+id/txtcurrentduration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:text="00:00"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="/"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txttotalduration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="00:00"
-
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-                <ImageButton
-                    android:id="@+id/btn_play_stop"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="#00000000"
-                    android:src="@android:drawable/ic_media_pause"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/event_tittle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/postevent"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="23dp"
-                    android:layout_height="fill_parent"
-
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_edit" />
-
-                <TextView
-                    android:id="@+id/txt_event_tittle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:ellipsize="end"
-                    android:visibility="gone"
-                    android:maxLength="25"
-                    android:text="Tittle"
-                    android:textColor="@color/white"
-                    android:textSize="19dp" />
-
-            </LinearLayout>
-
-            <com.tagframe.tagframe.Utils.MyTextView
-                android:id="@+id/event_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:paddingLeft="10dp"
-                android:text="Description"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:visibility="gone" />
-
-            <ImageView
-            android:id="@+id/postevent"
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/saveevent"
-            android:contentDescription="Post Event"
-            android:gravity="center"
-            android:src="@drawable/ic_post"
-            android:text="Post"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/saveevent"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="20dp"
-                android:layout_toLeftOf="@+id/taguser_event"
-                android:contentDescription="Save Event"
-                android:src="@drawable/ic_save"
-                android:text="Save"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/taguser_event"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-
-
-                android:layout_gravity="right"
-                android:layout_marginRight="20dp"
-                android:layout_toLeftOf="@+id/add_frame"
-                android:contentDescription="Tag Users"
-                android:gravity="center"
-
-                android:src="@drawable/ic_tag_user"
-                android:textColor="@color/white" />
-
-            <ImageView
-                android:id="@+id/add_frame"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-
-
-                android:layout_gravity="right"
-
-                android:layout_marginRight="20dp"
-                android:contentDescription="Tag Users"
-                android:gravity="center"
-
-                android:src="@drawable/ic_add_frame"
-                android:textColor="@color/white" />
-
-
-        </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
-
-
-
-
-
-
-    </RelativeLayout>
-
     <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
-        android:id="@+id/container_frames"
+        android:id="@+id/topbar"
         android:layout_width="fill_parent"
-        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:background="@color/black_event"
-        android:elevation="5dp"
-        android:layout_alignParentBottom="true"
-        custom:inAnimation="@anim/slide_up"
-        custom:outAnimation="@anim/slide_down">
+        android:layout_alignParentTop="true"
+        android:background="#50302D2D"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:orientation="vertical"
+        custom:inAnimation="@anim/in_animation"
+        custom:outAnimation="@anim/out_animation"
+        >
+
+      <LinearLayout
+          android:id="@+id/ll_time"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:orientation="horizontal"
+          >
+        <TextView
+            android:id="@+id/txtcurrentduration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="/"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/txttotalduration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="00:00"
+
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            />
+
+        <ImageButton
+            android:id="@+id/btn_play_stop"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="#00000000"
+            android:src="@android:drawable/ic_media_pause"
+            />
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/event_tittle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_marginRight="10dp"
+
+          android:layout_toLeftOf="@+id/postevent"
+          android:orientation="horizontal"
+          >
 
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/framelist"
 
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        <TextView
+            android:id="@+id/txt_event_tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:ellipsize="end"
+            android:maxLength="25"
+            android:text="Tittle"
+            android:textColor="@color/white"
+            android:textSize="19dp"
+            android:visibility="gone"
+            />
+
+      </LinearLayout>
+
+      <com.tagframe.tagframe.Utils.MyTextView
+          android:id="@+id/event_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:paddingLeft="10dp"
+          android:text="Description"
+          android:textColor="@color/white"
+          android:textSize="15dp"
+          android:visibility="gone"
+          />
+      <ImageView
+          android:layout_width="wrap_content"
+          android:paddingLeft="5dp"
+          android:paddingRight="5dp"
+          android:id="@+id/editTittle"
+          android:layout_centerVertical="true"
+          android:layout_height="wrap_content"
+          android:src="@drawable/ic_mode_edit_white_24dp"
+          android:layout_toLeftOf="@+id/postevent"
+          />
+      <ImageView
+          android:id="@+id/postevent"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_toLeftOf="@+id/saveevent"
+          android:contentDescription="Post Event"
+          android:gravity="center"
+          android:paddingLeft="5dp"
+          android:paddingRight="5dp"
+          android:src="@drawable/ic_cloud_upload_white_24dp"
+          android:text="Post"
+          android:textColor="@color/white"
+          android:textStyle="bold"
+          />
+
+      <ImageView
+          android:id="@+id/saveevent"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_gravity="right"
+          android:layout_toLeftOf="@+id/taguser_event"
+          android:contentDescription="Save Event"
+          android:paddingLeft="5dp"
+          android:paddingRight="5dp"
+          android:src="@drawable/ic_save_white_24dp"
+          android:text="Save"
+          android:textColor="@color/white"
+          android:textStyle="bold"
+          />
+
+      <ImageView
+          android:id="@+id/taguser_event"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_gravity="right"
+          android:layout_toLeftOf="@+id/add_frame"
+
+
+          android:contentDescription="Tag Users"
+
+          android:gravity="center"
+          android:paddingLeft="5dp"
+          android:paddingRight="5dp"
+
+          android:src="@drawable/ic_group_add_white_24dp"
+          android:textColor="@color/white"
+          />
+
+      <ImageView
+          android:id="@+id/add_frame"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:layout_gravity="right"
+          android:layout_marginRight="10dp"
+          android:contentDescription="Add Frames"
+          android:gravity="center"
+          android:paddingLeft="5dp"
+          android:paddingRight="5dp"
+          android:src="@drawable/ic_frame_white_24dp"
+          android:textColor="@color/white"
+          />
 
 
     </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_tutorials"
+
+  </RelativeLayout>
+
+  <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
+      android:id="@+id/container_frames"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:background="@color/black_event"
+      android:elevation="5dp"
+      android:visibility="gone"
+      custom:inAnimation="@anim/slide_up"
+      custom:outAnimation="@anim/slide_down"
+      >
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/framelist"
+
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="#70000000"
-        android:visibility="gone">
-
-        <com.tagframe.tagframe.Utils.MyTextView
-            android:id="@+id/txt_tutorial_msg"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-
-            android:layout_margin="20dp"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
-
-        <Button
-            android:id="@+id/txt_tutorial_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/button_transpareant"
-            android:padding="5dp"
-            android:text="Got it"
-            android:textColor="@color/white"
-
-            />
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        ></android.support.v7.widget.RecyclerView>
 
 
-    <RelativeLayout
-        android:id="@+id/dimer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#99000000"
-        android:visibility="gone"></RelativeLayout>
+  </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
 
+  <RelativeLayout
+      android:id="@+id/layout_tutorials"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:background="#70000000"
+      android:visibility="gone"
+      >
+
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:id="@+id/txt_tutorial_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        />
+
+    <Button
+        android:id="@+id/txt_tutorial_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/button_transpareant"
+        android:padding="5dp"
+        android:text="Got it"
+        android:textColor="@color/white"
+
+        />
+  </RelativeLayout>
+
+
+  <RelativeLayout
+      android:id="@+id/dimer_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#99000000"
+      android:visibility="gone"
+      ></RelativeLayout>
 
 
 </RelativeLayout>

@@ -8,10 +8,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +33,6 @@ import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
-import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
 import com.tagframe.tagframe.Utils.AppPrefs;
@@ -67,7 +66,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_list_tagstream, parent, false);
+                .inflate(R.layout.layout_list_events, parent, false);
 
         return new MyViewHolder(itemView);
     }
@@ -116,7 +115,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
         mViewHolder.iveventimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,WatchEventActivity.class);
+               /* Intent intent = new Intent(context,WatchEventActivity.class);
                 intent.putExtra("name",tagStream.getName());
                 //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
                 intent.putExtra("likes", tagStream.getNumber_of_likes());
@@ -133,15 +132,31 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
                 intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
                 intent.putExtra("position", ((WatchEventActivity)ctx).getCurrentListPosition());
                 intent.putExtra("sharelink", tagStream.getSharelink());
-                intent.putExtra("likevideo",tagStream.getLike_video());
-               /* if(context instanceof WatchEventActivity)
+                intent.putExtra("likevideo",tagStream.getLike_video());*/
+                if(context instanceof WatchEventActivity)
                 {
-                    ((WatchEventActivity)context).getIntentData(intent);
-                    ((WatchEventActivity)context).setDatatoView();
-                    ((WatchEventActivity)context).resetMediaPlayer();
-                }*/
-                context.startActivity(intent);
-                ((WatchEventActivity)context).finish();
+                    Intent intent = new Intent();
+                    intent.putExtra("name",tagStream.getName());
+                    //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
+                    intent.putExtra("likes", tagStream.getNumber_of_likes());
+                    intent.putExtra("frames", tagStream.getFrameList_modelArrayList().size());
+                    intent.putExtra("comments", tagStream.getNum_of_comments());
+                    intent.putExtra("data_url", tagStream.getDataurl());
+                    intent.putExtra("tittle", tagStream.getTitle());
+                    intent.putExtra("from", "tagstream");
+                    intent.putExtra("user_id", tagStream.getUser_id());
+                    intent.putExtra("description", tagStream.getDescription());
+                    intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
+                    intent.putExtra("eventtype", Utility.eventtype_internet);
+                    intent.putExtra("eventid", tagStream.getEvent_id());
+                    intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
+                    intent.putExtra("position", ((WatchEventActivity)ctx).getCurrentListPosition());
+                    intent.putExtra("sharelink", tagStream.getSharelink());
+                    intent.putExtra("likevideo",tagStream.getLike_video());
+                    ((WatchEventActivity)context).playSelected(intent);
+                }
+               // context.startActivity(intent);
+               // ((WatchEventActivity)context).finish();
             }
         });
 

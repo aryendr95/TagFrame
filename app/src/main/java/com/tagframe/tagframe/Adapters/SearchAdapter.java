@@ -333,14 +333,14 @@ public class SearchAdapter extends BaseAdapter {
     private class MyViewHolder {
         TextView tvusername, tvrealname;
         CircularImageView user_pic;
-        Button followbutton;
+        TextView followbutton;
         ImageView removeuser;
 
         public MyViewHolder(View item) {
             tvusername = (TextView) item.findViewById(R.id.follow_username);
             tvrealname = (TextView) item.findViewById(R.id.follow_realname);
             user_pic = (CircularImageView) item.findViewById(R.id.follow_pro_pic);
-            followbutton = (Button) item.findViewById(R.id.follow_button);
+            followbutton = (TextView) item.findViewById(R.id.follow_button);
 
             removeuser = (ImageView) item.findViewById(R.id.follow_remove);
 

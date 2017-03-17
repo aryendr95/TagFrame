@@ -16,14 +16,14 @@
         android:id="@+id/swiperefresh_followers"
        >
 
-        <com.tagframe.tagframe.Utils.NestedScrollingListView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/list_followers"
             android:dividerHeight="1dp"
-            >
+            />
 
-        </com.tagframe.tagframe.Utils.NestedScrollingListView>
+
 
 
     </com.tagframe.tagframe.Utils.MySwipeLayout>

@@ -3,12 +3,13 @@ package com.tagframe.tagframe.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
+import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.Models.SingleEventModel;
 import com.tagframe.tagframe.Models.Event_Model;
+import com.tagframe.tagframe.Models.User;
 import com.tagframe.tagframe.Models.User_Frames_model;
 
 import java.lang.reflect.Type;
@@ -75,6 +76,33 @@ public class AppPrefs {
 
     public String getString(String key)
     {
+      AppPrefs appPrefs=new AppPrefs(mcontext);
+      User user=appPrefs.getUser();
+      switch (key)
+      {
+        case Utility.user_id:
+          return user.getUser_id();
+        case Utility.user_name:
+          return user.getUsername();
+        case Utility.user_email:
+          return user.getEmail();
+        case Utility.user_pic:
+          return user.getProfile_image();
+        case Utility.user_descrip:
+          return user.getDescription();
+        case Utility.user_realname:
+          return user.getRealname();
+        case Utility.total_events:
+          return user.getNumber_of_event();
+        case Utility.user_frame:
+          return user.getNumber_of_frame();
+        case Utility.unread_notifications:
+          return user.getUnreadnotifications();
+        case Utility.number_of_followers:
+          return user.getNumber_of_followers();
+        case Utility.number_of_following:
+          return user.getNumber_of_following();
+      }
         return prefs.getString(key,"");
     }
 
@@ -252,6 +280,27 @@ public class AppPrefs {
 
     }
 
+
+  public void putUser(User user) {
+
+    Gson gson = new Gson();
+    SharedPreferences.Editor editor = prefs.edit();
+    String jsonValue = gson.toJson(user);
+    editor.putString(Constants.SHP_USER_INFORMATION, jsonValue);
+    editor.commit();
+  }
+
+  public User getUser() {
+    Gson gson = new Gson();
+    String json = prefs.getString(Constants.SHP_USER_INFORMATION, "");
+    User obj = null;
+    if (TextUtils.isEmpty(json)) {
+      obj = new User();
+    } else {
+      obj = gson.fromJson(json, User.class);
+    }
+    return obj;
+  }
 
 
 

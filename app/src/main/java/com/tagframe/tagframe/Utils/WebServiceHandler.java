@@ -246,7 +246,24 @@ public class WebServiceHandler {
                 response = stringBuilder.toString();
                 httpConn.disconnect();
             } else {
-                throw new IOException("Server returned non-OK status: " + status);
+
+                InputStream responseStream = new
+                    BufferedInputStream(httpConn.getErrorStream());
+
+                BufferedReader responseStreamReader =
+                    new BufferedReader(new InputStreamReader(responseStream));
+
+                String line = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((line = responseStreamReader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
+                }
+                responseStreamReader.close();
+
+                response = stringBuilder.toString();
+                httpConn.disconnect();
+                throw new IOException("Server returned non-OK status: " + status+response);
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());

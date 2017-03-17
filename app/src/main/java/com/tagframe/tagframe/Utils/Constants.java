@@ -19,8 +19,8 @@ public class Constants {
 
 
     //URL
-    public static final String URL_COMMENT_LIST = "http://workintelligent.com/TagFrame/webservice/comment_list";
-    public static final String URL_COMMENT = "http://workintelligent.com/TagFrame/webservice/post_comment";
+    public static final String URL_COMMENT_LIST = "http://wtagframe.com/webservice/comment_list";
+    public static final String URL_COMMENT = "http://tagframe.com/webservice/post_comment";
 
     //SP
     public static final String user_id = "user_id";
@@ -41,7 +41,11 @@ public class Constants {
 
     //webservices
 
-    public static final String base_url = "http://workintelligent.com/TagFrame/webservice/";
+    //live
+    // public static final String base_url = "http://tagframe.com/webservice/";
+    //test
+    public static final String base_url = "http:// workintelligent.com/TagFrame/webservice/";
+
     public static final String login = base_url + "login";
     public static final String signup = base_url + "signup";
     public static final String forgot_password = base_url + "forgot_password";
@@ -127,7 +131,7 @@ public class Constants {
 
     public static final String success_response="success";
     public static final String message_no_internet="No internet Connection";
-
+    public static String SHP_USER_INFORMATION="user_info";
 
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null) {

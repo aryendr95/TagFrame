@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e5e5e5"
+    android:orientation="vertical"
+    >
+
+  <ProgressBar
+      android:id="@+id/pbarchangepassword"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:visibility="gone"
+      />
+
+  <ScrollView
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        >
+
+      <android.support.v7.widget.CardView
+          android:id="@+id/card_feedback"
+          android:layout_width="fill_parent"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:layout_margin="10dp"
+
+          >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+
+            android:orientation="vertical"
+            >
+          <!-- Header -->
+          <LinearLayout
+              android:id="@+id/header_userinfo"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:orientation="horizontal"
+              >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+              <com.pkmmte.view.CircularImageView
+                  android:id="@+id/acc_proimage"
+                  android:layout_width="70dp"
+
+                  android:layout_height="70dp"
+                  android:src="@drawable/pro_image"
+                  />
+
+              <ImageView
+                  android:id="@+id/acc_change_pro_pic"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_centerInParent="true"
+                  android:src="@android:drawable/ic_menu_edit"
+                  android:visibility="gone"
+                  />
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/acc_username"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp"
+                android:text="General Information"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="@color/GRAY"
+                android:textSize="20dp"
+                />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+
+
+                >
+              <ImageView
+                  android:id="@+id/acc_expand_userinfo"
+                  android:layout_width="wrap_content"
+                  android:layout_height="20dp"
+                  android:layout_alignParentRight="true"
+                  android:layout_margin="10dp"
+                  android:src="@drawable/ic_keyboard_arrow_right_blue_grey_700_24dp"
+                  />
+            </RelativeLayout>
+          </LinearLayout>
+
+          <LinearLayout
+              android:id="@+id/expandable_userinfo"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+
+              android:orientation="vertical"
+              >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="Username:"
+                  android:textColor="@color/colorPrimaryDark"
+                  />
+
+              <EditText
+                  android:id="@+id/acc_ed_username"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="Real Name:"
+                  android:textColor="@color/colorPrimaryDark"
+                  />
+
+              <EditText
+                  android:id="@+id/acc_ed_realname"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="Email:"
+                  android:textColor="@color/colorPrimaryDark"
+                  />
+
+              <EditText
+                  android:id="@+id/acc_ed_email"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="Description:"
+
+                  android:textColor="@color/colorPrimaryDark"
+                  />
+
+              <EditText
+                  android:id="@+id/acc_ed_description"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorPrimaryDark"
+
+                  android:textColorHint="@color/GRAY"
+                  />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:gravity="center"
+                  android:text="If you edit your Username or RealName, it may be harder for other users to find you"
+                  android:textColor="@color/colorPrimaryDark"
+                  />
+
+
+            </LinearLayout>
+
+
+            <com.tagframe.tagframe.Utils.MyButton
+                android:id="@+id/acc_save_userinfo"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_gray"
+                android:text="Save"
+                android:textColor="@color/blACK"
+                android:textStyle="bold"
+                />
+
+
+          </LinearLayout>
+
+        </LinearLayout>
+      </android.support.v7.widget.CardView>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          >
+      <android.support.v7.widget.CardView
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="10dp"
+
+          >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="10dp"
+
+            android:orientation="vertical"
+            >
+          <!-- Header -->
+          <LinearLayout
+              android:id="@+id/header_changepassword"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:orientation="horizontal"
+              >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp"
+                android:text="Change Password"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="@color/GRAY"
+                android:textSize="20dp"
+                />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+
+                >
+              <ImageView
+                  android:id="@+id/acc_expand_changepassword"
+                  android:layout_width="wrap_content"
+                  android:layout_height="20dp"
+                  android:layout_alignParentRight="true"
+                  android:layout_margin="10dp"
+                  android:src="@drawable/ic_keyboard_arrow_right_blue_grey_700_24dp"
+                  />
+            </RelativeLayout>
+          </LinearLayout>
+
+          <LinearLayout
+              android:id="@+id/expandable_changepassword"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+
+              android:orientation="vertical"
+              >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="Current Password:"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+
+              <EditText
+                  android:id="@+id/acc_ed_current_pass"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="New Password:"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+
+              <EditText
+                  android:id="@+id/acc_ed_new_pass"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="Confirm Password:"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+
+              <EditText
+                  android:id="@+id/acc_ed_confirm_pass"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+              <TextView
+                  android:id="@+id/acc_forgot_password"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_weight="1"
+                  android:gravity="center"
+                  android:text="Forgot Password?"
+                  android:textColor="@color/colorPrimaryDark"
+                  android:textColorHint="@color/GRAY"
+                  />
+
+
+            </LinearLayout>
+
+            <com.tagframe.tagframe.Utils.MyButton
+                android:id="@+id/acc_btn_change_pass"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_gray"
+                android:text="Change"
+                android:textColor="@color/blACK"
+                android:textStyle="bold"
+                />
+
+
+          </LinearLayout>
+
+        </LinearLayout>
+      </android.support.v7.widget.CardView>
+
+
+      <com.tagframe.tagframe.Utils.MyButton
+          android:id="@+id/acc_btn_delete_pass"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="20dp"
+          android:layout_weight="1"
+          android:background="@drawable/btn_gray"
+          android:text="Delete Account"
+          android:textColor="@color/blACK"
+          android:textStyle="bold"
+          />
+      </LinearLayout>
+
+    </LinearLayout>
+  </ScrollView>
+
+</RelativeLayout>

@@ -16,9 +16,10 @@
             android:layout_height="fill_parent"
             >
             <ImageView
-                android:layout_width="25dp"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:src="@drawable/previous"
+                android:paddingLeft="5dp"
+                android:src="@drawable/ic_arrow_back_white_24dp"
                 android:id="@+id/save_event_back"/>
         </LinearLayout>
 
@@ -29,7 +30,8 @@
             android:text="Saved Events"
             android:id="@+id/save_action_text"
             android:textColor="@color/white"
-            android:textSize="20dp"/>
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginLeft="10dp"/>
 
     </LinearLayout>
 

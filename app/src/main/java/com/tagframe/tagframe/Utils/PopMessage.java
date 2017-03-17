@@ -1,8 +1,11 @@
 package com.tagframe.tagframe.Utils;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -22,6 +25,9 @@ public class PopMessage {
     {
         Snackbar snackbar = Snackbar
                 .make(layout, message, Snackbar.LENGTH_SHORT);
+        View view = snackbar.getView();
+        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setTextColor(Color.WHITE);
 
         snackbar.show();
     }

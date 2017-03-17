@@ -12,6 +12,19 @@ public class NotificationModel {
     @Expose
     private String user_id;
 
+    public String getIs_read() {
+        return is_read;
+    }
+
+    public void setIs_read(String is_read) {
+        this.is_read = is_read;
+    }
+
+    @SerializedName("is_read")
+
+    @Expose
+    private String is_read;
+
     public String getUser_id() {
         return user_id;
     }

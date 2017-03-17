@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
+import com.tagframe.tagframe.Models.User;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.Utils.BitmapHelper;
@@ -182,6 +183,10 @@ public class AddProfilePhoto extends Fragment {
                 if (status.equals("success")) {
                     AppPrefs.putString(Utility.user_descrip, description);
                     AppPrefs.putString(Utility.user_pic, profilephoto);
+                    User user=AppPrefs.getUser();
+                    user.setDescription(description);
+                    user.setProfile_image(profilephoto);
+                    AppPrefs.putUser(user);
                     Intent intent = new Intent(getActivity(), Modules.class);
                     startActivity(intent);
                     getActivity().finish();

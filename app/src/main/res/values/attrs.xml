@@ -3,4 +3,7 @@
         <attr name="inAnimation" format="integer" />
         <attr name="outAnimation" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="MyPagerTabStrip">
+        <attr name="indicatorColor" format="reference|color" />
+    </declare-styleable>
 </resources>

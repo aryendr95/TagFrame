@@ -15,7 +15,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.bumptech.glide.Glide;
+
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.SingleEventModel;
 import com.tagframe.tagframe.R;
@@ -27,6 +27,7 @@ import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
+import com.veer.multiselect.Util.LoadBitmap;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -87,11 +88,11 @@ public class SavedEvent_Adapter extends BaseAdapter
         mViewHolder.iveventimage.setVisibility(View.VISIBLE);
        // mViewHolder.iveventvideo.setVisibility(View.GONE);
 
-      //  Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
+       /* Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
         Glide
                 .with( ctx )
                 .load( Uri.fromFile( new File( tagStream.getVidaddress()) ) )
-                .into(mViewHolder.iveventimage);
+                .into(mViewHolder.iveventimage);*/
 
 
        /* Bitmap thumb = ThumbnailUtils.createVideoThumbnail(tagStream.getVidaddress(),
@@ -112,7 +113,7 @@ public class SavedEvent_Adapter extends BaseAdapter
 
         mViewHolder.iveventimage.setImageBitmap(thumb);*/
 
-
+        LoadBitmap.loadBitmap(tagStream.getVidaddress(),mViewHolder.iveventimage);
 
         mViewHolder.menu.setOnClickListener(new View.OnClickListener() {
             @Override

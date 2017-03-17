@@ -1,145 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="300dp"
-
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black"
     >
 
+  <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      >
+
+
+    <VideoView
+        android:id="@+id/framelist_video"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        />
+
     <RelativeLayout
+        android:id="@+id/cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_event"
+        ></RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/pbar_video_dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/black_event"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        />
 
-        <VideoView
-            android:layout_width="fill_parent"
+
+    <ImageView
+        android:id="@+id/product_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/shadow"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        />
+    <com.tagframe.tagframe.Utils.MyTextView
+        android:id="@+id/add_product"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="#50000000"
+        android:padding="5dp"
+        android:text="Add Product"
+        android:textColor="@color/white"
+        />
+    <ImageView
+        android:id="@+id/framelist_delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/done"
+        />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#50000000"
+        >
+
+      <LinearLayout
+          android:id="@+id/ll_controls"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/bar"
+          android:orientation="horizontal"
+          >
+
+
+        <TextView
+            android:id="@+id/dialog_txtcurrentduration"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:id="@+id/framelist_video"/>
-
-
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:visibility="gone"
-            android:background="@drawable/shadow"
-            android:scaleType="fitXY"
-            android:id="@+id/product_image"/>
-        <com.tagframe.tagframe.Utils.MyTextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/add_product"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="00:00"
             android:textColor="@color/white"
-            android:text="Add Product"
-            android:padding="5dp"
-            android:background="#50000000"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             />
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/framelist_delete"
-            android:src="@drawable/done"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"/>
 
-        <RelativeLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="/"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/dialog_txttotalduration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:text="00:00"
+            android:textColor="@color/white"
+            />
+
+        <ImageButton
+            android:id="@+id/dialog_btn_play_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#00000000"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/dialog_pause"
+            />
+
+        <SeekBar
+            android:id="@+id/seekbar_dialog"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#50000000"
-            android:layout_alignParentBottom="true">
-
-            <LinearLayout
-                android:id="@+id/ll_controls"
-                android:layout_width="fill_parent"
-                android:layout_below="@+id/bar"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            />
 
 
-                <TextView
-                    android:id="@+id/dialog_txtcurrentduration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:text="00:00"
-                    android:textColor="@color/white"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="/"
-                    android:textColor="@color/white"
-                   />
-
-                <TextView
-                    android:id="@+id/dialog_txttotalduration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:text="00:00"
-                    android:textColor="@color/white"
-                    />
-
-                <ImageButton
-                    android:id="@+id/dialog_btn_play_stop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="#00000000"
-                    android:src="@drawable/dialog_pause" />
-
-                <SeekBar
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/seekbar_dialog"
-                    android:layout_gravity="center_vertical"
-                    />
+      </LinearLayout>
 
 
-            </LinearLayout>
+      <com.tagframe.tagframe.Utils.MyTextView
+          android:id="@+id/framelist_time"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/ll_controls"
+          android:gravity="center_horizontal"
 
+          android:text="00:00"
+          android:textColor="@color/white"
+          />
 
-            <com.tagframe.tagframe.Utils.MyTextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="00:00"
-                android:layout_below="@+id/ll_controls"
+      <com.tagframe.tagframe.Utils.Edittext
+          android:id="@+id/framelist_name"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
 
-                android:id="@+id/framelist_time"
-                android:gravity="center_horizontal"
-                />
-
-            <com.tagframe.tagframe.Utils.Edittext
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-
-                android:hint="Frame title"
-                android:textColorHint="@color/white"
-                android:textSize="17dp"
-                android:layout_below="@+id/framelist_time"
-                android:id="@+id/framelist_name"
-                android:gravity="center_horizontal"
-                />
-        </RelativeLayout>
-
+          android:layout_below="@+id/framelist_time"
+          android:gravity="center_horizontal"
+          android:hint="Frame title"
+          android:textColor="@color/white"
+          android:textColorHint="@color/white"
+          android:textSize="17dp"
+          />
     </RelativeLayout>
+
+  </RelativeLayout>
 
 
 </RelativeLayout>

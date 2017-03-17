@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/mLayout_following"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/mLayout_following">
+    android:orientation="vertical"
+    >
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+  <android.support.v4.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:fillViewport="true"
+      >
 
     <com.tagframe.tagframe.Utils.MySwipeLayout
+        android:id="@+id/swiperefresh_following"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/swiperefresh_following">
+        >
 
-        <com.tagframe.tagframe.Utils.NestedScrollingListView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/list_following"
-            android:dividerHeight="1dp"
-            >
-
-        </com.tagframe.tagframe.Utils.NestedScrollingListView>
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/list_following"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:dividerHeight="1dp"
+          />
 
 
     </com.tagframe.tagframe.Utils.MySwipeLayout>
-    </android.support.v4.widget.NestedScrollView>
+  </android.support.v4.widget.NestedScrollView>
 
-    <ProgressBar
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/list_following_progress"
-        android:layout_centerInParent="true"
+  <ProgressBar
+      android:id="@+id/list_following_progress"
+      android:layout_width="30dp"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
 
-        android:indeterminate="true"
+      android:indeterminate="true"
 
 
-        />
+      />
 
 </RelativeLayout>

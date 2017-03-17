@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:id="@+id/txt_footer"
-        android:textSize="12dp"
+        style="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/colorPrimaryDark"
         android:layout_marginTop="5dp"
         android:layout_below="@+id/img_footer"

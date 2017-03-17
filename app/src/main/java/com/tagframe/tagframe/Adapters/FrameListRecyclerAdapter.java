@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
@@ -54,9 +55,17 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
     public void onBindViewHolder(final MyViewHolder mViewHolder, final int position) {
         final FrameList_Model frame = frameList_modelArrayList.get(position);
         mViewHolder.videoIndicator.setVisibility(View.GONE);
+        if(frame.getEndtime()!=0)
+        {
+            mViewHolder.wholeLayout.setBackgroundColor(Color.GREEN);
+        }
+        else
+        {
+            mViewHolder.wholeLayout.setBackgroundColor(Color.YELLOW);
+        }
 
         final AppPrefs appPrefs = new AppPrefs(context);
-        Log.e("gone", frame.getUser_id());
+        Log.e("gone", frame.getUser_id()+ MakeNewEvent.user_id);
 
         if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
             if (appPrefs.getString(Utility.user_id).equals(frame.getUser_id()) || appPrefs.getString(Utility.user_id).equals(MakeNewEvent.user_id)) {

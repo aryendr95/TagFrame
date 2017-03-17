@@ -10,7 +10,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:scrollbars="none"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     >
     <com.tagframe.tagframe.Utils.MySwipeLayout
@@ -18,19 +17,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/swiperefresh_eventlist"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.tagframe.tagframe.Utils.NestedScrollingListView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/list_event"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:dividerHeight="1dp"
-
             >
 
-        </com.tagframe.tagframe.Utils.NestedScrollingListView>
-
-
+        </android.support.v7.widget.RecyclerView>
     </com.tagframe.tagframe.Utils.MySwipeLayout>
 
 </android.support.v4.widget.NestedScrollView>

@@ -5,8 +5,8 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="9"
+        android:layout_height="@dimen/bottom_bar_size"
+
         android:orientation="horizontal"
         android:background="@color/colorPrimary">
 
@@ -15,9 +15,10 @@
             android:layout_height="fill_parent"
             >
             <ImageView
-                android:layout_width="25dp"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:src="@drawable/previous"
+                android:paddingLeft="5dp"
+                android:src="@drawable/ic_arrow_back_white_24dp"
                 android:id="@+id/menu_action_back"/>
         </LinearLayout>
 
@@ -26,9 +27,10 @@
             android:layout_height="fill_parent"
             android:gravity="center_vertical"
             android:text="Account"
+            android:layout_marginLeft="10dp"
             android:id="@+id/menu_action_text"
             android:textColor="@color/white"
-            android:textSize="20dp"/>
+            style="@style/TextAppearance.AppCompat.Medium"/>
 
     </LinearLayout>
 

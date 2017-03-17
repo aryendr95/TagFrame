@@ -1,0 +1,168 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/htab_maincontent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+   >
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/htab_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/htab_collapse_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@color/white_dull"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="120dp"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                android:id="@+id/profile_section"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="9"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        >
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:src="@drawable/pro_image"
+                            android:scaleType="fitXY"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/pro_user_pic"/>
+
+                        <ProgressBar
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/pbar_proImage"
+                            android:layout_centerInParent="true"
+                            />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:id="@+id/edit_profile_picture"
+                            android:visibility="gone"
+                            android:src="@android:drawable/ic_menu_edit"/>
+                    </RelativeLayout>
+
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.tagframe.tagframe.Utils.MyTextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="Username"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18dp"
+                        android:id="@+id/pro_user_name"/>
+
+
+                    <com.tagframe.tagframe.Utils.MyTextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:layout_marginTop="7dp"
+                        android:gravity="left"
+                        android:text="Description"
+                        android:textColor="@color/GRAY"
+                        android:paddingLeft="10dp"
+
+                        android:focusableInTouchMode="false"
+                        android:id="@+id/pro_user_description"
+                        />
+
+
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="30dp"
+
+                        android:id="@+id/btn_edit_profile"
+                        android:layout_margin="10dp"
+                        android:textSize="12dp"
+                        android:background="@drawable/btn_gray"
+                        android:textColor="#000"
+                        android:text="Edit Profile"/>
+
+
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+           
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/white"
+        app:layout_behavior= "@string/appbar_scrolling_view_behavior"
+      >
+
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/htab_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@color/white"
+        app:layout_collapseMode="pin"
+        app:tabIndicatorColor="@color/appblue" />
+
+
+<RelativeLayout
+    android:layout_width="600dp"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="10dp">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/htab_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/pbar_profile"/>
+</RelativeLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

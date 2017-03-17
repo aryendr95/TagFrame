@@ -10,9 +10,59 @@ import java.util.ArrayList;
  */
 public class User_Frames_model {
 
+    public boolean is_product_frame() {
+        return is_product_frame;
+    }
+
+    public void setIs_product_frame(boolean is_product_frame) {
+        this.is_product_frame = is_product_frame;
+    }
+
     @SerializedName("image_url")
     @Expose
+
     private String frame_image_url;
+
+    @SerializedName("event_user_id")
+    @Expose
+
+    private String event_user_id;
+
+    public String getEvent_user_id() {
+        return event_user_id;
+    }
+
+    public void setEvent_user_id(String event_user_id) {
+        this.event_user_id = event_user_id;
+    }
+
+    public String getProduct_image_url() {
+        return product_image_url;
+    }
+
+    public void setProduct_image_url(String product_image_url) {
+        this.product_image_url = product_image_url;
+    }
+
+    @SerializedName("product_image_url")
+    @Expose
+
+    private String product_image_url;
+
+    @SerializedName("is_product_frame")
+    private boolean is_product_frame=false;
+
+    @SerializedName("product_url")
+    @Expose
+    private String product_url;
+
+    public String getProduct_url() {
+        return product_url;
+    }
+
+    public void setProduct_url(String product_url) {
+        this.product_url = product_url;
+    }
 
     public String getFrame_image_url() {
         return frame_image_url;
@@ -52,6 +102,69 @@ public class User_Frames_model {
     @Expose
     @SerializedName("created_on")
     private String created_on;
+
+    @Expose
+    @SerializedName("num_of_comments")
+    private String number_of_comments;
+
+    @Expose
+    @SerializedName("user_id")
+    private String user_id;
+
+    @Expose
+    @SerializedName("website_video_url")
+    private String share_link;
+
+    @Expose
+    @SerializedName("count_like")
+    private String number_of_likes;
+
+    public String getIs_liked() {
+        return is_liked;
+    }
+
+    public void setIs_liked(String is_liked) {
+        this.is_liked = is_liked;
+    }
+
+    public String getNumber_of_comments() {
+        return number_of_comments;
+    }
+
+    public void setNumber_of_comments(String number_of_comments) {
+        this.number_of_comments = number_of_comments;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getShare_link() {
+        return share_link;
+    }
+
+    public void setShare_link(String share_link) {
+        this.share_link = share_link;
+    }
+
+    public String getNumber_of_likes() {
+        return number_of_likes;
+    }
+
+    public void setNumber_of_likes(String number_of_likes) {
+        this.number_of_likes = number_of_likes;
+    }
+
+    @Expose
+
+    @SerializedName("is_liked")
+    private String is_liked;
+
+
     @Expose
     @SerializedName("frames")
     private ArrayList<FrameList_Model> frameList_modelArrayList;

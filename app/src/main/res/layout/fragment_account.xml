@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-   >
+    android:background="#e5e5e5"
+    >
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -19,7 +19,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
+      <android.support.v7.widget.CardView
+          android:id="@+id/card_feedback"
+          android:layout_width="fill_parent"
+          android:layout_margin="10dp"
+          android:layout_height="wrap_content"
 
+          >
 <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -32,7 +38,6 @@
         android:id="@+id/header_userinfo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#FFF"
         android:layout_margin="10dp"
         android:orientation="horizontal" >
 
@@ -70,11 +75,11 @@
 
           >
            <ImageView
-               android:layout_width="20dp"
+               android:layout_width="wrap_content"
                android:layout_alignParentRight="true"
                android:layout_height="20dp"
                android:layout_margin="10dp"
-               android:src="@drawable/right"
+               android:src="@drawable/ic_keyboard_arrow_right_blue_grey_700_24dp"
                android:id="@+id/acc_expand_userinfo"/>
        </RelativeLayout>
     </LinearLayout>
@@ -186,7 +191,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="fill_parent"
@@ -207,7 +212,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_margin="10dp"
-            android:background="@color/GRAY"
+            android:background="@drawable/btn_gray"
             android:textColor="@color/blACK"
             android:text="Save"
             android:textStyle="bold"
@@ -221,11 +226,15 @@
     </LinearLayout>
 
 </LinearLayout>
+      </android.support.v7.widget.CardView>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/GRAY"/>
+
+      <android.support.v7.widget.CardView
+          android:layout_margin="10dp"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+
+          >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -239,7 +248,6 @@
             android:id="@+id/header_changepassword"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#FFF"
             android:layout_margin="10dp"
             android:orientation="horizontal" >
 
@@ -258,11 +266,11 @@
 
                 >
                 <ImageView
-                    android:layout_width="20dp"
+                    android:layout_width="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_height="20dp"
                     android:layout_margin="10dp"
-                    android:src="@drawable/right"
+                    android:src="@drawable/ic_keyboard_arrow_right_blue_grey_700_24dp"
                     android:id="@+id/acc_expand_changepassword"/>
             </RelativeLayout>
         </LinearLayout>
@@ -367,16 +375,11 @@
 
             </LinearLayout>
 
-
-
-
-
-
             <com.tagframe.tagframe.Utils.MyButton
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_margin="10dp"
-                android:background="@color/GRAY"
+                android:background="@drawable/btn_gray"
                 android:textColor="@color/blACK"
                 android:text="Change"
                 android:textStyle="bold"
@@ -390,17 +393,15 @@
         </LinearLayout>
 
     </LinearLayout>
+      </android.support.v7.widget.CardView>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/GRAY"/>
+
 
     <com.tagframe.tagframe.Utils.MyButton
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_margin="20dp"
-        android:background="@color/GRAY"
+        android:background="@drawable/btn_gray"
         android:textColor="@color/blACK"
         android:text="Delete Account"
         android:textStyle="bold"

@@ -19,6 +19,11 @@
 
     </style>
 
+    <style name="Pager">
+        <item name="android:textColor">#ffffff</item>
+        <item name="indicatorColor">@color/white</item>
+    </style>
+
     <style name="myPopupMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu">
         <item name="android:popupBackground">@color/white_dull</item>
     </style>

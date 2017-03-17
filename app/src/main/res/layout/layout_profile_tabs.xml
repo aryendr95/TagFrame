@@ -1,32 +1,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
     android:id="@+id/layout"
+    android:layout_width="wrap_content"
+    android:layout_height="65dp"
     android:background="@color/white"
+    android:gravity="center"
+    android:paddingBottom="5dp"
     >
 
-    <TextView
+  <com.tagframe.tagframe.Utils.MyTextView
 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/number"
-        android:text="0"
-        android:padding="5dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="15dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true" />
+      android:id="@+id/number"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="0"
+      android:textStyle="bold"
+      style="@style/TextAppearance.AppCompat.Medium"
+      />
 
-    <com.tagframe.tagframe.Utils.MyTextView
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home"
-        android:layout_marginBottom="5dp"
-        android:textSize="10dp"
-        android:id="@+id/title"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_below="@+id/number"
-        android:layout_centerHorizontal="true" />
+  <com.tagframe.tagframe.Utils.MyTextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/number"
+      android:layout_centerHorizontal="true"
+
+      android:layout_gravity="center"
+      android:text="Home"
+      android:textColor="@color/colorPrimaryDark"
+      android:textSize="10sp"
+      />
+
+
+  <ImageView
+      android:id="@+id/image"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@+id/number"
+      android:paddingTop="7dp"
+      android:src="@drawable/ic_timeline_blue_grey_600_18dp"
+      android:visibility="gone"
+      />
 </RelativeLayout>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#e5e5e5"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:elevation="5dp"
+        android:orientation="horizontal">
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/list_pro_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/pro_image" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:id="@+id/list_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Username"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/list_user_name"
+                android:layout_marginTop="5dp"
+                android:text="added new event"
+                android:textColor="@color/GRAY"
+                android:textSize="12dp" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#60000000"></RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <com.tagframe.tagframe.Utils.ProportionalImageView
+
+                android:id="@+id/list_event_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:scaleType="centerCrop"
+                android:layout_centerHorizontal="true"
+                android:adjustViewBounds="true" />
+
+            <VideoView
+                android:id="@+id/list_event_video"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#50000000">
+
+            <ImageView
+                android:id="@+id/play_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/playvideo" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/list_user_duration"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp"
+            >
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:id="@+id/list_event_tittle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/list_pro_image"
+                android:textColor="@color/white"
+                android:text="Event Tittle"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <com.tagframe.tagframe.Utils.MyTextView
+                android:id="@+id/txt_likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:textColor="@color/white"
+                android:gravity="right"
+                android:text="0"
+                android:textSize="13dp" />
+        </LinearLayout>
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:id="@+id/list_user_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:paddingRight="20dp"
+
+            android:gravity="right"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:text="2 days ago"
+            android:textColor="@color/white" />
+
+        <LinearLayout
+            android:id="@+id/lllike"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:paddingRight="20dp"
+
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="150dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_weight="1"
+                android:layout_marginRight="20dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imglike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="9dp"
+                    android:src="@drawable/ic_thumb_up_white_24dp" />
+                <com.tagframe.tagframe.Utils.MyTextView
+                    android:id="@+id/txt_like_directive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="12dp"
+                    android:visibility="gone"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="Like" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llcomment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginRight="20dp"
+
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_comment_white_24dp" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llshare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_share_white_24dp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

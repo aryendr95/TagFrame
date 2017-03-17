@@ -44,7 +44,6 @@ android:layout_height="300dp"
         android:id="@+id/rl_see_event">
 
 
-
         <com.tagframe.tagframe.Utils.MyTextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -55,6 +54,14 @@ android:layout_height="300dp"
             />
 
     </RelativeLayout>
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/rl_see_event"
+        android:background="@drawable/shadow"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:id="@+id/product_image"/>
 
 
     <RelativeLayout

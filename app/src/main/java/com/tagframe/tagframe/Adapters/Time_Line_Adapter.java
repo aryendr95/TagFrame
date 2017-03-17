@@ -64,7 +64,7 @@ public class Time_Line_Adapter extends BaseAdapter
         MyViewHolder mViewHolder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.layout_list_tagstream, parent, false);
+            convertView = inflater.inflate(R.layout.layout_list_events, parent, false);
             mViewHolder = new MyViewHolder(convertView);
             convertView.setTag(mViewHolder);
         } else {

@@ -100,19 +100,19 @@ public class Account extends Fragment {
         changepropic.setVisibility(View.VISIBLE);
 
         expand_userinfo = (ImageView) mview.findViewById(R.id.acc_expand_userinfo);
-        expand_userinfo.setImageResource(R.drawable.down);
+        expand_userinfo.setImageResource(R.drawable.ic_keyboard_arrow_down_blue_grey_700_24dp);
 
         mLinearLayoutHeader_userinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mLinearLayout.getVisibility() == View.GONE) {
                     expand(mLinearLayout);
-                    expand_userinfo.setImageResource(R.drawable.down);
+                    expand_userinfo.setImageResource(R.drawable.ic_keyboard_arrow_down_blue_grey_700_24dp);
                     changepropic.setVisibility(View.VISIBLE);
                 } else {
                     collapse(mLinearLayout);
                     changepropic.setVisibility(View.GONE);
-                    expand_userinfo.setImageResource(R.drawable.right);
+                    expand_userinfo.setImageResource(R.drawable.ic_keyboard_arrow_right_blue_grey_700_24dp);
                 }
             }
         });
@@ -131,11 +131,11 @@ public class Account extends Fragment {
             public void onClick(View v) {
                 if (mLinear_chan.getVisibility() == View.GONE) {
                     expand(mLinear_chan);
-                    expand_change.setImageResource(R.drawable.down);
+                    expand_change.setImageResource(R.drawable.ic_keyboard_arrow_down_blue_grey_700_24dp);
                 } else {
                     collapse(mLinear_chan);
 
-                    expand_change.setImageResource(R.drawable.right);
+                    expand_change.setImageResource(R.drawable.ic_keyboard_arrow_right_blue_grey_700_24dp);
                 }
             }
         });

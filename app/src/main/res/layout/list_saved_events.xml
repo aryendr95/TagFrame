@@ -6,7 +6,8 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="200dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/black_event">
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -20,11 +21,11 @@
             android:layout_height="fill_parent"
             >
             <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/list_event_image"
-
-                android:scaleType="fitXY"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside"
 
                 />
 
