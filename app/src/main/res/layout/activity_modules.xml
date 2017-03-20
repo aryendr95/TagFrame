@@ -221,7 +221,7 @@
             android:imeOptions="actionSearch"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
-            style="@style/TextAppearance.AppCompat.Large"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:paddingRight="5dp"
             android:paddingTop="5dp"
             android:singleLine="true"

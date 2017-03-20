@@ -1,5 +1,7 @@
 package com.tagframe.tagframe.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by abhinav on _13/04/2016.
  */
-public class User_Frames_model {
+public class User_Frames_model implements Parcelable {
 
     public boolean is_product_frame() {
         return is_product_frame;
@@ -55,6 +57,8 @@ public class User_Frames_model {
     @SerializedName("product_url")
     @Expose
     private String product_url;
+
+
 
     public String getProduct_url() {
         return product_url;
@@ -268,4 +272,72 @@ public class User_Frames_model {
     public void setCreated_on(String created_on) {
         this.created_on = created_on;
     }
+
+    @Override public int describeContents() {
+        return 0;
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.frame_image_url);
+        dest.writeString(this.event_user_id);
+        dest.writeString(this.product_image_url);
+        dest.writeByte(this.is_product_frame ? (byte) 1 : (byte) 0);
+        dest.writeString(this.product_url);
+        dest.writeString(this.frame_id);
+        dest.writeString(this.video_id);
+        dest.writeString(this.title);
+        dest.writeString(this.product_id);
+        dest.writeString(this.media_type);
+        dest.writeString(this.name);
+        dest.writeString(this.thumbnail_url);
+        dest.writeString(this.data_url);
+        dest.writeString(this.number_of_frames);
+        dest.writeString(this.created_on);
+        dest.writeString(this.number_of_comments);
+        dest.writeString(this.user_id);
+        dest.writeString(this.share_link);
+        dest.writeString(this.number_of_likes);
+        dest.writeString(this.is_liked);
+        dest.writeTypedList(this.frameList_modelArrayList);
+        dest.writeTypedList(this.taggedUserModelArrayList);
+    }
+
+    public User_Frames_model() {
+    }
+
+    protected User_Frames_model(Parcel in) {
+        this.frame_image_url = in.readString();
+        this.event_user_id = in.readString();
+        this.product_image_url = in.readString();
+        this.is_product_frame = in.readByte() != 0;
+        this.product_url = in.readString();
+        this.frame_id = in.readString();
+        this.video_id = in.readString();
+        this.title = in.readString();
+        this.product_id = in.readString();
+        this.media_type = in.readString();
+        this.name = in.readString();
+        this.thumbnail_url = in.readString();
+        this.data_url = in.readString();
+        this.number_of_frames = in.readString();
+        this.created_on = in.readString();
+        this.number_of_comments = in.readString();
+        this.user_id = in.readString();
+        this.share_link = in.readString();
+        this.number_of_likes = in.readString();
+        this.is_liked = in.readString();
+        this.frameList_modelArrayList = in.createTypedArrayList(FrameList_Model.CREATOR);
+        this.taggedUserModelArrayList = in.createTypedArrayList(TaggedUserModel.CREATOR);
+    }
+
+    public static final Parcelable.Creator<User_Frames_model> CREATOR =
+        new Parcelable.Creator<User_Frames_model>() {
+            @Override public User_Frames_model createFromParcel(Parcel source) {
+                return new User_Frames_model(source);
+            }
+
+            @Override public User_Frames_model[] newArray(int size) {
+                return new User_Frames_model[size];
+            }
+        };
 }

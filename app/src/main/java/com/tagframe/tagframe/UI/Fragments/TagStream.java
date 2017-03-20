@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.tagframe.tagframe.Adapters.EventListRecyclerAdapter;
 import com.tagframe.tagframe.Adapters.TagStreamEventAdapter;
+import com.tagframe.tagframe.Adapters.TagStreamRecyclerAdapter;
 import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.R;
@@ -78,7 +79,7 @@ public class TagStream extends Fragment {
   private void functionalizeList() {
     LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
     rcTagStream.setLayoutManager(layoutManager);
-    rcTagStream.setAdapter(new EventListRecyclerAdapter(getActivity(), tagStream_models));
+    rcTagStream.setAdapter(new TagStreamRecyclerAdapter(getActivity(), tagStream_models));
     rcTagStream.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
       @Override public void onLoadMore(int page, int totalItemsCount) {
         if (shouldLoad) {

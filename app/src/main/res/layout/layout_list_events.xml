@@ -39,6 +39,7 @@
                 android:layout_below="@+id/list_user_name"
                 android:layout_marginTop="5dp"
                 android:text="added new event"
+                android:id="@+id/caption"
                 android:textColor="@color/GRAY"
                 android:textSize="12dp" />
 

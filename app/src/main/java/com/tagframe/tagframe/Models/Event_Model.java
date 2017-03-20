@@ -21,6 +21,82 @@ public class Event_Model implements Parcelable {
         this.num_of_comments = num_of_comments;
     }
 
+    @SerializedName("action_type")
+    @Expose
+    private String action_type;
+
+    @SerializedName("frame_media_url")
+    @Expose
+    private String frame_media_url;
+
+    public String getFrame_media_url() {
+        return frame_media_url;
+    }
+
+    public void setFrame_media_url(String frame_media_url) {
+        this.frame_media_url = frame_media_url;
+    }
+
+    @SerializedName("is_product_frame")
+    private boolean is_product_frame=false;
+
+    @SerializedName("product_id")
+    @Expose
+
+    private String product_id;
+
+    public String getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
+    }
+
+    public String getProduct_image_url() {
+        return product_image_url;
+    }
+
+    public void setProduct_image_url(String product_image_url) {
+        this.product_image_url = product_image_url;
+    }
+
+    public boolean is_product_frame() {
+        return is_product_frame;
+    }
+
+    public void setIs_product_frame(boolean is_product_frame) {
+        this.is_product_frame = is_product_frame;
+    }
+
+    @SerializedName("product_image_url")
+    @Expose
+
+
+    private String product_image_url;
+
+    @SerializedName("media_type")
+    @Expose
+    private String media_type;
+
+    public String getMedia_type() {
+        return media_type;
+    }
+
+    public void setMedia_type(String media_type) {
+        this.media_type = media_type;
+    }
+
+
+
+    public String getAction_type() {
+        return action_type;
+    }
+
+    public void setAction_type(String action_type) {
+        this.action_type = action_type;
+    }
+
     @SerializedName("frame_image_url")
     @Expose
     private String frame_image_url;
@@ -265,13 +341,18 @@ public class Event_Model implements Parcelable {
     public Event_Model() {
     }
 
-    @Override
-    public int describeContents() {
+    @Override public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.action_type);
+        dest.writeString(this.frame_media_url);
+        dest.writeByte(this.is_product_frame ? (byte) 1 : (byte) 0);
+        dest.writeString(this.product_id);
+        dest.writeString(this.product_image_url);
+        dest.writeString(this.media_type);
+        dest.writeString(this.frame_image_url);
         dest.writeString(this.num_of_comments);
         dest.writeString(this.user_id);
         dest.writeString(this.name);
@@ -296,6 +377,13 @@ public class Event_Model implements Parcelable {
     }
 
     protected Event_Model(Parcel in) {
+        this.action_type = in.readString();
+        this.frame_media_url = in.readString();
+        this.is_product_frame = in.readByte() != 0;
+        this.product_id = in.readString();
+        this.product_image_url = in.readString();
+        this.media_type = in.readString();
+        this.frame_image_url = in.readString();
         this.num_of_comments = in.readString();
         this.user_id = in.readString();
         this.name = in.readString();
@@ -320,13 +408,11 @@ public class Event_Model implements Parcelable {
     }
 
     public static final Creator<Event_Model> CREATOR = new Creator<Event_Model>() {
-        @Override
-        public Event_Model createFromParcel(Parcel source) {
+        @Override public Event_Model createFromParcel(Parcel source) {
             return new Event_Model(source);
         }
 
-        @Override
-        public Event_Model[] newArray(int size) {
+        @Override public Event_Model[] newArray(int size) {
             return new Event_Model[size];
         }
     };

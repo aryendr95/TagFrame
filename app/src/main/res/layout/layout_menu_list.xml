@@ -27,7 +27,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="7dp"
         android:id="@+id/txt"
-        style="@style/TextAppearance.AppCompat.Medium"
+        style="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/colorPrimaryDark"
         android:layout_toRightOf="@+id/ll"
         android:text="Terms of Service"/>

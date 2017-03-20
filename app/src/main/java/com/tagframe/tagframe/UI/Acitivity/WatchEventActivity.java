@@ -210,7 +210,6 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   }
 
   private void setUpPlayer() {
-
     FragmentManager fragmentManager = getSupportFragmentManager();
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     ExVpFragment exVpFragment = new ExVpFragment();
@@ -886,6 +885,11 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   public void playSelected(Intent intent) {
     getIntentData(intent);
     setDatatoView();
+    addTrackAndPlay(intent);
+
+  }
+
+  private void addTrackAndPlay(Intent intent) {
     video_urls.add(intent.getStringExtra("data_url"));
     video_type.add(Constants.MEDIA_TYPE_HLS);
     exVpControls.addTrack(intent.getStringExtra("data_url"), Constants.MEDIA_TYPE_HLS);
