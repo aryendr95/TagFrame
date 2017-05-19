@@ -102,8 +102,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                 ListModel.setIs_read("yes");
                 notifyDataSetChanged();
-                Log.e("id",ListModel.getId());
-                Log.e("type",ListModel.getSub_action_type());
                 final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
                 apiInterface.markAsRead(ListModel.getId()).enqueue(new Callback<ResponsePojo>() {
                     @Override public void onResponse(Call<ResponsePojo> call,
@@ -112,7 +110,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         {
                             User user=appPrefs.getUser();
                             Integer unread=Integer.parseInt(user.getUnreadnotifications());
-                            user.setUnreadnotifications(String.valueOf((unread-1)));
+                            if(unread<=0)
+                            {
+                                unread=0;
+                            }
+                            else
+                            {
+                                unread=unread-1;
+                            }
+                            user.setUnreadnotifications(String.valueOf((unread)));
                             appPrefs.putUser(user);
 
                             switch (ListModel.getSub_action_type())

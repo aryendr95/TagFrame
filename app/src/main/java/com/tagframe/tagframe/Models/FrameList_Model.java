@@ -95,6 +95,19 @@ public class FrameList_Model implements Parcelable {
     @SerializedName("product_id")
     @Expose
     private String product_id="";
+
+    @SerializedName("user_name")
+    @Expose
+    private String user_name="";
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
     @SerializedName("frame_product_url")
     @Expose
     private String product_url;
@@ -200,13 +213,11 @@ public class FrameList_Model implements Parcelable {
     public FrameList_Model() {
     }
 
-    @Override
-    public int describeContents() {
+    @Override public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    @Override public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.edited ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isAProductFrame ? (byte) 1 : (byte) 0);
         dest.writeString(this.frame_id);
@@ -218,6 +229,7 @@ public class FrameList_Model implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.product_path);
         dest.writeString(this.product_id);
+        dest.writeString(this.user_name);
         dest.writeString(this.product_url);
         dest.writeString(this.frame_resource_type);
         dest.writeString(this.frame_data_url);
@@ -236,6 +248,7 @@ public class FrameList_Model implements Parcelable {
         this.name = in.readString();
         this.product_path = in.readString();
         this.product_id = in.readString();
+        this.user_name = in.readString();
         this.product_url = in.readString();
         this.frame_resource_type = in.readString();
         this.frame_data_url = in.readString();
@@ -243,13 +256,11 @@ public class FrameList_Model implements Parcelable {
     }
 
     public static final Creator<FrameList_Model> CREATOR = new Creator<FrameList_Model>() {
-        @Override
-        public FrameList_Model createFromParcel(Parcel source) {
+        @Override public FrameList_Model createFromParcel(Parcel source) {
             return new FrameList_Model(source);
         }
 
-        @Override
-        public FrameList_Model[] newArray(int size) {
+        @Override public FrameList_Model[] newArray(int size) {
             return new FrameList_Model[size];
         }
     };

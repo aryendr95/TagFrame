@@ -92,10 +92,10 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                     thumb = Utility.getResizedBitmap(thumb, 150, 200);
                     mViewHolder.ivFrameImage.setImageBitmap(thumb);
                 } catch (Exception e) {
-                    Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
+                    Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
                 }
             } else {
-                Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
+                Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
             }
         } else {
 
@@ -108,7 +108,7 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                 mViewHolder.ivFrameImage.setImageBitmap(thumb);
                 mViewHolder.videoIndicator.setVisibility(View.VISIBLE);
             } else {
-                Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
+                Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
             }
 
         }
@@ -200,7 +200,7 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
 
                 if (context instanceof MakeNewEvent) {
                     new PuffOutAnimation(mViewHolder.ivFrameImage).animate();
-                    ((MakeNewEvent) context).deleteframe(position);
+                    ((MakeNewEvent) context).deleteframe(frame.getFrame_id(),position,frame.getFrame_resource_type());
                 }
             }
         });

@@ -22,7 +22,7 @@
             android:layout_margin="10dp"
             android:horizontalSpacing="0dp"
             android:verticalSpacing="0dp"
-            android:numColumns="4"
+            android:numColumns="3"
             >
 
         </in.srain.cube.views.GridViewWithHeaderAndFooter>

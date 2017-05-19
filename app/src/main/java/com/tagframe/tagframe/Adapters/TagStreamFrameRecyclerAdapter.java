@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,75 +22,89 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import android.widget.VideoView;
 import com.squareup.picasso.Picasso;
-import com.tagframe.tagframe.Models.User_Frames_model;
+import com.tagframe.tagframe.Models.Event_Model;
+import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
+import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.Utility;
-
 import java.util.ArrayList;
 
 /**
- * Created by abhinav on 08/04/2016.
+ * Created by Brajendr on 3/22/2017.
  */
-public class ImageAdapter extends BaseAdapter {
 
-  Context ctx;
-  ArrayList<User_Frames_model> tagStream_models;
-  LayoutInflater inflater;
+public class TagStreamFrameRecyclerAdapter extends RecyclerView.Adapter<TagStreamFrameRecyclerAdapter.MyViewHolder> {
+  private Context context;
+  private ArrayList<FrameList_Model> frameList_models;
+  private String LIST_TYPE;
 
-  public ImageAdapter(Context ctx, ArrayList<User_Frames_model> tagStream_models) {
-    this.ctx = ctx;
-    this.tagStream_models = tagStream_models;
-    inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+  public TagStreamFrameRecyclerAdapter(Context context, ArrayList<FrameList_Model> frameList_models,
+      String mine) {
+    this.context = context;
+    this.frameList_models = frameList_models;
+    this.LIST_TYPE=mine;
   }
 
-  @Override public int getCount() {
-    return tagStream_models.size();
+  @Override public TagStreamFrameRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+      int viewType) {
+    View itemView = LayoutInflater.from(parent.getContext())
+          .inflate(R.layout.layout_tagstream_framelist, parent, false);
+    return new TagStreamFrameRecyclerAdapter.MyViewHolder(itemView);
+
   }
-
-  @Override public Object getItem(int position) {
-    return tagStream_models.get(position);
-  }
-
-  @Override public long getItemId(int position) {
-    return 0;
-  }
-
-  @Override public View getView(int position, View convertView, ViewGroup parent) {
-    MyViewHolder mViewHolder;
-
-    if (convertView == null) {
-      convertView = inflater.inflate(R.layout.layout_item_fgridview_frame, parent, false);
-      mViewHolder = new MyViewHolder(convertView);
-      convertView.setTag(mViewHolder);
+  private int getUser_Type(String user_id, String saved_user_id) {
+    if (user_id.equals(saved_user_id)) {
+      return Utility.user_type_self;
     } else {
-      mViewHolder = (MyViewHolder) convertView.getTag();
+      return Utility.user_type_following;
     }
+  }
 
-    final User_Frames_model tagStream = tagStream_models.get(position);
+  @Override
+  public void onBindViewHolder(TagStreamFrameRecyclerAdapter.MyViewHolder holder, int position) {
+    final FrameList_Model tagStream=frameList_models.get(position);
+    if (tagStream.getFrametype() ==com.tagframe.tagframe.Utils.Constants.frametype_image) {
+      Picasso.with(context).load(tagStream.getFrame_image_url()).into(holder.ivframeimage);
+    }
+    else
+    {
+      Picasso.with(context).load(tagStream.getImagepath()).into(holder.ivframeimage);
 
-    Picasso.with(ctx).load(tagStream.getFrame_image_url()).into(mViewHolder.ivframeimage);
-    if (tagStream.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
-      mViewHolder.ivPLayVideo.setVisibility(View.GONE);
+    }
+    if (tagStream.getFrametype() == Utility.frametype_image) {
+      holder.ivPLayVideo.setVisibility(View.GONE);
     } else {
-      mViewHolder.ivPLayVideo.setVisibility(View.VISIBLE);
+      holder.ivPLayVideo.setVisibility(View.VISIBLE);
     }
-
-    mViewHolder.ivframeimage.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        showFrame(ctx, tagStream);
+    if(LIST_TYPE.equals("mine"))
+    {
+      holder.userName.setVisibility(View.GONE);
+    }
+    else
+    {
+      AppPrefs appPrefs = new AppPrefs(context);
+      final int user_type = getUser_Type(tagStream.getUser_id(), appPrefs.getString(Utility.user_id));
+      holder.userName.setText(tagStream.getUser_name()+" added ");
+      holder.userName.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          ((Modules) context).setprofile(tagStream.getUser_id(), user_type);
+        }
+      });
+    }
+    holder.ivframeimage.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View view) {
+      showFrame(context,tagStream);
       }
     });
-
-    return convertView;
   }
 
-  public static void showFrame(final Context ctx, final User_Frames_model tagStream) {
-    if (tagStream.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
+  public static void showFrame(final Context ctx, final FrameList_Model tagStream) {
+    if (tagStream.getFrametype() ==com.tagframe.tagframe.Utils.Constants.frametype_image) {
       final Dialog dialog = new Dialog(ctx);
       dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
       Window window = dialog.getWindow();
@@ -104,11 +118,9 @@ public class ImageAdapter extends BaseAdapter {
       ImageView frameimage = (ImageView) dialog.findViewById(R.id.framelist_image);
       ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
       ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
-      TextView buyProduct = (TextView) dialog.findViewById(R.id.buyProduct);
-
-      if (!tagStream.getProduct_id().equals("0") && !tagStream.is_product_frame()) {
-        product_image.setVisibility(View.VISIBLE);
-        Picasso.with(ctx).load(tagStream.getProduct_image_url()).into(product_image);
+      final TextView buyProduct = (TextView) dialog.findViewById(R.id.buyProduct);
+      if (!tagStream.getProduct_id().equals("0")) {
+        Picasso.with(ctx).load(tagStream.getProduct_path()).into(product_image);
         buyProduct.setOnClickListener(new View.OnClickListener() {
           @Override public void onClick(View view) {
             Intent browserIntent =
@@ -117,43 +129,27 @@ public class ImageAdapter extends BaseAdapter {
             dialog.dismiss();
           }
         });
-      } else {
+      }
+      else
+      {
         product_image.setVisibility(View.GONE);
         buyProduct.setVisibility(View.GONE);
-      }
+     }
 
       TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
       final TextView tittle = (TextView) dialog.findViewById(R.id.framelist_name);
-      duration.setVisibility(View.GONE);
+
+
+
       RelativeLayout relativeLayout = (RelativeLayout) dialog.findViewById(R.id.rl_see_event);
-      relativeLayout.setOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View v) {
-
-          Intent intent = new Intent(ctx, WatchEventActivity.class);
-          intent.putExtra("name", tagStream.getName());
-          //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
-          intent.putExtra("likes", tagStream.getNumber_of_likes());
-          intent.putExtra("frames", tagStream.getFrameList_modelArrayList().size());
-          intent.putExtra("comments", tagStream.getNumber_of_comments());
-          intent.putExtra("data_url", tagStream.getData_url());
-          intent.putExtra("tittle", tagStream.getTitle());
-          intent.putExtra("from", "tagstream");
-          intent.putExtra("user_id", tagStream.getUser_id());
-          intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-          intent.putExtra("eventtype", Utility.eventtype_internet);
-          intent.putExtra("eventid", tagStream.getVideo_id());
-          intent.putExtra("sharelink", tagStream.getShare_link());
-          intent.putExtra("likevideo", tagStream.getIs_liked());
-          intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
-          ctx.startActivity(intent);
-        }
-      });
-
+      relativeLayout.setVisibility(View.GONE);
       frameimage.setVisibility(View.VISIBLE);
       Picasso.with(ctx).load(tagStream.getFrame_image_url()).into(frameimage);
 
-      tittle.setText(tagStream.getTitle());
-       //duration.setText(Utility.milliSecondsToTimer(tagStream.get) + "-" + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
+
+      tittle.setFocusable(false);
+      tittle.setText(tagStream.getName());
+      duration.setText(Utility.milliSecondsToTimer(tagStream.getStarttime()) + "-" + Utility.milliSecondsToTimer(tagStream.getEndtime()));
 
       delete.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
@@ -168,18 +164,7 @@ public class ImageAdapter extends BaseAdapter {
     }
   }
 
-  private class MyViewHolder {
-
-    ImageView ivframeimage, ivPLayVideo;
-
-    public MyViewHolder(View item) {
-
-      ivframeimage = (ImageView) item.findViewById(R.id.grid_iimag_item);
-      ivPLayVideo = (ImageView) item.findViewById(R.id.img_play);
-    }
-  }
-
-  private static void showVideoDialog(final Context ctx, final User_Frames_model frameList_model) {
+  private static void showVideoDialog(final Context ctx, final FrameList_Model frameList_model) {
     final Dialog dialog = new Dialog(ctx);
     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     dialog.setCancelable(false);
@@ -200,10 +185,10 @@ public class ImageAdapter extends BaseAdapter {
     final ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
 
     ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
-    TextView buyProduct = (TextView) dialog.findViewById(R.id.buyProduct);
-    if (!frameList_model.getProduct_id().equals("0") && !frameList_model.is_product_frame()) {
+    TextView buyProduct=(TextView)dialog.findViewById(R.id.buyProduct);
+    if (!frameList_model.getProduct_id().equals("0") && !frameList_model.isAProductFrame()) {
       product_image.setVisibility(View.VISIBLE);
-      Picasso.with(ctx).load(frameList_model.getProduct_image_url()).into(product_image);
+      Picasso.with(ctx).load(frameList_model.getProduct_path()).into(product_image);
       buyProduct.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View view) {
           Intent browserIntent =
@@ -212,38 +197,18 @@ public class ImageAdapter extends BaseAdapter {
           dialog.dismiss();
         }
       });
-    } else {
+    }
+    else
+    {
       product_image.setVisibility(View.GONE);
       buyProduct.setVisibility(View.GONE);
     }
-
+    TextView relativeLayout = (TextView) dialog.findViewById(R.id.see_event);
+    relativeLayout.setVisibility(View.GONE);
     TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
     final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
+    tittle.setFocusable(false);
 
-    dialog.findViewById(R.id.see_event).setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        Intent intent = new Intent(ctx, WatchEventActivity.class);
-        intent.putExtra("name", frameList_model.getName());
-        //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
-        intent.putExtra("likes", frameList_model.getNumber_of_likes());
-        intent.putExtra("frames", frameList_model.getFrameList_modelArrayList().size());
-        intent.putExtra("comments", frameList_model.getNumber_of_comments());
-        intent.putExtra("data_url", frameList_model.getData_url());
-        intent.putExtra("tittle", frameList_model.getTitle());
-        intent.putExtra("from", "tagstream");
-        intent.putExtra("user_id", frameList_model.getUser_id());
-        intent.putParcelableArrayListExtra("framelist",
-            frameList_model.getFrameList_modelArrayList());
-        intent.putExtra("eventtype", Utility.eventtype_internet);
-        intent.putExtra("eventid", frameList_model.getVideo_id());
-        intent.putExtra("sharelink", frameList_model.getShare_link());
-        intent.putExtra("likevideo", frameList_model.getIs_liked());
-        intent.putExtra("tagged_user_id", frameList_model.getTaggedUserModelArrayList());
-        ctx.startActivity(intent);
-
-        dialog.dismiss();
-      }
-    });
 
     try {
 
@@ -263,8 +228,8 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     tittle.setText(frameList_model.getName());
-    //duration.setText(Utility.milliSecondsToTimer(frameList_model.getS) + "-" + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
-    duration.setVisibility(View.GONE);
+    duration.setText(Utility.milliSecondsToTimer(frameList_model.getStarttime()) + "-" + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
+    //duration.setVisibility(View.GONE);
     //video controls
     final SeekBar seekBar = (SeekBar) dialog.findViewById(R.id.seekbar_dialog);
 
@@ -343,5 +308,20 @@ public class ImageAdapter extends BaseAdapter {
     });
 
     dialog.show();
+  }
+
+  @Override public int getItemCount() {
+    return frameList_models.size();
+  }
+
+  public class MyViewHolder extends RecyclerView.ViewHolder{
+    private ImageView ivframeimage, ivPLayVideo;
+    private TextView userName;
+    public MyViewHolder(View item) {
+      super(item);
+      ivframeimage = (ImageView) item.findViewById(R.id.grid_iimag_item);
+      ivPLayVideo = (ImageView) item.findViewById(R.id.img_play);
+      userName=(TextView)item.findViewById(R.id.userName);
+    }
   }
 }

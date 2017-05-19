@@ -8,8 +8,8 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="fitXY"
         android:background="#e5e5e5"
+        android:scaleType="centerCrop"
         android:id="@+id/grid_iimag_item"/>
     <ImageView
         android:layout_width="wrap_content"

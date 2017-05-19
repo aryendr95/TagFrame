@@ -54,15 +54,30 @@ android:layout_height="300dp"
             />
 
     </RelativeLayout>
-    <ImageView
+
+    <RelativeLayout
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_below="@+id/rl_see_event"
+        >
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@drawable/shadow"
         android:scaleType="fitXY"
-        android:visibility="gone"
         android:id="@+id/product_image"/>
-
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="Buy Product"
+            android:background="#90000000"
+            android:id="@+id/buyProduct"
+            android:layout_alignParentBottom="true"
+            android:textSize="17dp"
+            android:gravity="center_horizontal"
+            />
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -71,6 +86,16 @@ android:layout_height="300dp"
         android:layout_alignParentBottom="true">
 
 
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="00:00"
+
+
+            android:id="@+id/framelist_time"
+            android:gravity="center_horizontal"
+            />
 
         <com.tagframe.tagframe.Utils.MyTextView
             android:layout_width="fill_parent"

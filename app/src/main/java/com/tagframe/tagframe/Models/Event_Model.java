@@ -201,7 +201,52 @@ public class Event_Model implements Parcelable {
     @Expose
     private String like_video;
 
+    private boolean isMyFrameListShown;
+    private boolean isOtherFrameListShown;
+
+    public boolean isMyFrameListShown() {
+        return isMyFrameListShown;
+    }
+
+    public void setMyFrameListShown(boolean myFrameListShown) {
+        isMyFrameListShown = myFrameListShown;
+    }
+
+    public boolean isOtherFrameListShown() {
+        return isOtherFrameListShown;
+    }
+
+    public void setOtherFrameListShown(boolean otherFrameListShown) {
+        isOtherFrameListShown = otherFrameListShown;
+    }
+
+    @SerializedName("my_frames")
+    @Expose
+    private ArrayList<FrameList_Model> myFrameArrraYlist;
+    @SerializedName("other_frames")
+    @Expose
+    private ArrayList<FrameList_Model> otherFrameArrraYlist;
+
+    public ArrayList<FrameList_Model> getMyFrameArrraYlist() {
+        return myFrameArrraYlist;
+    }
+
+    public void setMyFrameArrraYlist(ArrayList<FrameList_Model> myFrameArrraYlist) {
+        this.myFrameArrraYlist = myFrameArrraYlist;
+        setMyFrameListShown(this.myFrameArrraYlist.size()>0);
+    }
+
+    public ArrayList<FrameList_Model> getOtherFrameArrraYlist() {
+        return otherFrameArrraYlist;
+    }
+
+    public void setOtherFrameArrraYlist(ArrayList<FrameList_Model> otherFrameArrraYlist) {
+        this.otherFrameArrraYlist = otherFrameArrraYlist;
+        setOtherFrameListShown(this.otherFrameArrraYlist.size()>0);
+    }
+
     @SerializedName("frames")
+
     @Expose
     private ArrayList<FrameList_Model> frameList_modelArrayList;
 
@@ -372,6 +417,10 @@ public class Event_Model implements Parcelable {
         dest.writeByte(this.in_center ? (byte) 1 : (byte) 0);
         dest.writeString(this.tags);
         dest.writeString(this.like_video);
+        dest.writeByte(this.isMyFrameListShown ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOtherFrameListShown ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.myFrameArrraYlist);
+        dest.writeTypedList(this.otherFrameArrraYlist);
         dest.writeTypedList(this.frameList_modelArrayList);
         dest.writeTypedList(this.taggedUserModelArrayList);
     }
@@ -403,6 +452,10 @@ public class Event_Model implements Parcelable {
         this.in_center = in.readByte() != 0;
         this.tags = in.readString();
         this.like_video = in.readString();
+        this.isMyFrameListShown = in.readByte() != 0;
+        this.isOtherFrameListShown = in.readByte() != 0;
+        this.myFrameArrraYlist = in.createTypedArrayList(FrameList_Model.CREATOR);
+        this.otherFrameArrraYlist = in.createTypedArrayList(FrameList_Model.CREATOR);
         this.frameList_modelArrayList = in.createTypedArrayList(FrameList_Model.CREATOR);
         this.taggedUserModelArrayList = in.createTypedArrayList(TaggedUserModel.CREATOR);
     }

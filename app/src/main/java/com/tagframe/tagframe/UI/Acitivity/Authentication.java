@@ -21,10 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by Karanveer on 04/04/2016.
  *
- * this class handles all the authentications like login and sign up and also the splash in terms
- * of
- * each
- * having their own respective fragment
+ * this class handles all the authentications like login and sign up and also the splash each having their own respective fragment
  */
 public class Authentication extends FragmentActivity {
 
@@ -61,7 +58,7 @@ public class Authentication extends FragmentActivity {
     if (user.isLoggedin()) {//if logged out
 
       Intent intent=new Intent(this, SplashActivity.class);
-      intent.putExtra("load","tagstream");
+      intent.putExtra("load","login");
       startActivity(intent);
       finish();
 

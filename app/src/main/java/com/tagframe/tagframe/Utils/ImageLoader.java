@@ -40,6 +40,7 @@ public class ImageLoader {
     if(path.isEmpty())
     {
       imageView.setImageResource(placeholder);
+      return;
     }
     progressBar.setVisibility(View.VISIBLE);
     Picasso.with(context).load(path).fit().centerCrop().into(imageView, new Callback() {

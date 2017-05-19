@@ -36,9 +36,16 @@
 
       <ImageView
           android:id="@+id/img_frame_to_show"
-          android:layout_width="@dimen/frame_size"
-          android:layout_height="@dimen/frame_size"
-          android:scaleType="centerCrop"
+          android:layout_width="150dp"
+          android:layout_height="150dp"
+          />
+
+      <ProgressBar
+          android:layout_width="20dp"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:id="@+id/pbarLoadFrame"
+          android:visibility="gone"
           />
 
       <ImageView

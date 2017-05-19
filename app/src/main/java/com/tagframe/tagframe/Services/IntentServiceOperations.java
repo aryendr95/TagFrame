@@ -520,7 +520,6 @@ public class IntentServiceOperations extends IntentService implements WebService
                 .setTicker(tittle)
                 .setSmallIcon(R.drawable.noti)
                 .setWhen(System.currentTimeMillis())
-                .setDefaults(Notification.DEFAULT_SOUND)
                 .setAutoCancel(true)
                 .build();
 
@@ -538,7 +537,6 @@ public class IntentServiceOperations extends IntentService implements WebService
                 .setProgress(100, progr, false)
                 .setSmallIcon(R.drawable.noti)
                 .setWhen(System.currentTimeMillis())
-                .setDefaults(Notification.DEFAULT_SOUND)
                 .setAutoCancel(true)
                 .build();
 

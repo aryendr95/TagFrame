@@ -181,7 +181,6 @@ public class Login extends Fragment {
 
           @Override public void onFailure(Call<RmAuthentication> call, Throwable t) {
             if (isAdded()) {
-              Log.e("das",t.getMessage());
               progressDialog.dismiss();
               PopMessage.makeshorttoast(getContext(), Utility.ERROR_MESSAGE);
             }

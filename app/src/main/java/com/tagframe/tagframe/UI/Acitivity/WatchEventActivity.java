@@ -1,17 +1,22 @@
 package com.tagframe.tagframe.UI.Acitivity;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -53,12 +58,15 @@ import com.tagframe.tagframe.Utils.EndlessRecyclerViewScrollListener;
 import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
+import com.tagframe.tagframe.Utils.listsort;
 import com.veer.exvidplayer.Player.Constants;
+import com.veer.exvidplayer.VideoPlayer.ExSimpleVpFragment;
 import com.veer.exvidplayer.VideoPlayer.ExVpCompleteFragment;
 import com.veer.exvidplayer.VideoPlayer.ExVpFragment;
 import com.veer.exvidplayer.VideoPlayer.ExVpListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -95,6 +103,13 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   private boolean shouldLoad = false;
   private int next_records = 0, currentListPosition = 0;
   private int frameSize;
+  private ProgressBar pbarLoadFrame;
+  private boolean isFrameShowing = false;
+  private Handler handler = new Handler();
+  private static String[] PERMISSIONS_STORAGE = {
+      Manifest.permission.WRITE_SETTINGS
+  };
+  private int currentDuration = 0;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -102,7 +117,21 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     getIntentData(getIntent());
     init();
     setDatatoView();
+    // if(isSettingPermissionGranted())
     setUpPlayer();
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    addTrackAndPlay(getIntent());
+    if (exVpControls != null) exVpControls.seekToProgress(currentDuration);
+    handler.postDelayed(runnable, 100);
+  }
+
+  @Override protected void onPause() {
+    currentDuration = mProgress.getProgress();
+    handler.removeCallbacks(runnable);
+    super.onPause();
   }
 
   @Override public void onConfigurationChanged(Configuration newConfig) {
@@ -168,9 +197,11 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     ivPlayPause.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         if (exVpControls.isPlaying()) {
+          ivPlayPause.setImageResource(R.drawable.ic_play_circle_filled_white_white_24dp);
           pauseMediaPlayer();
         } else {
           playMediaPlayer();
+          ivPlayPause.setImageResource(R.drawable.ic_pause_circle_filled_white_24dp);
         }
       }
     });
@@ -212,7 +243,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   private void setUpPlayer() {
     FragmentManager fragmentManager = getSupportFragmentManager();
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    ExVpFragment exVpFragment = new ExVpFragment();
+    ExSimpleVpFragment exVpFragment = new ExSimpleVpFragment();
     exVpControls = exVpFragment.getExVpListener();
     setUpControls();
     Bundle bundle = new Bundle();
@@ -222,10 +253,12 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     exVpFragment.setArguments(bundle);
     fragmentTransaction.add(R.id.parent, exVpFragment);
     fragmentTransaction.commit();
+    handler.postDelayed(runnable, 100);
   }
 
   private void init() {
     frameSize = (int) getResources().getDimension(R.dimen.frame_size);
+    frameSize = 150;
     getWindowManager().getDefaultDisplay().getSize(p);
     root = (RelativeLayout) findViewById(R.id.root);
     ll_dimer = (RelativeLayout) findViewById(R.id.dimer_layout);
@@ -318,11 +351,11 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         show_synced_frame(pos);
       }
     });
+
+    Collections.sort(framedata_map, new listsort());
     mProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        showFrame(seekBar.getProgress());
-        Utility.updateseekbar(mProgress, mProgress.getMax(), WatchEventActivity.this,
-            framedata_map);
+
       }
 
       @Override public void onStartTrackingTouch(SeekBar seekBar) {
@@ -333,24 +366,39 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         exVpControls.seekToProgress(seekBar.getProgress());
       }
     });
+    pbarLoadFrame = (ProgressBar) findViewById(R.id.pbarLoadFrame);
   }
 
-  private void showFrame(int progress) {
+  private Runnable runnable = new Runnable() {
+    @Override public void run() {
+      if (exVpControls != null && exVpControls.isPlaying() && mProgress.getProgress() != 0) {
+        showFrame(mProgress.getProgress());
+        Utility.updateseekbar(mProgress, mProgress.getMax(), WatchEventActivity.this,
+            framedata_map);
+      }
+      handler.postDelayed(runnable, 100);
+    }
+  };
 
+  private void showFrame(int progress) {
+    img_play_video.setVisibility(View.INVISIBLE);
+    img_frame_to_show.setVisibility(View.INVISIBLE);
     for (int i = 0; i < framedata_map.size(); i++) {
-      FrameList_Model fm = framedata_map.get(i);
+      final FrameList_Model fm = framedata_map.get(i);
+
       if (fm.getStarttime() - 100 <= progress
           && progress <= fm.getEndtime() + 100
           && fm.getEndtime() != 0) {
-        Log.e("if", progress + "");
+
         img_frame_to_show.setVisibility(View.VISIBLE);
         if (fm.getFrametype() == Utility.frametype_image) {
           Picasso.with(WatchEventActivity.this)
-              .load(fm.getImagepath())
+              .load(fm.getFrame_image_url())
               .resize(frameSize, frameSize)
               .into(img_frame_to_show);
         } else {
           img_play_video.setVisibility(View.VISIBLE);
+          img_play_video.setImageResource(R.drawable.playvideo);
           if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
                 MediaStore.Images.Thumbnails.MINI_KIND);
@@ -358,6 +406,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
             thumb = Utility.getResizedBitmap(thumb, frameSize, frameSize);
             img_frame_to_show.setImageBitmap(thumb);
           } else {
+
             Picasso.with(WatchEventActivity.this)
                 .load(fm.getImagepath())
                 .resize(frameSize, frameSize)
@@ -367,12 +416,10 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
         img_frame_to_show.setTag(i + "");
         int totalDuration = mProgress.getMax();
-        int prog = (progress * 100) / totalDuration;
+        int prog = (fm.getStarttime() * 100) / totalDuration;
         //show_frame_on_seekbar(prog - (int) (Utility.getProgressPercentage(2000, totalDuration)));
+
         show_frame_on_seekbar(prog);
-      } else {
-        img_frame_to_show.setVisibility(View.INVISIBLE);
-        img_play_video.setVisibility(View.INVISIBLE);
       }
     }
   }
@@ -380,15 +427,9 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   public void show_frame_on_seekbar(final int progress) {
 
     int measure = (int) ((((float) progress * p.x) / 100) - (progress));
+    if (p.x - measure < Utility.dpToPx(150)) {
 
-    // When "measure" will become equal to "p.x"(at progress = 100),
-    // the image will be outside the view when we set its "leftMargin".
-    // But, the image will start disappearing before that.
-    // When this situation comes, set the "leftMargin" to a maximum value
-    // which is the screen width - ImageView' width
-    if (p.x - measure < img_frame_to_show.getWidth()) {
-
-      params.leftMargin = p.x - img_frame_to_show.getWidth();
+      params.leftMargin = p.x - Utility.dpToPx(150);
     } else {
       params.leftMargin = measure;
     }
@@ -757,7 +798,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       }
       try {
 
-        framevideo.setVideoURI(Uri.parse(frameList_model.getFrame_data_url()));
+        framevideo.setVideoURI(Uri.parse(frameList_model.getFrame_image_url()));
         MediaController mediaController = new MediaController(WatchEventActivity.this);
         framevideo.setMediaController(mediaController);
         mediaController.setAnchorView(framevideo);
@@ -886,7 +927,6 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     getIntentData(intent);
     setDatatoView();
     addTrackAndPlay(intent);
-
   }
 
   private void addTrackAndPlay(Intent intent) {
@@ -894,6 +934,11 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     video_type.add(Constants.MEDIA_TYPE_HLS);
     exVpControls.addTrack(intent.getStringExtra("data_url"), Constants.MEDIA_TYPE_HLS);
     exVpControls.setCurrent(video_urls.size() - 1);
+  }
+
+  @Override protected void onStop() {
+    handler.removeCallbacks(runnable);
+    super.onStop();
   }
 }
 

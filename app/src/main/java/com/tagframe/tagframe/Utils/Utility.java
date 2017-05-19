@@ -417,4 +417,9 @@ public class Utility {
   public static ApiInterface getApiCaller() {
     return ApiClient.getClient().create(ApiInterface.class);
   }
+
+  public static String getUserId(Context context) {
+    AppPrefs appPrefs=new AppPrefs(context);
+    return  appPrefs.getUser().getUser_id();
+  }
 }

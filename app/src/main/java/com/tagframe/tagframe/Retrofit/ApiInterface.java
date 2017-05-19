@@ -144,4 +144,11 @@ public interface ApiInterface {
   //event_details
   @GET("comment_details/{comment_id}") Call<EventDetailResponseModel> getCommentDetails(
       @Query("comment_id") String event_id);
+
+  @POST("delete_event/{event_id}")
+  Call<ResponsePojo> delete_event(@Query("event_id") String event_id);
+
+  @POST("delete_frame/{frame_id}/{user_id}")
+  Call<ResponsePojo> delete_frame(@Query("frame_id") String event_id,
+      @Query("user_id") String user_id);
 }

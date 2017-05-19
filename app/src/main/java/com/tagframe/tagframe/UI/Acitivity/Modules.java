@@ -1,20 +1,25 @@
 package com.tagframe.tagframe.UI.Acitivity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -31,12 +36,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.firebase.iid.FirebaseInstanceId;
+import android.widget.Toast;
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.Menulistadapter;
 import com.tagframe.tagframe.Application.TagFrame;
 import com.tagframe.tagframe.Models.ResponsePojo;
+import com.tagframe.tagframe.Models.User;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -54,10 +60,8 @@ import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.PopMessage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -95,6 +99,11 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
   private EditText ed_search;
   private ImageView img_search;
+  private String[] requiredStoragePermissions = { Manifest.permission.READ_EXTERNAL_STORAGE };
+  private String[] requiredCameraPermissions = { Manifest.permission.CAMERA };
+
+  private final int Request_Storage_permissions = 1;
+  private final int Request_Camera_permissions = 2;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -582,13 +591,16 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     String[] MenuTitles =
         new String[] { "Account", "Viewer Privacy", "Terms of Service", "Logout" };
     ArrayList<com.tagframe.tagframe.Models.Menu> menuArrayList = new ArrayList<>();
-    menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Account", R.drawable.ic_account_circle_grey_600_24dp));
+    menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Account",
+        R.drawable.ic_account_circle_grey_600_24dp));
+    menuArrayList.add(new com.tagframe.tagframe.Models.Menu("My Endorsements",
+        R.drawable.ic_present_to_all_grey_600_24dp));
+    menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Viewer Privacy",
+        R.drawable.ic_view_carousel_grey_600_24dp));
+    menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Terms of Service",
+        R.drawable.ic_speaker_notes_grey_600_24dp));
     menuArrayList.add(
-        new com.tagframe.tagframe.Models.Menu("My Endorsements", R.drawable.ic_present_to_all_grey_600_24dp));
-    menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Viewer Privacy", R.drawable.ic_view_carousel_grey_600_24dp));
-    menuArrayList.add(
-        new com.tagframe.tagframe.Models.Menu("Terms of Service", R.drawable.ic_speaker_notes_grey_600_24dp));
-    menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Logout", R.drawable.ic_exit_to_app_grey_600_24dp));
+        new com.tagframe.tagframe.Models.Menu("Logout", R.drawable.ic_exit_to_app_grey_600_24dp));
     return menuArrayList;
   }
 
@@ -682,19 +694,23 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     // VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
     dialog.findViewById(R.id.media_gallery).setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("video/*");
+        if (askforPermission(requiredStoragePermissions, Request_Storage_permissions)) {
+          Intent intent = new Intent(Intent.ACTION_PICK);
+          intent.setType("video/*");
 
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Video"), PICK_VIDEO);
+          intent.setAction(Intent.ACTION_GET_CONTENT);
+          startActivityForResult(Intent.createChooser(intent, "Select Video"), PICK_VIDEO);
+        }
         dialog.dismiss();
       }
     });
     dialog.findViewById(R.id.media_camera).setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
-        Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        // start the Video Capture Intent
-        startActivityForResult(intent1, TAKE_VIDEO);
+        if (askforPermission(requiredCameraPermissions, Request_Camera_permissions)) {
+          Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+          // start the Video Capture Intent
+          startActivityForResult(intent1, TAKE_VIDEO);
+        }
         dialog.dismiss();
       }
     });
@@ -710,6 +726,57 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
     dialog.show();
   }
+
+
+  public boolean askforPermission(String[] requiredPermissoion,int requestCode) {
+    if (Build.VERSION.SDK_INT >= 23) {
+      if (checkSelfPermission(requiredPermissoion[0])
+          == PackageManager.PERMISSION_GRANTED) {
+        return true;
+      } else {
+        requestPermissions(requiredPermissoion, requestCode);
+        return false;
+      }
+    } else { //permission is automatically granted on sdk<23 upon installation
+      return true;
+    }
+  }
+
+  @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
+    Log.e("requestCode",requestCode+"");
+    switch (requestCode) {
+      case Request_Storage_permissions: {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          // permissions granted.
+          Intent intent = new Intent(Intent.ACTION_PICK);
+          intent.setType("video/*");
+
+          intent.setAction(Intent.ACTION_GET_CONTENT);
+          startActivityForResult(Intent.createChooser(intent, "Select Video"), PICK_VIDEO);
+        } else {
+          Toast.makeText(this, "Permission required to use videos as event", Toast.LENGTH_LONG)
+              .show();
+        }
+      }
+      break;
+      case Request_Camera_permissions:
+      {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          // permissions granted.
+          Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+          // start the Video Capture Intent
+          startActivityForResult(intent1, TAKE_VIDEO);
+        } else {
+          Toast.makeText(this, "Permission required to use video as event", Toast.LENGTH_LONG)
+              .show();
+        }
+      }
+      break;
+
+    }
+  }
+
 
   SlidingPaneLayout.PanelSlideListener panelListener = new SlidingPaneLayout.PanelSlideListener() {
 
@@ -769,8 +836,22 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
       mtxt_no_of_notifications.setVisibility(View.GONE);
     } else {
       mtxt_no_of_notifications.setVisibility(View.VISIBLE);
-      if (!userinfo.getString(Utility.unread_notifications).equals("0")) {
-        mtxt_no_of_notifications.setText(userinfo.getString(Utility.unread_notifications));
+      int number = 0;
+      try {
+        number = Integer.parseInt(userinfo.getString(Utility.unread_notifications));
+      } catch (NumberFormatException e) {
+        number = 0;
+      }
+      if (number < 0) {
+        number = 0;
+        User user = userinfo.getUser();
+        user.setUnreadnotifications(String.valueOf((number)));
+        userinfo.putUser(user);
+        userinfo.putString(Utility.unread_notifications,String.valueOf(number));
+      }
+
+      if (!(number >= 0)) {
+        mtxt_no_of_notifications.setText(String.valueOf(number));
       } else {
         mtxt_no_of_notifications.setVisibility(View.GONE);
       }
@@ -847,14 +928,16 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
         {
           ((Profile) f).changeprofile_ui(operation, resultCode);
-        } else if (f instanceof ProfileOld) ((ProfileOld) f).changeprofile_ui(operation, resultCode);
+        } else if (f instanceof ProfileOld) {
+          ((ProfileOld) f).changeprofile_ui(operation, resultCode);
+        }
 
         break;
       case Utility.operation_unfollow_profile:
 
         Fragment f1 = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
         if (f1 instanceof Profile)
-          // do something with f
+        // do something with f
         {
           ((Profile) f1).changeprofile_ui(operation, resultCode);
         } else if (f1 instanceof ProfileOld) {

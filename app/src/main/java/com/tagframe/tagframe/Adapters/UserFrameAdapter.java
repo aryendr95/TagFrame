@@ -36,8 +36,14 @@ public class UserFrameAdapter extends RecyclerView.Adapter<UserFrameAdapter.MyVi
   @Override public void onBindViewHolder(MyViewHolder mViewHolder, int position) {
 
     final User_Frames_model frame = frames_models.get(position);
+    if (frame.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
+      Picasso.with(ctx).load(frame.getFrame_image_url()).into(mViewHolder.ivframeimage);
+    }
+    else
+    {
+      Picasso.with(ctx).load(frame.getThumbnail_url()).into(mViewHolder.ivframeimage);
+    }
 
-    Picasso.with(ctx).load(frame.getThumbnail_url()).into(mViewHolder.ivframeimage);
     if (frame.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
       mViewHolder.ivPLayVideo.setVisibility(View.GONE);
     } else {

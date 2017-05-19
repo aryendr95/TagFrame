@@ -19,7 +19,7 @@ public class Constants {
 
 
     //URL
-    public static final String URL_COMMENT_LIST = "http://wtagframe.com/webservice/comment_list";
+    public static final String URL_COMMENT_LIST = "http://tagframe.com/webservice/comment_list";
     public static final String URL_COMMENT = "http://tagframe.com/webservice/post_comment";
 
     //SP

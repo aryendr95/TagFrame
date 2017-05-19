@@ -1,6 +1,7 @@
 package com.tagframe.tagframe.Adapters;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -27,6 +28,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Comment;
 import com.tagframe.tagframe.Models.Event_Model;
+import com.tagframe.tagframe.Models.ResponsePojo;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -219,7 +221,19 @@ public class EventListRecyclerAdapter
 
     AppPrefs appPrefs = new AppPrefs(ctx);
     final int user_type = getUser_Type(tagStream.getUser_id(), appPrefs.getString(Utility.user_id));
-
+    if(user_type== com.tagframe.tagframe.Utils.Constants.user_type_self)
+    {
+      mViewHolder.ivDelete.setVisibility(View.VISIBLE);
+      mViewHolder.ivDelete.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          deleteEvent(tagStream.getEvent_id(),position);
+        }
+      });
+    }
+    else
+    {
+      mViewHolder.ivDelete.setVisibility(View.GONE);
+    }
     //click listners on profile photo and name
     mViewHolder.ivpropic.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -230,6 +244,35 @@ public class EventListRecyclerAdapter
     mViewHolder.tvname.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
+      }
+    });
+  }
+
+  private void deleteEvent(String event_id, final int position) {
+    final ProgressDialog progressDialog=new ProgressDialog(ctx);
+    progressDialog.setMessage("Deleting posted event..");
+    progressDialog.show();
+    ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
+    apiInterface.delete_event(event_id).enqueue(new Callback<ResponsePojo>() {
+      @Override public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
+        if(progressDialog!=null)
+          progressDialog.dismiss();
+        if(response.body().getStatus().equalsIgnoreCase("success"))
+        {
+          if(ctx!=null)
+          {
+            tagStream_models.remove(position);
+            notifyDataSetChanged();
+            PopMessage.makeshorttoast(ctx,"Unable to delete event, please try after sometime");
+          }
+        }
+      }
+
+      @Override public void onFailure(Call<ResponsePojo> call, Throwable t) {
+        if(progressDialog!=null)
+          progressDialog.dismiss();
+        if(ctx!=null)
+        PopMessage.makeshorttoast(ctx,"Unable to delete event, please try after sometime");
       }
     });
   }
@@ -425,7 +468,7 @@ public class EventListRecyclerAdapter
 
   public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct;
-    ImageView iveventimage, ivlike;
+    ImageView iveventimage, ivlike,ivDelete;
     VideoView iveventvideo;
     LinearLayout ll_like, ll_share, llcomment;
     CircularImageView ivpropic;
@@ -436,6 +479,7 @@ public class EventListRecyclerAdapter
       tvname = (TextView) item.findViewById(R.id.list_user_name);
       tvcurrentduration = (TextView) item.findViewById(R.id.list_user_duration);
       iveventimage = (ImageView) item.findViewById(R.id.list_event_image);
+      ivDelete = (ImageView) item.findViewById(R.id.deleteEvent);
 
       ll_like = (LinearLayout) item.findViewById(R.id.lllike);
       ll_share = (LinearLayout) item.findViewById(R.id.llshare);

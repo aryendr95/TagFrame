@@ -40,7 +40,7 @@ public class SplashActivity extends AppCompatActivity {
     AppPrefs = new AppPrefs(this);
     txt = (TextView) findViewById(R.id.txtsplashmessage);
 
-    if (getIntent() != null) {
+    if (getIntent().getStringExtra("load").equalsIgnoreCase("tagstream")) {
       txt.setText("Loading...");
       loadTagStream();
     } else {
@@ -62,6 +62,7 @@ public class SplashActivity extends AppCompatActivity {
                 user1.setPassword(appPrefs.getString(Utility.user_password));
                 user1.setLoggedin(true);
                 appPrefs.putUser(user1);
+                Log.e("Dsa",user.getUnreadnotifications());
                 txt.setText("Loading..");
                 loadTagStream();
               } else {
@@ -112,7 +113,6 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         @Override public void onFailure(Call<ListResponseModel> call, Throwable t) {
-          Log.e("dsad",t.getMessage());
         }
       });
     } else {

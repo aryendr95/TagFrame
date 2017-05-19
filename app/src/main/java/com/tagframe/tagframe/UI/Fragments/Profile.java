@@ -208,7 +208,8 @@ public class Profile extends Fragment {
                         pro_description.setText(user.getDescription());
                         //setting user_image
                         try {
-                            ImageLoader.loadImageOnline(getContext(),user.getProfile_image(),pro_user_iamge,pbarProImage);
+                            pbarProImage.setVisibility(View.GONE);
+                            ImageLoader.loadImageOnline(getContext(),user.getProfile_image(),pro_user_iamge);
                             //Picasso.with(getActivity()).load(user.getProfile_image()).resize(100,100).into(pro_user_iamge);
                         } catch (Exception e) {
                             pro_user_iamge.setImageResource(R.drawable.pro_image);
