@@ -213,7 +213,7 @@ public class FrameListAdapter extends BaseAdapter {
 
         if (ctx instanceof MakeNewEvent) {
           new PuffOutAnimation(mViewHolder.iveventimage).animate();
-          ((MakeNewEvent) ctx).deleteframe(position);
+         // ((MakeNewEvent) ctx).deleteframe(position);
         }
       }
     });

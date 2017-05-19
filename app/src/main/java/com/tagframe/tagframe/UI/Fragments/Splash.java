@@ -30,6 +30,8 @@ import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
+import java.sql.Time;
+import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,8 +76,9 @@ public class Splash extends Fragment {
   public void loginUser() {
     final AppPrefs appPrefs = new AppPrefs(getActivity());
     final User user = appPrefs.getUser();
+    TimeZone tz = TimeZone.getDefault();
     Utility.getApiCaller()
-        .login(user.getUsername(), user.getPassword())
+        .login(user.getUsername(), user.getPassword(),tz.getID())
         .enqueue(new Callback<RmAuthentication>() {
           @Override
           public void onResponse(Call<RmAuthentication> call, Response<RmAuthentication> response) {

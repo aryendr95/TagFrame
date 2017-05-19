@@ -21,6 +21,7 @@ import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 import java.util.ArrayList;
+import java.util.TimeZone;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,8 +52,9 @@ public class SplashActivity extends AppCompatActivity {
   public void loginUser() {
     final AppPrefs appPrefs = new AppPrefs(this);
     final User user = appPrefs.getUser();
+    TimeZone tz = TimeZone.getDefault();
     Utility.getApiCaller()
-        .login(user.getUsername(), user.getPassword())
+        .login(user.getUsername(), user.getPassword(),tz.getID())
         .enqueue(new Callback<RmAuthentication>() {
           @Override
           public void onResponse(Call<RmAuthentication> call, Response<RmAuthentication> response) {

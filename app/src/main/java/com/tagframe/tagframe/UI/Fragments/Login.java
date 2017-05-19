@@ -41,6 +41,7 @@ import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.provider.Settings.Secure;
@@ -147,12 +148,14 @@ public class Login extends Fragment {
   }
 
   public void loginUser(String username, final String password, String device_id) {
+    TimeZone tz = TimeZone.getDefault();
     final AppPrefs appPrefs = new AppPrefs(getActivity());
     final ProgressDialog progressDialog = new ProgressDialog(getActivity());
     progressDialog.setMessage("Signing in..");
     progressDialog.show();
     Utility.getApiCaller()
-        .login(username, password, device_id, appPrefs.getString(Utility.shp_user_Token))
+        .login(username, password, device_id, appPrefs.getString(Utility.shp_user_Token),
+            tz.getID())
         .enqueue(new Callback<RmAuthentication>() {
           @Override
           public void onResponse(Call<RmAuthentication> call, Response<RmAuthentication> response) {

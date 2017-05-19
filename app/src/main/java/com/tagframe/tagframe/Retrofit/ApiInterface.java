@@ -125,18 +125,21 @@ public interface ApiInterface {
   @GET("read_notification/{notification_id}") Call<ResponsePojo> markAsRead(
       @Query("notification_id") String notification_id);
 
-  @POST("login/{username}/{password}/{device_id}/{reg_token}") Call<RmAuthentication> login(
+  @POST("login/{username}/{password}/{device_id}/{reg_token}/{time_zone}") Call<RmAuthentication> login(
       @Query("username") String username, @Query("password") String password,
-      @Query("device_id") String device_id, @Query("reg_token") String reg_token);
+      @Query("device_id") String device_id, @Query("reg_token") String reg_token,
+      @Query("time_zone") String time_zone);
 
 
-  @POST("login/{username}/{password}") Call<RmAuthentication> login(
-      @Query("username") String usename, @Query("password") String password);
+  @POST("login/{username}/{password}/{time_zone}") Call<RmAuthentication> login(
+      @Query("username") String usename, @Query("password") String password,
+      @Query("time_zone") String time_zone);
 
-  @POST("signup/{username}/{password}/{device_id}/{email}/{first_name}/{reg_token}")
+  @POST("signup/{username}/{password}/{device_id}/{email}/{first_name}/{reg_token}/{time_zone}")
   Call<RmAuthentication> signUp(@Query("username") String username, @Query("password") String password,
       @Query("device_id") String device_id, @Query("email") String email,
-      @Query("first_name") String first_name, @Query("reg_token") String reg_token);
+      @Query("first_name") String first_name, @Query("reg_token") String reg_token,
+      @Query("time_zone") String time_zone);
 
   @POST("frame_details/{frame_id}")
   Call<RmFrameDetails> getFrameDetails(@Query("frame_id") String frame_id);

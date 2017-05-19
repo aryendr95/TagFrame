@@ -28,6 +28,7 @@ import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
+import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -130,6 +131,7 @@ public class SignUp extends Fragment {
   }
 
   private void registerUser(String username, final String password, String email, String realname) {
+    TimeZone tz = TimeZone.getDefault();
     final AppPrefs appPrefs = new AppPrefs(getActivity());
     String device_id =
         Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -138,7 +140,7 @@ public class SignUp extends Fragment {
     progressDialog.show();
     Utility.getApiCaller()
         .signUp(username, password, device_id, email, realname,
-            appPrefs.getString(Utility.shp_user_Token))
+            appPrefs.getString(Utility.shp_user_Token),tz.getID())
         .enqueue(new Callback<RmAuthentication>() {
           @Override
           public void onResponse(Call<RmAuthentication> call, Response<RmAuthentication> response) {
