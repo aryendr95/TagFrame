@@ -451,11 +451,11 @@ public class TagStreamRecyclerAdapter
       final TextView textView, final RecyclerView recyclerView,
       final ArrayList<Comment> commentArrayList) {
     if (Networkstate.haveNetworkConnection(ctx)) {
-
+      AppPrefs appPrefs=new AppPrefs(ctx);
       areCommentsLoaded = false;
       progressBar.setVisibility(View.VISIBLE);
       ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-      apiInterface.getCommentList(video_id, next_records)
+      apiInterface.getCommentList(video_id, next_records,appPrefs.getUser().getUser_id())
           .enqueue(new Callback<CommentsResponseModel>() {
             @Override public void onResponse(Call<CommentsResponseModel> call,
                 Response<CommentsResponseModel> response) {

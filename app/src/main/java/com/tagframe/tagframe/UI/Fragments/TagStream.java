@@ -119,6 +119,7 @@ public class TagStream extends Fragment {
             //add the items to arraylist
             ArrayList<Event_Model> continued_list = response.body().getTagStreamArrayList();
             tagStream_models.addAll(continued_list);
+            appPrefs.puttagstreamlist(tagStream_models);
             rcTagStream.getAdapter().notifyDataSetChanged();
             swipeRefreshLayout.setRefreshing(false);
             //if there are more items to be loaded then increse the offset by pagesize

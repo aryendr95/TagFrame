@@ -67,8 +67,6 @@ public class FrameList_Model implements Parcelable {
     @Expose
     private String user_id="77";
 
-
-
     @SerializedName("frame_thumbnail_url")
     @Expose
     private String imagepath;

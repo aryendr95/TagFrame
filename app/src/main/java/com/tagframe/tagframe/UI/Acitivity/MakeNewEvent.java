@@ -1055,16 +1055,16 @@ public class MakeNewEvent extends Activity
         intent.putExtra("event_id", event_id);
 
         startService(intent);
+        finish();
       } else {
         PopMessage.makesimplesnack(mlayout, "Please sync frames and add a title to them");
       }
     }
   }
 
-  public void deleteframe(String frameid, final int position,String frameType) {
+  public void deleteframe(final String frameid, final int position, String frameType) {
     delete_event = true;
-    if(frameType.equals(com.tagframe.tagframe.Utils.Constants.frame_resource_type_local))
-    {
+    if (frameType.equals(com.tagframe.tagframe.Utils.Constants.frame_resource_type_local)) {
       framedata_map.remove(position);
       framelist.getAdapter().notifyDataSetChanged();
       Collections.sort(framedata_map, new listsort());
@@ -1074,36 +1074,54 @@ public class MakeNewEvent extends Activity
           delete_event = false;
         }
       }, 2000);
-    }
-    else
-    {
-      final ProgressDialog progressDialog=new ProgressDialog(this);
-      progressDialog.setMessage("Deleting posted frame..");
-      progressDialog.show();
-      AppPrefs appPrefs=new AppPrefs(this);
-      ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
-      apiInterface.delete_frame(frameid,appPrefs.getUser().getUser_id()).enqueue(new Callback<ResponsePojo>() {
-        @Override public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
-          if(progressDialog!=null)
-          {
-            progressDialog.dismiss();
-          }
-          if(response.body().getStatus().equalsIgnoreCase("success"))
-          {
-            framedata_map.remove(position);
-            framelist.getAdapter().notifyDataSetChanged();
-            Collections.sort(framedata_map, new listsort());
-            delete_event=false;
-          }
-        }
+    } else {
 
-        @Override public void onFailure(Call<ResponsePojo> call, Throwable t) {
-          if(progressDialog!=null)
-            progressDialog.dismiss();
+      final Dialog dialog = new Dialog(this);
+      dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+      dialog.setCancelable(false);
+      dialog.setContentView(R.layout.dialog_delete_frame);
+      final LinearLayout controls = (LinearLayout) dialog.findViewById(R.id.layout_logout_controls);
+      final LinearLayout progress = (LinearLayout) dialog.findViewById(R.id.layout_logging_out);
+
+      dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View v) {
+          controls.setVisibility(View.GONE);
+          progress.setVisibility(View.VISIBLE);
+
+          AppPrefs appPrefs = new AppPrefs(MakeNewEvent.this);
+          ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+          apiInterface.delete_frame(frameid, appPrefs.getUser().getUser_id())
+              .enqueue(new Callback<ResponsePojo>() {
+                @Override
+                public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
+                  dialog.dismiss();
+                  if (response.body().getStatus().equalsIgnoreCase("success")) {
+                    framedata_map.remove(position);
+                    framelist.getAdapter().notifyDataSetChanged();
+                    Collections.sort(framedata_map, new listsort());
+                    delete_event = false;
+                    PopMessage.makeshorttoast(MakeNewEvent.this,"Successfull");
+                  }
+                  else
+                  {
+                    PopMessage.makeshorttoast(MakeNewEvent.this,response.body().getStatus());
+                  }
+                }
+
+                @Override public void onFailure(Call<ResponsePojo> call, Throwable t) {
+                  dialog.dismiss();
+                  PopMessage.makeshorttoast(MakeNewEvent.this,"Unable to delete event");
+                }
+              });
         }
       });
+      dialog.findViewById(R.id.nobtn).setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View v) {
+          dialog.dismiss();
+        }
+      });
+      dialog.show();
     }
-
   }
 
   public Broadcastresults register_reviever() {

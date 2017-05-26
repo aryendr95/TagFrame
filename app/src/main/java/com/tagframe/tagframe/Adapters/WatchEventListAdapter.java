@@ -418,11 +418,11 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
 
     public void loadComments(String video_id, String next_records, final ProgressBar progressBar, final TextView textView, final RecyclerView recyclerView, final ArrayList<Comment> commentArrayList) {
         if (Networkstate.haveNetworkConnection(context)) {
-
+            AppPrefs appPrefs=new AppPrefs(context);
             areCommentsLoaded = false;
             progressBar.setVisibility(View.VISIBLE);
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            apiInterface.getCommentList(video_id, next_records).enqueue(new Callback<CommentsResponseModel>() {
+            apiInterface.getCommentList(video_id, next_records,appPrefs.getUser().getUser_id()).enqueue(new Callback<CommentsResponseModel>() {
                 @Override
                 public void onResponse(Call<CommentsResponseModel> call, Response<CommentsResponseModel> response) {
                     if (response.body().getStatus().equals(Utility.success_response)) {

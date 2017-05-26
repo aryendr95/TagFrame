@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,6 +35,7 @@ import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
+import com.tagframe.tagframe.UI.Acitivity.Authentication;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
@@ -248,33 +250,55 @@ public class EventListRecyclerAdapter
     });
   }
 
-  private void deleteEvent(String event_id, final int position) {
-    final ProgressDialog progressDialog=new ProgressDialog(ctx);
-    progressDialog.setMessage("Deleting posted event..");
-    progressDialog.show();
-    ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
-    apiInterface.delete_event(event_id).enqueue(new Callback<ResponsePojo>() {
-      @Override public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
-        if(progressDialog!=null)
-          progressDialog.dismiss();
-        if(response.body().getStatus().equalsIgnoreCase("success"))
-        {
-          if(ctx!=null)
-          {
-            tagStream_models.remove(position);
-            notifyDataSetChanged();
-            PopMessage.makeshorttoast(ctx,"Unable to delete event, please try after sometime");
-          }
-        }
-      }
+  private void deleteEvent(final String event_id, final int position) {
+    final Dialog dialog = new Dialog(ctx);
+    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    dialog.setCancelable(false);
+    dialog.setContentView(R.layout.dialog_delete_event);
+    final LinearLayout controls = (LinearLayout) dialog.findViewById(R.id.layout_logout_controls);
+    final LinearLayout progress = (LinearLayout) dialog.findViewById(R.id.layout_logging_out);
 
-      @Override public void onFailure(Call<ResponsePojo> call, Throwable t) {
-        if(progressDialog!=null)
-          progressDialog.dismiss();
-        if(ctx!=null)
-        PopMessage.makeshorttoast(ctx,"Unable to delete event, please try after sometime");
+
+    dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        controls.setVisibility(View.GONE);
+        progress.setVisibility(View.VISIBLE);
+
+        ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
+        apiInterface.delete_event(event_id).enqueue(new Callback<ResponsePojo>() {
+          @Override public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
+
+            if(response.body().getStatus().equalsIgnoreCase("success"))
+            {
+              if(ctx!=null)
+              {
+                tagStream_models.remove(position);
+                notifyDataSetChanged();
+                PopMessage.makeshorttoast(ctx,"Successfully deleted.");
+              }
+            }
+            dialog.dismiss();
+          }
+
+          @Override public void onFailure(Call<ResponsePojo> call, Throwable t) {
+            if(ctx!=null)
+              PopMessage.makeshorttoast(ctx,"Unable to delete event, please try after sometime");
+            dialog.dismiss();
+          }
+        });
+
       }
     });
+    dialog.findViewById(R.id.nobtn).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        dialog.dismiss();
+      }
+    });
+    dialog.show();
+
+
   }
 
   public void share(String link, Context ctx) {
@@ -416,11 +440,11 @@ public class EventListRecyclerAdapter
       final TextView textView, final RecyclerView recyclerView,
       final ArrayList<Comment> commentArrayList) {
     if (Networkstate.haveNetworkConnection(ctx)) {
-
+      AppPrefs appPrefs=new AppPrefs(ctx);
       areCommentsLoaded = false;
       progressBar.setVisibility(View.VISIBLE);
       ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-      apiInterface.getCommentList(video_id, next_records)
+      apiInterface.getCommentList(video_id, next_records,appPrefs.getUser().getUser_id())
           .enqueue(new Callback<CommentsResponseModel>() {
             @Override public void onResponse(Call<CommentsResponseModel> call,
                 Response<CommentsResponseModel> response) {

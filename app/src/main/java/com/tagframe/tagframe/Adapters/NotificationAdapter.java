@@ -185,8 +185,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     private void loadFrame(ApiInterface apiInterface, String sub_action_id) {
+        AppPrefs appPrefs=new AppPrefs(context);
         showProgress("Loading Frame..");
-        apiInterface.getFrameDetails(sub_action_id).enqueue(new Callback<RmFrameDetails>() {
+        apiInterface.getFrameDetails(sub_action_id,appPrefs.getUser().getUser_id()).enqueue(new Callback<RmFrameDetails>() {
             @Override
             public void onResponse(Call<RmFrameDetails> call, Response<RmFrameDetails> response) {
                 hideProgress();
@@ -406,11 +407,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     public void loadComments(String video_id, String next_records, final ProgressBar progressBar, final TextView textView, final RecyclerView recyclerView, final ArrayList<Comment> commentArrayList) {
         if (Networkstate.haveNetworkConnection(context)) {
-
+            AppPrefs appPrefs=new AppPrefs(context);
             areCommentsLoaded = false;
             progressBar.setVisibility(View.VISIBLE);
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            apiInterface.getCommentList(video_id, next_records).enqueue(new Callback<CommentsResponseModel>() {
+            apiInterface.getCommentList(video_id, next_records,appPrefs.getUser().getUser_id()).enqueue(new Callback<CommentsResponseModel>() {
                 @Override
                 public void onResponse(Call<CommentsResponseModel> call, Response<CommentsResponseModel> response) {
                     if (response.body().getStatus().equals(Utility.success_response)) {

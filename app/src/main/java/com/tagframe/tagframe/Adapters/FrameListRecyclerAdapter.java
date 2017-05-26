@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.easyandroidanimations.library.PuffOutAnimation;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.R;
@@ -95,20 +96,57 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                     Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
                 }
             } else {
-                Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
+                Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage,
+                    new Callback() {
+                        @Override public void onSuccess() {
+
+                        }
+
+                        @Override public void onError() {
+                            try
+                            {
+                                Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
+                            }
+                            catch (Exception e)
+                            {
+
+                            }
+                        }
+                    });
             }
         } else {
 
             if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
-                Bitmap thumb = ThumbnailUtils.createVideoThumbnail(frame.getImagepath(),
+                try {
+                    Bitmap thumb = ThumbnailUtils.createVideoThumbnail(frame.getImagepath(),
                         MediaStore.Images.Thumbnails.MINI_KIND);
 
-                thumb = Utility.getResizedBitmap(thumb, 150, 200);
+                    thumb = Utility.getResizedBitmap(thumb, 150, 200);
 
-                mViewHolder.ivFrameImage.setImageBitmap(thumb);
-                mViewHolder.videoIndicator.setVisibility(View.VISIBLE);
+                    mViewHolder.ivFrameImage.setImageBitmap(thumb);
+                    mViewHolder.videoIndicator.setVisibility(View.VISIBLE);
+                }
+                catch (Exception e)
+                {
+                    Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
+                }
             } else {
-                Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
+                Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage, new Callback() {
+                    @Override public void onSuccess() {
+
+                    }
+
+                    @Override public void onError() {
+                        try
+                        {
+                            Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                });
             }
 
         }
@@ -199,7 +237,6 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
 
 
                 if (context instanceof MakeNewEvent) {
-                    new PuffOutAnimation(mViewHolder.ivFrameImage).animate();
                     ((MakeNewEvent) context).deleteframe(frame.getFrame_id(),position,frame.getFrame_resource_type());
                 }
             }

@@ -106,8 +106,9 @@ public interface ApiInterface {
       @Query("event_id") String event_id);
 
   //load Comments
-  @GET("comment_list/{video_id}/{next_records}") Call<CommentsResponseModel> getCommentList(
-      @Query("video_id") String video_id, @Query("next_records") String next_records);
+  @GET("comment_list/{video_id}/{next_records}/{user_id}") Call<CommentsResponseModel> getCommentList(
+      @Query("video_id") String video_id, @Query("next_records") String next_records,
+      @Query("user_id") String userId);
 
   //get product details
   @GET("product_details/{product_id}") Call<Product> getProductDetails(
@@ -142,7 +143,9 @@ public interface ApiInterface {
       @Query("time_zone") String time_zone);
 
   @POST("frame_details/{frame_id}")
-  Call<RmFrameDetails> getFrameDetails(@Query("frame_id") String frame_id);
+  Call<RmFrameDetails> getFrameDetails(@Query("frame_id") String frame_id
+
+  ,@Query("user_id") String user_id);
 
   //event_details
   @GET("comment_details/{comment_id}") Call<EventDetailResponseModel> getCommentDetails(
