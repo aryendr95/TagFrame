@@ -26,6 +26,7 @@ import android.widget.VideoView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.FrameList_Model;
+import com.tagframe.tagframe.MyMediaPlayer.MyVideoView;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
 import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
@@ -214,14 +215,14 @@ public class TagStreamFrameRecyclerAdapter extends RecyclerView.Adapter<TagStrea
 
       framevideo.setVideoURI(Uri.parse(frameList_model.getFrame_image_url()));
       MediaController mediaController = new MediaController(ctx);
-      framevideo.setMediaController(mediaController);
       mediaController.setAnchorView(framevideo);
       framevideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-        @Override public void onPrepared(MediaPlayer mp) {
+        @Override public void onPrepared(MediaPlayer mediaPlayer) {
           coverLayout.setVisibility(View.GONE);
           progressBar.setVisibility(View.GONE);
         }
       });
+      framevideo.setZOrderOnTop(true);
       framevideo.start();
     } catch (Exception e) {
 
@@ -275,7 +276,7 @@ public class TagStreamFrameRecyclerAdapter extends RecyclerView.Adapter<TagStrea
 
       @Override public void onStopTrackingTouch(SeekBar seekBar) {
         myHandler.removeCallbacks(mUpdateDialogVideo);
-        int total = framevideo.getDuration();
+        int total = (int)framevideo.getDuration();
         int current = Utility.progressToTimer(seekBar.getProgress(), total);
         framevideo.seekTo(current);
         myHandler.postDelayed(mUpdateDialogVideo, 100);

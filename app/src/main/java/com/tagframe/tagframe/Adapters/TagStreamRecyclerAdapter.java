@@ -38,6 +38,7 @@ import com.tagframe.tagframe.Models.Comment;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.User_Frames_model;
+import com.tagframe.tagframe.MyMediaPlayer.MyVideoView;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -45,6 +46,7 @@ import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
+import com.tagframe.tagframe.UI.Acitivity.ModulesNew;
 import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.Networkstate;
@@ -592,8 +594,9 @@ public class TagStreamRecyclerAdapter
     dialog.getWindow()
         .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+    final RelativeLayout rl=(RelativeLayout)dialog.findViewById(R.id.view);
     final VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
+    framevideo.setBackgroundColor(Color.BLACK);
     final RelativeLayout coverLayout = (RelativeLayout) dialog.findViewById(R.id.cover);
     final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.pbar_video_dialog);
 
@@ -637,15 +640,14 @@ public class TagStreamRecyclerAdapter
 
       framevideo.setVideoURI(Uri.parse(frameList_model.getFrame_media_url()));
       MediaController mediaController = new MediaController(ctx);
-      framevideo.setMediaController(mediaController);
       mediaController.setAnchorView(framevideo);
       framevideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-        @Override public void onPrepared(MediaPlayer mp) {
+        @Override public void onPrepared(MediaPlayer mediaPlayer) {
           coverLayout.setVisibility(View.GONE);
           progressBar.setVisibility(View.GONE);
         }
       });
-      framevideo.start();
+
     } catch (Exception e) {
 
     }

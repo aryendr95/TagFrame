@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.google.gson.Gson;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.ResponseModels.RmAuthentication;
@@ -22,6 +23,7 @@ import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 import java.util.ArrayList;
 import java.util.TimeZone;
+import java.util.concurrent.TimeoutException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,19 +61,25 @@ public class SplashActivity extends AppCompatActivity {
           @Override
           public void onResponse(Call<RmAuthentication> call, Response<RmAuthentication> response) {
             if (!isFinishing()) {
-              if (response.body().getStatus().equals("success")) {
-                User user1 = response.body().getUser();
-                user1.setPassword(appPrefs.getString(Utility.user_password));
-                user1.setLoggedin(true);
-                appPrefs.putUser(user1);
-                Log.e("Dsa",user.getUnreadnotifications());
-                txt.setText("Loading..");
-                loadTagStream();
-              } else {
-                PopMessage.makeshorttoast(SplashActivity.this, response.body().getStatus());
-                appPrefs.putUser(new User());
-                Intent intent = new Intent(SplashActivity.this, Authentication.class);
-                startActivity(intent);
+              try {
+                if (response.body().getStatus().equals("success")) {
+                  User user1 = response.body().getUser();
+                  user1.setPassword(appPrefs.getString(Utility.user_password));
+                  user1.setLoggedin(true);
+                  appPrefs.putUser(user1);
+                  txt.setText("Loading..");
+                  loadTagStream();
+                } else {
+                  PopMessage.makeshorttoast(SplashActivity.this, response.body().getStatus());
+                  appPrefs.putUser(new User());
+                  Intent intent = new Intent(SplashActivity.this, Authentication.class);
+                  startActivity(intent);
+                  finish();
+                }
+              }
+              catch (NullPointerException e)
+              {
+                PopMessage.makeshorttoast(SplashActivity.this, "Could not connect at this time");
                 finish();
               }
             }
@@ -95,7 +103,7 @@ public class SplashActivity extends AppCompatActivity {
         public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
           if (!isFinishing()) {
             try {
-
+              Log.e("ds",new Gson().toJson(response));
               if (response.body().getStatus().equals("success")) {
                 ArrayList<Event_Model> tagStream_models = response.body().getTagStreamArrayList();
                 AppPrefs.puttagstreamlist(tagStream_models);
@@ -115,6 +123,11 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         @Override public void onFailure(Call<ListResponseModel> call, Throwable t) {
+          Log.e("dsa","dsa"+t.getMessage());
+          if(t instanceof TimeoutException)
+          {
+            Log.e("dsa","timeout,what the fuck ");
+          }
         }
       });
     } else {

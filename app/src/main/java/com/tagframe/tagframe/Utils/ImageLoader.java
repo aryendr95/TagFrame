@@ -59,7 +59,7 @@ public class ImageLoader {
   {
     if(path.isEmpty())
       return;
-    Picasso.with(context).load(path).centerCrop().into(imageView);
+    Picasso.with(context).load(path).into(imageView);
 
   }
 }

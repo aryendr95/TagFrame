@@ -101,6 +101,12 @@ public interface ApiInterface {
   @GET("profile/{user_id}/{logged_user_id}") Call<ProfileResponseModel> getProfileInfo(
       @Query("user_id") String user_id, @Query("logged_user_id") String logged_user_id);
 
+
+  //block_unblock
+  @GET("blocked/{user_id}/{logged_user_id}/{blocked}") Call<ResponsePojo> blockUser(
+      @Query("user_id") String user_id, @Query("logged_user_id") String logged_user_id,
+      @Query("blocked") String blocked);
+
   //event_details
   @GET("event_details/{event_id}") Call<EventDetailResponseModel> getEventDetails(
       @Query("event_id") String event_id);

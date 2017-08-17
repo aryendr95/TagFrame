@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TagFrame.iml" filepath="$PROJECT_DIR$/TagFrame.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/exvidplayer/exvidplayer.iml" filepath="$PROJECT_DIR$/exvidplayer/exvidplayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/multiselect/multiselect.iml" filepath="$PROJECT_DIR$/multiselect/multiselect.iml" />
     </modules>
   </component>

@@ -82,10 +82,6 @@ public class Notifications extends Fragment {
                 if (shouldLoad) {
                     getNotifications();
                 }
-                else
-                {
-                    PopMessage.makesimplesnack(mLayout,"No more notifications for you..");
-                }
             }
         });
     }

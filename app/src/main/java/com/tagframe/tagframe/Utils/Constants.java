@@ -111,7 +111,7 @@ public class Constants {
     public static final int operation_load_user_events = 109;
 
     public static final int operation_comment = 110;
-
+    public static final  int operation_block=10005;
 
     public static final int operation_onclicked_tagged_user = 121;
     public static final int operation_onclicked_direct_endorse = 122;
@@ -132,6 +132,7 @@ public class Constants {
     public static final String success_response="success";
     public static final String message_no_internet="No internet Connection";
     public static String SHP_USER_INFORMATION="user_info";
+
 
     public final static boolean isValidEmail(CharSequence target) {
         if (target == null) {

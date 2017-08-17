@@ -55,6 +55,7 @@ import com.tagframe.tagframe.UI.Fragments.Profile;
 import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 import com.tagframe.tagframe.UI.Fragments.TagStream;
 import com.tagframe.tagframe.Utils.AppPrefs;
+import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.GetPaths;
 import com.tagframe.tagframe.Utils.MyToast;
@@ -110,11 +111,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     setContentView(R.layout.activity_modules);
     userinfo = new AppPrefs(this);
     init();
-
-    // ATTENTION: This was auto-generated to implement the App Indexing API.
-    // See https://g.co/AppIndexing/AndroidStudio for more information.
-
-  }
+}
 
   private void init() {
 
@@ -569,13 +566,15 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
       bundle.putString("keyword", keyword);
       marketPlaceFragment.setArguments(bundle);
       hideKeyboard(Modules.this);
+      ed_search.setText("");
       changefragment(marketPlaceFragment);
     } else {
       Follow follow = new Follow();
       Bundle bundle = new Bundle();
-      bundle.putString("keyword", ed_search.getText().toString());
+      bundle.putString("keyword", keyword);
       follow.setArguments(bundle);
       hideKeyboard(Modules.this);
+      ed_search.setText("");
       changefragment(follow);
     }
   }
@@ -727,11 +726,9 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     dialog.show();
   }
 
-
-  public boolean askforPermission(String[] requiredPermissoion,int requestCode) {
+  public boolean askforPermission(String[] requiredPermissoion, int requestCode) {
     if (Build.VERSION.SDK_INT >= 23) {
-      if (checkSelfPermission(requiredPermissoion[0])
-          == PackageManager.PERMISSION_GRANTED) {
+      if (checkSelfPermission(requiredPermissoion[0]) == PackageManager.PERMISSION_GRANTED) {
         return true;
       } else {
         requestPermissions(requiredPermissoion, requestCode);
@@ -744,7 +741,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
-    Log.e("requestCode",requestCode+"");
+    Log.e("requestCode", requestCode + "");
     switch (requestCode) {
       case Request_Storage_permissions: {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -760,8 +757,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         }
       }
       break;
-      case Request_Camera_permissions:
-      {
+      case Request_Camera_permissions: {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
           // permissions granted.
           Intent intent1 = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -773,10 +769,8 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         }
       }
       break;
-
     }
   }
-
 
   SlidingPaneLayout.PanelSlideListener panelListener = new SlidingPaneLayout.PanelSlideListener() {
 
@@ -847,7 +841,7 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
         User user = userinfo.getUser();
         user.setUnreadnotifications(String.valueOf((number)));
         userinfo.putUser(user);
-        userinfo.putString(Utility.unread_notifications,String.valueOf(number));
+        userinfo.putString(Utility.unread_notifications, String.valueOf(number));
       }
 
       if (!(number >= 0)) {
@@ -978,8 +972,17 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
 
           PopMessage.makesimplesnack(mSlidingPanel, "Handle Failure");
         }
-
         break;
+      case Constants.operation_block:
+        if (resultCode == 1) {
+          PopMessage.makeshorttoast(Modules.this, "Successful");
+          Fragment f2 = getSupportFragmentManager().findFragmentById(R.id.mod_frame_layout);
+          if (f2 instanceof Profile)
+          // do something with f
+          {
+            ((Profile) f2).changeprofile_ui(operation, resultCode);
+          }
+        }
     }
   }
 

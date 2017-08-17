@@ -1,0 +1,240 @@
+<android.support.v4.widget.SlidingPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/SlidingPanel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:focusable="true"
+
+    android:focusableInTouchMode="true"
+    >
+
+  <LinearLayout
+      android:layout_width="250dp"
+      android:layout_height="match_parent"
+      android:layout_gravity="right"
+      android:orientation="vertical"
+      >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal"
+        >
+
+
+      <ImageView
+          android:id="@+id/img"
+          android:layout_width="fill_parent"
+          android:layout_height="200dp"
+
+          android:scaleType="fitXY"
+          />
+
+      <RelativeLayout
+          android:layout_width="fill_parent"
+          android:layout_height="200dp"
+          android:background="#90000000"
+          ></RelativeLayout>
+
+
+      <com.pkmmte.view.CircularImageView
+          android:id="@+id/mod_profile_image"
+          android:layout_width="70dp"
+          android:layout_height="70dp"
+          android:layout_marginLeft="20dp"
+          android:layout_marginTop="20dp"
+          android:elevation="4dp"
+          android:src="@drawable/pro_image"
+          />
+
+      <LinearLayout
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="20dp"
+          android:layout_marginTop="30dp"
+          android:layout_toRightOf="@+id/mod_profile_image"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            android:id="@+id/mod_usrname"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="Username"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+        <TextView
+            android:id="@+id/mod_email"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="email@gmail.com"
+            android:textColor="@color/white"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+      </LinearLayout>
+
+      <RelativeLayout
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:layout_below="@+id/mod_profile_image"
+          >
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:id="@+id/txt_mod_number_of_events"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@+id/txt_mod_number_of_events"
+            android:text="Events"
+            android:textColor="@color/white"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:id="@+id/txt_mod_number_of_followers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_mod_number_of_events"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_mod_number_of_events"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/txt_mod_number_of_events"
+            android:text="Followers"
+            android:textColor="@color/white"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:id="@+id/txt_mod_number_of_followings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_mod_number_of_followers"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+        <com.tagframe.tagframe.Utils.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_mod_number_of_followers"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/txt_mod_number_of_events"
+            android:text="Following"
+            android:textColor="@color/white"
+            style="@style/TextAppearance.AppCompat.Small"
+            />
+
+      </RelativeLayout>
+    </RelativeLayout>
+
+
+    <ListView
+        android:id="@+id/mod_MenuList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:divider="@color/white"
+        ></ListView>
+  </LinearLayout>
+
+  <RelativeLayout
+      android:id="@+id/mLayout_module"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_gravity="left"
+      android:orientation="vertical"
+      >
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:elevation="5dp"
+        android:title="TagFrame"
+        >
+      <RelativeLayout
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:background="@color/colorPrimary"
+          android:orientation="horizontal"
+          >
+        <ImageView
+            android:id="@+id/mod_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_menu_white_24dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/mod_menu"
+            android:text="TagFrame"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:layout_marginLeft="10dp"
+            />
+      </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/mod_frame_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottom_bar"
+        android:layout_below="@+id/toolbar"
+        ></FrameLayout>
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="5dp"
+        app:elevation="5dp"
+        android:background="@color/bottombarbackground"
+        android:layout_alignParentBottom="true"
+        app:itemIconTint="@drawable/nav_item_color_state"
+        app:itemTextColor="@drawable/nav_item_color_state"
+        app:menu="@menu/bottom_bar_menu"
+        />
+
+  </RelativeLayout>
+
+</android.support.v4.widget.SlidingPaneLayout>
+
+

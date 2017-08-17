@@ -1,12 +1,14 @@
 package com.tagframe.tagframe.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Brajendr on 8/16/2016.
  */
-public class User {
+public class User implements Parcelable {
 
 
     private boolean isLoggedin=false;
@@ -18,6 +20,19 @@ public class User {
     public void setLoggedin(boolean loggedin) {
         isLoggedin = loggedin;
     }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    @SerializedName("blocked")
+    @Expose
+
+    private boolean blocked;
 
     @SerializedName("user_id")
     @Expose
@@ -38,7 +53,7 @@ public class User {
     @Expose
 
     private String password;
-    @SerializedName("realname")
+    @SerializedName("first_name")
     @Expose
     private String realname;
     @SerializedName("description")
@@ -178,4 +193,59 @@ public class User {
     public void setFollowed(String followed) {
         this.followed = followed;
     }
+
+    @Override public int describeContents() {
+        return 0;
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isLoggedin ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.blocked ? (byte) 1 : (byte) 0);
+        dest.writeString(this.user_id);
+        dest.writeString(this.username);
+        dest.writeString(this.password);
+        dest.writeString(this.realname);
+        dest.writeString(this.description);
+        dest.writeString(this.profile_image);
+        dest.writeString(this.number_of_event);
+        dest.writeString(this.number_of_frame);
+        dest.writeString(this.number_of_following);
+        dest.writeString(this.number_of_timeline);
+        dest.writeString(this.number_of_followers);
+        dest.writeString(this.followed);
+        dest.writeString(this.email);
+        dest.writeString(this.unreadnotifications);
+    }
+
+    public User() {
+    }
+
+    protected User(Parcel in) {
+        this.isLoggedin = in.readByte() != 0;
+        this.blocked = in.readByte() != 0;
+        this.user_id = in.readString();
+        this.username = in.readString();
+        this.password = in.readString();
+        this.realname = in.readString();
+        this.description = in.readString();
+        this.profile_image = in.readString();
+        this.number_of_event = in.readString();
+        this.number_of_frame = in.readString();
+        this.number_of_following = in.readString();
+        this.number_of_timeline = in.readString();
+        this.number_of_followers = in.readString();
+        this.followed = in.readString();
+        this.email = in.readString();
+        this.unreadnotifications = in.readString();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

@@ -2,22 +2,28 @@
     <item
         android:id="@+id/bottomBarItemtagstream"
         android:icon="@drawable/tagstream_hover"
-        android:title="TagStream" />
+        android:title="TagStream"
+        android:checked="true"
+        android:enabled="true"/>
     <item
         android:id="@+id/bottomBarItemnotifications"
         android:icon="@drawable/nofication_hover"
+        android:enabled="true"
         android:title="Notifications" />
     <item
         android:id="@+id/bottomBarItemevents"
+        android:enabled="true"
         android:icon="@drawable/event_ho"
         android:title="Event" />
     <item
         android:id="@+id/bottomBarItemmarketplace"
         android:icon="@drawable/market_hover"
-        android:title="MarketPlace" />
+        android:title="MarketPlace"
+        android:enabled="true"/>
     <item
         android:id="@+id/bottomBarItemprofile"
         android:icon="@drawable/user_hover"
-        android:title="Profile" />
+        android:title="Profile"
+        android:enabled="true"/>
 
 </menu>

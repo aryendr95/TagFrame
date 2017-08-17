@@ -257,6 +257,7 @@ public class ImageAdapter extends BaseAdapter {
           progressBar.setVisibility(View.GONE);
         }
       });
+      framevideo.setZOrderOnTop(true);
       framevideo.start();
     } catch (Exception e) {
 

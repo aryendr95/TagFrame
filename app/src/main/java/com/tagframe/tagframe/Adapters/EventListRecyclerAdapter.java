@@ -38,6 +38,7 @@ import com.tagframe.tagframe.Services.IntentServiceOperations;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
 import com.tagframe.tagframe.UI.Acitivity.MakeNewEvent;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
+import com.tagframe.tagframe.UI.Acitivity.ModulesNew;
 import com.tagframe.tagframe.UI.Acitivity.WatchEventActivity;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.Networkstate;

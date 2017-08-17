@@ -36,16 +36,9 @@
 
       <ImageView
           android:id="@+id/img_frame_to_show"
-          android:layout_width="150dp"
-          android:layout_height="150dp"
-          />
-
-      <ProgressBar
-          android:layout_width="20dp"
-          android:layout_height="wrap_content"
-          android:layout_centerInParent="true"
-          android:id="@+id/pbarLoadFrame"
-          android:visibility="gone"
+          android:layout_width="@dimen/frame_size"
+          android:layout_height="@dimen/frame_size"
+          android:scaleType="centerCrop"
           />
 
       <ImageView
@@ -189,13 +182,13 @@
             android:layout_marginRight="10dp"
 
 
-            android:contentDescription="Add Frame"
+            android:contentDescription="Edit Event"
 
             android:gravity="center"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
 
-            android:src="@drawable/ic_frame_white_24dp"
+            android:src="@drawable/ic_border_color_white_24dp"
             android:textColor="@color/white"
             />
 
@@ -203,23 +196,23 @@
       </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
 
 
-        <com.tagframe.tagframe.Utils.CustomSeekBar
-            android:id="@+id/seekbar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-           android:layout_gravity="bottom"
-            android:layout_above="@+id/controls"
-            />
-        <!--android:indeterminate="false"
-        style="@android:style/Widget.DeviceDefault.Light.SeekBar"
-        android:thumbTint="#ffffff"
-        android:progress="0"
-        android:secondaryProgress="0"
-        android:splitTrack="false"
-        android:progressTint="#2473ac"
-        android:secondaryProgressTint="#9A8486"
-        android:foregroundTint="#7F5C62"
-        android:foreground="#7F5C62" />-->
+      <com.tagframe.tagframe.Utils.CustomSeekBar
+          android:id="@+id/seekbar"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:layout_above="@+id/controls"
+          />
+      <!--android:indeterminate="false"
+      style="@android:style/Widget.DeviceDefault.Light.SeekBar"
+      android:thumbTint="#ffffff"
+      android:progress="0"
+      android:secondaryProgress="0"
+      android:splitTrack="false"
+      android:progressTint="#2473ac"
+      android:secondaryProgressTint="#9A8486"
+      android:foregroundTint="#7F5C62"
+      android:foreground="#7F5C62" />-->
 
 
       <LinearLayout
@@ -241,7 +234,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:visibility="gone"
             android:background="@android:color/transparent"
             android:cropToPadding="false"
             android:src="@drawable/ic_skip_previous_white_24dp"
@@ -285,7 +277,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:visibility="gone"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_skip_next_white_24dp"
             />
@@ -325,6 +316,7 @@
       <RelativeLayout
           android:id="@+id/mContainer"
           android:layout_width="fill_parent"
+
           android:layout_height="wrap_content"
           android:layout_below="@+id/rl_surface_container"
           >

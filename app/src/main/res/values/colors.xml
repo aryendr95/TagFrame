@@ -3,6 +3,8 @@
     <color name="colorPrimary">#1976d2</color>
     <color name="colorPrimaryDark">#455a64</color>
     <color name="colorAccent">#901976d2</color>
+    <color name="bottombarbackground">#EEEEEE</color>
+    <color name="bottombarbackitem">#9E9E9E</color>
     <color name="colorPrimaryDarktrans">#50000000</color>
     <color name="appblue">#1976d2</color>
     <color name="black_trans">#99000000</color>

@@ -27,6 +27,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Application.TagFrame;
 import com.tagframe.tagframe.Models.ResponsePojo;
+import com.tagframe.tagframe.Models.User;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -170,7 +171,7 @@ public class Account extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!ed_realname.getText().toString().isEmpty() && !ed_username.getText().toString().isEmpty() &&
-                        !ed_email.getText().toString().isEmpty() && !ed_description.getText().toString().isEmpty()) {
+                        !ed_email.getText().toString().isEmpty()) {
 
                     new changeuserinfo().execute(AppPrefs.getString(Utility.user_id), ed_email.getText().toString(), ed_username.getText().toString(), ed_realname.getText().toString(), ed_description.getText().toString(), picturePath);
                 } else {
@@ -541,6 +542,13 @@ public class Account extends Fragment {
 
                 status = jsonObject.getString("status");
                 if (status.equals("success")) {
+                    User user=AppPrefs.getUser();
+                    user.setEmail(userInfo.getString(Utility.user_email));
+                    user.setUsername(userInfo.getString(Utility.user_name));
+                    user.setRealname(userInfo.getString(Utility.user_realname));
+                    user.setDescription(userInfo.getString(Utility.user_descrip));
+                    user.setProfile_image(userInfo.getString(Utility.user_pic));
+                    AppPrefs.putUser(user);
                     AppPrefs.putString(Utility.user_email, userInfo.getString(Utility.user_email));
                     AppPrefs.putString(Utility.user_name, userInfo.getString(Utility.user_name));
                     AppPrefs.putString(Utility.user_realname, userInfo.getString(Utility.user_realname));

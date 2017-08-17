@@ -72,10 +72,15 @@ public class FollowRecyclerAdapter
       if ((type == 0))//following
       {
         viewHolder.removeuser.setVisibility(View.GONE);
-        viewHolder.followbutton.setText("UnFollow");
+        viewHolder.followbutton.setText("Unfollow");
 
       } else if (type == 1)//followers
       {
+
+        if(followModel.isFollowing())
+        {
+          viewHolder.followbutton.setText("Following");
+        }
         viewHolder.removeuser.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
@@ -209,57 +214,51 @@ public class FollowRecyclerAdapter
 
           dialog.show();
         } else if (type == Utility.user_type_followers) {
+          if (!followModel.isFollowing()) {
+            final Dialog dialog = new Dialog(ctx);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_remove_follower);
 
-          final Dialog dialog = new Dialog(ctx);
-          dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-          dialog.setContentView(R.layout.dialog_remove_follower);
+            CircularImageView circularImageView = (CircularImageView) dialog.findViewById(R.id.dia_remove_image);
 
-          CircularImageView circularImageView = (CircularImageView) dialog.findViewById(R.id.dia_remove_image);
+            try {
+              Picasso.with(ctx).load(followModel.getImage()).into(circularImageView);
+            } catch (Exception e) {
+              circularImageView.setImageResource(R.drawable.pro_image);
+            }
+            TextView textView = (TextView) dialog.findViewById(R.id.dia_remove_text);
+            textView.setText(followModel.getUser_name());
 
-          try {
-            Picasso.with(ctx).load(followModel.getImage()).into(circularImageView);
-          } catch (Exception e) {
-            circularImageView.setImageResource(R.drawable.pro_image);
+            TextView textView1 = (TextView) dialog.findViewById(R.id.dia_rem_caption);
+            textView1.setText("Are you sure you want to follow this person?");
+
+            dialog.findViewById(R.id.dia_rem_yesbtn).setOnClickListener(new View.OnClickListener() {
+              @Override public void onClick(View v) {
+
+                ((Modules) ctx).setprofileparameter(Utility.user_type_following,
+                    (followModelArrayList.size()) + "");
+
+                mReceiver = ((Modules) ctx).register_reviever();
+
+                Intent intent = new Intent(ctx, IntentServiceOperations.class);
+                intent.putExtra("operation", Utility.operation_follow);
+                intent.putExtra("from_userid", followModel.getFrom_user_id());
+                intent.putExtra("to_userid", followModel.getUserid());
+                intent.putExtra("type", "following");
+                intent.putExtra("receiver", mReceiver);
+                ctx.startService(intent);
+                dialog.dismiss();
+              }
+            });
+
+            dialog.findViewById(R.id.dia_rem_nobtn).setOnClickListener(new View.OnClickListener() {
+              @Override public void onClick(View v) {
+                dialog.dismiss();
+              }
+            });
+            dialog.show();
           }
-          TextView textView = (TextView) dialog.findViewById(R.id.dia_remove_text);
-          textView.setText(followModel.getUser_name());
-
-          TextView textView1 = (TextView) dialog.findViewById(R.id.dia_rem_caption);
-          textView1.setText("Are you sure you want to follow this person?");
-
-
-          dialog.findViewById(R.id.dia_rem_yesbtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-              ((Modules) ctx).setprofileparameter(Utility.user_type_following, (followModelArrayList.size()) + "");
-
-              mReceiver = ((Modules) ctx).register_reviever();
-
-              Intent intent = new Intent(ctx, IntentServiceOperations.class);
-              intent.putExtra("operation", Utility.operation_follow);
-              intent.putExtra("from_userid", followModel.getFrom_user_id());
-              intent.putExtra("to_userid", followModel.getUserid());
-              intent.putExtra("type", "following");
-              intent.putExtra("receiver", mReceiver);
-              ctx.startService(intent);
-              dialog.dismiss();
-
-
-            }
-          });
-
-          dialog.findViewById(R.id.dia_rem_nobtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              dialog.dismiss();
-            }
-          });
-          dialog.show();
         }
-
-
       }
     });
 

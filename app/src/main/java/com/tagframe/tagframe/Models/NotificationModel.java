@@ -1,12 +1,14 @@
 package com.tagframe.tagframe.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Brajendr on 8/26/2016.
  */
-public class NotificationModel {
+public class NotificationModel implements Parcelable {
 
     @SerializedName("user_id")
     @Expose
@@ -126,8 +128,66 @@ public class NotificationModel {
     @Expose
     private String sub_action_id;
 
+    public String getSub_action_message() {
+        return sub_action_message;
+    }
+
+    public void setSub_action_message(String sub_action_message) {
+        this.sub_action_message = sub_action_message;
+    }
+
     @SerializedName("sub_action_name")
+
     @Expose
     private String sub_action_name;
 
+    @SerializedName("sub_action_message")
+    @Expose
+    private String sub_action_message;
+
+    @Override public int describeContents() {
+        return 0;
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.user_id);
+        dest.writeString(this.is_read);
+        dest.writeString(this.id);
+        dest.writeString(this.created_on);
+        dest.writeString(this.action_type);
+        dest.writeString(this.user_name);
+        dest.writeString(this.profile_pic);
+        dest.writeString(this.sub_action_type);
+        dest.writeString(this.sub_action_id);
+        dest.writeString(this.sub_action_name);
+        dest.writeString(this.sub_action_message);
+    }
+
+    public NotificationModel() {
+    }
+
+    protected NotificationModel(Parcel in) {
+        this.user_id = in.readString();
+        this.is_read = in.readString();
+        this.id = in.readString();
+        this.created_on = in.readString();
+        this.action_type = in.readString();
+        this.user_name = in.readString();
+        this.profile_pic = in.readString();
+        this.sub_action_type = in.readString();
+        this.sub_action_id = in.readString();
+        this.sub_action_name = in.readString();
+        this.sub_action_message = in.readString();
+    }
+
+    public static final Parcelable.Creator<NotificationModel> CREATOR =
+        new Parcelable.Creator<NotificationModel>() {
+            @Override public NotificationModel createFromParcel(Parcel source) {
+                return new NotificationModel(source);
+            }
+
+            @Override public NotificationModel[] newArray(int size) {
+                return new NotificationModel[size];
+            }
+        };
 }

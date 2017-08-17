@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tagframe.tagframe.Application.TagFrame;
 import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.ResponseModels.RmAuthentication;
@@ -23,6 +24,8 @@ import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.UI.Acitivity.Authentication;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
+import com.tagframe.tagframe.UI.Acitivity.ModulesNew;
+import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.Networkstate;
@@ -78,12 +81,14 @@ public class Splash extends Fragment {
     final User user = appPrefs.getUser();
     TimeZone tz = TimeZone.getDefault();
     Utility.getApiCaller()
-        .login(user.getUsername(), user.getPassword(),tz.getID())
+        .login(user.getUsername(), user.getPassword(), TagFrame.android_id,appPrefs.getString(
+            Utility.shp_user_Token),tz.getID())
         .enqueue(new Callback<RmAuthentication>() {
           @Override
           public void onResponse(Call<RmAuthentication> call, Response<RmAuthentication> response) {
             if (isAdded()) {
               if (response.body().getStatus().equals("success")) {
+
                 User user1=response.body().getUser();
                 user1.setPassword(appPrefs.getString(Utility.user_password));
                 user1.setLoggedin(true);
@@ -216,7 +221,7 @@ public class Splash extends Fragment {
                 ArrayList<Event_Model> tagStream_models = response.body().getTagStreamArrayList();
                 AppPrefs.puttagstreamlist(tagStream_models);
 
-                Intent intent = new Intent(getActivity(), Modules.class);
+                Intent intent = new Intent(getActivity(), ModulesNew.class);
                 startActivity(intent);
                 getActivity().finish();
               } else {

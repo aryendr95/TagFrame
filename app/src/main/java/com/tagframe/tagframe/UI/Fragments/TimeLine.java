@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tagframe.tagframe.Adapters.EventListRecyclerAdapter;
+import com.tagframe.tagframe.Adapters.TimeLineRecyclerAdapter;
 import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.ListResponseModel;
 import com.tagframe.tagframe.R;
@@ -77,7 +78,7 @@ public class TimeLine extends Fragment implements ScrollList {
     private void functionalizeList() {
         LinearLayoutManager llayoutManager = new LinearLayoutManager(getActivity());
         rcTimeLine.setLayoutManager(llayoutManager);
-        rcTimeLine.setAdapter(new EventListRecyclerAdapter(getActivity(), events_models));
+        rcTimeLine.setAdapter(new TimeLineRecyclerAdapter(getActivity(), events_models));
         rcTimeLine.addOnScrollListener(new EndlessRecyclerViewScrollListener(llayoutManager) {
             @Override public void onLoadMore(int page, int totalItemsCount) {
                 if (shouldLoad) {

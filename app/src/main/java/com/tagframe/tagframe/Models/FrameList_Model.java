@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import com.tagframe.tagframe.Utils.Constants;
 import java.io.Serializable;
 
 /**
@@ -111,7 +112,7 @@ public class FrameList_Model implements Parcelable {
     private String product_url;
     @SerializedName("frame_resource_type")
     @Expose
-    private String frame_resource_type;
+    private String frame_resource_type= Constants.frame_resource_type_local;
     @SerializedName("frame_data_url")
     @Expose
     private String frame_data_url;
@@ -262,4 +263,8 @@ public class FrameList_Model implements Parcelable {
             return new FrameList_Model[size];
         }
     };
+
+    @Override public String toString() {
+        return starttime+":"+endtime;
+    }
 }

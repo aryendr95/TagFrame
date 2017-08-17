@@ -13,9 +13,8 @@
     -->
   <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
   <uses-feature android:name="android.hardware.camera" />
-
-
 
   <application
       android:name=".Application.TagFrame"
@@ -28,8 +27,20 @@
     <activity
         android:name=".UI.Acitivity.Modules"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:screenOrientation="portrait"
+        android:theme="@style/AppTheme"
+        android:windowSoftInputMode="adjustPan">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".UI.Acitivity.ModulesNew"
+        android:label="@string/app_name"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustPan">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -40,8 +51,8 @@
     <activity
         android:name=".UI.Acitivity.Authentication"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:screenOrientation="portrait"
+        android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustPan">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -52,13 +63,12 @@
     <activity
         android:name=".UI.Acitivity.Menu_Action"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:screenOrientation="portrait"
+        android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustPan" />
     <activity
         android:name=".UI.Acitivity.Productlist"
         android:screenOrientation="portrait"
-
         android:windowSoftInputMode="adjustPan" />
     <activity
         android:name=".UI.Acitivity.SavedEvents"
@@ -89,15 +99,15 @@
       </intent-filter>
     </service>
 
-    <activity android:name=".UI.Acitivity.SplashActivity"
-        android:screenOrientation="portrait"/>
-
-    <activity android:name=".UI.Acitivity.WatchEventActivity"
-        android:configChanges="orientation|screenSize"/>
-
-    <activity android:name="com.veer.exvidplayer.VideoPlayer.ExVidPlayerActivity"
-        android:configChanges="orientation|screenSize"></activity>
-
+    <activity
+        android:name=".UI.Acitivity.SplashActivity"
+        android:screenOrientation="portrait" />
+    <activity
+        android:name=".UI.Acitivity.WatchEventActivity"
+        android:configChanges="orientation|screenSize" />
+    <activity
+        android:name="com.veer.exvidplayer.VideoPlayer.ExVidPlayerActivity"
+        android:configChanges="orientation|screenSize" />
   </application>
 
 </manifest>

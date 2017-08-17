@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,6 +182,83 @@ public class ProductAdapter extends BaseAdapter {
                 }
             }
         });
+
+        dialog.show();
+
+
+        //setting pages
+    }
+
+
+    static void showProductDialog(final Context ctx, final Product product,SpannableString message) {
+        final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+        dialog.setContentView(R.layout.dialog_see_product);
+        dialog.setCancelable(true);
+        //dismissing dialog
+        dialog.findViewById(R.id.img_comment_dialog_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        TextView product_name = (TextView) dialog.findViewById(R.id.dialog_product_name);
+        TextView product_message = (TextView) dialog.findViewById(R.id.txtMessage);
+        TextView product_price = (TextView) dialog.findViewById(R.id.dialog_product_price);
+        TextView endorse_product = (TextView) dialog.findViewById(R.id.dialog_product_endorse);
+        TextView buy_product = (TextView) dialog.findViewById(R.id.dialog_product_buy);
+
+        product_message.setText(message);
+
+        ImageView product_image = (ImageView) dialog.findViewById(R.id.dialog_product_image);
+        Picasso.with(ctx).load(product.getImage()).into(product_image);
+
+        product_name.setText(product.getName());
+        product_price.setText("$" + product.getProduct_price());
+
+        buy_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(product.getUrl()));
+                ctx.startActivity(browserIntent);
+            }
+        });
+
+
+        //if user access products with market place ,he can directly endorse it else
+        //user endorses the product to the frame
+        //if the context here is of marketplace, then directly endorse else otherwise
+
+        if (ctx instanceof Productlist) {
+            //frame endorse
+            endorse_product.setText("Endorse");
+        } else {
+            //direct endorse
+            endorse_product.setText("Direct Endorse");
+        }
+
+        endorse_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ctx instanceof Productlist) {
+                    //frame endorse
+                    Intent intent = new Intent();
+                    intent.putExtra("product_id", product.getId());
+                    intent.putExtra("product_image", product.getImage());
+                    intent.putExtra("product_url", product.getUrl());
+                    intent.putExtra("product_name",product.getName());
+                    ((Productlist) ctx).setResult(Utility.PRODUCT_LIST_FLAG, intent);
+                    ((Productlist) ctx).finish();
+
+                } else {
+                    //direct endorse
+                    Intent intent=new Intent(ctx, SearchUserActivity.class);
+                    intent.putExtra("product_id", product.getId());
+                    ctx.startActivity(intent);
+                }
+            }
+        });
+
 
         dialog.show();
 

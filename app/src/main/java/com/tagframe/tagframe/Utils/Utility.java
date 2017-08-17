@@ -37,8 +37,7 @@ import java.util.concurrent.TimeUnit;
  * Created by abhinav on 04/04/2016.
  */
 public class Utility {
-
-  //SP
+  //SharedPreference
   public static final String user_id = "user_id";
   public static final String user_name = "username";
   public static final String user_pic = "profile_image";
@@ -133,7 +132,7 @@ public class Utility {
   public static final int operation_onclicked_tagged_user = 121;
   public static final int operation_onclicked_direct_endorse = 122;
   public static final int operation_onclicked_direct_follow = 123;
-  public static final String ERROR_MESSAGE ="Sorry, error at this time" ;
+  public static final String ERROR_MESSAGE = "Sorry, error at this time";
 
   //public static final int operation_unlike=108;
   //public static final int operation_unlike=108;
@@ -192,7 +191,6 @@ public class Utility {
     userinfo.putString(Utility.total_events, "");
     userinfo.putString(Utility.user_pic, "");
     userinfo.putUser(new User());
-
   }
 
   public static String milliSecondsToTimer(long milliseconds) {
@@ -390,6 +388,17 @@ public class Utility {
     return resizedBitmap;
   }
 
+  public static void toggleOrientation(Activity activity) {
+    int orientation = getScreenOrientation(activity);
+    if (orientation == 1)//portrait
+    {
+      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    } else if (orientation == 2)//landscape
+    {
+      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+  }
+
   public static int getScreenOrientation(Activity activity) {
     Display getOrient = activity.getWindowManager().getDefaultDisplay();
     int orientation = Configuration.ORIENTATION_UNDEFINED;
@@ -419,7 +428,7 @@ public class Utility {
   }
 
   public static String getUserId(Context context) {
-    AppPrefs appPrefs=new AppPrefs(context);
-    return  appPrefs.getUser().getUser_id();
+    AppPrefs appPrefs = new AppPrefs(context);
+    return appPrefs.getUser().getUser_id();
   }
 }

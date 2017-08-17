@@ -317,7 +317,7 @@ public class MakeNewEvent extends Activity
     }
 
     @Override public void onCompletion() {
-
+      img_frame_to_show.setVisibility(View.GONE);
       isControlVisible = true;
       ll_bottom_bar.show();
       ll_top_bar.show();
@@ -535,36 +535,8 @@ public class MakeNewEvent extends Activity
     return 3;
   }
 
-  private void toggleScreenResolution() {
-    int orientation = Utility.getScreenOrientation(this);
-    if (orientation == 1)//portrait
-    {
-      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    } else if (orientation == 2)//landscape
-    {
-      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-  }
 
 
-   /* private void toggleControlsVisibilty() {
-        if (!isControlVisible) {
-            mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
-            isControlVisible = true;
-            if (containsLocalFrame())
-                ll_container_frames.show();
-            setControlsVisibilty();
-        } else
-
-        {
-            mControlsVisibilityHandler.removeCallbacks(setVisibiltyTask);
-            isControlVisible = false;
-
-            if (ll_container_frames.isVisible())
-                ll_container_frames.hide();
-            setControlsVisibilty();
-        }
-    }*/
 
   private void show_tagged_user() {
     mediaPlayer.pause();
@@ -821,6 +793,7 @@ public class MakeNewEvent extends Activity
             progressBar.setVisibility(View.GONE);
           }
         });
+        framevideo.setZOrderOnTop(true);
         framevideo.start();
       } catch (Exception e) {
 
@@ -1100,17 +1073,15 @@ public class MakeNewEvent extends Activity
                     framelist.getAdapter().notifyDataSetChanged();
                     Collections.sort(framedata_map, new listsort());
                     delete_event = false;
-                    PopMessage.makeshorttoast(MakeNewEvent.this,"Successfull");
-                  }
-                  else
-                  {
-                    PopMessage.makeshorttoast(MakeNewEvent.this,response.body().getStatus());
+                    PopMessage.makeshorttoast(MakeNewEvent.this, "Successfull");
+                  } else {
+                    PopMessage.makeshorttoast(MakeNewEvent.this, response.body().getStatus());
                   }
                 }
 
                 @Override public void onFailure(Call<ResponsePojo> call, Throwable t) {
                   dialog.dismiss();
-                  PopMessage.makeshorttoast(MakeNewEvent.this,"Unable to delete event");
+                  PopMessage.makeshorttoast(MakeNewEvent.this, "Unable to delete event");
                 }
               });
         }
@@ -1185,12 +1156,12 @@ public class MakeNewEvent extends Activity
       } catch (NullPointerException e) {
 
       }
-
       long totalDurationn = 0;
       long currentDuration = 0;
       try {
         totalDurationn = mediaPlayer.getDuration();
         currentDuration = mediaPlayer.getCurrentPosition();
+        Log.e("da", currentDuration + "   " + totalDurationn);
       } catch (Exception e) {
         totalDurationn = 0;
         currentDuration = 0;
@@ -1213,30 +1184,22 @@ public class MakeNewEvent extends Activity
       // Set the "topMargin" to the value you decided upon before
 
       // Set LayoutParams
-
-      img_frame_to_show.setVisibility(View.INVISIBLE);
-      img_play_video.setVisibility(View.INVISIBLE);
+      if (currentDuration != totalDurationn) {
+        img_frame_to_show.setVisibility(View.INVISIBLE);
+        img_play_video.setVisibility(View.INVISIBLE);
+      }
       for (int i = 0; i < framedata_map.size(); i++) {
         FrameList_Model fm = framedata_map.get(i);
         if (fm.getStarttime() - 100 <= currentDuration
             && currentDuration <= fm.getEndtime() + 100
             && fm.getEndtime() != 0) {
           img_frame_to_show.setVisibility(View.VISIBLE);
-          //set controls visibity
           if (!isTutvisible) {
             isControlVisible = true;
             ll_bottom_bar.show();
             ll_top_bar.show();
             ll_container_frames.show();
           }
-
-          //if a product is attached to the frame
-                   /* if (!fm.getProduct_id().isEmpty() && !fm.getProduct_id().equals("0")) {
-                        Picasso.with(MakeNewEvent.this).load(fm.getProduct_path()).into(img_frame_to_show);
-
-
-                    } else */
-
           if (fm.getFrametype() == Utility.frametype_image) {
 
             if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
@@ -1265,7 +1228,6 @@ public class MakeNewEvent extends Activity
                   MediaStore.Images.Thumbnails.MINI_KIND);
 
               thumb = Utility.getResizedBitmap(thumb, 200, 200);
-
               img_frame_to_show.setImageBitmap(thumb);
             } else {
               Picasso.with(MakeNewEvent.this)
@@ -1274,7 +1236,6 @@ public class MakeNewEvent extends Activity
                   .into(img_frame_to_show);
             }
           }
-
           img_frame_to_show.setTag(i + "");
           int prog = (int) (Utility.getProgressPercentage(fm.getEndtime(), totalDurationn));
           if (prog > 80) {
@@ -1288,8 +1249,6 @@ public class MakeNewEvent extends Activity
 
         Utility.updateseekbar(seekbar, mediaPlayer.getDuration(), MakeNewEvent.this, framedata_map);
       }
-
-      // Running this thread after 100 milliseconds
       mHandler.postDelayed(this, 100);
     }
   };
@@ -1298,25 +1257,14 @@ public class MakeNewEvent extends Activity
    *
    * */
   public void show_frame_on_seekbar(final int progress) {
-
     int measure = (int) ((((float) progress * p.x) / 100) - (progress));
-
-    // When "measure" will become equal to "p.x"(at progress = 100),
-    // the image will be outside the view when we set its "leftMargin".
-    // But, the image will start disappearing before that.
-    // When this situation comes, set the "leftMargin" to a maximum value
-    // which is the screen width - ImageView' width
     if (p.x - measure < img_frame_to_show.getWidth()) {
 
-      params.leftMargin = p.x - img_frame_to_show.getWidth();
+      params.leftMargin = p.x - img_frame_to_show.getWidth() + 100;
     } else {
 
       params.leftMargin = measure;
     }
-
-    // Set the "topMargin" to the value you decided upon before
-
-    // Set LayoutParams
     img_frame_to_show.setLayoutParams(params);
     img_play_video.setLayoutParams(params);
   }
@@ -1348,7 +1296,9 @@ public class MakeNewEvent extends Activity
 
     // forward or backward to certain seconds
     mediaPlayer.seekTo(currentPosition);
-
+    if (!mediaPlayer.isPlaying()) {
+      imageButton_play.setImageResource(android.R.drawable.ic_media_play);
+    }
     // update timer progress again
     updateProgressBar();
   }
@@ -1481,20 +1431,18 @@ public class MakeNewEvent extends Activity
   }
 
   private boolean isduplicate_frame(FrameList_Model frameList_model) {
-
     boolean isduplicate = false;
     int s_time = frameList_model.getStarttime();
     int e_time = frameList_model.getEndtime();
-    Log.e("s e", s_time + " " + e_time);
     Collections.sort(framedata_map, new listsort());
     if (e_time != 0) {
 
       for (int i = 0; i < framedata_map.size(); i++) {
         FrameList_Model fm = framedata_map.get(i);
-        if (fm.getStarttime() == s_time || fm.getEndtime() == e_time) {
+        if ((fm.getStarttime() == s_time && fm.getStarttime() != 0) || fm.getEndtime() == e_time) {
           isduplicate = true;
         }
-        if (fm.getStarttime() <= s_time && s_time <= fm.getEndtime()
+        if ((fm.getStarttime() <= s_time && s_time <= fm.getEndtime() && fm.getStarttime() != 0)
             || fm.getStarttime() <= e_time && e_time <= fm.getEndtime()) {
           isduplicate = true;
         }
@@ -1675,44 +1623,39 @@ public class MakeNewEvent extends Activity
   //this method is used for resncing the frame
   public void resync_frame(int position) throws ConcurrentModificationException {
     if (position == RESYC_FRAME_POSITION) {
-
-      long startTime = System.currentTimeMillis();
       FrameList_Model fm = framedata_map.get(position);
-      if (mediaPlayer.getCurrentPosition() + 2000 <= mediaPlayer.getDuration()) {
-
+      int currentDuration = mediaPlayer.getCurrentPosition();
+      int totalDuration = mediaPlayer.getDuration();
+      if (currentDuration + 1000 < totalDuration) {
         int start_time, end_time;
         FrameList_Model frameList_model = new FrameList_Model();
-        try {
-          start_time = Math.round(mediaPlayer.getCurrentPosition() / 1000);
-          end_time = start_time + 2000;
-        } catch (NullPointerException e) {
-          try {
-            mediaPlayer = mPlayer.getMediaPlayer();
-            start_time = Math.round(mediaPlayer.getCurrentPosition() / 1000);
-            end_time = start_time + 2000;
-          } catch (ArithmeticException e1) {
-            start_time = 0;
-            end_time = start_time + 2000;
-          }
-        } catch (ArithmeticException e) {
-          start_time = 0;
-          end_time = start_time + 2000;
-        }
-        frameList_model.setStarttime(mediaPlayer.getCurrentPosition());
-        frameList_model.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
-
+        start_time = fm.getStarttime();
+        end_time = fm.getEndtime();
+        fm.setStarttime(0);
+        fm.setEndtime(0);
+        Collections.sort(framedata_map, new listsort());
+        frameList_model.setStarttime(currentDuration);
+        frameList_model.setEndtime(currentDuration + 2000);
         if (!isduplicate_frame(frameList_model)) {
-          fm.setStarttime(mediaPlayer.getCurrentPosition());
-          fm.setEndtime(mediaPlayer.getCurrentPosition() + 2000);
+          fm.setStarttime(currentDuration);
+          fm.setEndtime(currentDuration + 2000);
+          if (totalDuration - currentDuration < 2000) {
+            fm.setEndtime(Math.abs(totalDuration));
+          }
 
-          if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
-            fm.setEdited(true);
+          {
+            if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
+              fm.setEdited(true);
+            }
           }
 
           Collections.sort(framedata_map, new listsort());
 
           framelist.getAdapter().notifyDataSetChanged();
         } else {
+          Collections.sort(framedata_map, new listsort());
+          fm.setStarttime(start_time);
+          fm.setEndtime(end_time);
           PopMessage.makesimplesnack(mlayout, "Frame Already Attached");
         }
         mediaPlayer.start();
@@ -1733,7 +1676,6 @@ public class MakeNewEvent extends Activity
   public void addproduct(int pos) {
     //remove the callbacks to timertask as mediaplayer is not in correct state to call the duration method on it
     mHandler.removeCallbacks(mUpdateTimeTask);
-
     Utility.framepostion = pos;
     Utility.isResumeFromActivityResult = true;
     Intent intent = new Intent(this, Productlist.class);
@@ -1791,7 +1733,6 @@ public class MakeNewEvent extends Activity
 
   @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
-    Log.e("requestcode", "iscalled");
     switch (requestCode) {
       case 2909: {
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

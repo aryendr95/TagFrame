@@ -82,8 +82,6 @@ public class MarketPlaceFragment extends Fragment {
           @Override public void onLoadMore(int page, int totalItemsCount) {
             if (shouldLoad) {
               getProducts();
-            } else {
-              PopMessage.makesimplesnack(mLayout, "No more products to load...");
             }
           }
         });

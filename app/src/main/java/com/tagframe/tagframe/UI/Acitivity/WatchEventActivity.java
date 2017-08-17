@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -78,9 +79,9 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   private CustomSeekBar mProgress;
   private TextView tvCurrent, tvTotal;
   private ExVpListener exVpControls;
-
+  private FrameLayout frameLayout;
   //views
-  private ScrollView scrollView;
+  private ScrollView bottomLayout;
   private ImageView ivTagUsers, ivAddFrame, ivPlayback, img_frame_to_show, img_play_video, img_done,
       img_like;
   private RecyclerView rvEventList;
@@ -117,15 +118,16 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     getIntentData(getIntent());
     init();
     setDatatoView();
-    // if(isSettingPermissionGranted())
-    setUpPlayer();
   }
 
   @Override protected void onResume() {
     super.onResume();
-    addTrackAndPlay(getIntent());
-    if (exVpControls != null) exVpControls.seekToProgress(currentDuration);
-    handler.postDelayed(runnable, 100);
+    setUpPlayer();
+    if (mProgress != null && currentDuration != mProgress.getMax()) {
+      addTrackAndPlay(getIntent());
+      if (exVpControls != null) exVpControls.seekToProgress(currentDuration);
+      handler.postDelayed(runnable, 100);
+    }
   }
 
   @Override protected void onPause() {
@@ -136,10 +138,11 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
   @Override public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
+    getWindowManager().getDefaultDisplay().getSize(p);
     if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      scrollView.setVisibility(View.GONE);
+      bottomLayout.setVisibility(View.GONE);
     } else {
-      scrollView.setVisibility(View.VISIBLE);
+      bottomLayout.setVisibility(View.VISIBLE);
     }
   }
 
@@ -148,6 +151,9 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     video_urls.add(intent.getStringExtra("data_url"));
     video_type.add(Constants.MEDIA_TYPE_HLS);
     framedata_map = intent.getParcelableArrayListExtra("framelist");
+    if (framedata_map != null && framedata_map.size() > 0) {
+      Collections.sort(framedata_map, new listsort());
+    }
     list_tagged_user = intent.getParcelableArrayListExtra("tagged_user_id");
     tittle = intent.getStringExtra("tittle");
     event_id = intent.getStringExtra("eventid");
@@ -174,6 +180,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   }
 
   private void setUpControls() {
+    ivForword.setVisibility(View.GONE);
+    ivRev.setVisibility(View.GONE);
     ivForword.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         exVpControls.forward();
@@ -251,7 +259,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     bundle.putStringArrayList("type", video_type);
     bundle.putInt("currentIndex", currentListPosition);
     exVpFragment.setArguments(bundle);
-    fragmentTransaction.add(R.id.parent, exVpFragment);
+    fragmentTransaction.replace(R.id.parent, exVpFragment);
     fragmentTransaction.commit();
     handler.postDelayed(runnable, 100);
   }
@@ -260,6 +268,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     frameSize = (int) getResources().getDimension(R.dimen.frame_size);
     frameSize = 150;
     getWindowManager().getDefaultDisplay().getSize(p);
+    frameLayout = (FrameLayout) findViewById(R.id.parent);
     root = (RelativeLayout) findViewById(R.id.root);
     ll_dimer = (RelativeLayout) findViewById(R.id.dimer_layout);
     ivRev = (ImageButton) findViewById(R.id.btn_rev);
@@ -271,7 +280,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     mProgress = (CustomSeekBar) findViewById(R.id.seekbar);
     tvCurrent = (TextView) findViewById(R.id.txt_currentTime);
     tvTotal = (TextView) findViewById(R.id.txt_totalDuration);
-    scrollView = (ScrollView) findViewById(R.id.bottomLayout);
+    bottomLayout = (ScrollView) findViewById(R.id.bottomLayout);
     mLayout = (LinearLayout) findViewById(R.id.activity_simple_player);
 
     mPbar_events = (ProgressBar) findViewById(R.id.pbar_events);
@@ -352,7 +361,6 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       }
     });
 
-    Collections.sort(framedata_map, new listsort());
     mProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
@@ -366,13 +374,19 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         exVpControls.seekToProgress(seekBar.getProgress());
       }
     });
-    pbarLoadFrame = (ProgressBar) findViewById(R.id.pbarLoadFrame);
+
   }
 
   private Runnable runnable = new Runnable() {
     @Override public void run() {
       if (exVpControls != null && exVpControls.isPlaying() && mProgress.getProgress() != 0) {
-        showFrame(mProgress.getProgress());
+        if (mProgress.getProgress() != mProgress.getMax()) {
+          showFrame(mProgress.getProgress());
+        } else {
+          img_play_video.setVisibility(View.INVISIBLE);
+          img_frame_to_show.setVisibility(View.INVISIBLE);
+        }
+
         Utility.updateseekbar(mProgress, mProgress.getMax(), WatchEventActivity.this,
             framedata_map);
       }
@@ -429,7 +443,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     int measure = (int) ((((float) progress * p.x) / 100) - (progress));
     if (p.x - measure < Utility.dpToPx(150)) {
 
-      params.leftMargin = p.x - Utility.dpToPx(150);
+      params.leftMargin = p.x - Utility.dpToPx(100);
     } else {
       params.leftMargin = measure;
     }
@@ -808,6 +822,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
             progressBar.setVisibility(View.GONE);
           }
         });
+        framevideo.setZOrderOnTop(true);
         framevideo.start();
       } catch (Exception e) {
 
@@ -930,10 +945,15 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   }
 
   private void addTrackAndPlay(Intent intent) {
+    video_urls.clear();
+    video_type.clear();
+    handler.removeCallbacks(runnable);
     video_urls.add(intent.getStringExtra("data_url"));
     video_type.add(Constants.MEDIA_TYPE_HLS);
     exVpControls.addTrack(intent.getStringExtra("data_url"), Constants.MEDIA_TYPE_HLS);
     exVpControls.setCurrent(video_urls.size() - 1);
+    handler.postDelayed(runnable, 100);
+    frameLayout.requestFocus();
   }
 
   @Override protected void onStop() {

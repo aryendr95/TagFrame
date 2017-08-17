@@ -43,6 +43,7 @@ public class AppPrefs {
       schoolinfomodels = gson.fromJson(lists, type);
     } else {
       schoolinfomodels = new ArrayList<Event_Model>();
+
     }
     return schoolinfomodels;
   }
@@ -77,6 +78,7 @@ public class AppPrefs {
       case Utility.user_descrip:
         return user.getDescription();
       case Utility.user_realname:
+        Log.e("user",user.getRealname()+"no");
         return user.getRealname();
       case Utility.total_events:
         return user.getNumber_of_event();
