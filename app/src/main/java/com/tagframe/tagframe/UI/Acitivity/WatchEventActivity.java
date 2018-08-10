@@ -1,11 +1,15 @@
 package com.tagframe.tagframe.UI.Acitivity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.media.MediaPlayer;
@@ -14,22 +18,31 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,19 +52,29 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
+
+import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.TaggedUserAdapter;
 import com.tagframe.tagframe.Adapters.WatchEventListAdapter;
 import com.tagframe.tagframe.Models.Event_Model;
+import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.ListResponseModel;
+import com.tagframe.tagframe.Models.SearchUserResponseModel;
 import com.tagframe.tagframe.Models.TaggedUserModel;
+import com.tagframe.tagframe.Models.User;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
+import com.tagframe.tagframe.UI.Fragments.MarketPlaceFragment;
+import com.tagframe.tagframe.UI.Fragments.Notifications;
+import com.tagframe.tagframe.UI.Fragments.Profile;
+import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.BitmapHelper;
 import com.tagframe.tagframe.Utils.CustomSeekBar;
@@ -83,7 +106,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   //views
   private ScrollView bottomLayout;
   private ImageView ivTagUsers, ivAddFrame, ivPlayback, img_frame_to_show, img_play_video, img_done,
-      img_like;
+          img_like;
   private RecyclerView rvEventList;
   private LinearLayout ll_like, ll_share, llcomment, mLayout;
   private TextView mtxt_directive, tvEventTittle, tvStats, tvBuffering, tvUsername;
@@ -100,6 +123,10 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   private int likes, frames, comments;
   private ArrayList<FrameList_Model> framedata_map;
   private ArrayList<TaggedUserModel> list_tagged_user;
+  private ArrayList<FollowModel> followModelArrayList;
+  private SwipeRefreshLayout swipeRefreshLayout;
+
+  private RecyclerView list;
   private Broadcastresults mReceiver;
   private boolean shouldLoad = false;
   private int next_records = 0, currentListPosition = 0;
@@ -108,35 +135,92 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   private boolean isFrameShowing = false;
   private Handler handler = new Handler();
   private static String[] PERMISSIONS_STORAGE = {
-      Manifest.permission.WRITE_SETTINGS
+          Manifest.permission.WRITE_SETTINGS
   };
   private int currentDuration = 0;
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
+  private AppPrefs userinfo;
+  private  Intent browserIntent;
+  private int exvControl = 0;
+  String currentTime = "00:00";
+  float theFullWidth, theFullHeight;
+  DisplayMetrics displayMetrics;
+  int deviceWidth;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_new_watch_event);
+    // Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
     getIntentData(getIntent());
     init();
     setDatatoView();
+    userinfo = new AppPrefs(this);
+
+
+    displayMetrics = new DisplayMetrics();
+    WindowManager windowmanager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+    windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
+    deviceWidth = displayMetrics.widthPixels;
+    setTheDeviceWidth();
+    //img_frame_to_show.setLayoutParams(new GridView.LayoutParams((int)theFullWidth, (int) theFullHeight));
+  }
+  private void setTheDeviceWidth()
+  {
+    Resources resources = getResources();
+    Configuration theConfiguration = resources.getConfiguration();
+    DisplayMetrics theDisplayMetrics = resources.getDisplayMetrics();
+    theFullWidth = theConfiguration.screenWidthDp * theDisplayMetrics.density;
+    theFullWidth = theFullWidth - (theFullWidth * 433 / 100);
+    theFullHeight = theFullWidth - (theFullWidth * 50 / 100);
   }
 
-  @Override protected void onResume() {
-    super.onResume();
+//    @Override
+//    protected void onStart() {
+//        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
+//        super.onStart();
+//    }
+
+  @Override
+  protected void onResume() {
+    // Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+
+
+      /*  if(currentDuration != 0){
+
+           // Toast.makeText(this, "hello" + currentDuration, Toast.LENGTH_SHORT).show();
+            setUpPlayer(currentDuration);
+
+            exVpControls.play();
+        }else{
+*/
+
     setUpPlayer();
+
     if (mProgress != null && currentDuration != mProgress.getMax()) {
       addTrackAndPlay(getIntent());
-      if (exVpControls != null) exVpControls.seekToProgress(currentDuration);
+      if (exVpControls != null)
+        exVpControls.seekToProgress(currentDuration);
+      exVpControls.play();
       handler.postDelayed(runnable, 100);
     }
+    //   }
+    super.onResume();
+
+
   }
 
-  @Override protected void onPause() {
+  @Override
+  protected void onPause() {
+    //  Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
     currentDuration = mProgress.getProgress();
     handler.removeCallbacks(runnable);
+
     super.onPause();
   }
 
-  @Override public void onConfigurationChanged(Configuration newConfig) {
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
     getWindowManager().getDefaultDisplay().getSize(p);
     if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -155,6 +239,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       Collections.sort(framedata_map, new listsort());
     }
     list_tagged_user = intent.getParcelableArrayListExtra("tagged_user_id");
+
     tittle = intent.getStringExtra("tittle");
     event_id = intent.getStringExtra("eventid");
     userName = intent.getStringExtra("name");
@@ -183,27 +268,32 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     ivForword.setVisibility(View.GONE);
     ivRev.setVisibility(View.GONE);
     ivForword.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
+      @Override
+      public void onClick(View view) {
         exVpControls.forward();
       }
     });
     ivRev.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
+      @Override
+      public void onClick(View view) {
         exVpControls.reverse();
       }
     });
     ivNext.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
+      @Override
+      public void onClick(View view) {
         exVpControls.nextTrack();
       }
     });
     ivPrev.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
+      @Override
+      public void onClick(View view) {
         exVpControls.previousTrack();
       }
     });
     ivPlayPause.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
+      @Override
+      public void onClick(View view) {
         if (exVpControls.isPlaying()) {
           ivPlayPause.setImageResource(R.drawable.ic_play_circle_filled_white_white_24dp);
           pauseMediaPlayer();
@@ -214,7 +304,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       }
     });
     ivSetting.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
+      @Override
+      public void onClick(View view) {
         exVpControls.changeQuality(view);
       }
     });
@@ -222,19 +313,22 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     exVpControls.setProgressBar(mProgress);
     exVpControls.setCurrentText(tvCurrent);
     exVpControls.setDurationText(tvTotal);
+    exVpControls.seekToProgress(50);
+
+
   }
 
   public void setDatatoView() {
     try {
       tvEventTittle.setText(tittle);
       tvStats.setText(likes
-          + " Likes"
-          + ", "
-          + framedata_map.size()
-          + " Frames"
-          + " and "
-          + comments
-          + " Comments");
+              + " Likes"
+              + ", "
+              + framedata_map.size()
+              + " Frames"
+              + " and "
+              + comments
+              + " Comments");
       tvUsername.setText("More from " + userName);
       if (likevideo.equals("No")) {
         img_like.setImageResource(R.drawable.like);
@@ -253,6 +347,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     ExSimpleVpFragment exVpFragment = new ExSimpleVpFragment();
     exVpControls = exVpFragment.getExVpListener();
+
     setUpControls();
     Bundle bundle = new Bundle();
     bundle.putStringArrayList("urls", video_urls);
@@ -261,12 +356,13 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     exVpFragment.setArguments(bundle);
     fragmentTransaction.replace(R.id.parent, exVpFragment);
     fragmentTransaction.commit();
+
     handler.postDelayed(runnable, 100);
   }
 
   private void init() {
     frameSize = (int) getResources().getDimension(R.dimen.frame_size);
-    frameSize = 150;
+    frameSize = 100;
     getWindowManager().getDefaultDisplay().getSize(p);
     frameLayout = (FrameLayout) findViewById(R.id.parent);
     root = (RelativeLayout) findViewById(R.id.root);
@@ -295,17 +391,20 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     img_like = (ImageView) findViewById(R.id.imglike);
 
     ll_like.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
         likeEvent();
       }
     });
     ll_share.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
         shareEvent();
       }
     });
     llcomment.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
         commentOnEvent();
       }
     });
@@ -313,7 +412,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     mtxt_directive = (TextView) findViewById(R.id.txt_like_directive);
 
     ivAddFrame.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
         Intent intent = new Intent(WatchEventActivity.this, MakeNewEvent.class);
         intent.putExtra("name", userName);
         intent.putExtra("stats", "");
@@ -330,13 +430,16 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       }
     });
     ivTagUsers.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
+
         show_tagged_user();
       }
     });
 
     img_done.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
         finish();
       }
     });
@@ -347,13 +450,14 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     img_frame_to_show = (ImageView) findViewById(R.id.img_frame_to_show);
     img_play_video = (ImageView) findViewById(R.id.img_play_video);
     params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT);
+            ViewGroup.LayoutParams.WRAP_CONTENT);
     params.leftMargin = 0;
     img_frame_to_show.setLayoutParams(params);
     img_play_video.setLayoutParams(params);
     setUpEventList();
     img_frame_to_show.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
         String TAG = img_frame_to_show.getTag().toString();
         Integer pos = Integer.parseInt(TAG);
 
@@ -362,15 +466,18 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     });
 
     mProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+      @Override
+      public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
       }
 
-      @Override public void onStartTrackingTouch(SeekBar seekBar) {
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) {
 
       }
 
-      @Override public void onStopTrackingTouch(SeekBar seekBar) {
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) {
         exVpControls.seekToProgress(seekBar.getProgress());
       }
     });
@@ -378,7 +485,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   }
 
   private Runnable runnable = new Runnable() {
-    @Override public void run() {
+    @Override
+    public void run() {
       if (exVpControls != null && exVpControls.isPlaying() && mProgress.getProgress() != 0) {
         if (mProgress.getProgress() != mProgress.getMax()) {
           showFrame(mProgress.getProgress());
@@ -388,7 +496,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         }
 
         Utility.updateseekbar(mProgress, mProgress.getMax(), WatchEventActivity.this,
-            framedata_map);
+                framedata_map);
       }
       handler.postDelayed(runnable, 100);
     }
@@ -401,30 +509,30 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       final FrameList_Model fm = framedata_map.get(i);
 
       if (fm.getStarttime() - 100 <= progress
-          && progress <= fm.getEndtime() + 100
-          && fm.getEndtime() != 0) {
+              && progress <= fm.getEndtime() + 100
+              && fm.getEndtime() != 0) {
 
         img_frame_to_show.setVisibility(View.VISIBLE);
         if (fm.getFrametype() == Utility.frametype_image) {
           Picasso.with(WatchEventActivity.this)
-              .load(fm.getFrame_image_url())
-              .resize(frameSize, frameSize)
-              .into(img_frame_to_show);
+                  .load(fm.getFrame_image_url())
+                  .resize(frameSize, frameSize)
+                  .into(img_frame_to_show);
         } else {
           img_play_video.setVisibility(View.VISIBLE);
           img_play_video.setImageResource(R.drawable.playvideo);
           if (fm.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(fm.getImagepath(),
-                MediaStore.Images.Thumbnails.MINI_KIND);
+                    MediaStore.Images.Thumbnails.MINI_KIND);
 
             thumb = Utility.getResizedBitmap(thumb, frameSize, frameSize);
             img_frame_to_show.setImageBitmap(thumb);
           } else {
 
             Picasso.with(WatchEventActivity.this)
-                .load(fm.getImagepath())
-                .resize(frameSize, frameSize)
-                .into(img_frame_to_show);
+                    .load(fm.getImagepath())
+                    .resize(frameSize, frameSize)
+                    .into(img_frame_to_show);
           }
         }
 
@@ -458,7 +566,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     rvEventList.setAdapter(new WatchEventListAdapter(this, event_modelArrayList));
 
     rvEventList.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-      @Override public void onLoadMore(int page, int totalItemsCount) {
+      @Override
+      public void onLoadMore(int page, int totalItemsCount) {
         if (shouldLoad) {
           loadUserEvents();
           PopMessage.makesimplesnack(mLayout, "Loading more event..");
@@ -509,7 +618,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
   private void commentOnEvent() {
     AppPrefs appPrefs = new AppPrefs(this);
     ((WatchEventListAdapter) rvEventList.getAdapter()).showCommentDialog(this, event_id,
-        appPrefs.getString(Utility.user_id));
+            appPrefs.getString(Utility.user_id));
   }
 
   private void shareEvent() {
@@ -529,26 +638,43 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
     TextView txt_message = (TextView) dialog.findViewById(R.id.txt_no_message_tagged_user);
 
-    RecyclerView list = (RecyclerView) dialog.findViewById(R.id.list_tagged_users);
-    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-    list.setLayoutManager(layoutManager);
+    list = (RecyclerView) dialog.findViewById(R.id.list_tagged_users);
+
+    LinearLayoutManager llayoutManager = new LinearLayoutManager(this);
+    // RecyclerView.LayoutManager llayoutManager = new LinearLayoutManager(this);
+    list.setLayoutManager(llayoutManager);
 
     if (list_tagged_user.size() > 0) {
       txt_message.setVisibility(View.GONE);
     }
     list.setAdapter(new TaggedUserAdapter(list_tagged_user, this));
 
+//        list.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), list, new ClickListener() {
+//            @Override
+//            public void onClick(View view, int position) {
+//
+//            }
+//
+//            @Override
+//            public void onLongClick(View view, int position) {
+//
+//            }
+//        }));
+
+
     TextView txt = (TextView) dialog.findViewById(R.id.txt_tag_add);
     txt.setVisibility(View.GONE);
 
     dialog.findViewById(R.id.txt_tag_done).setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+      @Override
+      public void onClick(View v) {
         dialog.cancel();
       }
     });
 
     dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-      @Override public void onCancel(DialogInterface dialog) {
+      @Override
+      public void onCancel(DialogInterface dialog) {
         exVpControls.play();
       }
     });
@@ -556,49 +682,53 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     dialog.show();
   }
 
+
+
+
+
   public void loadUserEvents() {
     if (Networkstate.haveNetworkConnection(this)) {
       mPbar_events.setVisibility(View.VISIBLE);
       ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
       retrofitService.getUserEvents(user_id, String.valueOf(next_records))
-          .enqueue(new Callback<ListResponseModel>() {
-            @Override public void onResponse(Call<ListResponseModel> call,
-                Response<ListResponseModel> response) {
+              .enqueue(new Callback<ListResponseModel>() {
+                @Override public void onResponse(Call<ListResponseModel> call,
+                                                 Response<ListResponseModel> response) {
 
-              mPbar_events.setVisibility(View.GONE);
+                  mPbar_events.setVisibility(View.GONE);
 
-              try {
-                if (response.body().getStatus().equals("success")) {
+                  try {
+                    if (response.body().getStatus().equals("success")) {
 
-                  event_modelArrayList.addAll(response.body().getTagStreamArrayList());
-                  rvEventList.getAdapter().notifyDataSetChanged();
-                  if (rvEventList.getAdapter().getItemCount() > currentListPosition) {
-                    new Handler().postDelayed(new Runnable() {
-                      @Override public void run() {
+                      event_modelArrayList.addAll(response.body().getTagStreamArrayList());
+                      rvEventList.getAdapter().notifyDataSetChanged();
+                      if (rvEventList.getAdapter().getItemCount() > currentListPosition) {
+                        new Handler().postDelayed(new Runnable() {
+                          @Override public void run() {
 
-                        rvEventList.smoothScrollToPosition(currentListPosition);
+                            rvEventList.smoothScrollToPosition(currentListPosition);
+                          }
+                        }, 1000);
                       }
-                    }, 1000);
+                      if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
+                        next_records = next_records + Utility.PAGE_SIZE;
+
+                        shouldLoad = true;
+                      } else {
+
+                        shouldLoad = false;
+                      }
+                    } else {
+
+                    }
+                  } catch (Exception e) {
+                    PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                   }
-                  if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
-                    next_records = next_records + Utility.PAGE_SIZE;
-
-                    shouldLoad = true;
-                  } else {
-
-                    shouldLoad = false;
-                  }
-                } else {
-
                 }
-              } catch (Exception e) {
-                PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
-              }
-            }
 
-            @Override public void onFailure(Call<ListResponseModel> call, Throwable t) {
-            }
-          });
+                @Override public void onFailure(Call<ListResponseModel> call, Throwable t) {
+                }
+              });
     } else {
       PopMessage.makesimplesnack(mLayout, "No Internet Connection");
     }
@@ -615,13 +745,13 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
           PopMessage.makesimplesnack(mLayout, "Event unliked");
           likes--;
           tvStats.setText(likes
-              + " Likes"
-              + ", "
-              + framedata_map.size()
-              + " Frames"
-              + " and "
-              + comments
-              + " Comments");
+                  + " Likes"
+                  + ", "
+                  + framedata_map.size()
+                  + " Frames"
+                  + " and "
+                  + comments
+                  + " Comments");
         } else {
 
           PopMessage.makesimplesnack(mLayout, "Error unliking event,reverting changes");
@@ -638,13 +768,13 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
           PopMessage.makesimplesnack(mLayout, "Event Liked");
           likes++;
           tvStats.setText(likes
-              + " Likes"
-              + ", "
-              + framedata_map.size()
-              + " Frames"
-              + " and "
-              + comments
-              + " Comments");
+                  + " Likes"
+                  + ", "
+                  + framedata_map.size()
+                  + " Frames"
+                  + " and "
+                  + comments
+                  + " Comments");
         } else {
 
           PopMessage.makesimplesnack(mLayout, "Error liking event,reverting changes");
@@ -661,13 +791,13 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
           PopMessage.makesimplesnack(mLayout, "Comment Successful");
           comments++;
           tvStats.setText(likes
-              + " Likes"
-              + ", "
-              + framedata_map.size()
-              + " Frames"
-              + " and "
-              + comments
-              + " Comments");
+                  + " Likes"
+                  + ", "
+                  + framedata_map.size()
+                  + " Frames"
+                  + " and "
+                  + comments
+                  + " Comments");
         } else {
 
           PopMessage.makesimplesnack(mLayout, "Error commenting..");
@@ -677,7 +807,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
   public void show_synced_frame(final int pos) {
 
-    exVpControls.stop();
+    // exVpControls.stop();
+    pauseMediaPlayer();
     final FrameList_Model frameList_model = framedata_map.get(pos);
 
     if (frameList_model.getFrametype() == Utility.frametype_image) {
@@ -686,7 +817,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
       Window window = dialog.getWindow();
       window.setLayout(RelativeLayout.LayoutParams.WRAP_CONTENT,
-          RelativeLayout.LayoutParams.WRAP_CONTENT);
+              RelativeLayout.LayoutParams.WRAP_CONTENT);
       window.setGravity(Gravity.CENTER);
       dialog.setCancelable(false);
       dialog.setContentView(R.layout.dialog_frame_to_show);
@@ -703,10 +834,16 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       tvaddproduct.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
           if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id()
-              .equals("0")) {
-            Intent browserIntent =
-                new Intent(Intent.ACTION_VIEW, Uri.parse(frameList_model.getProduct_url()));
+                  .equals("0")) {
+
+            browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(frameList_model.getProduct_url()));
+            //currentTime = tvCurrent.getText().toString();
+            currentDuration = mProgress.getProgress();
+
             startActivity(browserIntent);
+            //startActivityForResult(browserIntent,1);
+
+
             dialog.dismiss();
           }
         }
@@ -715,13 +852,13 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       frameimage.setVisibility(View.VISIBLE);
       //if there is product
       if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id()
-          .equals("0")) {
+              .equals("0")) {
         //checking if it is a product frame
         if (!frameList_model.isAProductFrame()) {
           product_image.setVisibility(View.VISIBLE);
           Picasso.with(WatchEventActivity.this)
-              .load(frameList_model.getProduct_path())
-              .into(product_image);
+                  .load(frameList_model.getProduct_path())
+                  .into(product_image);
         }
         tvaddproduct.setText("Buy Product");
       } else {
@@ -730,23 +867,23 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
       if (frameList_model.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
         Picasso.with(WatchEventActivity.this)
-            .load(frameList_model.getFrame_image_url())
-            .into(frameimage);
+                .load(frameList_model.getFrame_image_url())
+                .into(frameimage);
       } else {
         try {
           frameimage.setImageBitmap(BitmapHelper.decodeFile(WatchEventActivity.this,
-              new File(frameList_model.getImagepath())));
+                  new File(frameList_model.getImagepath())));
         } catch (Exception e) {
           Picasso.with(WatchEventActivity.this)
-              .load(frameList_model.getFrame_image_url())
-              .into(frameimage);
+                  .load(frameList_model.getFrame_image_url())
+                  .into(frameimage);
         }
       }
 
       tittle.setText(frameList_model.getName());
       duration.setText(Utility.milliSecondsToTimer(frameList_model.getStarttime())
-          + "-"
-          + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
+              + "-"
+              + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
 
       delete.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
@@ -769,8 +906,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       dialog.getWindow().setAttributes(a);
 
       dialog.getWindow()
-          .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-              WindowManager.LayoutParams.FLAG_FULLSCREEN);
+              .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                      WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
       final VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
       final RelativeLayout coverLayout = (RelativeLayout) dialog.findViewById(R.id.cover);
@@ -786,26 +923,31 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
       tvaddproduct.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
           if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id()
-              .equals("0")) {
-            Intent browserIntent =
-                new Intent(Intent.ACTION_VIEW, Uri.parse(frameList_model.getProduct_url()));
-            startActivity(browserIntent);
+                  .equals("0")) {
+            browserIntent =
+                    new Intent(Intent.ACTION_VIEW, Uri.parse(frameList_model.getProduct_url()));
+            currentDuration = mProgress.getProgress();
 
+            startActivity(browserIntent);
+            //startActivityForResult(browserIntent, 1);
+//                finish();
+            //exVpControls.stop();
             dialog.cancel();
           } else {
             dialog.cancel();
+            //exVpControls.stop();
           }
         }
       });
 
       if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id()
-          .equals("0")) {
+              .equals("0")) {
 
         product_image.setVisibility(View.VISIBLE);
         Picasso.with(WatchEventActivity.this)
-            .load(frameList_model.getProduct_path())
-            .fit()
-            .into(product_image);
+                .load(frameList_model.getProduct_path())
+                .fit()
+                .into(product_image);
         tvaddproduct.setText("Buy Product");
       } else {
         tvaddproduct.setVisibility(View.GONE);
@@ -830,8 +972,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
       tittle.setText(frameList_model.getName());
       duration.setText(Utility.milliSecondsToTimer(frameList_model.getStarttime())
-          + "-"
-          + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
+              + "-"
+              + Utility.milliSecondsToTimer(frameList_model.getEndtime()));
 
       delete.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
@@ -918,6 +1060,24 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     }
   }
 
+
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == 1) {
+      //intent 1 was
+      if(resultCode == Activity.RESULT_OK) {
+        exVpControls.stop();
+      } else {
+
+        exVpControls.play();
+
+      }
+    }
+  }
+
   public void dimScreen() {
     ll_dimer.setVisibility(View.VISIBLE);
   }
@@ -960,5 +1120,53 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     handler.removeCallbacks(runnable);
     super.onStop();
   }
+  public interface ClickListener {
+    void onClick(View view, int position);
+
+    void onLongClick(View view, int position);
+  }
+
+  public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+    private GestureDetector gestureDetector;
+    private WatchEventActivity.ClickListener clickListener;
+
+    public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final WatchEventActivity.ClickListener clickListener) {
+      this.clickListener = clickListener;
+      gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+          return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+          View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
+          if (child != null && clickListener != null) {
+            clickListener.onLongClick(child, recyclerView.getChildAdapterPosition(child));
+          }
+        }
+      });
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+      View child = rv.findChildViewUnder(e.getX(), e.getY());
+      if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
+        clickListener.onClick(child, rv.getChildAdapterPosition(child));
+      }
+      return false;
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+    }
+  }
+
+
 }
 

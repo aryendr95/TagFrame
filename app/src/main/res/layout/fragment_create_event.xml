@@ -133,11 +133,11 @@
         android:id="@+id/ll_select_video">
 
 
-        <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
-            android:id="@+id/select_video_list"></ListView>
-        </LinearLayout>
+       <ListView
+           android:id="@+id/select_video_list"
+           android:layout_width="fill_parent"
+           android:layout_height="100dp"></ListView>
+   </LinearLayout>
 
 
 

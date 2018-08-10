@@ -12,17 +12,13 @@
       android:layout_centerInParent="true"
       >
 
-
     <VideoView
-        android:id="@+id/framelist_video"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        />
+        android:layout_above="@+id/add_event_bottom"
+        android:layout_below="@+id/add_product_section"
+        android:layout_marginTop="70dp"
+        android:id="@+id/framelist_video"/>
 
     <RelativeLayout
         android:id="@+id/cover"
@@ -47,27 +43,38 @@
         android:scaleType="fitXY"
         android:visibility="gone"
         />
-    <com.tagframe.tagframe.Utils.MyTextView
-        android:id="@+id/add_product"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="#50000000"
-        android:padding="5dp"
-        android:text="Add Product"
-        android:textColor="@color/white"
-        />
-    <ImageView
-        android:id="@+id/framelist_delete"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/done"
-        />
 
     <RelativeLayout
+        android:id="@+id/add_product_section"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#50000000"
+
+        >
+
+      <com.tagframe.tagframe.Utils.MyTextView
+          android:id="@+id/add_product"
+          android:layout_width="100dp"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentTop="true"
+          android:background="#50000000"
+          android:padding="5dp"
+          android:text="Add Product"
+          android:textColor="@color/white"
+          />
+      <ImageView
+          android:id="@+id/framelist_delete"
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentTop="true"
+          android:src="@drawable/done"
+          />
+    </RelativeLayout>/
+
+    <RelativeLayout
+        android:id="@+id/add_event_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -111,6 +111,29 @@ public class Modules extends FragmentActivity implements Broadcastresults.Receiv
     setContentView(R.layout.activity_modules);
     userinfo = new AppPrefs(this);
     init();
+
+
+    Intent intent = getIntent();
+    if(intent.hasExtra("name") && intent.hasExtra("user_id") && intent.hasExtra("pofile_pic")) {
+     // Toast.makeText(this, "has extra", Toast.LENGTH_SHORT).show();
+      String tname = intent.getStringExtra("name");
+      String tuser_id = intent.getStringExtra("user_id");
+      String tprofile_pic = intent.getStringExtra("pofile_pic");
+
+      Fragment frr = Utility.getProfileFragment();
+      Bundle tbundle = new Bundle();
+      tbundle.putString("user_id", tuser_id);
+      tbundle.putString("name", tname);
+      tbundle.putString("profile_pic", tprofile_pic);
+      frr.setArguments(tbundle);
+      if (tname != null) {
+
+        changefragment(frr);
+      } else {
+
+        //Toast.makeText(this,  "no" + tname, Toast.LENGTH_LONG).show();
+      }
+    }
 }
 
   private void init() {
