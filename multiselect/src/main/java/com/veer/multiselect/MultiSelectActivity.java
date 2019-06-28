@@ -108,7 +108,7 @@ public class MultiSelectActivity extends AppCompatActivity implements LoaderMana
   }
 
   private void initViews() {
-    mRecyclerView = (RecyclerView) findViewById(R.id.gridView);
+    mRecyclerView = (RecyclerView) findViewById(R.id.multi_gridView);
     ivBack = (ImageView) findViewById(R.id.media_action_back);
     mTittle = (TextView) findViewById(R.id.media_action_text);
     btnSelect = (Button) findViewById(R.id.selectBtn);
