@@ -29,15 +29,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="35dp"
         android:layout_alignParentBottom="true"
         android:background="#00000000"
         >
 
       <ImageView
           android:id="@+id/img_frame_to_show"
-          android:layout_width="@dimen/frame_size"
-          android:layout_height="@dimen/frame_size"
+          android:layout_width="70dp"
+          android:layout_height="70dp"
           android:scaleType="centerCrop"
           />
 
@@ -55,10 +55,12 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="@android:color/transparent"
-        android:visibility="visible"
-        >
+        android:orientation="vertical"
+        android:visibility="visible">
+
       <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
           android:id="@+id/topbar"
           android:layout_width="fill_parent"
@@ -69,16 +71,15 @@
           android:paddingBottom="3dp"
           android:paddingTop="3dp"
           custom:inAnimation="@anim/in_animation"
-          custom:outAnimation="@anim/out_animation"
-          >
+          custom:outAnimation="@anim/out_animation">
 
         <LinearLayout
             android:id="@+id/ll_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
           <TextView
               android:id="@+id/txt_currentTime"
               android:layout_width="wrap_content"
@@ -87,8 +88,7 @@
               android:layout_marginLeft="10dp"
               android:text="00:00"
               android:textColor="@color/white"
-              android:textStyle="bold"
-              />
+              android:textStyle="bold" />
 
           <TextView
               android:layout_width="wrap_content"
@@ -96,8 +96,7 @@
               android:layout_gravity="center_vertical"
               android:text="/"
               android:textColor="@color/white"
-              android:textStyle="bold"
-              />
+              android:textStyle="bold" />
 
           <TextView
               android:id="@+id/txt_totalDuration"
@@ -107,8 +106,7 @@
               android:text="00:00"
 
               android:textColor="@color/white"
-              android:textStyle="bold"
-              />
+              android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -119,8 +117,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/postevent"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
         </LinearLayout>
 
@@ -134,8 +131,7 @@
             android:text="Description"
             android:textColor="@color/white"
             android:textSize="15dp"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/donewatching"
@@ -150,8 +146,7 @@
             android:src="@drawable/ic_done_white_24dp"
             android:text="Save"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/taguser_event"
@@ -169,8 +164,7 @@
             android:paddingRight="5dp"
 
             android:src="@drawable/ic_group_add_white_24dp"
-            android:textColor="@color/white"
-            />
+            android:textColor="@color/white" />
 
         <ImageView
             android:id="@+id/add_frame"
@@ -189,8 +183,7 @@
             android:paddingRight="5dp"
 
             android:src="@drawable/ic_border_color_white_24dp"
-            android:textColor="@color/white"
-            />
+            android:textColor="@color/white" />
 
 
       </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>
@@ -200,9 +193,8 @@
           android:id="@+id/seekbar"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_gravity="bottom"
           android:layout_above="@+id/controls"
-          />
+          android:layout_gravity="bottom" />
       <!--android:indeterminate="false"
       style="@android:style/Widget.DeviceDefault.Light.SeekBar"
       android:thumbTint="#ffffff"
@@ -219,14 +211,13 @@
           android:id="@+id/controls"
           android:layout_width="match_parent"
           android:layout_height="40dp"
+          android:layout_alignParentBottom="true"
           android:layout_gravity="bottom"
           android:background="#96000000"
+          android:gravity="center"
           android:orientation="horizontal"
           android:paddingBottom="10dp"
-          android:layout_alignParentBottom="true"
-          android:gravity="center"
-          android:visibility="visible"
-          >
+          android:visibility="visible">
 
         <ImageButton
             android:id="@+id/btn_prev"
@@ -236,8 +227,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:cropToPadding="false"
-            android:src="@drawable/ic_skip_previous_white_24dp"
-            />
+            android:src="@drawable/ic_skip_previous_white_24dp" />
 
 
         <ImageButton
@@ -247,8 +237,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_fast_rewind_white_24dp"
-            />
+            android:src="@drawable/ic_fast_rewind_white_24dp" />
 
         <ImageButton
             android:id="@+id/btn_pause"
@@ -257,8 +246,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_play_circle_filled_white_white_24dp"
-            />
+            android:src="@drawable/ic_play_circle_filled_white_white_24dp" />
 
         <ImageButton
             android:id="@+id/btn_fwd"
@@ -268,8 +256,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_fast_forward_white_24dp"
-            android:text="+30s"
-            />
+            android:text="+30s" />
 
         <ImageButton
             android:id="@+id/btn_next"
@@ -278,8 +265,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_skip_next_white_24dp"
-            />
+            android:src="@drawable/ic_skip_next_white_24dp" />
 
         <ImageButton
             android:id="@+id/btn_settings"
@@ -291,8 +277,7 @@
             android:background="@android:color/transparent"
             android:foregroundGravity="right"
             android:src="@drawable/ic_switch_video_white_24dp"
-            android:text="Settings"
-            />
+            android:text="Settings" />
 
 
       </LinearLayout>

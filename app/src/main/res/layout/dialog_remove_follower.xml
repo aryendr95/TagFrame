@@ -17,7 +17,7 @@
       style="@style/TextAppearance.AppCompat.Medium"
       />
 
-  <com.pkmmte.view.CircularImageView
+  <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/dia_remove_image"
       android:layout_width="70dp"
       android:layout_height="70dp"

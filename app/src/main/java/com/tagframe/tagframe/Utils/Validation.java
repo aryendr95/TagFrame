@@ -134,9 +134,8 @@ public class Validation {
     }
 
     public static boolean hasFrameInformation(ArrayList<FrameList_Model> framedata_map) {
-        for(int i=0;i<framedata_map.size();i++)
-        {
-            if(framedata_map.get(i).getEndtime()==0||framedata_map.get(i).getName().isEmpty())
+        for (int i = 0; i < framedata_map.size(); i++) {
+            if (framedata_map.get(i).getEndtime() == 0 || framedata_map.get(i).getName().isEmpty())
                 return false;
         }
         return true;

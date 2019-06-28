@@ -1,15 +1,19 @@
 package com.tagframe.tagframe.UI.Fragments;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Application.TagFrame;
 import com.tagframe.tagframe.Models.ResponsePojo;
@@ -48,20 +51,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by abhinav on 06/04/2016.
  */
 public class Account extends Fragment {
-
     private View mview;
     private LinearLayout mLinearLayout, mLinear_chan;
     private LinearLayout mLinearLayoutHeader_userinfo, mLinearhear_change;
     private ImageView expand_userinfo, expand_change;
-    private CircularImageView pro_pic;
+    private CircleImageView pro_pic;
     private TextView username;
     private ImageView changepropic;
     private EditText ed_username, ed_realname, ed_email, ed_description;
@@ -69,10 +74,10 @@ public class Account extends Fragment {
     private TextView forgotpassword;
     private ProgressBar pbarchangepassword;
     private Button btDeleteAccount;
-
     private static int RESULT_LOAD_IMAGE = 1;
     private AppPrefs AppPrefs;
     private String picturePath = "";
+    private static final int PICK_FROM_GALLERY = 1;
 
 
     @Nullable
@@ -80,9 +85,7 @@ public class Account extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview = inflater.inflate(R.layout.fragment_account, container, false);
-
         AppPrefs = new AppPrefs(getActivity());
-
         btDeleteAccount = (Button) mview.findViewById(R.id.acc_btn_delete_pass);
         btDeleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +96,6 @@ public class Account extends Fragment {
 
         mLinearLayout = (LinearLayout) mview.findViewById(R.id.expandable_userinfo);
         //mLinearLayout.setVisibility(View.GONE);
-
-
         mLinearLayoutHeader_userinfo = (LinearLayout) mview.findViewById(R.id.header_userinfo);
 
         changepropic = (ImageView) mview.findViewById(R.id.acc_change_pro_pic);
@@ -142,14 +143,14 @@ public class Account extends Fragment {
         });
 
 
-        pro_pic = (CircularImageView) mview.findViewById(R.id.acc_proimage);
+        pro_pic = (CircleImageView) mview.findViewById(R.id.acc_proimage);
         try {
             Picasso.with(getActivity()).load(AppPrefs.getString(Utility.user_pic)).into(pro_pic);
         } catch (Exception e) {
             pro_pic.setImageResource(R.drawable.pro_image);
         }
-        username = (TextView) mview.findViewById(R.id.acc_username);
 
+        username = (TextView) mview.findViewById(R.id.acc_username);
 
         ed_email = (EditText) mview.findViewById(R.id.acc_ed_email);
         ed_email.setText(AppPrefs.getString(Utility.user_email));
@@ -184,22 +185,30 @@ public class Account extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
+//                Intent i = new Intent(
+//                        Intent.ACTION_PICK,
+//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//
+//                startActivityForResult(i, RESULT_LOAD_IMAGE);
+                try {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+                    } else {
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
         });
-
 
         //change password
 
         ed_oldpass = (EditText) mview.findViewById(R.id.acc_ed_current_pass);
         ed_newpass = (EditText) mview.findViewById(R.id.acc_ed_new_pass);
         ed_confirmpass = (EditText) mview.findViewById(R.id.acc_ed_confirm_pass);
-
         pbarchangepassword = (ProgressBar) mview.findViewById(R.id.pbarchangepassword);
         forgotpassword = (TextView) mview.findViewById(R.id.acc_forgot_password);
 
@@ -221,7 +230,6 @@ public class Account extends Fragment {
                 if (!oldpass.isEmpty() && !newpass.isEmpty() && !newpassconfirm.isEmpty()) {
                     if (newpass.equals(newpassconfirm)) {
                         new changepassword().execute(AppPrefs.getString(Utility.user_id), oldpass, newpass);
-
                     } else {
                         MyToast.popmessage("Password does not match", getActivity());
                     }
@@ -230,13 +238,27 @@ public class Account extends Fragment {
                 }
             }
         });
-
-
         return mview;
     }
 
-    private void deleteAccount() {
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PICK_FROM_GALLERY:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+                } else {
+                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                }
+                break;
+        }
+    }
+
+
+    private void deleteAccount() {
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -244,13 +266,10 @@ public class Account extends Fragment {
         final LinearLayout controls = (LinearLayout) dialog.findViewById(R.id.layout_logout_controls);
         final LinearLayout progress = (LinearLayout) dialog.findViewById(R.id.layout_logging_out);
 
-
         dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final AppPrefs listops = new AppPrefs(getActivity());
-
-
                 controls.setVisibility(View.GONE);
                 progress.setVisibility(View.VISIBLE);
                 final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -294,21 +313,15 @@ public class Account extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == getActivity().RESULT_OK && null != data) {
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-
             picturePath = GetPaths.getPath(getActivity(), selectedImage);
-
-
             pro_pic.setImageBitmap(BitmapHelper.decodeFile(getActivity(), new File(picturePath)));
 
         }
-
-
     }
 
     public void forgotpassword() {
-
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -351,30 +364,23 @@ public class Account extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-
             try {
-
                 webServiceHandler = new WebServiceHandler(params[0]);
                 webServiceHandler.addFormField("email", params[1]);
                 Log.e("dasd", webServiceHandler.finish());
                 JSONObject toplevel = new JSONObject(webServiceHandler.finish());
                 status = toplevel.getString("status");
-
-
             } catch (IOException q) {
                 status = "url_error";
             } catch (JSONException e) {
                 status = "json_error";
             }
             return null;
-
         }
-
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
             dialog.dismiss();
             Log.e("fas", status);
 
@@ -389,7 +395,6 @@ public class Account extends Fragment {
     private void expand(LinearLayout linearLayout) {
         //set Visible
         linearLayout.setVisibility(View.VISIBLE);
-
         final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         linearLayout.measure(widthSpec, heightSpec);
@@ -401,13 +406,10 @@ public class Account extends Fragment {
 
     private void collapse(final LinearLayout linearLayout) {
         int finalHeight = linearLayout.getHeight();
-
         ValueAnimator mAnimator = slideAnimator(finalHeight, 0, linearLayout);
-
         mAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
             }
 
             @Override
@@ -433,7 +435,6 @@ public class Account extends Fragment {
     private ValueAnimator slideAnimator(int start, int end, final LinearLayout linearLayout) {
 
         ValueAnimator animator = ValueAnimator.ofInt(start, end);
-
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -470,7 +471,6 @@ public class Account extends Fragment {
                 webServiceHandler.addFormField("new_password", params[2]);
                 JSONObject jsonObject = new JSONObject(webServiceHandler.finish());
                 Log.e("das", jsonObject.toString());
-
                 status = jsonObject.getString("status");
 
             } catch (Exception e) {
@@ -542,7 +542,7 @@ public class Account extends Fragment {
 
                 status = jsonObject.getString("status");
                 if (status.equals("success")) {
-                    User user=AppPrefs.getUser();
+                    User user = AppPrefs.getUser();
                     user.setEmail(userInfo.getString(Utility.user_email));
                     user.setUsername(userInfo.getString(Utility.user_name));
                     user.setRealname(userInfo.getString(Utility.user_realname));

@@ -7,26 +7,19 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge</item>
-        <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge
-        </item>
+        <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge</item>
 
         <item name="textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall</item>
-        <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall
-        </item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall</item>
 
         <item name="popupMenuStyle">@style/myPopupMenuStyle</item>
         <item name="android:popupMenuStyle">@style/myPopupMenuStyle</item>
-
-
     </style>
-
 
     <style name="Pager">
         <item name="android:textColor">#ffffff</item>
         <item name="indicatorColor">@color/white</item>
     </style>
-
-
 
     <style name="myPopupMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu">
         <item name="android:popupBackground">@color/white_dull</item>
@@ -56,7 +49,6 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
     </style>
 
     <style name="MyText">

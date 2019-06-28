@@ -19,9 +19,8 @@ public class TagFrame extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        android_id= Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        Log.e(android_id,android_id);
+        Log.e(android_id, android_id);
     }
 }

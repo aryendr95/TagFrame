@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.R;
@@ -25,11 +24,12 @@ import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by abhinav on 11/04/2016.
  */
 public class FollowListAdapter extends BaseAdapter {
-
     ArrayList<FollowModel> followModelArrayList;
     Context ctx;
     LayoutInflater inflater;
@@ -38,11 +38,9 @@ public class FollowListAdapter extends BaseAdapter {
     public Broadcastresults mReceiver;
 
     public FollowListAdapter(Context ctx, ArrayList<FollowModel> followModelArrayList, int type) {
-
         this.ctx = ctx;
         this.followModelArrayList = followModelArrayList;
-        inflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.user_type = type;
         userinfo = new AppPrefs(ctx);
     }
@@ -70,25 +68,20 @@ public class FollowListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.layout_list_item_followlist, parent, false);
             mViewHolder = new MyViewHolder(convertView);
             convertView.setTag(mViewHolder);
-
         } else {
             mViewHolder = (MyViewHolder) convertView.getTag();
-
-
         }
         FollowModel followModel = followModelArrayList.get(position);
         mViewHolder.tvusername.setText(followModel.getUser_name());
 
         mViewHolder.tvrealname.setText(followModel.getFirst_name());
         try {
-            Picasso.with(ctx).load(followModel.getImage()).resize(50,50).into(mViewHolder.user_pic);
+            Picasso.with(ctx).load(followModel.getImage()).resize(50, 50).into(mViewHolder.user_pic);
         } catch (Exception e) {
             mViewHolder.user_pic.setImageResource(R.drawable.pro_image);
         }
-
         //adjust according to type
         adjust(mViewHolder, position, user_type, followModel);
-
         return convertView;
     }
 
@@ -106,9 +99,7 @@ public class FollowListAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
 
-
                        /* mReceiver=((Modules)ctx).register_reviever();
-
                         Intent intent=new Intent(ctx, IntentServiceOperations.class);
                         intent.putExtra("operation",Utility.operation_remove_follower);
                         intent.putExtra("from_userid",followModel.getFrom_user_id());
@@ -119,12 +110,11 @@ public class FollowListAdapter extends BaseAdapter {
 
                         followModelArrayList.remove(position);
                         notifyDataSetChanged();*/
-
                         final Dialog dialog = new Dialog(ctx);
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         dialog.setContentView(R.layout.dialog_remove_follower);
 
-                        CircularImageView circularImageView = (CircularImageView) dialog.findViewById(R.id.dia_remove_image);
+                        CircleImageView circularImageView = (CircleImageView) dialog.findViewById(R.id.dia_remove_image);
                         try {
                             Picasso.with(ctx).load(followModel.getImage()).into(circularImageView);
                         } catch (Exception e) {
@@ -137,14 +127,12 @@ public class FollowListAdapter extends BaseAdapter {
                         TextView textView1 = (TextView) dialog.findViewById(R.id.dia_rem_caption);
                         textView1.setText("Are you sure you want to remove this follower?");
 
-
                         dialog.findViewById(R.id.dia_rem_yesbtn).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 followModelArrayList.remove(position);
                                 notifyDataSetChanged();
                                 ((Modules) ctx).setprofileparameter(Utility.user_type_followers, followModelArrayList.size() + "");
-
                                 mReceiver = ((Modules) ctx).register_reviever();
 
                                 Intent intent = new Intent(ctx, IntentServiceOperations.class);
@@ -155,8 +143,6 @@ public class FollowListAdapter extends BaseAdapter {
                                 intent.putExtra("receiver", mReceiver);
                                 ctx.startService(intent);
                                 dialog.dismiss();
-
-
                             }
                         });
 
@@ -166,9 +152,7 @@ public class FollowListAdapter extends BaseAdapter {
                                 dialog.dismiss();
                             }
                         });
-
                         dialog.show();
-
                     }
                 });
             } else if (type == 2) {
@@ -190,7 +174,7 @@ public class FollowListAdapter extends BaseAdapter {
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_remove_follower);
 
-                    CircularImageView circularImageView = (CircularImageView) dialog.findViewById(R.id.dia_remove_image);
+                    CircleImageView circularImageView = (CircleImageView) dialog.findViewById(R.id.dia_remove_image);
 
                     try {
                         Picasso.with(ctx).load(followModel.getImage()).into(circularImageView);
@@ -240,7 +224,7 @@ public class FollowListAdapter extends BaseAdapter {
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_remove_follower);
 
-                    CircularImageView circularImageView = (CircularImageView) dialog.findViewById(R.id.dia_remove_image);
+                    CircleImageView circularImageView = (CircleImageView) dialog.findViewById(R.id.dia_remove_image);
 
                     try {
                         Picasso.with(ctx).load(followModel.getImage()).into(circularImageView);
@@ -249,7 +233,6 @@ public class FollowListAdapter extends BaseAdapter {
                     }
                     TextView textView = (TextView) dialog.findViewById(R.id.dia_remove_text);
                     textView.setText(followModel.getUser_name());
-
                     TextView textView1 = (TextView) dialog.findViewById(R.id.dia_rem_caption);
                     textView1.setText("Are you sure you want to follow this person?");
 
@@ -257,12 +240,8 @@ public class FollowListAdapter extends BaseAdapter {
                     dialog.findViewById(R.id.dia_rem_yesbtn).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
-
                             ((Modules) ctx).setprofileparameter(Utility.user_type_following, (followModelArrayList.size()) + "");
-
                             mReceiver = ((Modules) ctx).register_reviever();
-
                             Intent intent = new Intent(ctx, IntentServiceOperations.class);
                             intent.putExtra("operation", Utility.operation_follow);
                             intent.putExtra("from_userid", followModel.getFrom_user_id());
@@ -271,8 +250,6 @@ public class FollowListAdapter extends BaseAdapter {
                             intent.putExtra("receiver", mReceiver);
                             ctx.startService(intent);
                             dialog.dismiss();
-
-
                         }
                     });
 
@@ -289,7 +266,6 @@ public class FollowListAdapter extends BaseAdapter {
             }
         });
 
-
         viewHolder.user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,26 +280,21 @@ public class FollowListAdapter extends BaseAdapter {
         });
     }
 
-
     public void create_dialog() {
-
     }
-
 
     private class MyViewHolder {
         TextView tvusername, tvrealname;
-        CircularImageView user_pic;
+        CircleImageView user_pic;
         TextView followbutton;
         ImageView removeuser;
 
         public MyViewHolder(View item) {
             tvusername = (TextView) item.findViewById(R.id.follow_username);
             tvrealname = (TextView) item.findViewById(R.id.follow_realname);
-            user_pic = (CircularImageView) item.findViewById(R.id.follow_pro_pic);
+            user_pic = (CircleImageView) item.findViewById(R.id.follow_pro_pic);
             followbutton = (TextView) item.findViewById(R.id.follow_button);
-
             removeuser = (ImageView) item.findViewById(R.id.follow_remove);
-
         }
     }
 }

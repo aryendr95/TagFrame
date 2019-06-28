@@ -18,17 +18,13 @@ import com.tagframe.tagframe.R;
 public class MyToast {
 
 
-
-    public static  void  popmessage(String mytext,Context mcontext)
-    {
+    public static void popmessage(String mytext, Context mcontext) {
         View layout;
-        if(mcontext instanceof Activity) {
+        if (mcontext instanceof Activity) {
             LayoutInflater inflater = ((Activity) mcontext).getLayoutInflater();
-             layout = inflater.inflate(R.layout.custom_toast,
+            layout = inflater.inflate(R.layout.custom_toast,
                     (ViewGroup) ((Activity) mcontext).findViewById(R.id.custom_toast_layout_id));
-        }
-        else
-        {
+        } else {
             LayoutInflater inflater = (LayoutInflater) mcontext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             layout = inflater.inflate(R.layout.custom_toast,
                     null);
@@ -40,7 +36,7 @@ public class MyToast {
 
         // Toast...
         Toast toast = new Toast(mcontext);
-       // toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
+        // toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();

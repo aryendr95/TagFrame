@@ -28,27 +28,25 @@ import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
 import com.veer.multiselect.Util.LoadBitmap;
+
 import java.io.File;
 import java.util.ArrayList;
 
 /**
  * Created by abhinav on 08/04/2016.
  */
-public class SavedEvent_Adapter extends BaseAdapter
-{
-
+public class SavedEvent_Adapter extends BaseAdapter {
     Context ctx;
     ArrayList<SingleEventModel> tagStream_models;
     LayoutInflater inflater;
     AppPrefs userdata;
 
 
-    public SavedEvent_Adapter(Context ctx,ArrayList<SingleEventModel> tagStream_models)
-    {
-        this.ctx=ctx;
-        this.tagStream_models=tagStream_models;
-        userdata=new AppPrefs(ctx);
-        inflater=(LayoutInflater) ctx
+    public SavedEvent_Adapter(Context ctx, ArrayList<SingleEventModel> tagStream_models) {
+        this.ctx = ctx;
+        this.tagStream_models = tagStream_models;
+        userdata = new AppPrefs(ctx);
+        inflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -79,14 +77,14 @@ public class SavedEvent_Adapter extends BaseAdapter
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
 
-        final SingleEventModel tagStream=tagStream_models.get(position);
+        final SingleEventModel tagStream = tagStream_models.get(position);
 
         mViewHolder.tvTitlle.setText(tagStream.getTittle());
-      //  mViewHolder.tvname.setText(tagStream.getName());
+        //  mViewHolder.tvname.setText(tagStream.getName());
         mViewHolder.tvcurrentduration.setText(tagStream.getTime());
 
         mViewHolder.iveventimage.setVisibility(View.VISIBLE);
-       // mViewHolder.iveventvideo.setVisibility(View.GONE);
+        // mViewHolder.iveventvideo.setVisibility(View.GONE);
 
        /* Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
         Glide
@@ -113,7 +111,7 @@ public class SavedEvent_Adapter extends BaseAdapter
 
         mViewHolder.iveventimage.setImageBitmap(thumb);*/
 
-        LoadBitmap.loadBitmap(tagStream.getVidaddress(),mViewHolder.iveventimage);
+        LoadBitmap.loadBitmap(tagStream.getVidaddress(), mViewHolder.iveventimage);
 
         mViewHolder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,27 +124,26 @@ public class SavedEvent_Adapter extends BaseAdapter
     }
 
     private class MyViewHolder {
-        TextView tvTitlle, tvname,tvcurrentduration;
-        ImageView iveventimage,menu;
+        TextView tvTitlle, tvname, tvcurrentduration;
+        ImageView iveventimage, menu;
         VideoView iveventvideo;
 
         public MyViewHolder(View item) {
             tvTitlle = (TextView) item.findViewById(R.id.list_event_tittle);
             //tvname = (TextView) item.findViewById(R.id.list_user_name);
             tvcurrentduration = (TextView) item.findViewById(R.id.list_user_duration);
-            iveventimage=(ImageView)item.findViewById(R.id.list_event_image);
-            menu=(ImageView)item.findViewById(R.id.img_menu_save_event);
+            iveventimage = (ImageView) item.findViewById(R.id.list_event_image);
+            menu = (ImageView) item.findViewById(R.id.img_menu_save_event);
 
             //iveventvideo=(VideoView)item.findViewById(R.id.list_event_video);
 
         }
     }
 
-    public void generate_pop_up_add_frame(View v, final Context ctx,int pos)
-    {
+    public void generate_pop_up_add_frame(View v, final Context ctx, int pos) {
 
-        final int p=pos;
-        final Context c=ctx;
+        final int p = pos;
+        final Context c = ctx;
         PopupMenu popup = new PopupMenu(ctx, v);
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.menu_saved_events, popup.getMenu());
@@ -166,7 +163,7 @@ public class SavedEvent_Adapter extends BaseAdapter
                         intent.putExtra("type", singleEventModel.getType());
                         intent.putParcelableArrayListExtra("framelist", singleEventModel.getFrameList_modelArrayList());
                         intent.putExtra("eventtype", Utility.eventtype_saved);
-                        intent.putExtra("tagged_user_id",singleEventModel.getTaggedUserModelArrayList());
+                        intent.putExtra("tagged_user_id", singleEventModel.getTaggedUserModelArrayList());
 
                         ctx.startActivity(intent);
 
@@ -197,11 +194,10 @@ public class SavedEvent_Adapter extends BaseAdapter
         popup.show();//showing popup menu
     }
 
-    public void method_post_event(Context ctx,String vidAddress,ArrayList<FrameList_Model> framedata_map,String tittle,String description,int durat,String userid)
-    {
+    public void method_post_event(Context ctx, String vidAddress, ArrayList<FrameList_Model> framedata_map, String tittle, String description, int durat, String userid) {
 
         MyToast.popmessage("Posting...", ctx);
-        Intent intent=new Intent(ctx, IntentServiceOperations.class);
+        Intent intent = new Intent(ctx, IntentServiceOperations.class);
         intent.putExtra("video_url", vidAddress);
         intent.putParcelableArrayListExtra("frame_list", framedata_map);
         intent.putExtra("operation", Utility.operation_post_event);
@@ -210,19 +206,14 @@ public class SavedEvent_Adapter extends BaseAdapter
         //intent.putExtra("access_type", type);
         intent.putExtra("duration", durat);
 
-        Broadcastresults mreciver=((SavedEvents)ctx).register_reviever();
+        Broadcastresults mreciver = ((SavedEvents) ctx).register_reviever();
         intent.putExtra("receiver", mreciver);
         intent.putExtra("user_id", userid);
 
         ctx.startService(intent);
 
 
-
-
-
-
     }
-
 
 
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {

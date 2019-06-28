@@ -36,8 +36,7 @@ public class ProductAdapter extends BaseAdapter {
         this.ctx = ctx;
         this.tagStream_models = tagStream_models;
 
-        inflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -78,27 +77,29 @@ public class ProductAdapter extends BaseAdapter {
         mViewHolder.textView.setText(tagStream.getName());
         mViewHolder.tvPrice.setText(tagStream.getProduct_price());
         mViewHolder.tvEndorse.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 if (ctx instanceof Productlist) {
                     //frame endorse
                     Intent intent = new Intent();
                     intent.putExtra("product_id", tagStream.getId());
                     intent.putExtra("product_image", tagStream.getImage());
                     intent.putExtra("product_url", tagStream.getUrl());
-                    intent.putExtra("product_name",tagStream.getName());
+                    intent.putExtra("product_name", tagStream.getName());
                     ((Productlist) ctx).setResult(Utility.PRODUCT_LIST_FLAG, intent);
                     ((Productlist) ctx).finish();
 
                 } else {
                     //direct endorse
-                    Intent intent=new Intent(ctx, SearchUserActivity.class);
+                    Intent intent = new Intent(ctx, SearchUserActivity.class);
                     intent.putExtra("product_id", tagStream.getId());
                     ctx.startActivity(intent);
                 }
             }
         });
         mViewHolder.tvBuy.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(tagStream.getUrl()));
                 ctx.startActivity(browserIntent);
             }
@@ -170,13 +171,13 @@ public class ProductAdapter extends BaseAdapter {
                     intent.putExtra("product_id", product.getId());
                     intent.putExtra("product_image", product.getImage());
                     intent.putExtra("product_url", product.getUrl());
-                    intent.putExtra("product_name",product.getName());
+                    intent.putExtra("product_name", product.getName());
                     ((Productlist) ctx).setResult(Utility.PRODUCT_LIST_FLAG, intent);
                     ((Productlist) ctx).finish();
 
                 } else {
                     //direct endorse
-                    Intent intent=new Intent(ctx, SearchUserActivity.class);
+                    Intent intent = new Intent(ctx, SearchUserActivity.class);
                     intent.putExtra("product_id", product.getId());
                     ctx.startActivity(intent);
                 }
@@ -190,7 +191,7 @@ public class ProductAdapter extends BaseAdapter {
     }
 
 
-    static void showProductDialog(final Context ctx, final Product product,SpannableString message) {
+    static void showProductDialog(final Context ctx, final Product product, SpannableString message) {
         final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         dialog.setContentView(R.layout.dialog_see_product);
         dialog.setCancelable(true);
@@ -246,13 +247,13 @@ public class ProductAdapter extends BaseAdapter {
                     intent.putExtra("product_id", product.getId());
                     intent.putExtra("product_image", product.getImage());
                     intent.putExtra("product_url", product.getUrl());
-                    intent.putExtra("product_name",product.getName());
+                    intent.putExtra("product_name", product.getName());
                     ((Productlist) ctx).setResult(Utility.PRODUCT_LIST_FLAG, intent);
                     ((Productlist) ctx).finish();
 
                 } else {
                     //direct endorse
-                    Intent intent=new Intent(ctx, SearchUserActivity.class);
+                    Intent intent = new Intent(ctx, SearchUserActivity.class);
                     intent.putExtra("product_id", product.getId());
                     ctx.startActivity(intent);
                 }
@@ -269,11 +270,11 @@ public class ProductAdapter extends BaseAdapter {
     private class MyViewHolder {
 
         ImageView ivimage;
-        TextView textView, tvPrice, tvEndorse, tvBuy;;
+        TextView textView, tvPrice, tvEndorse, tvBuy;
+        ;
 
 
         public MyViewHolder(View item) {
-
             ivimage = (ImageView) item.findViewById(R.id.product_image);
             textView = (TextView) item.findViewById(R.id.product_name);
             tvPrice = (TextView) item.findViewById(R.id.product_price);

@@ -11,23 +11,20 @@ import android.widget.RelativeLayout;
 
 import com.tagframe.tagframe.R;
 
-public class AnimatingRelativeLayout extends RelativeLayout
-{
+public class AnimatingRelativeLayout extends RelativeLayout {
     Context context;
     Animation inAnimation;
     Animation outAnimation;
-    int id1=R.anim.in_animation,id2=R.anim.out_animation;
+    int id1 = R.anim.in_animation, id2 = R.anim.out_animation;
 
-    public AnimatingRelativeLayout(Context context)
-    {
+    public AnimatingRelativeLayout(Context context) {
         super(context);
         this.context = context;
         initAnimations();
 
     }
 
-    public AnimatingRelativeLayout(Context context, AttributeSet attrs)
-    {
+    public AnimatingRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         TypedArray a = context.getTheme().obtainStyledAttributes(
@@ -37,7 +34,7 @@ public class AnimatingRelativeLayout extends RelativeLayout
 
         try {
             id1 = a.getResourceId(R.styleable.AnimatingRelativeLayout_inAnimation, R.anim.in_animation);
-            id2= a.getResourceId(R.styleable.AnimatingRelativeLayout_outAnimation, R.anim.out_animation);
+            id2 = a.getResourceId(R.styleable.AnimatingRelativeLayout_outAnimation, R.anim.out_animation);
         } finally {
             a.recycle();
         }
@@ -45,8 +42,7 @@ public class AnimatingRelativeLayout extends RelativeLayout
 
     }
 
-    public AnimatingRelativeLayout(Context context, AttributeSet attrs, int defStyle)
-    {
+    public AnimatingRelativeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
         TypedArray a = context.getTheme().obtainStyledAttributes(
@@ -56,55 +52,47 @@ public class AnimatingRelativeLayout extends RelativeLayout
 
         try {
             id1 = a.getInteger(R.styleable.AnimatingRelativeLayout_inAnimation, R.anim.in_animation);
-            id2= a.getInteger(R.styleable.AnimatingRelativeLayout_outAnimation, R.anim.out_animation);
+            id2 = a.getInteger(R.styleable.AnimatingRelativeLayout_outAnimation, R.anim.out_animation);
         } finally {
             a.recycle();
         }
         initAnimations();
     }
 
-    private void initAnimations()
-    {
+    private void initAnimations() {
         inAnimation = (Animation) AnimationUtils.loadAnimation(context, id1);
-        outAnimation = (Animation) AnimationUtils.loadAnimation(context,id2);
+        outAnimation = (Animation) AnimationUtils.loadAnimation(context, id2);
     }
 
-    public void show()
-    {
+    public void show() {
         if (isVisible()) return;
         show(true);
     }
 
-    public void show(boolean withAnimation)
-    {
+    public void show(boolean withAnimation) {
         if (withAnimation) this.startAnimation(inAnimation);
         this.setVisibility(View.VISIBLE);
     }
 
-    public void hide()
-    {
+    public void hide() {
         if (!isVisible()) return;
         hide(true);
     }
 
-    public void hide(boolean withAnimation)
-    {
+    public void hide(boolean withAnimation) {
         if (withAnimation) this.startAnimation(outAnimation);
         this.setVisibility(View.GONE);
     }
 
-    public boolean isVisible()
-    {
+    public boolean isVisible() {
         return (this.getVisibility() == View.VISIBLE);
     }
 
-    public void overrideDefaultInAnimation(Animation inAnimation)
-    {
+    public void overrideDefaultInAnimation(Animation inAnimation) {
         this.inAnimation = inAnimation;
     }
 
-    public void overrideDefaultOutAnimation(Animation outAnimation)
-    {
+    public void overrideDefaultOutAnimation(Animation outAnimation) {
         this.outAnimation = outAnimation;
     }
 }

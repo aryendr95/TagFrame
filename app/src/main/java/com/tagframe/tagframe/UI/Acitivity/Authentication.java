@@ -20,77 +20,73 @@ import java.util.ArrayList;
 
 /**
  * Created by Karanveer on 04/04/2016.
- *
+ * <p>
  * this class handles all the authentications like login and sign up and also the splash each having their own respective fragment
  */
 public class Authentication extends FragmentActivity {
+    private ViewPager mpager;
+    private SlidingTabLayout mpagerTabStrip;
 
-  private ViewPager mpager;
-  private SlidingTabLayout mpagerTabStrip;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_authentication);
+        //recognise views
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_authentication);
-    //recognise views
+        mpager = (ViewPager) findViewById(R.id.pager_authentication);
+        mpagerTabStrip = (SlidingTabLayout) findViewById(R.id.pagertab);
 
-    mpager = (ViewPager) findViewById(R.id.pager_authentication);
-    mpagerTabStrip = (SlidingTabLayout) findViewById(R.id.pagertab);
+        //
+        mpagerTabStrip.setDistributeEvenly(true);
+        mpagerTabStrip.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return Color.WHITE;
+            }
+        });
+        // mpagerTabStrip.setCustomTabView(R.layout.layout_customized_tab, R.id.txttab);
 
-    //
-    mpagerTabStrip.setDistributeEvenly(true);
-    mpagerTabStrip.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-      @Override public int getIndicatorColor(int position) {
-        return Color.WHITE;
-      }
-    });
-    // mpagerTabStrip.setCustomTabView(R.layout.layout_customized_tab, R.id.txttab);
-
-    setadapter();
-  }
-
-  public void setadapter() {
-    //setting up adapter for viewpager
-    ArrayList<Fragment> fraglist = new ArrayList<>();
-    ArrayList<String> names = new ArrayList<>();
-
-    AppPrefs appPrefs = new AppPrefs(this);
-    User user=appPrefs.getUser();
-    if (user.isLoggedin()) {//if logged out
-
-      Intent intent=new Intent(this, SplashActivity.class);
-      intent.putExtra("load","login");
-      startActivity(intent);
-      finish();
-
-    } else {
-      fraglist.add(new Login());
-      fraglist.add(new SignUp());
-
-      names.add("Login");
-      names.add("Sign Up");
+        setadapter();
     }
 
-    TagPagerAdapter tagPagerAdapter =
-        new TagPagerAdapter(getSupportFragmentManager(), fraglist, names);
+    public void setadapter() {
+        //setting up adapter for viewpager
+        ArrayList<Fragment> fraglist = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
 
-    mpager.setAdapter(tagPagerAdapter);
+        AppPrefs appPrefs = new AppPrefs(this);
+        User user = appPrefs.getUser();
+        if (user.isLoggedin()) {//if logged out
+            Intent intent = new Intent(this, SplashActivity.class);
+            intent.putExtra("load", "login");
+            startActivity(intent);
+            finish();
 
-    mpagerTabStrip.setViewPager(mpager);
-  }
+        } else {
+            fraglist.add(new Login());
+            fraglist.add(new SignUp());
 
-  public void setadapteraddprofile(Fragment FR) {
-    //setting up adapter for viewpager
-    ArrayList<Fragment> fraglist = new ArrayList<>();
-    ArrayList<String> names = new ArrayList<>();
+            names.add("Login");
+            names.add("Sign Up");
+        }
 
-    fraglist.add(FR);
-    names.add("");
+        TagPagerAdapter tagPagerAdapter = new TagPagerAdapter(getSupportFragmentManager(), fraglist, names);
 
-    TagPagerAdapter tagPagerAdapter =
-        new TagPagerAdapter(getSupportFragmentManager(), fraglist, names);
+        mpager.setAdapter(tagPagerAdapter);
 
-    mpager.setAdapter(tagPagerAdapter);
+        mpagerTabStrip.setViewPager(mpager);
+    }
 
-    mpagerTabStrip.setViewPager(mpager);
-  }
+    public void setadapteraddprofile(Fragment FR) {
+        //setting up adapter for viewpager
+        ArrayList<Fragment> fraglist = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+
+        fraglist.add(FR);
+        names.add("");
+
+        TagPagerAdapter tagPagerAdapter = new TagPagerAdapter(getSupportFragmentManager(), fraglist, names);
+        mpager.setAdapter(tagPagerAdapter);
+        mpagerTabStrip.setViewPager(mpager);
+    }
 }

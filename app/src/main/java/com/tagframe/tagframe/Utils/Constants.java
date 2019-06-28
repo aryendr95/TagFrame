@@ -18,6 +18,10 @@ import java.util.concurrent.TimeUnit;
 public class Constants {
 
 
+    public static final String CHANNEL_ID = "my_channel_01";
+    public static final String CHANNEL_NAME = "Simplified Coding Notification";
+    public static final String CHANNEL_DESCRIPTION = "www.simplifiedcoding.net";
+
     //URL
     public static final String URL_COMMENT_LIST = "http://tagframe.com/webservice/comment_list";
     public static final String URL_COMMENT = "http://tagframe.com/webservice/post_comment";
@@ -44,7 +48,8 @@ public class Constants {
     //live
     // public static final String base_url = "http://tagframe.com/webservice/";
     //test
-    public static final String base_url = "http:// workintelligent.com/TagFrame/webservice/";
+//    public static final String base_url = "http:// workintelligent.com/TagFrame/webservice/";
+    public static final String base_url = "http://thinksmartapp.com/TagFrame/webservice/";
 
     public static final String login = base_url + "login";
     public static final String signup = base_url + "signup";
@@ -111,7 +116,7 @@ public class Constants {
     public static final int operation_load_user_events = 109;
 
     public static final int operation_comment = 110;
-    public static final  int operation_block=10005;
+    public static final int operation_block = 10005;
 
     public static final int operation_onclicked_tagged_user = 121;
     public static final int operation_onclicked_direct_endorse = 122;
@@ -129,9 +134,9 @@ public class Constants {
 
     public static final int PAGE_SIZE = 10;
 
-    public static final String success_response="success";
-    public static final String message_no_internet="No internet Connection";
-    public static String SHP_USER_INFORMATION="user_info";
+    public static final String success_response = "success";
+    public static final String message_no_internet = "No internet Connection";
+    public static String SHP_USER_INFORMATION = "user_info";
 
 
     public final static boolean isValidEmail(CharSequence target) {

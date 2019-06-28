@@ -38,7 +38,7 @@ public class Event_Model implements Parcelable {
     }
 
     @SerializedName("is_product_frame")
-    private boolean is_product_frame=false;
+    private boolean is_product_frame = false;
 
     @SerializedName("product_id")
     @Expose
@@ -86,7 +86,6 @@ public class Event_Model implements Parcelable {
     public void setMedia_type(String media_type) {
         this.media_type = media_type;
     }
-
 
 
     public String getAction_type() {
@@ -168,8 +167,7 @@ public class Event_Model implements Parcelable {
     @Expose
     private String type;
 
-    private boolean in_center=false;
-
+    private boolean in_center = false;
 
 
     public boolean isIn_center() {
@@ -233,7 +231,7 @@ public class Event_Model implements Parcelable {
 
     public void setMyFrameArrraYlist(ArrayList<FrameList_Model> myFrameArrraYlist) {
         this.myFrameArrraYlist = myFrameArrraYlist;
-        setMyFrameListShown(this.myFrameArrraYlist.size()>0);
+        setMyFrameListShown(this.myFrameArrraYlist.size() > 0);
     }
 
     public ArrayList<FrameList_Model> getOtherFrameArrraYlist() {
@@ -242,7 +240,7 @@ public class Event_Model implements Parcelable {
 
     public void setOtherFrameArrraYlist(ArrayList<FrameList_Model> otherFrameArrraYlist) {
         this.otherFrameArrraYlist = otherFrameArrraYlist;
-        setOtherFrameListShown(this.otherFrameArrraYlist.size()>0);
+        setOtherFrameListShown(this.otherFrameArrraYlist.size() > 0);
     }
 
     @SerializedName("frames")
@@ -386,11 +384,13 @@ public class Event_Model implements Parcelable {
     public Event_Model() {
     }
 
-    @Override public int describeContents() {
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.action_type);
         dest.writeString(this.frame_media_url);
         dest.writeByte(this.is_product_frame ? (byte) 1 : (byte) 0);
@@ -461,11 +461,13 @@ public class Event_Model implements Parcelable {
     }
 
     public static final Creator<Event_Model> CREATOR = new Creator<Event_Model>() {
-        @Override public Event_Model createFromParcel(Parcel source) {
+        @Override
+        public Event_Model createFromParcel(Parcel source) {
             return new Event_Model(source);
         }
 
-        @Override public Event_Model[] newArray(int size) {
+        @Override
+        public Event_Model[] newArray(int size) {
             return new Event_Model[size];
         }
     };

@@ -26,9 +26,8 @@ public class MyButton extends Button {
         super(context, attrs, defStyleAttr);
         init();
     }
-    public  void init()
 
-    {
+    public void init() {
         setTypeface(Typeface.SANS_SERIF);
         setTextColor(Color.WHITE);
 

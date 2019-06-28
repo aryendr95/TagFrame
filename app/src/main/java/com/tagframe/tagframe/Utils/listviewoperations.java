@@ -8,9 +8,9 @@ import android.widget.ListView;
 public class listviewoperations {
 
     ListView listView;
-    public listviewoperations(ListView listView)
-    {
-        this.listView=listView;
+
+    public listviewoperations(ListView listView) {
+        this.listView = listView;
 
     }
 

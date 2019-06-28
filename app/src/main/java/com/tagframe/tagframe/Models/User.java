@@ -2,6 +2,7 @@ package com.tagframe.tagframe.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 public class User implements Parcelable {
 
 
-    private boolean isLoggedin=false;
+    private boolean isLoggedin = false;
 
     public boolean isLoggedin() {
         return isLoggedin;
@@ -194,11 +195,13 @@ public class User implements Parcelable {
         this.followed = followed;
     }
 
-    @Override public int describeContents() {
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isLoggedin ? (byte) 1 : (byte) 0);
         dest.writeByte(this.blocked ? (byte) 1 : (byte) 0);
         dest.writeString(this.user_id);
@@ -240,11 +243,13 @@ public class User implements Parcelable {
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-        @Override public User createFromParcel(Parcel source) {
+        @Override
+        public User createFromParcel(Parcel source) {
             return new User(source);
         }
 
-        @Override public User[] newArray(int size) {
+        @Override
+        public User[] newArray(int size) {
             return new User[size];
         }
     };

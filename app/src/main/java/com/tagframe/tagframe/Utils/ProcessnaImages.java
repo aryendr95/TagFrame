@@ -1,4 +1,5 @@
 package com.tagframe.tagframe.Utils;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -39,14 +40,14 @@ public class ProcessnaImages {
      * @param context O contexto a ser utilizado para verificacao do hardware.
      * @return True se tiver uma camera, false caso contrario.
      */
-    public static final boolean checarCameraHardware( Context context ) {
+    public static final boolean checarCameraHardware(Context context) {
         // Este dispositivo tem uma camera.
-        if ( context.getPackageManager().hasSystemFeature( PackageManager.FEATURE_CAMERA ) ) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             return true;
         }
         // Este dispositivo nao tem uma camera.
         else {
-            Log.i( "ProcessaImagens", "Este dispositivo não tem uma câmera" );
+            Log.i("ProcessaImagens", "Este dispositivo não tem uma câmera");
             return false;
         }
     }
@@ -54,16 +55,16 @@ public class ProcessnaImages {
     /**
      * Cria um URI a partir da criacao de um arquivo para salvar uma imagem ou video.
      *
-     * @param type Indica se o arquivo e uma imagem ou video.
+     * @param type    Indica se o arquivo e uma imagem ou video.
      * @param context Contexto usado para acessar recursos do sistema e obter o nome do app.
      * @return URI contendo o caminho e nome do arquivo.
      */
-    public static Uri getOutputMediaFileUri( int type, Context context ) {
-        return Uri.fromFile( getOutputMediaFile( type, context ) );
+    public static Uri getOutputMediaFileUri(int type, Context context) {
+        return Uri.fromFile(getOutputMediaFile(type, context));
     }
 
 
-    private static File getOutputMediaFile( int type, Context context ) {
+    private static File getOutputMediaFile(int type, Context context) {
         // Obtem o nome do app para usar como o nome da pasta onde as imagens serao salvas dentro da pasta "Pictures"
         PackageManager packageManager = context.getPackageManager();
         ApplicationInfo applicationInfo = null;
@@ -75,26 +76,26 @@ public class ProcessnaImages {
         String nomeApp = (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "Desconhecido");
 
 
-        File mediaStorageDir = new File( Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES ), nomeApp );
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), nomeApp);
 
         // Cria o diretorio se ele nao existe
-        if ( !mediaStorageDir.exists() ) {
-            if ( !mediaStorageDir.mkdirs() ) {
-                Log.d( nomeApp, "Falha ao criar diretório ou diretório já existe!" );
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d(nomeApp, "Falha ao criar diretório ou diretório já existe!");
                 return null;
             }
         }
 
         // Cria o nome do arquivo de midia
-        String timeStamp = new SimpleDateFormat( "yyyyMMdd_HHmmss" ).format( new Date() );
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        if ( type == MEDIA_TYPE_IMAGE ) {
-            mediaFile = new File( mediaStorageDir.getPath() + File.separator +
-                    "IMG_" + timeStamp + ".jpg" );
-        } else if ( type == MEDIA_TYPE_VIDEO ) {
-            mediaFile = new File( mediaStorageDir.getPath() + File.separator +
-                    "VID_" + timeStamp + ".mp4" );
+        if (type == MEDIA_TYPE_IMAGE) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_" + timeStamp + ".jpg");
+        } else if (type == MEDIA_TYPE_VIDEO) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "VID_" + timeStamp + ".mp4");
         } else {
             return null;
         }
@@ -103,44 +104,44 @@ public class ProcessnaImages {
     }
 
 
-    public static final Bitmap getMiniaturaImagem( ContentResolver cr, String imagePath, long imageId ) {
+    public static final Bitmap getMiniaturaImagem(ContentResolver cr, String imagePath, long imageId) {
         // Recupera a miniatura da imagem que foi passada o id.
-        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail( cr, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, new BitmapFactory.Options() );
+        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(cr, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, new BitmapFactory.Options());
 
         // Checa a rotacao da imagem e a exibe corretamente.
         ExifInterface exif;
         try {
-            exif = new ExifInterface( imagePath );
+            exif = new ExifInterface(imagePath);
 
-            int orientation = exif.getAttributeInt( ExifInterface.TAG_ORIENTATION, 0 );
-            Log.d( "EXIF", "Orientação original.: " + orientation );
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+            Log.d("EXIF", "Orientação original.: " + orientation);
 
 
             Matrix matrix = new Matrix();
 
-            if ( orientation == 6 ) {
-                matrix.postRotate( 90 );
-                Log.d( "EXIF", "Orientação.: " + orientation );
-            } else if ( orientation == 3 ) {
-                matrix.postRotate( 180 );
-                Log.d( "EXIF", "Orientação.: " + orientation );
-            } else if ( orientation == 8 ) {
-                matrix.postRotate( 270 );
-                Log.d( "EXIF", "Orientação.: " + orientation );
+            if (orientation == 6) {
+                matrix.postRotate(90);
+                Log.d("EXIF", "Orientação.: " + orientation);
+            } else if (orientation == 3) {
+                matrix.postRotate(180);
+                Log.d("EXIF", "Orientação.: " + orientation);
+            } else if (orientation == 8) {
+                matrix.postRotate(270);
+                Log.d("EXIF", "Orientação.: " + orientation);
             }
 
-            bitmap = Bitmap.createBitmap( bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true );
-        } catch ( IllegalArgumentException e ) {
-            Log.e( "ProcessaImagens", "Se os valores de x, y, largura e altura estão fora das dimensões do bitmap fonte.", e );
-        } catch ( IOException e ) {
-            Log.e( "ProcessaImagens", "Erro na leitura das tags Exif do arquivo jpeg especificado.", e );
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } catch (IllegalArgumentException e) {
+            Log.e("ProcessaImagens", "Se os valores de x, y, largura e altura estão fora das dimensões do bitmap fonte.", e);
+        } catch (IOException e) {
+            Log.e("ProcessaImagens", "Erro na leitura das tags Exif do arquivo jpeg especificado.", e);
         }
 
         return bitmap;
     }
 
 
-    public static final List<Object> compactarImagem( String imagePath ) {
+    public static final List<Object> compactarImagem(String imagePath) {
         // Lista de objetos que sera retornado pelo metodo.
         List<Object> listReturned = new ArrayList<Object>();
 
@@ -150,7 +151,7 @@ public class ProcessnaImages {
 
 
         options.inJustDecodeBounds = true;
-        Bitmap bmp = BitmapFactory.decodeFile( imagePath, options );
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
 
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
@@ -162,12 +163,12 @@ public class ProcessnaImages {
         float maxRatio = maxWidth / maxHeight;
 
         // Valores de largura e altura sao definidas mantendo a relacao de aspecto da imagem
-        if ( actualHeight > maxHeight || actualWidth > maxWidth ) {
-            if ( imgRatio < maxRatio ) {
+        if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if (imgRatio < maxRatio) {
                 imgRatio = maxHeight / actualHeight;
                 actualWidth = (int) (imgRatio * actualWidth);
                 actualHeight = (int) maxHeight;
-            } else if ( imgRatio > maxRatio ) {
+            } else if (imgRatio > maxRatio) {
                 imgRatio = maxWidth / actualWidth;
                 actualHeight = (int) (imgRatio * actualHeight);
                 actualWidth = (int) maxWidth;
@@ -178,7 +179,7 @@ public class ProcessnaImages {
         }
 
         // Definindo o valor de inSampleSize permite carregar uma versao reduzida da imagem original.
-        options.inSampleSize = calculateInSampleSize( options, actualWidth, actualHeight );
+        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
 
         // inJustDecodeBounds definida como false para carregar o bitmap real.
         options.inJustDecodeBounds = false;
@@ -190,14 +191,14 @@ public class ProcessnaImages {
 
         try {
             // Carrega o bitmap.
-            bmp = BitmapFactory.decodeFile( imagePath, options );
-        } catch ( OutOfMemoryError exception ) {
-            Log.e( "ProcessaImagens", "Estouro de memória ao tentar decodificar caminho de arquivo para bitmap.", exception );
+            bmp = BitmapFactory.decodeFile(imagePath, options);
+        } catch (OutOfMemoryError exception) {
+            Log.e("ProcessaImagens", "Estouro de memória ao tentar decodificar caminho de arquivo para bitmap.", exception);
         }
         try {
-            scaledBitmap = Bitmap.createBitmap( actualWidth, actualHeight, Bitmap.Config.ARGB_8888 );
-        } catch ( OutOfMemoryError exception ) {
-            Log.e( "ProcessaImagens", "Estouro de memória ao tentar criar bitmap escalado.", exception );
+            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);
+        } catch (OutOfMemoryError exception) {
+            Log.e("ProcessaImagens", "Estouro de memória ao tentar criar bitmap escalado.", exception);
         }
 
         float ratioX = actualWidth / (float) options.outWidth;
@@ -206,48 +207,48 @@ public class ProcessnaImages {
         float middleY = actualHeight / 2.0f;
 
         Matrix scaleMatrix = new Matrix();
-        scaleMatrix.setScale( ratioX, ratioY, middleX, middleY );
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
 
-        Canvas canvas = new Canvas( scaledBitmap );
-        canvas.setMatrix( scaleMatrix );
-        canvas.drawBitmap( bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint( Paint.FILTER_BITMAP_FLAG ) );
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
 
         // Checa a rotacao da imagem e a exibe corretamente.
         ExifInterface exif;
         try {
-            exif = new ExifInterface( imagePath );
+            exif = new ExifInterface(imagePath);
 
-            int orientation = exif.getAttributeInt( ExifInterface.TAG_ORIENTATION, 0 );
-            Log.d( "EXIF", "Exif: " + orientation );
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+            Log.d("EXIF", "Exif: " + orientation);
 
             Matrix matrix = new Matrix();
 
-            if ( orientation == 6 ) {
-                matrix.postRotate( 90 );
-                Log.d( "EXIF", "Exif: " + orientation );
-            } else if ( orientation == 3 ) {
-                matrix.postRotate( 180 );
-                Log.d( "EXIF", "Exif: " + orientation );
-            } else if ( orientation == 8 ) {
-                matrix.postRotate( 270 );
-                Log.d( "EXIF", "Exif: " + orientation );
+            if (orientation == 6) {
+                matrix.postRotate(90);
+                Log.d("EXIF", "Exif: " + orientation);
+            } else if (orientation == 3) {
+                matrix.postRotate(180);
+                Log.d("EXIF", "Exif: " + orientation);
+            } else if (orientation == 8) {
+                matrix.postRotate(270);
+                Log.d("EXIF", "Exif: " + orientation);
             }
 
-            scaledBitmap = Bitmap.createBitmap( scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true );
-        } catch ( IllegalArgumentException e ) {
-            Log.e( "ProcessaImagens", "Se os valores de x, y, largura e altura estão fora das dimensões do bitmap fonte.", e );
-        } catch ( IOException e ) {
-            Log.e( "ProcessaImagens", "Erro na leitura das tags Exif do arquivo jpeg especificado.", e );
+            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        } catch (IllegalArgumentException e) {
+            Log.e("ProcessaImagens", "Se os valores de x, y, largura e altura estão fora das dimensões do bitmap fonte.", e);
+        } catch (IOException e) {
+            Log.e("ProcessaImagens", "Erro na leitura das tags Exif do arquivo jpeg especificado.", e);
         }
 
         // Um OutputStream de array de bytes para escrever array de bytes nele.
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        scaledBitmap.compress( Bitmap.CompressFormat.JPEG, 80, outputStream );
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
 
         // Adiciona os objetos a lista.
-        listReturned.add( scaledBitmap );
-        listReturned.add( outputStream.toByteArray() );
+        listReturned.add(scaledBitmap);
+        listReturned.add(outputStream.toByteArray());
 
         return listReturned;
     }
@@ -260,19 +261,19 @@ public class ProcessnaImages {
      * @param reqHeight Valor real da altura.
      * @return Valor adequado para inSampleSize
      */
-    private static final int calculateInSampleSize( BitmapFactory.Options options, int reqWidth, int reqHeight ) {
+    private static final int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if ( height > reqHeight || width > reqWidth ) {
-            final int heightRatio = Math.round( (float) height / (float) reqHeight );
-            final int widthRatio = Math.round( (float) width / (float) reqWidth );
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }
         final float totalPixels = width * height;
         final float totalReqPixelsCap = reqWidth * reqHeight * 2;
-        while ( totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap ) {
+        while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
             inSampleSize++;
         }
 

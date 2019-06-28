@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.EndorseListModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.PopMessage;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Brajendr on 8/23/2016.
@@ -39,24 +40,20 @@ public class EndorseListAdapter extends RecyclerView.Adapter<EndorseListAdapter.
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        EndorseListModel endorseListModel=endorseListModels.get(position);
+        EndorseListModel endorseListModel = endorseListModels.get(position);
         holder.txt_date.setText(endorseListModel.getDate());
         holder.txt_username.setText(endorseListModel.getUser_name());
         holder.txt_productname.setText(endorseListModel.getProduct_name());
 
         try {
             Picasso.with(context).load(endorseListModel.getProduct_image()).into(holder.img_product);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             holder.img_product.setImageResource(R.drawable.product_placeholder);
         }
 
         try {
             Picasso.with(context).load(endorseListModel.getUser_image()).into(holder.img_user);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             holder.img_user.setImageResource(R.drawable.pro_image);
         }
     }
@@ -70,18 +67,18 @@ public class EndorseListAdapter extends RecyclerView.Adapter<EndorseListAdapter.
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView img_product;
-        public CircularImageView img_user;
+        public CircleImageView img_user;
         public TextView txt_username, txt_productname, txt_date;
 
         public MyViewHolder(View view) {
             super(view);
             img_product = (ImageView) view.findViewById(R.id.list_endorse_img_product);
 
-            img_user = (CircularImageView) view.findViewById(R.id.list_endorse_img_user);
+            img_user = (CircleImageView) view.findViewById(R.id.list_endorse_img_user);
 
-            txt_username=(TextView)view.findViewById(R.id.list_endorse_user_name);
-            txt_productname=(TextView)view.findViewById(R.id.list_endorse_product_name);
-            txt_date=(TextView)view.findViewById(R.id.list_endorse_date);
+            txt_username = (TextView) view.findViewById(R.id.list_endorse_user_name);
+            txt_productname = (TextView) view.findViewById(R.id.list_endorse_product_name);
+            txt_date = (TextView) view.findViewById(R.id.list_endorse_date);
 
         }
     }

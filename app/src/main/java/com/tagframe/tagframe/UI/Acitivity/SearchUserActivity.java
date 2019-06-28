@@ -2,6 +2,8 @@ package com.tagframe.tagframe.UI.Acitivity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,8 +34,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchUserActivity extends AppCompatActivity {
-
-
     private EditText ed_search;
     private ImageView img_search;
     private ListView listView_user;
@@ -50,8 +50,6 @@ public class SearchUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_direct_endorse);
 
         operation = getIntent().getIntExtra("operation", Utility.operation_onclicked_direct_endorse);
-
-
         product_id = getIntent().getStringExtra("product_id");
 
         ed_search = (EditText) findViewById(R.id.ed_search_text_direct_endorse);
@@ -73,12 +71,30 @@ public class SearchUserActivity extends AppCompatActivity {
             }
         });
 
+        ed_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String str = ed_search.getText().toString();
+                if ((str.length() >= 3) && (str.length() < 10)) {
+                    searchUser(str);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+
         ed_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
                     if (!ed_search.getText().toString().isEmpty()) {
                         searchUser(ed_search.getText().toString());
                         ed_search.setText("");
@@ -166,7 +182,7 @@ public class SearchUserActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResponsePojo> call, Throwable t) {
-                    Log.e("error",t.getMessage());
+                    Log.e("error", t.getMessage());
                     pbar.setVisibility(View.GONE);
                 }
             });

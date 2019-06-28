@@ -2,6 +2,7 @@ package com.tagframe.tagframe.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,12 +13,12 @@ public class FollowModel implements Parcelable {
 
     @SerializedName("to_user_id")
     @Expose
-    private  String userid;
+    private String userid;
 
 
     @SerializedName("is_following")
     @Expose
-    private  boolean isFollowing;
+    private boolean isFollowing;
 
     public boolean isFollowing() {
         return isFollowing;
@@ -29,18 +30,18 @@ public class FollowModel implements Parcelable {
 
     @SerializedName("first_name")
     @Expose
-    private  String first_name;
+    private String first_name;
     @SerializedName("username")
     @Expose
-    private  String user_name;
+    private String user_name;
     @SerializedName("email")
     @Expose
-    private  String email;
+    private String email;
     @SerializedName("image")
     @Expose
-    private  String image;
+    private String image;
 
-    private  String number;
+    private String number;
     @SerializedName("user_id")
     @Expose
     private String from_user_id;
@@ -112,11 +113,13 @@ public class FollowModel implements Parcelable {
         this.number = number;
     }
 
-    @Override public int describeContents() {
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.userid);
         dest.writeByte(this.isFollowing ? (byte) 1 : (byte) 0);
         dest.writeString(this.first_name);
@@ -144,13 +147,15 @@ public class FollowModel implements Parcelable {
     }
 
     public static final Parcelable.Creator<FollowModel> CREATOR =
-        new Parcelable.Creator<FollowModel>() {
-            @Override public FollowModel createFromParcel(Parcel source) {
-                return new FollowModel(source);
-            }
+            new Parcelable.Creator<FollowModel>() {
+                @Override
+                public FollowModel createFromParcel(Parcel source) {
+                    return new FollowModel(source);
+                }
 
-            @Override public FollowModel[] newArray(int size) {
-                return new FollowModel[size];
-            }
-        };
+                @Override
+                public FollowModel[] newArray(int size) {
+                    return new FollowModel[size];
+                }
+            };
 }

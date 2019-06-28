@@ -20,64 +20,60 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class CustomSeekBar
-  extends SeekBar
-  implements OnSeekBarChangeListener
-{
-  String TAG = "TOUCHING";
-  Context mcontext;
-  SeekBar seekbar;
-  
-  public CustomSeekBar(Context paramContext, AttributeSet paramAttributeSet)
-  {
-    super(paramContext, paramAttributeSet);
-    this.mcontext = paramContext;
-  }
-  
-  public static Drawable createDrawable(Context paramContext)
-  {
-    ShapeDrawable localShapeDrawable1 = new ShapeDrawable();
-    localShapeDrawable1.getPaint().setStyle(Style.FILL);
-    localShapeDrawable1.getPaint().setColor(Color.BLUE);
-    localShapeDrawable1.getPaint().setStyle(Style.STROKE);
-    localShapeDrawable1.getPaint().setStrokeWidth(4.0F);
-    localShapeDrawable1.getPaint().setColor(Color.WHITE);
-    ShapeDrawable localShapeDrawable2 = new ShapeDrawable();
-    localShapeDrawable2.getPaint().setStyle(Style.FILL);
-    localShapeDrawable2.getPaint().setColor(Color.CYAN);
-    return new LayerDrawable(new Drawable[] { new ClipDrawable(localShapeDrawable2, 3, 1), localShapeDrawable1 });
-  }
-  
-  public void onProgressChanged(SeekBar paramSeekBar, int paramInt, boolean paramBoolean)
-  {
-    paramInt = paramSeekBar.getProgress();
-    new StringBuilder().append(paramInt).append("").toString();
-    paramSeekBar.setProgressDrawable(createDrawable(this.mcontext));
-    Log.d(this.TAG, "Thumb is being touched");
-  }
-  
-  public void onStartTrackingTouch(SeekBar paramSeekBar) {}
-  
-  public void onStopTrackingTouch(SeekBar paramSeekBar) {}
-  
-  public BitmapDrawable writeOnDrawable(int paramInt, String paramString)
-  {
-    Bitmap localBitmap = BitmapFactory.decodeResource(getResources(), paramInt).copy(Config.ARGB_8888, true);
-    Paint localPaint = new Paint();
-    localPaint.setColor(Color.GRAY);
-    localPaint.setTextSize(20.0F);
-    new Canvas(localBitmap).drawText(paramString, 0.0F, localBitmap.getHeight() / 2, localPaint);
-    return new BitmapDrawable(localBitmap);
-  }
-  
-  public BitmapDrawable writeOnprogressDrawable(int paramInt, String paramString)
-  {
-    Bitmap localBitmap = BitmapFactory.decodeResource(getResources(), paramInt).copy(Config.ARGB_8888, true);
-    Paint localPaint = new Paint();
-    localPaint.setColor(Color.DKGRAY);
-    localPaint.setTextSize(20.0F);
-    new Canvas(localBitmap).drawText(paramString, 0.0F, localBitmap.getHeight() / 2, localPaint);
-    return new BitmapDrawable(localBitmap);
-  }
+        extends SeekBar
+        implements OnSeekBarChangeListener {
+    String TAG = "TOUCHING";
+    Context mcontext;
+    SeekBar seekbar;
+
+    public CustomSeekBar(Context paramContext, AttributeSet paramAttributeSet) {
+        super(paramContext, paramAttributeSet);
+        this.mcontext = paramContext;
+    }
+
+    public static Drawable createDrawable(Context paramContext) {
+        ShapeDrawable localShapeDrawable1 = new ShapeDrawable();
+        localShapeDrawable1.getPaint().setStyle(Style.FILL);
+        localShapeDrawable1.getPaint().setColor(Color.BLUE);
+        localShapeDrawable1.getPaint().setStyle(Style.STROKE);
+        localShapeDrawable1.getPaint().setStrokeWidth(4.0F);
+        localShapeDrawable1.getPaint().setColor(Color.WHITE);
+        ShapeDrawable localShapeDrawable2 = new ShapeDrawable();
+        localShapeDrawable2.getPaint().setStyle(Style.FILL);
+        localShapeDrawable2.getPaint().setColor(Color.CYAN);
+        return new LayerDrawable(new Drawable[]{new ClipDrawable(localShapeDrawable2, 3, 1), localShapeDrawable1});
+    }
+
+    public void onProgressChanged(SeekBar paramSeekBar, int paramInt, boolean paramBoolean) {
+        paramInt = paramSeekBar.getProgress();
+        new StringBuilder().append(paramInt).append("").toString();
+        paramSeekBar.setProgressDrawable(createDrawable(this.mcontext));
+        Log.d(this.TAG, "Thumb is being touched");
+    }
+
+    public void onStartTrackingTouch(SeekBar paramSeekBar) {
+    }
+
+    public void onStopTrackingTouch(SeekBar paramSeekBar) {
+    }
+
+    public BitmapDrawable writeOnDrawable(int paramInt, String paramString) {
+        Bitmap localBitmap = BitmapFactory.decodeResource(getResources(), paramInt).copy(Config.ARGB_8888, true);
+        Paint localPaint = new Paint();
+        localPaint.setColor(Color.GRAY);
+        localPaint.setTextSize(20.0F);
+        new Canvas(localBitmap).drawText(paramString, 0.0F, localBitmap.getHeight() / 2, localPaint);
+        return new BitmapDrawable(localBitmap);
+    }
+
+    public BitmapDrawable writeOnprogressDrawable(int paramInt, String paramString) {
+        Bitmap localBitmap = BitmapFactory.decodeResource(getResources(), paramInt).copy(Config.ARGB_8888, true);
+        Paint localPaint = new Paint();
+        localPaint.setColor(Color.DKGRAY);
+        localPaint.setTextSize(20.0F);
+        new Canvas(localBitmap).drawText(paramString, 0.0F, localBitmap.getHeight() / 2, localPaint);
+        return new BitmapDrawable(localBitmap);
+    }
 }
 
 

@@ -74,7 +74,7 @@ public class Comment {
     @Expose
     private String profile_image;
 
-    private boolean viewallreply=false;
+    private boolean viewallreply = false;
 
     public String getVideo_id() {
         return video_id;
@@ -116,55 +116,54 @@ public class Comment {
     @Expose
     private ArrayList<ReplyComment> replyCommentArrayList;
 
-   public static class ReplyComment
-   {
-       @SerializedName("comment")
-       @Expose
-       private String comment;
+    public static class ReplyComment {
+        @SerializedName("comment")
+        @Expose
+        private String comment;
 
-       @SerializedName("created_on")
-       @Expose
-       private String created_on;
+        @SerializedName("created_on")
+        @Expose
+        private String created_on;
 
-       @SerializedName("username")
-       @Expose
-       private String username;
+        @SerializedName("username")
+        @Expose
+        private String username;
 
-       public String getComment() {
-           return comment;
-       }
+        public String getComment() {
+            return comment;
+        }
 
-       public void setComment(String comment) {
-           this.comment = comment;
-       }
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
 
-       public String getCreated_on() {
-           return created_on;
-       }
+        public String getCreated_on() {
+            return created_on;
+        }
 
-       public void setCreated_on(String created_on) {
-           this.created_on = created_on;
-       }
+        public void setCreated_on(String created_on) {
+            this.created_on = created_on;
+        }
 
-       public String getUsername() {
-           return username;
-       }
+        public String getUsername() {
+            return username;
+        }
 
-       public void setUsername(String username) {
-           this.username = username;
-       }
+        public void setUsername(String username) {
+            this.username = username;
+        }
 
-       public String getProfile_image() {
-           return profile_image;
-       }
+        public String getProfile_image() {
+            return profile_image;
+        }
 
-       public void setProfile_image(String profile_image) {
-           this.profile_image = profile_image;
-       }
+        public void setProfile_image(String profile_image) {
+            this.profile_image = profile_image;
+        }
 
-       @SerializedName("profile_image")
-       @Expose
-       private String profile_image;
-   }
+        @SerializedName("profile_image")
+        @Expose
+        private String profile_image;
+    }
 
 }

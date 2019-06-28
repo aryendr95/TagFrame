@@ -10,26 +10,27 @@ import com.tagframe.tagframe.Models.User;
 
 public class RmAuthentication {
 
-  @SerializedName("status")
-  @Expose
-  private String status;
+    @SerializedName("status")
+    @Expose
+    private String status;
 
-  public String getStatus() {
-    return status;
-  }
+    public String getStatus() {
+        return status;
+    }
 
-  public void setStatus(String status) {
-    this.status = status;
-  }
-  @SerializedName("userinfo")
-  @Expose
-  private User user;
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-  public User getUser() {
-    return user;
-  }
+    @SerializedName("userinfo")
+    @Expose
+    private User user;
 
-  public void setUser(User user) {
-    this.user = user;
-  }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

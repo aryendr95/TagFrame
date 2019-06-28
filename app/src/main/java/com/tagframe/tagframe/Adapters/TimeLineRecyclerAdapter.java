@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
-import com.pkmmte.view.CircularImageView;
+
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Comment;
 import com.tagframe.tagframe.Models.Event_Model;
@@ -46,7 +46,10 @@ import com.tagframe.tagframe.Utils.PopMessage;
 import com.tagframe.tagframe.Utils.Utility;
 import com.veer.exvidplayer.Player.Constants;
 import com.veer.exvidplayer.VideoPlayer.ExVidPlayerActivity;
+
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,456 +58,471 @@ import retrofit2.Response;
  * Created by Brajendr on 1/24/2017.
  */
 
-public class TimeLineRecyclerAdapter
-    extends RecyclerView.Adapter<TimeLineRecyclerAdapter.MyViewHolder> {
-  private Context ctx;
-  private ArrayList<Event_Model> tagStream_models;
-  private LayoutInflater inflater;
-  private AppPrefs user_data;
-  private int next_rec = 0;
-  private boolean isAdded = false;
-  private boolean areCommentsLoaded = false;
+public class TimeLineRecyclerAdapter extends RecyclerView.Adapter<TimeLineRecyclerAdapter.MyViewHolder> {
+    private Context ctx;
+    private ArrayList<Event_Model> tagStream_models;
+    private LayoutInflater inflater;
+    private AppPrefs user_data;
+    private int next_rec = 0;
+    private boolean isAdded = false;
+    private boolean areCommentsLoaded = false;
 
-  public TimeLineRecyclerAdapter(Context ctx, ArrayList<Event_Model> tagStream_models) {
-    this.ctx = ctx;
-    this.tagStream_models = tagStream_models;
+    public TimeLineRecyclerAdapter(Context ctx, ArrayList<Event_Model> tagStream_models) {
+        this.ctx = ctx;
+        this.tagStream_models = tagStream_models;
 
-    user_data = new AppPrefs(ctx);
-    inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-  }
+        user_data = new AppPrefs(ctx);
+        inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
-  @Override public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View itemView = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.layout_timeline_list, parent, false);
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_timeline_list, parent, false);
 
-    return new MyViewHolder(itemView);
-  }
+        return new MyViewHolder(itemView);
+    }
 
-  @Override public void onBindViewHolder(MyViewHolder mViewHolder, final int position) {
-    final Event_Model tagStream = tagStream_models.get(position);
-    //setting data
-    mViewHolder.tvTitlle.setText(tagStream.getTitle());
-    mViewHolder.tvname.setText(tagStream.getName());
-    mViewHolder.tvcurrentduration.setText(tagStream.getCreated_at());
-    if (tagStream.isIn_center()) {
-      mViewHolder.iveventimage.setVisibility(View.GONE);
-      mViewHolder.iveventvideo.setVisibility(View.VISIBLE);
+    @Override
+    public void onBindViewHolder(MyViewHolder mViewHolder, final int position) {
+        final Event_Model tagStream = tagStream_models.get(position);
+        //setting data
+        mViewHolder.tvTitlle.setText(tagStream.getTitle());
+        mViewHolder.tvname.setText(tagStream.getName());
+        mViewHolder.tvcurrentduration.setText(tagStream.getCreated_at());
+        if (tagStream.isIn_center()) {
+            mViewHolder.iveventimage.setVisibility(View.GONE);
+            mViewHolder.iveventvideo.setVisibility(View.VISIBLE);
 
-      mViewHolder.iveventvideo.setVideoURI(Uri.parse(tagStream.getDataurl()));
-      mViewHolder.iveventvideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-        @Override public void onPrepared(MediaPlayer mp) {
-          mp.setVolume(0, 0);
+            mViewHolder.iveventvideo.setVideoURI(Uri.parse(tagStream.getDataurl()));
+            mViewHolder.iveventvideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setVolume(0, 0);
+                }
+            });
+        } else {
+            mViewHolder.iveventimage.setVisibility(View.VISIBLE);
+            mViewHolder.iveventvideo.setVisibility(View.GONE);
+
+            try {
+                Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
+            } catch (Exception e) {
+                mViewHolder.iveventimage.setImageDrawable(new ColorDrawable(Color.GRAY));
+            }
         }
-      });
-    } else {
-      mViewHolder.iveventimage.setVisibility(View.VISIBLE);
-      mViewHolder.iveventvideo.setVisibility(View.GONE);
 
-      try {
-        Picasso.with(ctx).load(tagStream.getThumbnail()).into(mViewHolder.iveventimage);
-      } catch (Exception e) {
-        mViewHolder.iveventimage.setImageDrawable(new ColorDrawable(Color.GRAY));
-      }
-    }
+        mViewHolder.tvlike.setText(
+                tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList()
+                        .size() + " Frames" + " and " + tagStream.getNum_of_comments() + " Comments");
 
-    mViewHolder.tvlike.setText(
-        tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList()
-            .size() + " Frames" + " and " + tagStream.getNum_of_comments() + " Comments");
+        try {
+            Picasso.with(ctx).load(tagStream.getProfile_picture()).into(mViewHolder.ivpropic);
+        } catch (Exception e) {
+            mViewHolder.ivpropic.setImageResource(R.drawable.pro_image);
+        }
 
-    try {
-      Picasso.with(ctx).load(tagStream.getProfile_picture()).into(mViewHolder.ivpropic);
-    } catch (Exception e) {
-      mViewHolder.ivpropic.setImageResource(R.drawable.pro_image);
-    }
-
-    mViewHolder.iveventimage.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        Intent intent = new Intent(ctx, WatchEventActivity.class);
-        intent.putExtra("name", tagStream.getName());
-        //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
-        intent.putExtra("likes", tagStream.getNumber_of_likes());
-        intent.putExtra("frames", tagStream.getFrameList_modelArrayList().size());
-        intent.putExtra("comments", tagStream.getNum_of_comments());
-        intent.putExtra("data_url", tagStream.getDataurl());
-        intent.putExtra("tittle", tagStream.getTitle());
-        intent.putExtra("from", "tagstream");
-        intent.putExtra("user_id", tagStream.getUser_id());
-        intent.putExtra("description", tagStream.getDescription());
-        intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-        intent.putExtra("eventtype", Utility.eventtype_internet);
-        intent.putExtra("eventid", tagStream.getEvent_id());
-        intent.putExtra("sharelink", tagStream.getSharelink());
-        intent.putExtra("likevideo", tagStream.getLike_video());
-        intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
-        ctx.startActivity(intent);
+        mViewHolder.iveventimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ctx, WatchEventActivity.class);
+                intent.putExtra("name", tagStream.getName());
+                //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
+                intent.putExtra("likes", tagStream.getNumber_of_likes());
+                intent.putExtra("frames", tagStream.getFrameList_modelArrayList().size());
+                intent.putExtra("comments", tagStream.getNum_of_comments());
+                intent.putExtra("data_url", tagStream.getDataurl());
+                intent.putExtra("tittle", tagStream.getTitle());
+                intent.putExtra("from", "tagstream");
+                intent.putExtra("user_id", tagStream.getUser_id());
+                intent.putExtra("description", tagStream.getDescription());
+                intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
+                intent.putExtra("eventtype", Utility.eventtype_internet);
+                intent.putExtra("eventid", tagStream.getEvent_id());
+                intent.putExtra("sharelink", tagStream.getSharelink());
+                intent.putExtra("likevideo", tagStream.getLike_video());
+                intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
+                ctx.startActivity(intent);
       /*Intent intent = new Intent(ctx, ExVidPlayerActivity.class);
         intent.putStringArrayListExtra("urls", getVideoUrls());
         intent.putStringArrayListExtra("types", getVideoTypes());
         intent.putExtra("currentIndex", position);
         ctx.startActivity(intent);*/
-      }
-    });
+            }
+        });
 
-    mViewHolder.iveventvideo.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        Intent intent = new Intent(ctx, MakeNewEvent.class);
-        intent.putExtra("data_url", tagStream.getDataurl());
-        intent.putExtra("tittle", tagStream.getTitle());
-        intent.putExtra("from", "tagstream");
-        intent.putExtra("description", tagStream.getDescription());
-        intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
-        intent.putExtra("eventtype", Utility.eventtype_internet);
-        intent.putExtra("eventid", tagStream.getEvent_id());
+        mViewHolder.iveventvideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ctx, MakeNewEvent.class);
+                intent.putExtra("data_url", tagStream.getDataurl());
+                intent.putExtra("tittle", tagStream.getTitle());
+                intent.putExtra("from", "tagstream");
+                intent.putExtra("description", tagStream.getDescription());
+                intent.putParcelableArrayListExtra("framelist", tagStream.getFrameList_modelArrayList());
+                intent.putExtra("eventtype", Utility.eventtype_internet);
+                intent.putExtra("eventid", tagStream.getEvent_id());
 
-        ctx.startActivity(intent);
-      }
-    });
+                ctx.startActivity(intent);
+            }
+        });
 
-    mViewHolder.ll_share.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        share(tagStream.getSharelink(), ctx);
-      }
-    });
-
-    if (tagStream.getLike_video().equals("No")) {
-      if (Utility.getScreenOrientation((Modules) ctx) == Configuration.ORIENTATION_PORTRAIT) {
-        mViewHolder.tvlike_direct.setText("Like");
-        mViewHolder.ivlike.setImageResource(R.drawable.like);
-      } else {
-        mViewHolder.ivlike.setImageResource(R.drawable.ic_thumb_up_white_24dp);
-      }
-    } else {
-      if (Utility.getScreenOrientation((Modules) ctx) == Configuration.ORIENTATION_PORTRAIT) {
-        mViewHolder.tvlike_direct.setText("UnLike");
-        mViewHolder.ivlike.setImageResource(R.drawable.unlike);
-      } else {
-        mViewHolder.ivlike.setImageResource(R.drawable.ic_thumb_down_white_24dp);
-      }
-    }
-
-    mViewHolder.ll_like.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
+        mViewHolder.ll_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(tagStream.getSharelink(), ctx);
+            }
+        });
 
         if (tagStream.getLike_video().equals("No")) {
-          Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
-
-          Intent intent = new Intent(ctx, IntentServiceOperations.class);
-          intent.putExtra("operation", Utility.operation_like);
-          intent.putExtra("user_id", user_data.getString(Utility.user_id));
-          intent.putExtra("event_id", tagStream.getEvent_id());
-          intent.putExtra("receiver", mReceiver);
-          ctx.startService(intent);
-          tagStream.setNumber_of_likes((Integer.parseInt(tagStream.getNumber_of_likes()) + 1) + "");
-          tagStream.setLike_video("Yes");
-          notifyDataSetChanged();
-        } else {
-          Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
-
-          Intent intent = new Intent(ctx, IntentServiceOperations.class);
-          intent.putExtra("operation", Utility.operation_unlike);
-          intent.putExtra("user_id", user_data.getString(Utility.user_id));
-          intent.putExtra("event_id", tagStream.getEvent_id());
-          intent.putExtra("receiver", mReceiver);
-          tagStream.setNumber_of_likes((Integer.parseInt(tagStream.getNumber_of_likes()) - 1) + "");
-          tagStream.setLike_video("No");
-          ctx.startService(intent);
-          notifyDataSetChanged();
-        }
-      }
-    });
-
-    //comments
-    mViewHolder.llcomment.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        showCommentDialog(ctx, tagStream.getEvent_id(), user_data.getString(Utility.user_id));
-      }
-    });
-
-    //events might be of different user
-
-    AppPrefs appPrefs = new AppPrefs(ctx);
-    final int user_type = getUser_Type(tagStream.getUser_id(), appPrefs.getString(Utility.user_id));
-
-    //click listners on profile photo and name
-    mViewHolder.ivpropic.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
-      }
-    });
-
-    mViewHolder.tvname.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
-      }
-    });
-  }
-
-  private void deleteEvent(final String event_id, final int position) {
-    final Dialog dialog = new Dialog(ctx);
-    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    dialog.setCancelable(false);
-    dialog.setContentView(R.layout.dialog_delete_event);
-    final LinearLayout controls = (LinearLayout) dialog.findViewById(R.id.layout_logout_controls);
-    final LinearLayout progress = (LinearLayout) dialog.findViewById(R.id.layout_logging_out);
-
-
-    dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        controls.setVisibility(View.GONE);
-        progress.setVisibility(View.VISIBLE);
-
-        ApiInterface apiInterface=ApiClient.getClient().create(ApiInterface.class);
-        apiInterface.delete_event(event_id).enqueue(new Callback<ResponsePojo>() {
-          @Override public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
-
-            if(response.body().getStatus().equalsIgnoreCase("success"))
-            {
-              if(ctx!=null)
-              {
-                tagStream_models.remove(position);
-                notifyDataSetChanged();
-                PopMessage.makeshorttoast(ctx,"Successfully deleted.");
-              }
+            if (Utility.getScreenOrientation((Modules) ctx) == Configuration.ORIENTATION_PORTRAIT) {
+                mViewHolder.tvlike_direct.setText("Like");
+                mViewHolder.ivlike.setImageResource(R.drawable.like);
+            } else {
+                mViewHolder.ivlike.setImageResource(R.drawable.ic_thumb_up_white_24dp);
             }
-            dialog.dismiss();
-          }
+        } else {
+            if (Utility.getScreenOrientation((Modules) ctx) == Configuration.ORIENTATION_PORTRAIT) {
+                mViewHolder.tvlike_direct.setText("UnLike");
+                mViewHolder.ivlike.setImageResource(R.drawable.unlike);
+            } else {
+                mViewHolder.ivlike.setImageResource(R.drawable.ic_thumb_down_white_24dp);
+            }
+        }
 
-          @Override public void onFailure(Call<ResponsePojo> call, Throwable t) {
-            if(ctx!=null)
-              PopMessage.makeshorttoast(ctx,"Unable to delete event, please try after sometime");
-            dialog.dismiss();
-          }
+        mViewHolder.ll_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (tagStream.getLike_video().equals("No")) {
+                    Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
+
+                    Intent intent = new Intent(ctx, IntentServiceOperations.class);
+                    intent.putExtra("operation", Utility.operation_like);
+                    intent.putExtra("user_id", user_data.getString(Utility.user_id));
+                    intent.putExtra("event_id", tagStream.getEvent_id());
+                    intent.putExtra("receiver", mReceiver);
+                    ctx.startService(intent);
+                    tagStream.setNumber_of_likes((Integer.parseInt(tagStream.getNumber_of_likes()) + 1) + "");
+                    tagStream.setLike_video("Yes");
+                    notifyDataSetChanged();
+                } else {
+                    Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
+
+                    Intent intent = new Intent(ctx, IntentServiceOperations.class);
+                    intent.putExtra("operation", Utility.operation_unlike);
+                    intent.putExtra("user_id", user_data.getString(Utility.user_id));
+                    intent.putExtra("event_id", tagStream.getEvent_id());
+                    intent.putExtra("receiver", mReceiver);
+                    tagStream.setNumber_of_likes((Integer.parseInt(tagStream.getNumber_of_likes()) - 1) + "");
+                    tagStream.setLike_video("No");
+                    ctx.startService(intent);
+                    notifyDataSetChanged();
+                }
+            }
         });
 
-      }
-    });
-    dialog.findViewById(R.id.nobtn).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        dialog.dismiss();
-      }
-    });
-    dialog.show();
+        //comments
+        mViewHolder.llcomment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCommentDialog(ctx, tagStream.getEvent_id(), user_data.getString(Utility.user_id));
+            }
+        });
 
+        //events might be of different user
 
-  }
+        AppPrefs appPrefs = new AppPrefs(ctx);
+        final int user_type = getUser_Type(tagStream.getUser_id(), appPrefs.getString(Utility.user_id));
 
-  public void share(String link, Context ctx) {
-    Intent sendIntent = new Intent();
-    sendIntent.setAction(Intent.ACTION_SEND);
-    sendIntent.putExtra(Intent.EXTRA_TEXT,
-        "Hey check out this event at TagFrame:" + link);
-    sendIntent.setType("text/plain");
-    ctx.startActivity(sendIntent);
-  }
+        //click listners on profile photo and name
+        mViewHolder.ivpropic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
+            }
+        });
 
-  private ArrayList<String> getVideoTypes() {
-    ArrayList<String> types = new ArrayList<>();
-    for (Event_Model video : tagStream_models) {
-      types.add(Constants.MEDIA_TYPE_HLS);
+        mViewHolder.tvname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Modules) ctx).setprofile(tagStream.getUser_id(), user_type);
+            }
+        });
     }
-    return types;
-  }
 
-  private ArrayList<String> getVideoUrls() {
-    ArrayList<String> urls = new ArrayList<>();
-    for (Event_Model video : tagStream_models) {
-      urls.add(video.getDataurl());
+    private void deleteEvent(final String event_id, final int position) {
+        final Dialog dialog = new Dialog(ctx);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_delete_event);
+        final LinearLayout controls = (LinearLayout) dialog.findViewById(R.id.layout_logout_controls);
+        final LinearLayout progress = (LinearLayout) dialog.findViewById(R.id.layout_logging_out);
+
+
+        dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                controls.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+
+                ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+                apiInterface.delete_event(event_id).enqueue(new Callback<ResponsePojo>() {
+                    @Override
+                    public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
+
+                        if (response.body().getStatus().equalsIgnoreCase("success")) {
+                            if (ctx != null) {
+                                tagStream_models.remove(position);
+                                notifyDataSetChanged();
+                                PopMessage.makeshorttoast(ctx, "Successfully deleted.");
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponsePojo> call, Throwable t) {
+                        if (ctx != null)
+                            PopMessage.makeshorttoast(ctx, "Unable to delete event, please try after sometime");
+                        dialog.dismiss();
+                    }
+                });
+
+            }
+        });
+        dialog.findViewById(R.id.nobtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+
     }
-    return urls;
-  }
 
-  private int getUser_Type(String user_id, String saved_user_id) {
-    if (user_id.equals(saved_user_id)) {
-      return Utility.user_type_self;
-    } else {
-      return Utility.user_type_following;
+    public void share(String link, Context ctx) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                "Hey check out this event at TagFrame:" + link);
+        sendIntent.setType("text/plain");
+        ctx.startActivity(sendIntent);
     }
-  }
 
-  public void showCommentDialog(final Context ctx, final String video, final String user_id) {
+    private ArrayList<String> getVideoTypes() {
+        ArrayList<String> types = new ArrayList<>();
+        for (Event_Model video : tagStream_models) {
+            types.add(Constants.MEDIA_TYPE_HLS);
+        }
+        return types;
+    }
 
-    next_rec = 0;
-    isAdded = true;
+    private ArrayList<String> getVideoUrls() {
+        ArrayList<String> urls = new ArrayList<>();
+        for (Event_Model video : tagStream_models) {
+            urls.add(video.getDataurl());
+        }
+        return urls;
+    }
 
-    final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
-    dialog.setContentView(R.layout.dialog_comment);
-    dialog.setCancelable(true);
+    private int getUser_Type(String user_id, String saved_user_id) {
+        if (user_id.equals(saved_user_id)) {
+            return Utility.user_type_self;
+        } else {
+            return Utility.user_type_following;
+        }
+    }
 
-    final RecyclerView listview_comment = (RecyclerView) dialog.findViewById(R.id.list_comment);
-    listview_comment.setNestedScrollingEnabled(false);
-    final EditText editext_comment = (EditText) dialog.findViewById(R.id.ed_dialog_comment);
-    final LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.mlayout_dialog_comment);
-    ImageButton img_send_comment = (ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
-    final ProgressBar progressbar = (ProgressBar) dialog.findViewById(R.id.pbar_comment);
+    public void showCommentDialog(final Context ctx, final String video, final String user_id) {
 
-    final TextView m_txt_footer = (TextView) dialog.findViewById(R.id.txt_footer);
+        next_rec = 0;
+        isAdded = true;
 
-    //set Adapter to commentList
-    final ArrayList<Comment> commentArrayList = new ArrayList<>();
-    RecyclerView.LayoutManager mLayoutManager =
-        new LinearLayoutManager(ctx.getApplicationContext());
-    listview_comment.setLayoutManager(mLayoutManager);
-    listview_comment.setItemAnimator(new DefaultItemAnimator());
-    listview_comment.setAdapter(new CommentsRecyclerViewAdapter(commentArrayList, ctx));
-    //load comment task
+        final Dialog dialog = new Dialog(ctx, android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+        dialog.setContentView(R.layout.dialog_comment);
+        dialog.setCancelable(true);
 
-    m_txt_footer.setOnClickListener(new View.OnClickListener() {
-                                      @Override public void onClick(View v) {
-                                        loadComments(video, String.valueOf(next_rec), progressbar, m_txt_footer, listview_comment,
-                                            commentArrayList);
-                                      }
+        final RecyclerView listview_comment = (RecyclerView) dialog.findViewById(R.id.list_comment);
+        listview_comment.setNestedScrollingEnabled(false);
+        final EditText editext_comment = (EditText) dialog.findViewById(R.id.ed_dialog_comment);
+        final LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.mlayout_dialog_comment);
+        ImageButton img_send_comment = (ImageButton) dialog.findViewById(R.id.img_dialog_send_comment);
+        final ProgressBar progressbar = (ProgressBar) dialog.findViewById(R.id.pbar_comment);
+
+        final TextView m_txt_footer = (TextView) dialog.findViewById(R.id.txt_footer);
+
+        //set Adapter to commentList
+        final ArrayList<Comment> commentArrayList = new ArrayList<>();
+        RecyclerView.LayoutManager mLayoutManager =
+                new LinearLayoutManager(ctx.getApplicationContext());
+        listview_comment.setLayoutManager(mLayoutManager);
+        listview_comment.setItemAnimator(new DefaultItemAnimator());
+        listview_comment.setAdapter(new CommentsRecyclerViewAdapter(commentArrayList, ctx));
+        //load comment task
+
+        m_txt_footer.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                loadComments(video, String.valueOf(next_rec), progressbar, m_txt_footer, listview_comment,
+                                                        commentArrayList);
+                                            }
+                                        }
+
+        );
+
+        loadComments(video, String.valueOf(next_rec), progressbar, m_txt_footer, listview_comment,
+                commentArrayList);
+        //cancelling dialog
+        dialog.findViewById(R.id.img_comment_dialog_back)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        isAdded = false;
+                        dialog.cancel();
+                    }
+                });
+
+        //send the comment
+        img_send_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!editext_comment.getText().toString().isEmpty()) {
+
+                    if (areCommentsLoaded) {
+                        // My AsyncTask is done and onPostExecute was called
+
+                        Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
+
+                        Intent intent = new Intent(ctx, IntentServiceOperations.class);
+                        intent.putExtra("operation", Utility.operation_comment);
+                        intent.putExtra("user_id", user_id);
+                        intent.putExtra("video_id", video);
+                        intent.putExtra("parent_id", "0");
+                        intent.putExtra("comment", editext_comment.getText().toString());
+
+                        intent.putExtra("receiver", mReceiver);
+                        ctx.startService(intent);
+
+                        Comment comment = new Comment();
+                        comment.setVideo_id(video);
+                        comment.setParent_id("-1");
+                        comment.setComment(editext_comment.getText().toString());
+                        comment.setUsername(user_data.getString(Utility.user_name));
+                        comment.setProfile_image(user_data.getString(Utility.user_pic));
+                        comment.setReplyCommentArrayList(new ArrayList<Comment.ReplyComment>());
+                        //adding the comment to the first postion of list
+                        //find a workaround since too much time taken to  move the n-1 number of elements
+                        //commentArrayList.add(0,comment);
+
+                        commentArrayList.add(comment);
+
+                        listview_comment.getAdapter().notifyDataSetChanged();
+                        //fast scroll to last item in list
+                        //listview_comment.smoothScrollToPosition(listview_comment.getAdapter().getCount()-1);
+
+                        //hiding keyboard and making the edittext empty
+                        editext_comment.setText("");
+                        InputMethodManager imm =
+                                (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                } else {
+                    InputMethodManager imm =
+                            (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    PopMessage.makesimplesnack(layout, "Please enter a comment");
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void loadComments(String video_id, String next_records, final ProgressBar progressBar,
+                             final TextView textView, final RecyclerView recyclerView,
+                             final ArrayList<Comment> commentArrayList) {
+        if (Networkstate.haveNetworkConnection(ctx)) {
+            AppPrefs appPrefs = new AppPrefs(ctx);
+            areCommentsLoaded = false;
+            progressBar.setVisibility(View.VISIBLE);
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            apiInterface.getCommentList(video_id, next_records, appPrefs.getUser().getUser_id())
+                    .enqueue(new Callback<CommentsResponseModel>() {
+                        @Override
+                        public void onResponse(Call<CommentsResponseModel> call,
+                                               Response<CommentsResponseModel> response) {
+                            if (response.body().getStatus().equals(Utility.success_response)) {
+                                progressBar.setVisibility(View.GONE);
+                                if (isAdded) {
+                                    if (response.body().getCommentArrayList().size() > 0) {
+                                        commentArrayList.addAll(response.body().getCommentArrayList());
+                                        recyclerView.getAdapter().notifyDataSetChanged();
+
+                                        if (response.body().getCommentArrayList().size() == 3) {
+                                            next_rec = next_rec + 3;
+                                            textView.setText("Load More Comments..");
+                                        } else {
+                                            textView.setOnClickListener(null);
+                                            textView.setText("No More Comments..");
+                                        }
+                                    } else {
+                                        textView.setText("No Comments to load..");
                                     }
 
-    );
+                                    areCommentsLoaded = true;
+                                } else {
+                                    textView.setText("Error..");
+                                    PopMessage.makeshorttoast(ctx, "Error+ " + response.body().getStatus());
+                                }
+                            }
+                        }
 
-    loadComments(video, String.valueOf(next_rec), progressbar, m_txt_footer, listview_comment,
-        commentArrayList);
-    //cancelling dialog
-    dialog.findViewById(R.id.img_comment_dialog_back)
-        .setOnClickListener(new View.OnClickListener() {
-          @Override public void onClick(View v) {
-            isAdded = false;
-            dialog.cancel();
-          }
-        });
-
-    //send the comment
-    img_send_comment.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        if (!editext_comment.getText().toString().isEmpty()) {
-
-          if (areCommentsLoaded) {
-            // My AsyncTask is done and onPostExecute was called
-
-            Broadcastresults mReceiver = ((Modules) ctx).register_reviever();
-
-            Intent intent = new Intent(ctx, IntentServiceOperations.class);
-            intent.putExtra("operation", Utility.operation_comment);
-            intent.putExtra("user_id", user_id);
-            intent.putExtra("video_id", video);
-            intent.putExtra("parent_id", "0");
-            intent.putExtra("comment", editext_comment.getText().toString());
-
-            intent.putExtra("receiver", mReceiver);
-            ctx.startService(intent);
-
-            Comment comment = new Comment();
-            comment.setVideo_id(video);
-            comment.setParent_id("-1");
-            comment.setComment(editext_comment.getText().toString());
-            comment.setUsername(user_data.getString(Utility.user_name));
-            comment.setProfile_image(user_data.getString(Utility.user_pic));
-            comment.setReplyCommentArrayList(new ArrayList<Comment.ReplyComment>());
-            //adding the comment to the first postion of list
-            //find a workaround since too much time taken to  move the n-1 number of elements
-            //commentArrayList.add(0,comment);
-
-            commentArrayList.add(comment);
-
-            listview_comment.getAdapter().notifyDataSetChanged();
-            //fast scroll to last item in list
-            //listview_comment.smoothScrollToPosition(listview_comment.getAdapter().getCount()-1);
-
-            //hiding keyboard and making the edittext empty
-            editext_comment.setText("");
-            InputMethodManager imm =
-                (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-          }
+                        @Override
+                        public void onFailure(Call<CommentsResponseModel> call, Throwable t) {
+                            progressBar.setVisibility(View.GONE);
+                            textView.setText("Error..");
+                            Log.e("call failed", t.getMessage());
+                        }
+                    });
         } else {
-          InputMethodManager imm =
-              (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-          imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-          PopMessage.makesimplesnack(layout, "Please enter a comment");
+            textView.setText(Utility.message_no_internet);
+            PopMessage.makeshorttoast(ctx, Utility.message_no_internet);
         }
-      }
-    });
-
-    dialog.show();
-  }
-
-  public void loadComments(String video_id, String next_records, final ProgressBar progressBar,
-      final TextView textView, final RecyclerView recyclerView,
-      final ArrayList<Comment> commentArrayList) {
-    if (Networkstate.haveNetworkConnection(ctx)) {
-      AppPrefs appPrefs=new AppPrefs(ctx);
-      areCommentsLoaded = false;
-      progressBar.setVisibility(View.VISIBLE);
-      ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-      apiInterface.getCommentList(video_id, next_records,appPrefs.getUser().getUser_id())
-          .enqueue(new Callback<CommentsResponseModel>() {
-            @Override public void onResponse(Call<CommentsResponseModel> call,
-                Response<CommentsResponseModel> response) {
-              if (response.body().getStatus().equals(Utility.success_response)) {
-                progressBar.setVisibility(View.GONE);
-                if (isAdded) {
-                  if (response.body().getCommentArrayList().size() > 0) {
-                    commentArrayList.addAll(response.body().getCommentArrayList());
-                    recyclerView.getAdapter().notifyDataSetChanged();
-
-                    if (response.body().getCommentArrayList().size() == 3) {
-                      next_rec = next_rec + 3;
-                      textView.setText("Load More Comments..");
-                    } else {
-                      textView.setOnClickListener(null);
-                      textView.setText("No More Comments..");
-                    }
-                  } else {
-                    textView.setText("No Comments to load..");
-                  }
-
-                  areCommentsLoaded = true;
-                } else {
-                  textView.setText("Error..");
-                  PopMessage.makeshorttoast(ctx, "Error+ " + response.body().getStatus());
-                }
-              }
-            }
-
-            @Override public void onFailure(Call<CommentsResponseModel> call, Throwable t) {
-              progressBar.setVisibility(View.GONE);
-              textView.setText("Error..");
-              Log.e("call failed", t.getMessage());
-            }
-          });
-    } else {
-      textView.setText(Utility.message_no_internet);
-      PopMessage.makeshorttoast(ctx, Utility.message_no_internet);
     }
-  }
 
-  @Override public int getItemCount() {
-    return tagStream_models.size();
-  }
-
-  public class MyViewHolder extends RecyclerView.ViewHolder {
-    TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct;
-    ImageView iveventimage, ivlike,ivDelete;
-    VideoView iveventvideo;
-    LinearLayout ll_like, ll_share, llcomment;
-    CircularImageView ivpropic;
-
-    public MyViewHolder(View item) {
-      super(item);
-      tvTitlle = (TextView) item.findViewById(R.id.list_event_tittle);
-      tvname = (TextView) item.findViewById(R.id.list_user_name);
-      tvcurrentduration = (TextView) item.findViewById(R.id.list_user_duration);
-      iveventimage = (ImageView) item.findViewById(R.id.list_event_image);
-      ivDelete = (ImageView) item.findViewById(R.id.deleteEvent);
-
-      ll_like = (LinearLayout) item.findViewById(R.id.lllike);
-      ll_share = (LinearLayout) item.findViewById(R.id.llshare);
-      llcomment = (LinearLayout) item.findViewById(R.id.llcomment);
-
-      tvlike_direct = (TextView) item.findViewById(R.id.txt_like_directive);
-      ivpropic = (CircularImageView) item.findViewById(R.id.list_pro_image);
-
-      tvlike = (TextView) item.findViewById(R.id.txt_likes);
-      ivlike = (ImageView) item.findViewById(R.id.imglike);
-
-      iveventvideo = (VideoView) item.findViewById(R.id.list_event_video);
+    @Override
+    public int getItemCount() {
+        return tagStream_models.size();
     }
-  }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitlle, tvname, tvcurrentduration, tvlike, tvlike_direct;
+        ImageView iveventimage, ivlike, ivDelete;
+        VideoView iveventvideo;
+        LinearLayout ll_like, ll_share, llcomment;
+        CircleImageView ivpropic;
+
+        public MyViewHolder(View item) {
+            super(item);
+            tvTitlle = (TextView) item.findViewById(R.id.list_event_tittle);
+            tvname = (TextView) item.findViewById(R.id.list_user_name);
+            tvcurrentduration = (TextView) item.findViewById(R.id.list_user_duration);
+            iveventimage = (ImageView) item.findViewById(R.id.list_event_image);
+            ivDelete = (ImageView) item.findViewById(R.id.deleteEvent);
+
+            ll_like = (LinearLayout) item.findViewById(R.id.lllike);
+            ll_share = (LinearLayout) item.findViewById(R.id.llshare);
+            llcomment = (LinearLayout) item.findViewById(R.id.llcomment);
+
+            tvlike_direct = (TextView) item.findViewById(R.id.txt_like_directive);
+            ivpropic = (CircleImageView) item.findViewById(R.id.list_pro_image);
+
+            tvlike = (TextView) item.findViewById(R.id.txt_likes);
+            ivlike = (ImageView) item.findViewById(R.id.imglike);
+
+            iveventvideo = (VideoView) item.findViewById(R.id.list_event_video);
+        }
+    }
 }

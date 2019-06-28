@@ -108,7 +108,7 @@ public class User_Frames extends Fragment implements ScrollList {
                 loadUserFrames();
             }
         });
-        img_footer=(ImageView)footerView.findViewById(R.id.img_footer);
+        img_footer = (ImageView) footerView.findViewById(R.id.img_footer);
         img_footer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,8 +135,6 @@ public class User_Frames extends Fragment implements ScrollList {
                         swipeRefreshLayout.setRefreshing(false);
                         try {
                             if (response.body().getStatus().equals("success")) {
-
-
                                 user_frames_models.addAll(response.body().getUser_frames_models());
                                 gridview.setAdapter(new ImageAdapter(getActivity(), user_frames_models));
 

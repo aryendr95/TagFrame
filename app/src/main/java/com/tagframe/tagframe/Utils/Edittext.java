@@ -28,8 +28,7 @@ public class Edittext extends EditText {
         init();
     }
 
-    public  void init()
-    {
+    public void init() {
         Typeface font = Typeface.createFromAsset(getContext().getAssets(), "lat.ttf");
         setTypeface(font);
     }

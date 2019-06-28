@@ -1,5 +1,6 @@
 package com.tagframe.tagframe.Adapters;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +13,12 @@ import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.Models.TaggedUserModel;
@@ -31,34 +33,47 @@ import com.tagframe.tagframe.Utils.MyToast;
 import com.tagframe.tagframe.Utils.AppPrefs;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by abhinav on 11/04/2016.
  */
-public class SearchAdapter extends BaseAdapter {
-
-    private ArrayList<FollowModel> followModelArrayList;
+public class SearchAdapter extends BaseAdapter implements Filterable {
+    private List<FollowModel> followModelArrayList;
     private Context ctx;
-    private LayoutInflater inflater;
+    public LayoutInflater inflater;
     private int user_type;
     private AppPrefs userinfo;
     public Broadcastresults mReceiver;
     private int onClick_operation;
+    private List<FollowModel> userFilteredList;
 
-    public SearchAdapter(Context ctx, ArrayList<FollowModel> followModelArrayList, int type, int operation) {
+    public SearchAdapter() {
+    }
 
+    public SearchAdapter(Context ctx, List<FollowModel> followModelArrayList, int type, int operation) {
         this.ctx = ctx;
         this.followModelArrayList = followModelArrayList;
-        inflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.user_type = type;
         this.onClick_operation = operation;
         userinfo = new AppPrefs(ctx);
+        this.userFilteredList = followModelArrayList;
     }
+
+    public SearchAdapter(Context ctx, List<FollowModel> followModelArrayList) {
+        this.ctx = ctx;
+        this.followModelArrayList = followModelArrayList;
+        userinfo = new AppPrefs(ctx);
+        this.userFilteredList = followModelArrayList;
+    }
+
 
     @Override
     public int getCount() {
-        return followModelArrayList.size();
+        return userFilteredList.size();
     }
 
     @Override
@@ -68,7 +83,7 @@ public class SearchAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -76,16 +91,18 @@ public class SearchAdapter extends BaseAdapter {
         MyViewHolder mViewHolder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.layout_list_item_followlist, parent, false);
+            LayoutInflater lInflater = (LayoutInflater) ctx.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
+            convertView = lInflater.inflate(R.layout.layout_list_item_followlist, null);
+            //  convertView = inflater.inflate(R.layout.layout_list_item_followlist, parent, false);
             mViewHolder = new MyViewHolder(convertView);
             convertView.setTag(mViewHolder);
 
         } else {
             mViewHolder = (MyViewHolder) convertView.getTag();
 
-
         }
-        FollowModel followModel = followModelArrayList.get(position);
+        FollowModel followModel = userFilteredList.get(position);
         mViewHolder.tvusername.setText(followModel.getUser_name());
 
         mViewHolder.tvrealname.setText(followModel.getEmail());
@@ -101,14 +118,47 @@ public class SearchAdapter extends BaseAdapter {
         return convertView;
     }
 
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    userFilteredList = followModelArrayList;
+                } else {
+                    List<FollowModel> filteredList = new ArrayList<>();
+                    for (FollowModel row : followModelArrayList) {
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (row.getUser_name().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+                        }
+                    }
+
+                    userFilteredList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = userFilteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                userFilteredList = (ArrayList<FollowModel>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
     private void adjust(MyViewHolder viewHolder, final int position, final int type, final FollowModel followModel) {
         //condition checks if profile visited of which user(self, other)
         if (ctx instanceof Modules) {
             if (followModel.getFrom_user_id().equals(userinfo.getString(Utility.user_id))) {
-
-
                 if (type == 2) {
-
                     if (followModel.getIs_followed().equals("No")) {
                         viewHolder.followbutton.setText("Follow");
                         viewHolder.followbutton.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +169,7 @@ public class SearchAdapter extends BaseAdapter {
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.dialog_remove_follower);
 
-                                CircularImageView circularImageView = (CircularImageView) dialog.findViewById(R.id.dia_remove_image);
+                                CircleImageView circularImageView = (CircleImageView) dialog.findViewById(R.id.dia_remove_image);
 
                                 try {
                                     Picasso.with(ctx).load(followModel.getImage()).into(circularImageView);
@@ -174,7 +224,7 @@ public class SearchAdapter extends BaseAdapter {
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.dialog_remove_follower);
 
-                                CircularImageView circularImageView = (CircularImageView) dialog.findViewById(R.id.dia_remove_image);
+                                CircleImageView circularImageView = (CircleImageView) dialog.findViewById(R.id.dia_remove_image);
 
                                 try {
                                     Picasso.with(ctx).load(followModel.getImage()).into(circularImageView);
@@ -250,14 +300,13 @@ public class SearchAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     if (onClick_operation == Utility.operation_onclicked_direct_endorse)
                         show_DirectEndorse_dialog(followModel);
-                    else if (onClick_operation == Utility.operation_onclicked_tagged_user)
-                    {
-                        Log.e("getting called","Yee");
-                        TaggedUserModel taggedUserModel=new TaggedUserModel(followModel.getUser_name()
-                                ,followModel.getUserid(),followModel.getImage());
-                        Intent intent=new Intent(ctx, MakeNewEvent.class);
-                        intent.putExtra("tagged_user",taggedUserModel);
-                        ((SearchUserActivity) ctx).setResult(MakeNewEvent.Flag_Get_Tagged_User,intent);
+                    else if (onClick_operation == Utility.operation_onclicked_tagged_user) {
+                        Log.e("getting called", "Yee");
+                        TaggedUserModel taggedUserModel = new TaggedUserModel(followModel.getUser_name()
+                                , followModel.getUserid(), followModel.getImage());
+                        Intent intent = new Intent(ctx, MakeNewEvent.class);
+                        intent.putExtra("tagged_user", taggedUserModel);
+                        ((SearchUserActivity) ctx).setResult(MakeNewEvent.Flag_Get_Tagged_User, intent);
                         ((SearchUserActivity) ctx).finish();
                     }
                 }
@@ -268,13 +317,12 @@ public class SearchAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     if (onClick_operation == Utility.operation_onclicked_direct_endorse)
                         show_DirectEndorse_dialog(followModel);
-                    else if (onClick_operation == Utility.operation_onclicked_tagged_user)
-                    {
-                        TaggedUserModel taggedUserModel=new TaggedUserModel(followModel.getUser_name()
-                                ,followModel.getUserid(),followModel.getImage());
-                        Intent intent=new Intent(ctx, MakeNewEvent.class);
-                        intent.putExtra("tagged_user",taggedUserModel);
-                        ((SearchUserActivity) ctx).setResult(MakeNewEvent.Flag_Get_Tagged_User,intent);
+                    else if (onClick_operation == Utility.operation_onclicked_tagged_user) {
+                        TaggedUserModel taggedUserModel = new TaggedUserModel(followModel.getUser_name()
+                                , followModel.getUserid(), followModel.getImage());
+                        Intent intent = new Intent(ctx, MakeNewEvent.class);
+                        intent.putExtra("tagged_user", taggedUserModel);
+                        ((SearchUserActivity) ctx).setResult(MakeNewEvent.Flag_Get_Tagged_User, intent);
                         ((SearchUserActivity) ctx).finish();
                     }
                 }
@@ -294,7 +342,7 @@ public class SearchAdapter extends BaseAdapter {
         dialog.setContentView(R.layout.dialog_direct_endorse);
 
 
-        CircularImageView user_pic = (CircularImageView) dialog.findViewById(R.id.dia_direct_image);
+        CircleImageView user_pic = (CircleImageView) dialog.findViewById(R.id.dia_direct_image);
         final TextView username = (TextView) dialog.findViewById(R.id.dia_direct_caption);
         final EditText message = (EditText) dialog.findViewById(R.id.dia_direct_message);
 
@@ -332,14 +380,14 @@ public class SearchAdapter extends BaseAdapter {
 
     private class MyViewHolder {
         TextView tvusername, tvrealname;
-        CircularImageView user_pic;
+        CircleImageView user_pic;
         TextView followbutton;
         ImageView removeuser;
 
         public MyViewHolder(View item) {
             tvusername = (TextView) item.findViewById(R.id.follow_username);
             tvrealname = (TextView) item.findViewById(R.id.follow_realname);
-            user_pic = (CircularImageView) item.findViewById(R.id.follow_pro_pic);
+            user_pic = (CircleImageView) item.findViewById(R.id.follow_pro_pic);
             followbutton = (TextView) item.findViewById(R.id.follow_button);
 
             removeuser = (ImageView) item.findViewById(R.id.follow_remove);

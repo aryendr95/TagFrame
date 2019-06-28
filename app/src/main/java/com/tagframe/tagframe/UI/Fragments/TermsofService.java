@@ -20,7 +20,7 @@ public class TermsofService extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview=inflater.inflate(R.layout.fragment_terms_of_service,container,false);
+        mview = inflater.inflate(R.layout.fragment_terms_of_service, container, false);
 
         return mview;
     }

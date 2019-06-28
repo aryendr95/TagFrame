@@ -52,7 +52,7 @@
         android:id="@+id/layout_product_image"
         >
 
-    <com.pkmmte.view.CircularImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:id="@+id/list_endorse_img_user"

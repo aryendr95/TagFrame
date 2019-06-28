@@ -16,20 +16,19 @@ import java.util.ArrayList;
 /**
  * Created by abhinav on 01/05/2016.
  */
-public class Menulistadapter extends BaseAdapter
-{
+public class Menulistadapter extends BaseAdapter {
     Context ctx;
     ArrayList<Menu>
             menulist;
     LayoutInflater inflater;
 
-    public  Menulistadapter(Context ctx,ArrayList<com.tagframe.tagframe.Models.Menu> menus)
-    {
-        this.ctx=ctx;
-        this.menulist=menus;
-        inflater=(LayoutInflater) ctx
+    public Menulistadapter(Context ctx, ArrayList<com.tagframe.tagframe.Models.Menu> menus) {
+        this.ctx = ctx;
+        this.menulist = menus;
+        inflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
     @Override
     public int getCount() {
         return menulist.size();
@@ -58,7 +57,7 @@ public class Menulistadapter extends BaseAdapter
         }
 
 
-        com.tagframe.tagframe.Models.Menu menu=menulist.get(position);
+        com.tagframe.tagframe.Models.Menu menu = menulist.get(position);
         mViewHolder.ivtxt.setText(menu.getTittle());
         mViewHolder.ivimg.setImageResource(menu.getIcon());
 
@@ -73,9 +72,8 @@ public class Menulistadapter extends BaseAdapter
 
         public MyViewHolder(View item) {
 
-            ivimg=(ImageView)item.findViewById(R.id.img);
-            ivtxt=(TextView)item.findViewById(R.id.txt);
-
+            ivimg = (ImageView) item.findViewById(R.id.img);
+            ivtxt = (TextView) item.findViewById(R.id.txt);
 
 
         }

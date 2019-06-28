@@ -25,6 +25,7 @@ import com.tagframe.tagframe.Utils.Networkstate;
 import com.tagframe.tagframe.Utils.PopMessage;
 
 import com.tagframe.tagframe.Utils.Utility;
+
 import java.util.ArrayList;
 
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
@@ -36,139 +37,140 @@ import retrofit2.Response;
  * Created by Brajendr on 7/11/2016.
  */
 public class MarketPlaceFragment extends Fragment {
+    private View mView;
+    private ArrayList<Product> products = new ArrayList<>();
+    private RecyclerView mGridProduct;
+    private ProgressBar pbar;
+    private RelativeLayout mLayout;
+    boolean shouldLoad = true;
+    private int next_records = 1;
 
-  private View mView;
-  private ArrayList<Product> products = new ArrayList<>();
-  private RecyclerView mGridProduct;
-  private ProgressBar pbar;
-  private RelativeLayout mLayout;
-  boolean shouldLoad = true;
-  private int next_records = 1;
-
-  @Nullable @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
-    mView = inflater.inflate(R.layout.fragment_marketplace, container, false);
-    initView();
-    setUpProductGrid();
-    getDataAndQuery();
-    return mView;
-  }
-
-  private void initView() {
-    mGridProduct = (RecyclerView) mView.findViewById(R.id.frg_market_grid_product);
-    pbar = (ProgressBar) mView.findViewById(R.id.pbar_load_products);
-    mLayout = (RelativeLayout) mView.findViewById(R.id.mLayout_market_place);
-  }
-
-  private void getDataAndQuery() {
-    if (getArguments() != null) {
-      products = new ArrayList<>();
-      setUpProductGrid();
-      searchProduct(getArguments().getString("keyword"));
-    } else {
-      getProducts();
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_marketplace, container, false);
+        initView();
+        setUpProductGrid();
+        getDataAndQuery();
+        return mView;
     }
-  }
 
-  private void setUpProductGrid() {
-    ProductRecyclerAdapter productAdapter = new ProductRecyclerAdapter(getActivity(), products);
-    StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, 1);
-    mGridProduct.setLayoutManager(staggeredGridLayoutManager);
-    mGridProduct.setAdapter(productAdapter);
+    private void initView() {
+        mGridProduct = (RecyclerView) mView.findViewById(R.id.frg_market_grid_product);
+        pbar = (ProgressBar) mView.findViewById(R.id.pbar_load_products);
+        mLayout = (RelativeLayout) mView.findViewById(R.id.mLayout_market_place);
+    }
 
-    mGridProduct.addOnScrollListener(
-        new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
-          @Override public void onLoadMore(int page, int totalItemsCount) {
-            if (shouldLoad) {
-              getProducts();
-            }
-          }
-        });
-  }
+    private void getDataAndQuery() {
+        if (getArguments() != null) {
+            products = new ArrayList<>();
+            setUpProductGrid();
+            searchProduct(getArguments().getString("keyword"));
+        } else {
+            getProducts();
+        }
+    }
 
-  private void searchProduct(String keyword) {
+    private void setUpProductGrid() {
+        ProductRecyclerAdapter productAdapter = new ProductRecyclerAdapter(getActivity(), products);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, 1);
+        mGridProduct.setLayoutManager(staggeredGridLayoutManager);
+        mGridProduct.setAdapter(productAdapter);
 
-    pbar.setVisibility(View.VISIBLE);
+        mGridProduct.addOnScrollListener(
+                new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount) {
+                        if (shouldLoad) {
+                            getProducts();
+                        }
+                    }
+                });
+    }
 
+    private void searchProduct(String keyword) {
+        pbar.setVisibility(View.VISIBLE);
+        if (Networkstate.haveNetworkConnection(getActivity())) {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<GetProductResponseModel> call =
+                    apiInterface.searchProduct(keyword, String.valueOf(next_records));
+            call.enqueue(new Callback<GetProductResponseModel>() {
+                @Override
+                public void onResponse(Call<GetProductResponseModel> call,
+                                       Response<GetProductResponseModel> response) {
+                    if (isAdded()) {
+                        pbar.setVisibility(View.GONE);
+                        if (response.body().getStatus().equals("success")) {
+                            if (response.body().getProductList().size() > 0) {
+                                products.addAll(response.body().getProductList());
+                                mGridProduct.getAdapter().notifyDataSetChanged();
+                                if (response.body().getProductList().size() == Utility.PAGE_SIZE) {
+                                    next_records = next_records++;
+                                    shouldLoad = true;
+                                } else {
+                                    shouldLoad = false;
+                                }
+                            } else {
+                                PopMessage.makesimplesnack(mLayout, "No products to load..");
+                            }
+                        } else {
 
-    if (Networkstate.haveNetworkConnection(getActivity())) {
-      ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-      Call<GetProductResponseModel> call =
-          apiInterface.searchProduct(keyword, String.valueOf(next_records));
-      call.enqueue(new Callback<GetProductResponseModel>() {
-        @Override public void onResponse(Call<GetProductResponseModel> call,
-            Response<GetProductResponseModel> response) {
-          if (isAdded()) {
-            pbar.setVisibility(View.GONE);
-            if (response.body().getStatus().equals("success")) {
-              if (response.body().getProductList().size() > 0) {
-                products.addAll(response.body().getProductList());
-                mGridProduct.getAdapter().notifyDataSetChanged();
-                if (response.body().getProductList().size() == Utility.PAGE_SIZE) {
-                  next_records = next_records++;
-                  shouldLoad = true;
-                } else {
-                  shouldLoad = false;
+                            PopMessage.makesimplesnack(mLayout, response.body().getStatus());
+                        }
+                    }
                 }
-              } else {
-                PopMessage.makesimplesnack(mLayout, "No products to load..");
-              }
-            } else {
 
-              PopMessage.makesimplesnack(mLayout, response.body().getStatus());
-            }
-          }
-        }
-
-        @Override public void onFailure(Call<GetProductResponseModel> call, Throwable t) {
-          pbar.setVisibility(View.GONE);
-        }
-      });
-    } else {
-      PopMessage.makesimplesnack(mLayout, "No Internet Connection");
-    }
-  }
-
-  private void getProducts() {
-    pbar.setVisibility(View.VISIBLE);
-    //getting the product list using Retrofit
-    if (Networkstate.haveNetworkConnection(getActivity())) {
-      ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-      Call<GetProductResponseModel> call = apiInterface.getAllProducts(String.valueOf(next_records));
-      call.enqueue(new Callback<GetProductResponseModel>() {
-        @Override public void onResponse(Call<GetProductResponseModel> call,
-            Response<GetProductResponseModel> response) {
-          if (isAdded()) {
-            pbar.setVisibility(View.GONE);
-            if (response.body().getStatus().equals("success")) {
-              if (response.body().getProductList().size() > 0) {
-                products.addAll(response.body().getProductList());
-                mGridProduct.getAdapter().notifyDataSetChanged();
-                if (response.body().getProductList().size() == Utility.PAGE_SIZE) {
-                  next_records = next_records++;
-                  shouldLoad = true;
-                } else {
-                  shouldLoad = false;
+                @Override
+                public void onFailure(Call<GetProductResponseModel> call, Throwable t) {
+                    pbar.setVisibility(View.GONE);
                 }
-              } else {
-                PopMessage.makesimplesnack(mLayout, "No products to load..");
-              }
-            } else {
-
-              PopMessage.makesimplesnack(mLayout, response.body().getStatus());
-            }
-          }
+            });
+        } else {
+            PopMessage.makesimplesnack(mLayout, "No Internet Connection");
         }
-
-        @Override public void onFailure(Call<GetProductResponseModel> call, Throwable t) {
-          if (isAdded()) {
-            pbar.setVisibility(View.GONE);
-          }
-        }
-      });
-    } else {
-      PopMessage.makesimplesnack(mLayout, "No Internet Connection");
     }
-  }
+
+    private void getProducts() {
+        pbar.setVisibility(View.VISIBLE);
+        //getting the product list using Retrofit
+        if (Networkstate.haveNetworkConnection(getActivity())) {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<GetProductResponseModel> call = apiInterface.getAllProducts(String.valueOf(next_records));
+            call.enqueue(new Callback<GetProductResponseModel>() {
+                @Override
+                public void onResponse(Call<GetProductResponseModel> call,
+                                       Response<GetProductResponseModel> response) {
+                    if (isAdded()) {
+                        pbar.setVisibility(View.GONE);
+                        if (response.body().getStatus().equals("success")) {
+                            if (response.body().getProductList().size() > 0) {
+                                products.addAll(response.body().getProductList());
+                                mGridProduct.getAdapter().notifyDataSetChanged();
+                                if (response.body().getProductList().size() == Utility.PAGE_SIZE) {
+                                    next_records = next_records++;
+                                    shouldLoad = true;
+                                } else {
+                                    shouldLoad = false;
+                                }
+                            } else {
+                                PopMessage.makesimplesnack(mLayout, "No products to load..");
+                            }
+                        } else {
+
+                            PopMessage.makesimplesnack(mLayout, response.body().getStatus());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetProductResponseModel> call, Throwable t) {
+                    if (isAdded()) {
+                        pbar.setVisibility(View.GONE);
+                    }
+                }
+            });
+        } else {
+            PopMessage.makesimplesnack(mLayout, "No Internet Connection");
+        }
+    }
 }

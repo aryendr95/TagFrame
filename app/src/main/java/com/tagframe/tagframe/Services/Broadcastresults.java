@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 
 
-
 /**
  * Created by abhinav on 19/04/2016.
  */

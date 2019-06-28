@@ -17,7 +17,7 @@
         android:elevation="5dp"
         android:orientation="horizontal">
 
-        <com.pkmmte.view.CircularImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/list_pro_image"
             android:layout_width="50dp"
             android:layout_height="50dp"

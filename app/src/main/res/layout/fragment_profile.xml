@@ -17,7 +17,11 @@
         android:layout_height="fill_parent"
         android:orientation="vertical"
 
-        android:id="@+id/wholelayout">
+        android:id="@+id/wholelayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        >
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -94,16 +98,16 @@
 
 
                 <Button
-                    android:layout_width="fill_parent"
-                    android:layout_height="30dp"
-
                     android:id="@+id/btn_edit_profile"
+                    android:layout_width="fill_parent"
+
+                    android:layout_height="30dp"
                     android:layout_margin="10dp"
 
                     android:background="@color/GRAY"
+                    android:text="Edit Profile"
                     android:textColor="#000"
-                    android:text="Edit Profile"/>
-
+                    />
 
 
             </LinearLayout>
@@ -143,7 +147,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:id="@+id/no_of_timeline"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:gravity="center"
                             android:textColor="@color/blACK"
                             android:textStyle="bold"
@@ -158,12 +162,14 @@
                         android:layout_weight="3.5">
 
                         <TextView
+                            android:id="@+id/textView"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
+                            android:gravity="center"
                             android:text="TimeLine"
-                            android:textSize="10dp"
                             android:textColor="@color/GRAY"
-                            android:gravity="center"/>
+                            android:textSize="10sp"
+                            />
                     </LinearLayout>
 
 
@@ -194,7 +200,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:id="@+id/no_of_events"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:gravity="center"
                             android:textColor="@color/blACK"
                             android:textStyle="bold"
@@ -212,7 +218,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="Events"
-                            android:textSize="10dp"
+                            android:textSize="10sp"
                             android:textColor="@color/GRAY"
                             android:gravity="center"/>
                     </LinearLayout>
@@ -238,7 +244,7 @@
                             android:id="@+id/no_of_frames"
                             android:textColor="@color/blACK"
                             android:textStyle="bold"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:gravity="center"
                             android:text="0"
                             android:src="@drawable/timelin"
@@ -255,7 +261,7 @@
                             android:layout_height="fill_parent"
                             android:text="Frames"
                             android:textColor="@color/GRAY"
-                            android:textSize="10dp"
+                            android:textSize="10sp"
                             android:gravity="center"/>
                     </LinearLayout>
 
@@ -271,14 +277,14 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:padding="5dp"
+
                         android:layout_weight="2"
                         >
                         <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:id="@+id/no_of_following"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/blACK"
                             android:textStyle="bold"
                             android:gravity="center"
@@ -296,7 +302,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="Following"
-                            android:textSize="10dp"
+                            android:textSize="7sp"
                             android:textColor="@color/GRAY"
 
                             android:gravity="center"/>
@@ -321,7 +327,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:id="@+id/no_of_followers"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/blACK"
                             android:textStyle="bold"
                             android:gravity="center"
@@ -340,7 +346,7 @@
                             android:layout_height="fill_parent"
                             android:text="Followers"
                             android:textColor="@color/GRAY"
-                            android:textSize="10dp"
+                            android:textSize="10sp"
                             android:gravity="center"/>
                     </LinearLayout>
 

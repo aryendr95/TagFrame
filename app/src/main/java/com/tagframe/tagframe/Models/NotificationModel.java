@@ -2,6 +2,7 @@ package com.tagframe.tagframe.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -145,11 +146,13 @@ public class NotificationModel implements Parcelable {
     @Expose
     private String sub_action_message;
 
-    @Override public int describeContents() {
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.user_id);
         dest.writeString(this.is_read);
         dest.writeString(this.id);
@@ -181,13 +184,15 @@ public class NotificationModel implements Parcelable {
     }
 
     public static final Parcelable.Creator<NotificationModel> CREATOR =
-        new Parcelable.Creator<NotificationModel>() {
-            @Override public NotificationModel createFromParcel(Parcel source) {
-                return new NotificationModel(source);
-            }
+            new Parcelable.Creator<NotificationModel>() {
+                @Override
+                public NotificationModel createFromParcel(Parcel source) {
+                    return new NotificationModel(source);
+                }
 
-            @Override public NotificationModel[] newArray(int size) {
-                return new NotificationModel[size];
-            }
-        };
+                @Override
+                public NotificationModel[] newArray(int size) {
+                    return new NotificationModel[size];
+                }
+            };
 }

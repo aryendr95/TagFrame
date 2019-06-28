@@ -13,7 +13,6 @@ public class ViewAnimationUtils {
     public static void expand(final View v) {
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final int targtetHeight = v.getMeasuredHeight();
-
         v.getLayoutParams().height = 0;
         v.setVisibility(View.VISIBLE);
         Animation a = new Animation() {

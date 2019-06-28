@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import com.tagframe.tagframe.Utils.Constants;
+
 import java.io.Serializable;
 
 /**
@@ -33,7 +34,7 @@ public class FrameList_Model implements Parcelable {
         isAProductFrame = AProductFrame;
     }
 
-    private boolean isAProductFrame=false;
+    private boolean isAProductFrame = false;
 
     public String getFrame_id() {
         return frame_id;
@@ -52,7 +53,6 @@ public class FrameList_Model implements Parcelable {
     }
 
 
-
     public String getUser_id() {
         return user_id;
     }
@@ -66,7 +66,7 @@ public class FrameList_Model implements Parcelable {
     private String frame_id;
     @SerializedName("user_id")
     @Expose
-    private String user_id="77";
+    private String user_id = "77";
 
     @SerializedName("frame_thumbnail_url")
     @Expose
@@ -93,11 +93,11 @@ public class FrameList_Model implements Parcelable {
 
     @SerializedName("product_id")
     @Expose
-    private String product_id="";
+    private String product_id = "";
 
     @SerializedName("user_name")
     @Expose
-    private String user_name="";
+    private String user_name = "";
 
     public String getUser_name() {
         return user_name;
@@ -112,7 +112,7 @@ public class FrameList_Model implements Parcelable {
     private String product_url;
     @SerializedName("frame_resource_type")
     @Expose
-    private String frame_resource_type= Constants.frame_resource_type_local;
+    private String frame_resource_type = Constants.frame_resource_type_local;
     @SerializedName("frame_data_url")
     @Expose
     private String frame_data_url;
@@ -135,9 +135,6 @@ public class FrameList_Model implements Parcelable {
     public void setProduct_url(String product_url) {
         this.product_url = product_url;
     }
-
-
-
 
     public String getProduct_path() {
         return product_path;
@@ -212,11 +209,13 @@ public class FrameList_Model implements Parcelable {
     public FrameList_Model() {
     }
 
-    @Override public int describeContents() {
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.edited ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isAProductFrame ? (byte) 1 : (byte) 0);
         dest.writeString(this.frame_id);
@@ -255,16 +254,19 @@ public class FrameList_Model implements Parcelable {
     }
 
     public static final Creator<FrameList_Model> CREATOR = new Creator<FrameList_Model>() {
-        @Override public FrameList_Model createFromParcel(Parcel source) {
+        @Override
+        public FrameList_Model createFromParcel(Parcel source) {
             return new FrameList_Model(source);
         }
 
-        @Override public FrameList_Model[] newArray(int size) {
+        @Override
+        public FrameList_Model[] newArray(int size) {
             return new FrameList_Model[size];
         }
     };
 
-    @Override public String toString() {
-        return starttime+":"+endtime;
+    @Override
+    public String toString() {
+        return starttime + ":" + endtime;
     }
 }

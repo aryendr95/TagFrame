@@ -42,11 +42,16 @@
             android:textColor="@color/white" />
     </RelativeLayout>
 
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_tagged_users"
         android:layout_width="fill_parent"
         android:layout_height="350dp"
         android:layout_below="@+id/layout_tag_top"></android.support.v7.widget.RecyclerView>
+
+
+
 
     <TextView
         android:id="@+id/txt_no_message_tagged_user"

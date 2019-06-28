@@ -9,6 +9,7 @@ import com.tagframe.tagframe.Application.TagFrame;
 import com.tagframe.tagframe.Models.ResponsePojo;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
+import com.tagframe.tagframe.UI.Acitivity.AppSingleton;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.Utility;
 import android.provider.Settings.Secure;
@@ -24,7 +25,6 @@ public class FirebaseIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-
         Log.e("token",refreshedToken);
         // TODO: Implement this method to send any registration to your app's servers.
         saveToken(refreshedToken);
@@ -38,27 +38,24 @@ public class FirebaseIDService extends FirebaseInstanceIdService {
      *
      * @param token The new token.
      */
+
     private void saveToken(String token) {
         // Add custom implementation, as needed.
         AppPrefs appPrefs = new AppPrefs(this);
         appPrefs.putString(Utility.shp_user_Token, token);
         //update the registration token if user is logged in
         if (appPrefs.getString(Utility.loginstatuskey).equals(Utility.loginstatusvalue)) {
-             String android_id = Secure.getString(getContentResolver(),
-                    Secure.ANDROID_ID);
+             String android_id = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
             ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
-            apiInterface.update_Token(appPrefs.getString(Utility.user_id), TagFrame.android_id,token).enqueue(new Callback<ResponsePojo>() {
+            apiInterface.update_Token(appPrefs.getString(Utility.user_id), AppSingleton.android_id,token).enqueue(new Callback<ResponsePojo>() {
                 @Override
                 public void onResponse(Call<ResponsePojo> call, Response<ResponsePojo> response) {
-
                 }
 
                 @Override
                 public void onFailure(Call<ResponsePojo> call, Throwable t) {
-
                 }
             });
-
         }
     }
 }

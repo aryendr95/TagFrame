@@ -1,76 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    >
+    android:orientation="horizontal">
 
-    <com.pkmmte.view.CircularImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/follow_pro_pic"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="5dp"
-        android:id="@+id/follow_pro_pic"/>
+        android:layout_margin="5dp" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@+id/layout_follow"
-        android:gravity="left|center_vertical"
         android:layout_toRightOf="@+id/follow_pro_pic"
-        android:layout_marginLeft="10dp">
+        android:gravity="left|center_vertical"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/follow_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/follow_username"
-            android:text="Username"
-            android:textColor="@color/colorPrimaryDark"
             android:layout_marginTop="5dp"
-            style="@style/TextAppearance.AppCompat.Medium"/>
+            android:text="Username"
+            android:textColor="@color/colorPrimaryDark" />
 
         <com.tagframe.tagframe.Utils.MyTextView
+            android:id="@+id/follow_realname"
+            style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Username"
             android:layout_gravity="left"
-            style="@style/TextAppearance.AppCompat.Small"
-            android:id="@+id/follow_realname"/>
+            android:text="Username"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_follow"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:id="@+id/layout_follow"
         android:layout_alignParentRight="true"
-        android:gravity="center_vertical|right"
-        >
+        android:gravity="center_vertical|right">
 
         <com.tagframe.tagframe.Utils.MyTextView
+            android:id="@+id/follow_button"
+            style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:text="Follow"
-            android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_gray"
             android:padding="5dp"
+            android:text="Follow"
             android:textAllCaps="false"
-            style="@style/TextAppearance.AppCompat.Small"
-            android:id="@+id/follow_button"
-            android:background="@drawable/btn_gray"/>
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <ImageView
+            android:id="@+id/follow_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/follow_remove"
-            android:padding="10dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/follow_button"
+            android:padding="10dp"
             android:src="@drawable/ic_remove_circle_red_300_24dp"/>
 
     </RelativeLayout>
-
 
 
 </RelativeLayout>

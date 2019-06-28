@@ -20,18 +20,16 @@
       android:background="@color/black_event"
       >
 
-
-
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         >
+
       <SurfaceView
           android:id="@+id/surfaceviewnewevent"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          />
+          android:layout_gravity="center_horizontal" />
 
 
       <RelativeLayout
@@ -53,7 +51,6 @@
         <ImageView
             android:id="@+id/img_play_video"
             android:layout_width="30dp"
-
             android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:src="@drawable/playvideo"
@@ -114,20 +111,20 @@
     </FrameLayout>
     <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
         android:id="@+id/topbar"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="#50302D2D"
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         custom:inAnimation="@anim/in_animation"
         custom:outAnimation="@anim/out_animation"
         >
 
       <LinearLayout
           android:id="@+id/ll_time"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:orientation="horizontal"
@@ -177,7 +174,7 @@
 
       <LinearLayout
           android:id="@+id/event_tittle"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_marginRight="10dp"
@@ -247,7 +244,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
-          android:layout_gravity="right"
+          android:layout_gravity="end"
           android:layout_toLeftOf="@+id/taguser_event"
           android:contentDescription="Save Event"
           android:paddingLeft="5dp"
@@ -263,16 +260,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
-          android:layout_gravity="right"
+          android:layout_gravity="end"
           android:layout_toLeftOf="@+id/add_frame"
-
-
           android:contentDescription="Tag Users"
-
           android:gravity="center"
           android:paddingLeft="5dp"
           android:paddingRight="5dp"
-
           android:src="@drawable/ic_group_add_white_24dp"
           android:textColor="@color/white"
           />
@@ -283,7 +276,7 @@
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
           android:layout_centerVertical="true"
-          android:layout_gravity="right"
+          android:layout_gravity="end"
           android:layout_marginRight="10dp"
           android:contentDescription="Add Frames"
           android:gravity="center"
@@ -301,7 +294,7 @@
 
   <com.tagframe.tagframe.Utils.AnimatingRelativeLayout
       android:id="@+id/container_frames"
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:background="@color/black_event"
@@ -314,10 +307,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/framelist"
-
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        ></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
 
   </com.tagframe.tagframe.Utils.AnimatingRelativeLayout>

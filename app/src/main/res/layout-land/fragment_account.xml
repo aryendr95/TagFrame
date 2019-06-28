@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 >
-              <com.pkmmte.view.CircularImageView
+              <de.hdodenhof.circleimageview.CircleImageView
                   android:id="@+id/acc_proimage"
                   android:layout_width="70dp"
 

@@ -1,6 +1,7 @@
 package com.tagframe.tagframe.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,19 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.EndorseListModel;
 import com.tagframe.tagframe.Models.TaggedUserModel;
 import com.tagframe.tagframe.R;
+import com.tagframe.tagframe.UI.Acitivity.Modules;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Brajendr on 8/24/2016.
  */
 public class TaggedUserAdapter extends RecyclerView.Adapter<TaggedUserAdapter.MyViewHolder> {
-
     private List<TaggedUserModel> ListModels;
     private Context context;
 
@@ -40,9 +42,32 @@ public class TaggedUserAdapter extends RecyclerView.Adapter<TaggedUserAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        TaggedUserModel endorseListModel = ListModels.get(position);
+        final TaggedUserModel endorseListModel = ListModels.get(position);
 
         holder.txt_username.setText(endorseListModel.getName());
+
+        holder.txt_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(context, Modules.class);
+                intent.putExtra("user_id", endorseListModel.getUser_id());
+                intent.putExtra("name", endorseListModel.getName());
+                intent.putExtra("pofile_pic", endorseListModel.getProfile_pic());
+                context.startActivity(intent);
+            }
+        });
+
+        holder.img_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, Modules.class);
+                intent.putExtra("user_id", endorseListModel.getUser_id());
+                intent.putExtra("name", endorseListModel.getName());
+                intent.putExtra("pofile_pic", endorseListModel.getProfile_pic());
+                context.startActivity(intent);
+            }
+        });
 
 
         try {
@@ -69,14 +94,14 @@ public class TaggedUserAdapter extends RecyclerView.Adapter<TaggedUserAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView img_remove;
-        public CircularImageView img_user;
+        public CircleImageView img_user;
         public TextView txt_username;
 
         public MyViewHolder(View view) {
             super(view);
             img_remove = (ImageView) view.findViewById(R.id.tagged_remove);
 
-            img_user = (CircularImageView) view.findViewById(R.id.tagged_pro_pic);
+            img_user = (CircleImageView) view.findViewById(R.id.tagged_pro_pic);
 
             txt_username = (TextView) view.findViewById(R.id.tagged_username);
         }

@@ -39,13 +39,11 @@ import java.lang.reflect.Method;
  * Created by abhinav on 05/04/2016.
  */
 public class ProfileOld extends Fragment {
-
     private View mview;
     private ImageView pro_user_iamge;
     private TextView pro_user_name, pro_description;
     ;
     private Button pro_edit_profile, pro_save_profile, pro_cancel_profile;
-
 
     private LinearLayout pro_timeline, pro_evetns, pro_frames, pro_following, pro_followers;
     // private LinearLayout pro_timeline_bar,pro_evetns_bar,pro_frames_bar,pro_following_bar,pro_followers_bar;
@@ -59,7 +57,6 @@ public class ProfileOld extends Fragment {
     private FrameLayout mlayout_profile;
 
     private ProgressBar progressBar;
-
 
     AppPrefs userinfo_data;
 
@@ -75,7 +72,6 @@ public class ProfileOld extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview = inflater.inflate(R.layout.fragment_profile, container, false);
-
         userinfo_data = new AppPrefs(getActivity());
 
         init();
@@ -84,7 +80,6 @@ public class ProfileOld extends Fragment {
         imgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 ((Modules) getActivity()).generate_media_chooser(imgbtn);
             }
@@ -182,6 +177,7 @@ public class ProfileOld extends Fragment {
                 Fragment f = getActivity().getSupportFragmentManager().findFragmentById(R.id.framelayout_profile);
                 if (f instanceof TimeLine) {
                     ((TimeLine) f).scrolltofirst();
+
                 } else {
                     TimeLine fr = new TimeLine();
                     changefragment(fr);
@@ -446,19 +442,14 @@ public class ProfileOld extends Fragment {
     public void changeprofile_ui(int operation_code, int success) {
         progressBar.setVisibility(View.GONE);
         if (success == 1) {
-
             wholelayout.setVisibility(View.GONE);
             new loaduserinformation().execute();
-
-
         } else {
             MyToast.popmessage("Oops an error occured, we will rectify it shortly", getActivity());
         }
     }
 
-
     class loaduserinformation extends AsyncTask<String, String, String> {
-
         WebServiceHandler webServiceHandler;
         String status = "";
         JSONObject userinfo;
@@ -466,26 +457,19 @@ public class ProfileOld extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
         protected String doInBackground(String... params) {
             try {
-
-
                 webServiceHandler = new WebServiceHandler(Utility.users_details);
                 webServiceHandler.addFormField("user_id", userid);
                 webServiceHandler.addFormField("logged_user_id", userinfo_data.getString(Utility.user_id));
                 JSONObject top_level = new JSONObject(webServiceHandler.finish());
-
-
                 status = top_level.getString("status");
                 if (status.equals("success")) {
                     userinfo = top_level.getJSONObject("userinfo");
                 }
-
-
             } catch (Exception e) {
                 Log.e("error:", e.getMessage());
             }
@@ -495,71 +479,63 @@ public class ProfileOld extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (isAdded()){
-
-            if (status.equals("success")) {
-                try {
-
-                    progressBar.setVisibility(View.GONE);
-
-
-                    pro_user_name.setText(userinfo.getString("username")+", "+userinfo.getString("realname"));
-                    username = userinfo.getString("username");
-                    userpic = userinfo.getString("profile_image");
-                    //pro_user_realname.setText("Realname:" + " " + userinfo.getString("realname"));
-                    pro_description.setText("Description:" + " " + userinfo.getString("description"));
-                    number_of_events.setText(userinfo.getString("number_of_event"));
-                    number_of_frames.setText(userinfo.getString("number_of_frame"));
-                    number_of_following.setText(userinfo.getString("number_of_following"));
-                    number_of_followers.setText(userinfo.getString("number_of_followers"));
-                    number_of_timeline.setText(userinfo.getString("number_of_timeline"));
-
-                    wholelayout.setVisibility(View.VISIBLE);
+            if (isAdded()) {
+                if (status.equals("success")) {
                     try {
-                        Picasso.with(getActivity()).load(userinfo.getString("profile_image")).resize(100,100).error(R.drawable.pro_image).into(pro_user_iamge);
-                    } catch (Exception E) {
-                        pro_user_iamge.setImageResource(R.drawable.pro_image);
+                        progressBar.setVisibility(View.GONE);
+                        pro_user_name.setText(userinfo.getString("username") + ", " + userinfo.getString("realname"));
+                        username = userinfo.getString("username");
+                        userpic = userinfo.getString("profile_image");
+                        //pro_user_realname.setText("Realname:" + " " + userinfo.getString("realname"));
+                        pro_description.setText("Description:" + " " + userinfo.getString("description"));
+                        number_of_events.setText(userinfo.getString("number_of_event"));
+                        number_of_frames.setText(userinfo.getString("number_of_frame"));
+                        number_of_following.setText(userinfo.getString("number_of_following"));
+                        number_of_followers.setText(userinfo.getString("number_of_followers"));
+                        number_of_timeline.setText(userinfo.getString("number_of_timeline"));
 
-
-                    }
-
-                    f_value = userinfo.getString("followed");
-
-                    if (f_value.equals("followed")) {
-                        usertype = Utility.user_type_following;
-                    } else if (f_value.equals("follower")) {
-                        usertype = Utility.user_type_followers;
-                    } else {
-                        if (userid.equals(userinfo_data.getString(Utility.user_id))) {
-                            usertype = Utility.user_type_self;
-                        } else {
-                            usertype = Utility.user_type_followers;
+                        wholelayout.setVisibility(View.VISIBLE);
+                        try {
+                            Picasso.with(getActivity()).load(userinfo.getString("profile_image")).resize(100, 100).error(R.drawable.pro_image).into(pro_user_iamge);
+                        } catch (Exception E) {
+                            pro_user_iamge.setImageResource(R.drawable.pro_image);
                         }
+
+                        f_value = userinfo.getString("followed");
+
+                        if (f_value.equals("followed")) {
+                            usertype = Utility.user_type_following;
+                        } else if (f_value.equals("follower")) {
+                            usertype = Utility.user_type_followers;
+                        } else {
+                            if (userid.equals(userinfo_data.getString(Utility.user_id))) {
+                                usertype = Utility.user_type_self;
+                            } else {
+                                usertype = Utility.user_type_followers;
+                            }
+                        }
+                        adjustview_wit_type();
+                        //adding timeline fragment to device
+                        TimeLine fr = new TimeLine();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("user_id", userid);
+                        bundle.putString("user_name", username);
+                        bundle.putString("user_pic", userpic);
+
+                        fr.setArguments(bundle);
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        // transaction.setCustomAnimations(android.R.anim.slide_in_left,
+                        //       android.R.anim.slide_out_right);
+                        transaction.add(R.id.framelayout_profile, fr);
+
+                        transaction.commit();
+
+                    } catch (Exception e) {
+                        Log.e("error:", e.getMessage());
                     }
-                    adjustview_wit_type();
-
-
-                    //adding timeline fragment to device
-                    TimeLine fr = new TimeLine();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("user_id", userid);
-                    bundle.putString("user_name", username);
-                    bundle.putString("user_pic", userpic);
-
-                    fr.setArguments(bundle);
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    // transaction.setCustomAnimations(android.R.anim.slide_in_left,
-                    //       android.R.anim.slide_out_right);
-                    transaction.add(R.id.framelayout_profile, fr);
-
-                    transaction.commit();
-
-                } catch (Exception e) {
-                    Log.e("error:", e.getMessage());
                 }
-            }
 
+            }
         }
     }
-        }
 }

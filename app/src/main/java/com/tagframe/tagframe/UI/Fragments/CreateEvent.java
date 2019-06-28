@@ -2,6 +2,7 @@ package com.tagframe.tagframe.UI.Fragments;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,20 +44,19 @@ public class CreateEvent extends Fragment {
 
     private LinearLayout layout_select;
     private ListView ll_select_list;
-    private Button btn_create_event,btn_saved_events;
+    private Button btn_create_event, btn_saved_events;
 
     private RadioGroup radiogroup;
-    private String tittle,des,type;
+    private String tittle, des, type;
 
-    public int PICK_VIDEO=1,TAKE_VIDEO=2;
-
+    public int PICK_VIDEO = 1, TAKE_VIDEO = 2;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview=inflater.inflate(R.layout.fragment_create_event,container,false);
+        mview = inflater.inflate(R.layout.fragment_create_event, container, false);
 
         init();
 
@@ -71,46 +70,44 @@ public class CreateEvent extends Fragment {
         inputtitle = (EditText) mview.findViewById(R.id.input_event_title);
         inputdescription = (EditText) mview.findViewById(R.id.input_event_description);
 
-        layout_select=(LinearLayout)mview.findViewById(R.id.ll_select_video);
+        layout_select = (LinearLayout) mview.findViewById(R.id.ll_select_video);
         layout_select.setVisibility(View.GONE);
 
-        radiogroup=(RadioGroup)mview.findViewById(R.id.typeradiogrp);
+        radiogroup = (RadioGroup) mview.findViewById(R.id.typeradiogrp);
 
-        btn_create_event=(Button)mview.findViewById(R.id.btn_create_event);
+        btn_create_event = (Button) mview.findViewById(R.id.btn_create_event);
         btn_create_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                tittle=inputtitle.getText().toString();
-                des=inputdescription.getText().toString();
-                int id=radiogroup.getCheckedRadioButtonId();
+                tittle = inputtitle.getText().toString();
+                des = inputdescription.getText().toString();
+                int id = radiogroup.getCheckedRadioButtonId();
 
-                RadioButton radioButton=(RadioButton)mview.findViewById(id);
-                 type=radioButton.getText().toString();
+                RadioButton radioButton = (RadioButton) mview.findViewById(id);
+                type = radioButton.getText().toString();
 
                 View view = getActivity().getCurrentFocus();
                 if (view != null) {
-                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
 
-                if(!tittle.isEmpty()&&!des.isEmpty()) {
+                if (!tittle.isEmpty() && !des.isEmpty()) {
                     expand(layout_select);
-                }
-                else
-                {
-                    MyToast.popmessage("Please fill in all fields",getActivity());
+                } else {
+                    MyToast.popmessage("Please fill in all fields", getActivity());
                 }
 
             }
         });
 
-        btn_saved_events=(Button)mview.findViewById(R.id.btn_saved_event);
+        btn_saved_events = (Button) mview.findViewById(R.id.btn_saved_event);
         btn_saved_events.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-               Intent intent=new Intent(getActivity(), SavedEvents.class);
+                Intent intent = new Intent(getActivity(), SavedEvents.class);
                 startActivity(intent);
 
 
@@ -118,7 +115,7 @@ public class CreateEvent extends Fragment {
         });
 
 
-        ll_select_list=(ListView)mview.findViewById(R.id.select_video_list);
+        ll_select_list = (ListView) mview.findViewById(R.id.select_video_list);
 
         setadapter();
 
@@ -147,13 +144,14 @@ public class CreateEvent extends Fragment {
     }
 
     private void setadapter() {
-        ll_select_list.setAdapter(new Menulistadapter(getActivity(),populatelist()));
+        ll_select_list.setAdapter(new Menulistadapter(getActivity(), populatelist()));
 
     }
+
     private ArrayList<Menu> populatelist() {
 
-        ArrayList<com.tagframe.tagframe.Models.Menu> menuArrayList=new ArrayList<>();
-        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Pick a Video",android.R.drawable.ic_menu_gallery));
+        ArrayList<com.tagframe.tagframe.Models.Menu> menuArrayList = new ArrayList<>();
+        menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Pick a Video", android.R.drawable.ic_menu_gallery));
         menuArrayList.add(new com.tagframe.tagframe.Models.Menu("Take a Video", android.R.drawable.ic_menu_camera));
 
         return menuArrayList;
@@ -167,15 +165,15 @@ public class CreateEvent extends Fragment {
         final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         linearLayout.measure(widthSpec, heightSpec);
 
-        final LinearLayout l=linearLayout;
-        ValueAnimator mAnimator = slideAnimator(0, linearLayout.getMeasuredHeight(),l);
+        final LinearLayout l = linearLayout;
+        ValueAnimator mAnimator = slideAnimator(0, linearLayout.getMeasuredHeight(), l);
         mAnimator.start();
     }
 
     private void collapse(final LinearLayout linearLayout) {
         int finalHeight = linearLayout.getHeight();
 
-        ValueAnimator mAnimator = slideAnimator(finalHeight, 0,linearLayout);
+        ValueAnimator mAnimator = slideAnimator(finalHeight, 0, linearLayout);
 
         mAnimator.addListener(new Animator.AnimatorListener() {
             @Override
@@ -203,7 +201,7 @@ public class CreateEvent extends Fragment {
         mAnimator.start();
     }
 
-    private ValueAnimator slideAnimator(int start, int end,final LinearLayout linearLayout) {
+    private ValueAnimator slideAnimator(int start, int end, final LinearLayout linearLayout) {
 
         ValueAnimator animator = ValueAnimator.ofInt(start, end);
 
@@ -219,8 +217,9 @@ public class CreateEvent extends Fragment {
         });
         return animator;
     }
+
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Video.Media.DATA };
+        String[] projection = {MediaStore.Video.Media.DATA};
         Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
         if (cursor != null) {
             // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
@@ -246,20 +245,15 @@ public class CreateEvent extends Fragment {
                 String selectedImagePath = getPath(selectedImageUri);
 
                 if (selectedImagePath != null) {
-
-                    Intent intent = new Intent(getActivity(),
-                            MakeNewEvent.class);
-
+                    Intent intent = new Intent(getActivity(), MakeNewEvent.class);
                     intent.putExtra("data_url", selectedImagePath);
-                    intent.putExtra("tittle",tittle);
-                    intent.putExtra("des",des);
-                    intent.putExtra("type",type);
+                    intent.putExtra("tittle", tittle);
+                    intent.putExtra("des", des);
+                    intent.putExtra("type", type);
                     intent.putExtra("eventtype", Utility.eventtype_local);
                     startActivity(intent);
                 }
-            }
-            else if(requestCode==TAKE_VIDEO)
-            {
+            } else if (requestCode == TAKE_VIDEO) {
                 Uri selectedImageUri = data.getData();
 
                 // OI FILE Manager
@@ -268,18 +262,15 @@ public class CreateEvent extends Fragment {
                 // MEDIA GALLERY
                 String selectedImagePath = getPath(selectedImageUri);
                 if (selectedImagePath != null) {
-
-                    Intent intent = new Intent(getActivity(),
-                            MakeNewEvent.class);
+                    Intent intent = new Intent(getActivity(), MakeNewEvent.class);
                     intent.putExtra("data_url", selectedImagePath);
-                    intent.putExtra("tittle",tittle);
-                    intent.putExtra("des",des);
-                    intent.putExtra("type",type);
+                    intent.putExtra("tittle", tittle);
+                    intent.putExtra("des", des);
+                    intent.putExtra("type", type);
                     startActivity(intent);
                 }
             }
         }
-
 
 
     }

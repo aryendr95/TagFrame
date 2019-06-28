@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tagframe.tagframe.R;
 
 import com.veer.multiselect.Util.LoadBitmap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,15 +28,14 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
     private final List<String> mFragmentNumberList = new ArrayList<>();
-    private final List<Integer> mFragmentImageList=new ArrayList<>();
+    private final List<Integer> mFragmentImageList = new ArrayList<>();
     private HashMap<Integer, Fragment> fragmentHashMap = new HashMap<>();
 
     private Context context;
 
-    public ViewPagerAdapter(FragmentManager manager,Context context) {
-
+    public ViewPagerAdapter(FragmentManager manager, Context context) {
         super(manager);
-        this.context=context;
+        this.context = context;
     }
 
     @Override
@@ -67,8 +67,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         mFragmentNumberList.add(numb);
     }*/
 
-    public void addFragment(Fragment fragment, Bundle bundle,int res,String title,String numb)
-    {
+    public void addFragment(Fragment fragment, Bundle bundle, int res, String title, String numb) {
 
         fragment.setArguments(bundle);
         mFragmentList.add(fragment);
@@ -95,8 +94,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     public View getTabView(int position) {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_profile_tabs, null);
-        ImageView imageView=(ImageView)view.findViewById(R.id.image);
-        TextView number=(TextView)view.findViewById(R.id.number);
+        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+        TextView number = (TextView) view.findViewById(R.id.number);
         TextView title = (TextView) view.findViewById(R.id.title);
         number.setText(this.mFragmentNumberList.get(position));
         title.setText(this.mFragmentTitleList.get(position));

@@ -44,7 +44,7 @@ public class Notifications extends Fragment {
     private int next_records = 0;
     private ArrayList<NotificationModel> notificationModels;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private boolean shouldLoad=false;
+    private boolean shouldLoad = false;
 
     @Nullable
     @Override
@@ -78,7 +78,8 @@ public class Notifications extends Fragment {
         list_notification.setLayoutManager(layoutManagers);
         list_notification.setAdapter(new NotificationAdapter(notificationModels, getActivity()));
         list_notification.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManagers) {
-            @Override public void onLoadMore(int page, int totalItemsCount) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (shouldLoad) {
                     getNotifications();
                 }
@@ -108,8 +109,8 @@ public class Notifications extends Fragment {
                 public void onResponse(Call<NotificationResponseModel> call, Response<NotificationResponseModel> response) {
                     if (isAdded()) {
                         String status = response.body().getStatus();
-                        String unread_notifications=response.body().getUnread_notifications();
-                        appPrefs.putString(Utility.unread_notifications,unread_notifications);
+                        String unread_notifications = response.body().getUnread_notifications();
+                        appPrefs.putString(Utility.unread_notifications, unread_notifications);
                         pbar.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
                         if (status.equals(Utility.success_response)) {

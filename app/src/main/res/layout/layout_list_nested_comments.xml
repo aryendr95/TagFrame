@@ -13,7 +13,7 @@
         android:id="@+id/layout_commentlist_rplycontainer"
         >
 
-        <com.pkmmte.view.CircularImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:id="@+id/img_commentlist_rplypic"/>

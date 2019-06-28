@@ -2,9 +2,11 @@ package com.tagframe.tagframe.Retrofit;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.BufferedSink;
@@ -25,21 +27,24 @@ public class ProgressRequestBody extends RequestBody {
         void onFinish();
     }
 
-    public ProgressRequestBody(MediaType mediaType,final File file, final UploadCallbacks listener) {
-        mMediaType=mediaType;
+    public ProgressRequestBody(MediaType mediaType, final File file, final UploadCallbacks listener) {
+        mMediaType = mediaType;
         mFile = file;
         mListener = listener;
     }
 
-    @Override public MediaType contentType() {
+    @Override
+    public MediaType contentType() {
         return mMediaType;
     }
 
-    @Override public long contentLength() throws IOException {
+    @Override
+    public long contentLength() throws IOException {
         return mFile.length();
     }
 
-    @Override public void writeTo(BufferedSink sink) throws IOException {
+    @Override
+    public void writeTo(BufferedSink sink) throws IOException {
         long fileLength = mFile.length();
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         FileInputStream in = new FileInputStream(mFile);
@@ -70,7 +75,8 @@ public class ProgressRequestBody extends RequestBody {
             mTotal = total;
         }
 
-        @Override public void run() {
+        @Override
+        public void run() {
             mListener.onProgressUpdate((int) (100 * mUploaded / mTotal));
         }
     }

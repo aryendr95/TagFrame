@@ -46,9 +46,7 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_list_frame, parent, false);
-
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_frame, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -56,18 +54,14 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
     public void onBindViewHolder(final MyViewHolder mViewHolder, final int position) {
         final FrameList_Model frame = frameList_modelArrayList.get(position);
         mViewHolder.videoIndicator.setVisibility(View.GONE);
-        if(frame.getEndtime()!=0)
-        {
+        if (frame.getEndtime() != 0) {
             mViewHolder.wholeLayout.setBackgroundColor(Color.GREEN);
-        }
-        else
-        {
+        } else {
             mViewHolder.wholeLayout.setBackgroundColor(Color.YELLOW);
         }
 
         final AppPrefs appPrefs = new AppPrefs(context);
-        Log.e("gone", frame.getUser_id()+ MakeNewEvent.user_id);
-
+        Log.e("gone", frame.getUser_id() + MakeNewEvent.user_id);
         if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
             if (appPrefs.getString(Utility.user_id).equals(frame.getUser_id()) || appPrefs.getString(Utility.user_id).equals(MakeNewEvent.user_id)) {
                 mViewHolder.ivDelete.setVisibility(View.VISIBLE);
@@ -75,18 +69,16 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                 mViewHolder.ivDelete.setVisibility(View.GONE);
             }
         }
+
         if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
             mViewHolder.ivDelete.setVisibility(View.VISIBLE);
-
         }
 
         String time = Utility.milliSecondsToTimer(frame.getStarttime()) + "-" + Utility.milliSecondsToTimer(frame.getEndtime());
         mViewHolder.tvTime.setText(time);
         mViewHolder.tvName.setText(frame.getName());
 
-
         if (frame.getFrametype() == Utility.frametype_image) {
-
             if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                 try {
                     Bitmap thumb = BitmapHelper.decodeFile(context, new File(frame.getImagepath()));
@@ -97,53 +89,42 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                 }
             } else {
                 Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage,
-                    new Callback() {
-                        @Override public void onSuccess() {
-
-                        }
-
-                        @Override public void onError() {
-                            try
-                            {
-                                Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
+                        new Callback() {
+                            @Override
+                            public void onSuccess() {
                             }
-                            catch (Exception e)
-                            {
 
+                            @Override
+                            public void onError() {
+                                try {
+                                    Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
+                                } catch (Exception e) {
+
+                                }
                             }
-                        }
-                    });
+                        });
             }
         } else {
-
             if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                 try {
-                    Bitmap thumb = ThumbnailUtils.createVideoThumbnail(frame.getImagepath(),
-                        MediaStore.Images.Thumbnails.MINI_KIND);
-
+                    Bitmap thumb = ThumbnailUtils.createVideoThumbnail(frame.getImagepath(), MediaStore.Images.Thumbnails.MINI_KIND);
                     thumb = Utility.getResizedBitmap(thumb, 150, 200);
-
                     mViewHolder.ivFrameImage.setImageBitmap(thumb);
                     mViewHolder.videoIndicator.setVisibility(View.VISIBLE);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage);
                 }
             } else {
                 Picasso.with(context).load(frame.getImagepath()).into(mViewHolder.ivFrameImage, new Callback() {
-                    @Override public void onSuccess() {
-
+                    @Override
+                    public void onSuccess() {
                     }
 
-                    @Override public void onError() {
-                        try
-                        {
+                    @Override
+                    public void onError() {
+                        try {
                             Picasso.with(context).load(frame.getFrame_image_url()).into(mViewHolder.ivFrameImage);
-                        }
-                        catch (Exception e)
-                        {
-
+                        } catch (Exception e) {
                         }
                     }
                 });
@@ -152,12 +133,9 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
         }
         mViewHolder.ivFrameImage.setTag("Frame" + position);
 
-
         mViewHolder.ivFrameImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-
                 if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_internet)) {
                     if (appPrefs.getString(Utility.user_id).equals(frame.getUser_id()) || appPrefs.getString(Utility.user_id).equals(MakeNewEvent.user_id)) {
                         resyncFrame(v, position, mViewHolder);
@@ -167,9 +145,7 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                 }
                 if (frame.getFrame_resource_type().equals(Utility.frame_resource_type_local)) {
                     resyncFrame(v, position, mViewHolder);
-
                 }
-
                 return true;
 
             }
@@ -196,32 +172,24 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
                         break;
 
                     case DragEvent.ACTION_DRAG_EXITED:
-
-                       /* long stopTime = System.currentTimeMillis();
+                        /* long stopTime = System.currentTimeMillis();
                         long elapsedTime = stopTime - startTime;
                         Log.e("Dragexited", elapsedTime + "");*/
 
-
                         break;
-
                     case DragEvent.ACTION_DRAG_LOCATION:
                         // Log.e("TAG", "Action is DragEvent.ACTION_DRAG_lo");
-
                         break;
-
                     case DragEvent.ACTION_DRAG_ENDED:
                         //Log.e("TAG", "Action is DragEvent.ACTION_DRAG_emded");
                         if (context instanceof MakeNewEvent) {
 
                             ((MakeNewEvent) context).resync_frame(position);
                         }
-
                         // Do nothing
                         break;
 
                     case DragEvent.ACTION_DROP:
-
-
                         // Do nothing
                         break;
                     default:
@@ -235,9 +203,8 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
             @Override
             public void onClick(View v) {
 
-
                 if (context instanceof MakeNewEvent) {
-                    ((MakeNewEvent) context).deleteframe(frame.getFrame_id(),position,frame.getFrame_resource_type());
+                    ((MakeNewEvent) context).deleteframe(frame.getFrame_id(), position, frame.getFrame_resource_type());
                 }
             }
         });
@@ -264,10 +231,8 @@ public class FrameListRecyclerAdapter extends RecyclerView.Adapter<FrameListRecy
 
         ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
         String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-
         ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
         View.DragShadowBuilder myShadow = new View.DragShadowBuilder(mViewHolder.ivFrameImage);
-
         v.startDrag(dragData, myShadow, null, 0);
 
         MakeNewEvent.RESYC_FRAME_POSITION = position;

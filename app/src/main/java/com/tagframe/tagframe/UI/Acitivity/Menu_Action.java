@@ -21,8 +21,6 @@ import com.tagframe.tagframe.UI.Fragments.ViewerPrivacy;
  * Created by abhinav on 06/04/2016.
  */
 public class Menu_Action extends FragmentActivity {
-
-
     private ImageView mimg_menu_back;
     private TextView mtxt_menu;
     private FrameLayout layout;
@@ -33,13 +31,13 @@ public class Menu_Action extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_actions);
 
-        mtxt_menu=(TextView)findViewById(R.id.menu_action_text);
-        mimg_menu_back=(ImageView)findViewById(R.id.menu_action_back);
+        mtxt_menu = (TextView) findViewById(R.id.menu_action_text);
+        mimg_menu_back = (ImageView) findViewById(R.id.menu_action_back);
         mimg_menu_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Menu_Action.this,Modules.class);
-                intent.putExtra("name",getIntent().getStringExtra("name"));
+                Intent intent = new Intent(Menu_Action.this, Modules.class);
+                intent.putExtra("name", getIntent().getStringExtra("name"));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 finish();
@@ -48,7 +46,7 @@ public class Menu_Action extends FragmentActivity {
         mtxt_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Menu_Action.this,Modules.class);
+                Intent intent = new Intent(Menu_Action.this, Modules.class);
                 intent.putExtra("name", getIntent().getStringExtra("name"));
                 //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -58,22 +56,21 @@ public class Menu_Action extends FragmentActivity {
 
         mtxt_menu.setText(getIntent().getStringExtra("name"));
 
-        which_layout=getIntent().getIntExtra("layout",0);
+        which_layout = getIntent().getIntExtra("layout", 0);
 
-        layout=(FrameLayout)findViewById(R.id.menu_action_frame);
+        layout = (FrameLayout) findViewById(R.id.menu_action_frame);
 
 
-        Fragment myf=new Account();
-        switch (which_layout)
-        {
-              case 0:
-                  myf=new Account();
-            break;
+        Fragment myf = new Account();
+        switch (which_layout) {
+            case 0:
+                myf = new Account();
+                break;
             case 2:
-                myf=new ViewerPrivacy();
+                myf = new ViewerPrivacy();
                 break;
             case 3:
-                myf=new TermsofService();
+                myf = new TermsofService();
                 break;
 
         }

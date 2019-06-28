@@ -46,5 +46,4 @@ public class NotificationResponseModel {
     private ArrayList<NotificationModel> notificationModelArrayList;
 
 
-
 }

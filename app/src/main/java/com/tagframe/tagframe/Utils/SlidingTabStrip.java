@@ -1,8 +1,5 @@
 package com.tagframe.tagframe.Utils;
 
-
-
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,21 +10,16 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 public class SlidingTabStrip extends LinearLayout {
-
     private static final int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 0;
     private static final byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0x26;
     private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 3;
     private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0xFFFFFF;
-
     private final int mBottomBorderThickness;
     private final Paint mBottomBorderPaint;
-
     private final int mSelectedIndicatorThickness;
     private final Paint mSelectedIndicatorPaint;
-
     private int mSelectedPosition;
     private float mSelectionOffset;
-
     private SlidingTabLayout.TabColorizer mCustomTabColorizer;
     private final SimpleTabColorizer mDefaultTabColorizer;
 
@@ -38,15 +30,11 @@ public class SlidingTabStrip extends LinearLayout {
     SlidingTabStrip(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
-
         final float density = getResources().getDisplayMetrics().density;
-
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.colorForeground, outValue, true);
-        final int themeForegroundColor =  outValue.data;
-
-        int defaultBottomBorderColor = setColorAlpha(themeForegroundColor,
-                DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
+        final int themeForegroundColor = outValue.data;
+        int defaultBottomBorderColor = setColorAlpha(themeForegroundColor, DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
 
         mDefaultTabColorizer = new SimpleTabColorizer();
         mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);
@@ -97,7 +85,6 @@ public class SlidingTabStrip extends LinearLayout {
                 if (color != nextColor) {
                     color = blendColors(nextColor, color, mSelectionOffset);
                 }
-
                 // Draw the selection partway between the tabs
                 View nextTitle = getChildAt(mSelectedPosition + 1);
                 left = (int) (mSelectionOffset * nextTitle.getLeft() +

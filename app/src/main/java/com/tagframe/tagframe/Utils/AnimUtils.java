@@ -31,8 +31,6 @@ public class AnimUtils extends Animation {
                            int parentHeight) {
         super.initialize(width, height, parentWidth, parentHeight);
 
-        
-
 
     }
 

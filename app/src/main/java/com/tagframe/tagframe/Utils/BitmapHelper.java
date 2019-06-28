@@ -3,6 +3,7 @@ package com.tagframe.tagframe.Utils;
 /**
  * Created by abhinav on 09/06/2016.
  */
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,12 +22,10 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-public class BitmapHelper
-{
+public class BitmapHelper {
 
-    public static Bitmap decodeFile(Context context,File f)
-    {
-        Bitmap bitmap=null;
+    public static Bitmap decodeFile(Context context, File f) {
+        Bitmap bitmap = null;
         Resources res = context.getResources();
         WindowManager window = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = window.getDefaultDisplay();
@@ -43,7 +42,7 @@ public class BitmapHelper
             bitmap = Bitmap.createScaledBitmap(BitmapFactory
                             .decodeFile(f.getPath()),
                     width, height, true);
-            bitmap=fixrotation(bitmap,f);
+            bitmap = fixrotation(bitmap, f);
         } catch (OutOfMemoryError e) {
             if (bitmap != null) {
                 bitmap.recycle();
@@ -55,16 +54,15 @@ public class BitmapHelper
             options.inSampleSize = 1;
             options.inPurgeable = true;
             bitmap.createScaledBitmap(BitmapFactory.decodeFile(f
-                    .getPath().toString(), options), width, height,true);
-            bitmap=fixrotation(bitmap,f);
+                    .getPath().toString(), options), width, height, true);
+            bitmap = fixrotation(bitmap, f);
         }
         return bitmap;
     }
+
     //decodes image and scales it to reduce memory consumption
-    public static Bitmap decodeFile(File bitmapFile, int requiredWidth, int requiredHeight, boolean quickAndDirty)
-    {
-        try
-        {
+    public static Bitmap decodeFile(File bitmapFile, int requiredWidth, int requiredHeight, boolean quickAndDirty) {
+        try {
             //Decode image size
             BitmapFactory.Options bitmapSizeOptions = new BitmapFactory.Options();
             bitmapSizeOptions.inJustDecodeBounds = true;
@@ -99,14 +97,11 @@ public class BitmapHelper
             boolean recycleDecodedBitmap = false;
 
             Bitmap scaledBitmap = decodedBitmap;
-            if (srcAspectRatio < dstAspectRatio)
-            {
+            if (srcAspectRatio < dstAspectRatio) {
                 scaledBitmap = getScaledBitmap(decodedBitmap, (int) dstWidth, (int) (srcHeight * (dstWidth / srcWidth)));
                 // will recycle recycleDecodedBitmap
                 recycleDecodedBitmap = true;
-            }
-            else if (srcAspectRatio > dstAspectRatio)
-            {
+            } else if (srcAspectRatio > dstAspectRatio) {
                 scaledBitmap = getScaledBitmap(decodedBitmap, (int) (srcWidth * (dstHeight / srcHeight)), (int) dstHeight);
                 recycleDecodedBitmap = true;
             }
@@ -118,30 +113,24 @@ public class BitmapHelper
 
             Bitmap croppedBitmap = scaledBitmap;
 
-            if (scaledBitmapWidth > requiredWidth)
-            {
+            if (scaledBitmapWidth > requiredWidth) {
                 int xOffset = (scaledBitmapWidth - requiredWidth) / 2;
                 croppedBitmap = Bitmap.createBitmap(scaledBitmap, xOffset, 0, requiredWidth, requiredHeight);
                 scaledBitmap.recycle();
-            }
-            else if (scaledBitmapHeight > requiredHeight)
-            {
+            } else if (scaledBitmapHeight > requiredHeight) {
                 int yOffset = (scaledBitmapHeight - requiredHeight) / 2;
                 croppedBitmap = Bitmap.createBitmap(scaledBitmap, 0, yOffset, requiredWidth, requiredHeight);
                 scaledBitmap.recycle();
             }
 
-            if (recycleDecodedBitmap)
-            {
+            if (recycleDecodedBitmap) {
                 decodedBitmap.recycle();
             }
             decodedBitmap = null;
 
             scaledBitmap = null;
             return croppedBitmap;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
@@ -152,34 +141,28 @@ public class BitmapHelper
      *
      * @param //requiredWidth
      * @param //requiredHeight
-     * @param powerOf2
-     *            weither we want a power of 2 sclae or not
+     * @param powerOf2         weither we want a power of 2 sclae or not
      * @return
      */
-    public static int computeInSampleSize(BitmapFactory.Options options, int dstWidth, int dstHeight, boolean powerOf2)
-    {
+    public static int computeInSampleSize(BitmapFactory.Options options, int dstWidth, int dstHeight, boolean powerOf2) {
         int inSampleSize = 1;
 
         // Raw height and width of image
         final int srcHeight = options.outHeight;
         final int srcWidth = options.outWidth;
 
-        if (powerOf2)
-        {
+        if (powerOf2) {
             //Find the correct scale value. It should be the power of 2.
 
             int tmpWidth = srcWidth, tmpHeight = srcHeight;
-            while (true)
-            {
+            while (true) {
                 if (tmpWidth / 2 < dstWidth || tmpHeight / 2 < dstHeight)
                     break;
                 tmpWidth /= 2;
                 tmpHeight /= 2;
                 inSampleSize *= 2;
             }
-        }
-        else
-        {
+        } else {
             // Calculate ratios of height and width to requested height and width
             final int heightRatio = Math.round((float) srcHeight / (float) dstHeight);
             final int widthRatio = Math.round((float) srcWidth / (float) dstWidth);
@@ -193,10 +176,8 @@ public class BitmapHelper
         return inSampleSize;
     }
 
-    public static Bitmap drawableToBitmap(Drawable drawable)
-    {
-        if (drawable instanceof BitmapDrawable)
-        {
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }
 
@@ -208,8 +189,7 @@ public class BitmapHelper
         return bitmap;
     }
 
-    public static Bitmap getScaledBitmap(Bitmap bitmap, int newWidth, int newHeight)
-    {
+    public static Bitmap getScaledBitmap(Bitmap bitmap, int newWidth, int newHeight) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         float scaleWidth = ((float) newWidth) / width;
@@ -227,34 +207,37 @@ public class BitmapHelper
 
 
     private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
         return 0;
     }
-      private static Bitmap fixrotation(Bitmap bitmap,File file)
-      {
-          Bitmap rotatedBitmap;
 
-          try {
-              ExifInterface exif = new ExifInterface(file.getPath());
-              int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-              int rotationInDegrees = exifToDegrees(rotation);
-              Matrix matrix = new Matrix();
-              if (rotation != 0f) {
+    private static Bitmap fixrotation(Bitmap bitmap, File file) {
+        Bitmap rotatedBitmap;
 
-                  matrix.postRotate(rotationInDegrees);}
-              rotatedBitmap = Bitmap.createBitmap(bitmap,0,0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        try {
+            ExifInterface exif = new ExifInterface(file.getPath());
+            int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            int rotationInDegrees = exifToDegrees(rotation);
+            Matrix matrix = new Matrix();
+            if (rotation != 0f) {
 
-              return rotatedBitmap;
+                matrix.postRotate(rotationInDegrees);
+            }
+            rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
-
-          }catch(IOException ex){
-              return bitmap;
-          }
-      }
+            return rotatedBitmap;
 
 
+        } catch (IOException ex) {
+            return bitmap;
+        }
+    }
 
 
 }

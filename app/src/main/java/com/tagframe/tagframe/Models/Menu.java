@@ -8,10 +8,9 @@ public class Menu {
     private String tittle;
     private int icon;
 
-    public  Menu(String icon,int iconid)
-    {
-        this.tittle=icon;
-        this.icon=iconid;
+    public Menu(String icon, int iconid) {
+        this.tittle = icon;
+        this.icon = iconid;
     }
 
     public String getTittle() {

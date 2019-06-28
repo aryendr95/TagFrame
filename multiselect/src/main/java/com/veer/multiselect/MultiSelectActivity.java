@@ -25,8 +25,7 @@ import com.veer.multiselect.Util.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MultiSelectActivity extends AppCompatActivity
-    implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MultiSelectActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
   //views
   private RecyclerView mRecyclerView;
   private ImageView ivBack;
@@ -45,11 +44,14 @@ public class MultiSelectActivity extends AppCompatActivity
     initViews();
     checkSelection(paths);
     returnPaths();
+
     ivBack.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         setFailedResult();
+        finish();
       }
     });
+
     if (isStoragePermissionGranted()) {
       initLoader();
     }
@@ -169,7 +171,8 @@ public class MultiSelectActivity extends AppCompatActivity
       case 2909: {
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
           initLoader();
-        } else {
+        }
+        else {
           //denied
           String message = "Permission needed to read the media content from device";
           Snackbar snackbar = Snackbar.make(layout, message, Snackbar.LENGTH_SHORT)
@@ -179,7 +182,6 @@ public class MultiSelectActivity extends AppCompatActivity
                   isStoragePermissionGranted();
                 }
               });
-
           snackbar.show();
         }
         return;

@@ -28,7 +28,6 @@ import java.net.URL;
  * Created by abhinav on 04/04/2016.
  */
 public class WebServiceHandler {
-
     private HttpURLConnection httpConn;
     private DataOutputStream request;
     private final String boundary = "*****";
@@ -47,10 +46,7 @@ public class WebServiceHandler {
 
     private UploadCallbacks mlistener;
 
-
-    public WebServiceHandler(String requestURL, long size, int header_size)
-            throws IOException {
-
+    public WebServiceHandler(String requestURL, long size, int header_size) throws IOException {
 
         // creates a unique boundary based on time stamp
         URL url = new URL(requestURL);
@@ -64,15 +60,11 @@ public class WebServiceHandler {
         httpConn.setRequestMethod("POST");
         httpConn.setRequestProperty("Connection", "Keep-Alive");
         httpConn.setRequestProperty("Cache-Control", "no-cache");
-        httpConn.setRequestProperty(
-                "Content-Type", "multipart/form-data;boundary=" + this.boundary);
-
+        httpConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + this.boundary);
         request = new DataOutputStream(httpConn.getOutputStream());
     }
 
-    public WebServiceHandler(String requestURL)
-            throws IOException {
-
+    public WebServiceHandler(String requestURL) throws IOException {
         // creates a unique boundary based on time stamp
         URL url = new URL(requestURL);
         httpConn = (HttpURLConnection) url.openConnection();
@@ -82,9 +74,7 @@ public class WebServiceHandler {
         httpConn.setRequestMethod("POST");
         httpConn.setRequestProperty("Connection", "Keep-Alive");
         httpConn.setRequestProperty("Cache-Control", "no-cache");
-        httpConn.setRequestProperty(
-                "Content-Type", "multipart/form-data;boundary=" + this.boundary);
-
+        httpConn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + this.boundary);
         request = new DataOutputStream(httpConn.getOutputStream());
     }
 
@@ -109,12 +99,10 @@ public class WebServiceHandler {
 
     }
 
-    public void addFilePart(String fieldName, File uploadFile, int notification_id, Context context, UploadCallbacks mlisten)
-            throws IOException {
+    public void addFilePart(String fieldName, File uploadFile, int notification_id, Context context, UploadCallbacks mlisten) throws IOException {
         try {
             long filesize = uploadFile.length();
             mlistener = mlisten;
-
             FileInputStream fileInputStream = new FileInputStream(uploadFile);
 
             String fileName = uploadFile.getName();
@@ -128,30 +116,22 @@ public class WebServiceHandler {
             bytesAvailable = fileInputStream.available();
             bufferSize = Math.min(bytesAvailable, maxBufferSize);
             buffer = new byte[bufferSize];
-
-
             Handler handler = new Handler(Looper.getMainLooper());
             bytesRead = fileInputStream.read(buffer, 0, bufferSize);
             long uploaded = 0;
             while (bytesRead > 0) {
-
-
                 if (bytesRead < bufferSize)
                     uploaded = uploaded + bytesRead * 100 / filesize;
                 else
                     uploaded = uploaded + bufferSize * 100 / filesize;
 
-
                 handler.post(new ProgressUpdater(uploaded));
-
                 request.write(buffer, 0, bufferSize);
                 bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
             }
-
             request.writeBytes(this.crlf);
-
             request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
         } catch (Exception e) {
             Log.e("exception", e.getMessage());
@@ -159,12 +139,10 @@ public class WebServiceHandler {
 
     }
 
-
     public void addFilePart(String fieldName, File uploadFile, int notification_id, Context context)
             throws IOException {
         try {
             FileInputStream fileInputStream = new FileInputStream(uploadFile);
-
             String fileName = uploadFile.getName();
             request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
             request.writeBytes("Content-Disposition: form-data; name=\"" +
@@ -175,28 +153,21 @@ public class WebServiceHandler {
             bytesAvailable = fileInputStream.available();
             bufferSize = Math.min(bytesAvailable, maxBufferSize);
             buffer = new byte[bufferSize];
-
-
             bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
             while (bytesRead > 0) {
-
-
                 request.write(buffer, 0, bufferSize);
                 bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
             }
-
             request.writeBytes(this.crlf);
-
             request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
         } catch (Exception e) {
             Log.e("exception", e.getMessage());
         }
 
     }
-
 
     /**
      * Adds a upload file section to the request
@@ -214,45 +185,31 @@ public class WebServiceHandler {
      * status OK, otherwise an exception is thrown.
      * @throws IOException
      */
+
     public String finish() throws IOException {
         String response = "";
         try {
-
-
             //  request.writeBytes(this.crlf);
-            request.writeBytes(this.twoHyphens + this.boundary +
-                    this.twoHyphens + this.crlf);
-
+            request.writeBytes(this.twoHyphens + this.boundary + this.twoHyphens + this.crlf);
             request.flush();
             request.close();
 
             // checks server's status code first
             int status = httpConn.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
-                InputStream responseStream = new
-                        BufferedInputStream(httpConn.getInputStream());
-
-                BufferedReader responseStreamReader =
-                        new BufferedReader(new InputStreamReader(responseStream));
-
+                InputStream responseStream = new BufferedInputStream(httpConn.getInputStream());
+                BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
                 String line = "";
                 StringBuilder stringBuilder = new StringBuilder();
-
                 while ((line = responseStreamReader.readLine()) != null) {
                     stringBuilder.append(line).append("\n");
                 }
                 responseStreamReader.close();
-
                 response = stringBuilder.toString();
                 httpConn.disconnect();
             } else {
-
-                InputStream responseStream = new
-                    BufferedInputStream(httpConn.getErrorStream());
-
-                BufferedReader responseStreamReader =
-                    new BufferedReader(new InputStreamReader(responseStream));
-
+                InputStream responseStream = new BufferedInputStream(httpConn.getErrorStream());
+                BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
                 String line = "";
                 StringBuilder stringBuilder = new StringBuilder();
 
@@ -260,15 +217,14 @@ public class WebServiceHandler {
                     stringBuilder.append(line).append("\n");
                 }
                 responseStreamReader.close();
-
                 response = stringBuilder.toString();
                 httpConn.disconnect();
-                throw new IOException("Server returned non-OK status: " + status+response);
+                throw new IOException("Server returned non-OK status: " + status + response);
             }
+
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
         }
-
         return response;
     }
 
@@ -287,7 +243,6 @@ public class WebServiceHandler {
 
         public ProgressUpdater(long uploaded) {
             mUploaded = uploaded;
-
         }
 
         @Override

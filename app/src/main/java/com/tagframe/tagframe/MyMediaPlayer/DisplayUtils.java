@@ -15,8 +15,9 @@ public class DisplayUtils {
 
     /**
      * Calculates the right videoSize keeping the original ratio.
+     *
      * @param displaySize Real display size, make sure you include the status bar inside.
-     * @param videoSize Real video size, usually got from the mediaplayer component.
+     * @param videoSize   Real video size, usually got from the mediaplayer component.
      * @return
      */
     public Point getFinalVideoSize(PointF displaySize, PointF videoSize) {
@@ -35,7 +36,7 @@ public class DisplayUtils {
             videoRatio = 1.6;
         }
 
-       //maintain the aspect ratio
+        //maintain the aspect ratio
         if (displayRatio >= videoRatio) {
             result.y = (int) displaySize.y;
             result.x = (int) (displaySize.y * videoRatio);

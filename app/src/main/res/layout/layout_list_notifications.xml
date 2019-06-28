@@ -73,7 +73,7 @@
         android:layout_centerInParent="true"
         android:id="@+id/pbar_notImage"
         />
-    <com.pkmmte.view.CircularImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/notification_pro_pic"
         android:layout_width="50dp"
         android:layout_height="50dp"

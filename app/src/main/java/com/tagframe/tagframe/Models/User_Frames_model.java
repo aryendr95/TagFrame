@@ -2,6 +2,7 @@ package com.tagframe.tagframe.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -52,12 +53,11 @@ public class User_Frames_model implements Parcelable {
     private String product_image_url;
 
     @SerializedName("is_product_frame")
-    private boolean is_product_frame=false;
+    private boolean is_product_frame = false;
 
     @SerializedName("product_url")
     @Expose
     private String product_url;
-
 
 
     public String getProduct_url() {
@@ -273,11 +273,13 @@ public class User_Frames_model implements Parcelable {
         this.created_on = created_on;
     }
 
-    @Override public int describeContents() {
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.frame_image_url);
         dest.writeString(this.event_user_id);
         dest.writeString(this.product_image_url);
@@ -331,13 +333,15 @@ public class User_Frames_model implements Parcelable {
     }
 
     public static final Parcelable.Creator<User_Frames_model> CREATOR =
-        new Parcelable.Creator<User_Frames_model>() {
-            @Override public User_Frames_model createFromParcel(Parcel source) {
-                return new User_Frames_model(source);
-            }
+            new Parcelable.Creator<User_Frames_model>() {
+                @Override
+                public User_Frames_model createFromParcel(Parcel source) {
+                    return new User_Frames_model(source);
+                }
 
-            @Override public User_Frames_model[] newArray(int size) {
-                return new User_Frames_model[size];
-            }
-        };
+                @Override
+                public User_Frames_model[] newArray(int size) {
+                    return new User_Frames_model[size];
+                }
+            };
 }

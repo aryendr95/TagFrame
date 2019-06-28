@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,108 +48,114 @@ import static com.tagframe.tagframe.R.id.img_footer;
  * Created by karanveer on 05/04/2016.
  */
 public class TagStream extends Fragment {
-  private View mview;
-  private SwipeRefreshLayout swipeRefreshLayout;
-  private RecyclerView rcTagStream;
-  private AppPrefs appPrefs;
-  private int next_records = Utility.PAGE_SIZE;
-  private ArrayList<Event_Model> tagStream_models;
-  private RelativeLayout mLayout;
-  private boolean shouldLoad = false;
+    private View mview;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView rcTagStream;
+    private AppPrefs appPrefs;
+    private int next_records = Utility.PAGE_SIZE;
+    private ArrayList<Event_Model> tagStream_models;
+    private RelativeLayout mLayout;
+    private boolean shouldLoad = false;
 
-  @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    mview = inflater.inflate(R.layout.fragment_tagstream, container, false);
-    prepare();
-    initViews();
-    functionalizeList();
-    initSwipeRefresh();
-    return mview;
-  }
 
-  private void prepare() {
-    appPrefs = new AppPrefs(getActivity());
-    tagStream_models = appPrefs.gettagstreamlist("tagstream");
-  }
-
-  private void initViews() {
-    mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_tagstream);
-    swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_tagstream);
-    rcTagStream = (RecyclerView) mview.findViewById(R.id.list_tagstream);
-  }
-
-  private void functionalizeList() {
-    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-    rcTagStream.setLayoutManager(layoutManager);
-    rcTagStream.setAdapter(new TagStreamRecyclerAdapter(getActivity(), tagStream_models));
-    rcTagStream.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-      @Override public void onLoadMore(int page, int totalItemsCount) {
-        if (shouldLoad) {
-          loadTagStream();
-        }
-      }
-    });
-  }
-
-  private void initSwipeRefresh() {
-    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-      @Override public void onRefresh() {
-
-        tagStream_models = new ArrayList<Event_Model>();
-        next_records = 0;
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mview = inflater.inflate(R.layout.fragment_tagstream, container, false);
+        prepare();
+        initViews();
         functionalizeList();
-        //load a new list
+        initSwipeRefresh();
         loadTagStream();
-      }
-    });
-
-
-  }
-
-  public void loadTagStream() {
-    if (Networkstate.haveNetworkConnection(getActivity())) {
-
-      ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-      Call<ListResponseModel> call =
-          apiInterface.getTagStreamPaginated(appPrefs.getString(Utility.user_id),
-              String.valueOf(next_records));
-      call.enqueue(new Callback<ListResponseModel>() {
-        @Override
-        public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
-          if (response.body().getStatus().equals("success")) {
-            //add the items to arraylist
-            ArrayList<Event_Model> continued_list = response.body().getTagStreamArrayList();
-            tagStream_models.addAll(continued_list);
-            appPrefs.puttagstreamlist(tagStream_models);
-            rcTagStream.getAdapter().notifyDataSetChanged();
-            swipeRefreshLayout.setRefreshing(false);
-            //if there are more items to be loaded then increse the offset by pagesize
-            if (continued_list.size() == Utility.PAGE_SIZE) {
-              next_records = next_records + Utility.PAGE_SIZE;
-              shouldLoad=true;
-            } else {
-              shouldLoad=false;
-            }
-          } else {
-            PopMessage.makesimplesnack(mLayout, response.body().getStatus());
-            swipeRefreshLayout.setRefreshing(false);
-          }
-        }
-
-        @Override public void onFailure(Call<ListResponseModel> call, Throwable t) {
-          swipeRefreshLayout.setRefreshing(false);
-        }
-      });
-    } else {
-      PopMessage.makeshorttoast(getActivity(), "No Internet Connection");
-      getActivity().finish();
+        return mview;
     }
-  }
 
-  public void scrolltofirst() {
+    private void prepare() {
+        tagStream_models = new ArrayList<Event_Model>();
+        appPrefs = new AppPrefs(getActivity());
+        tagStream_models = appPrefs.gettagstreamlist("tagstream");
+    }
 
-    rcTagStream.smoothScrollToPosition(0);
-  }
+    private void initViews() {
+        mLayout = (RelativeLayout) mview.findViewById(R.id.mLayout_tagstream);
+        swipeRefreshLayout = (SwipeRefreshLayout) mview.findViewById(R.id.swiperefresh_tagstream);
+        rcTagStream = (RecyclerView) mview.findViewById(R.id.list_tagstream);
+    }
 
+    private void functionalizeList() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        rcTagStream.setLayoutManager(layoutManager);
+        rcTagStream.setAdapter(new TagStreamRecyclerAdapter(getActivity(), tagStream_models));
+        rcTagStream.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                if (shouldLoad) {
+                    loadTagStream();
+                }
+            }
+        });
+    }
+
+    private void initSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                next_records = 0;
+                tagStream_models = new ArrayList<Event_Model>();
+                functionalizeList();
+                loadTagStream();
+            }
+        });
+
+
+    }
+
+    public void loadTagStream() {
+        if (Networkstate.haveNetworkConnection(getActivity())) {
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            Call<ListResponseModel> call =
+                    apiInterface.getTagStreamPaginated(appPrefs.getString(Utility.user_id), String.valueOf(next_records));
+            call.enqueue(new Callback<ListResponseModel>() {
+                @Override
+                public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
+                    if (response.body().getStatus().equals("success")) {
+                        //add the items to arraylist
+                        ArrayList<Event_Model> continued_list = response.body().getTagStreamArrayList();
+                        tagStream_models.addAll(continued_list);
+                        appPrefs.puttagstreamlist(tagStream_models);
+                        rcTagStream.getAdapter().notifyDataSetChanged();
+                        Log.d("TagStraemList", "" + response.body().getTagStreamArrayList().size());
+
+                        swipeRefreshLayout.setRefreshing(false);
+                        //if there are more items to be loaded then increse the offset by pagesize
+                        if (continued_list.size() == Utility.PAGE_SIZE) {
+                            next_records = next_records + Utility.PAGE_SIZE;
+                            shouldLoad = true;
+
+                        } else {
+                            shouldLoad = false;
+                        }
+                    } else {
+                        PopMessage.makesimplesnack(mLayout, response.body().getStatus());
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ListResponseModel> call, Throwable t) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        } else {
+            PopMessage.makeshorttoast(getActivity(), "No Internet Connection");
+            getActivity().finish();
+        }
+    }
+
+    public void scrolltofirst() {
+        rcTagStream.smoothScrollToPosition(0);
+    }
 
 }

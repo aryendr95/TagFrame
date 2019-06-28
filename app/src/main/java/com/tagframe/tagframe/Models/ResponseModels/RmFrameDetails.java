@@ -10,23 +10,27 @@ import com.tagframe.tagframe.Models.User_Frames_model;
  */
 
 public class RmFrameDetails {
-  @SerializedName("status") @Expose private String status;
+    @SerializedName("status")
+    @Expose
+    private String status;
 
-  public String getStatus() {
-    return status;
-  }
+    public String getStatus() {
+        return status;
+    }
 
-  public void setStatus(String status) {
-    this.status = status;
-  }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-  @SerializedName("framedata") @Expose private User_Frames_model frameList_model;
+    @SerializedName("framedata")
+    @Expose
+    private User_Frames_model frameList_model;
 
-  public User_Frames_model getFrameList_model() {
-    return frameList_model;
-  }
+    public User_Frames_model getFrameList_model() {
+        return frameList_model;
+    }
 
-  public void setFrameList_model(User_Frames_model frameList_model) {
-    this.frameList_model = frameList_model;
-  }
+    public void setFrameList_model(User_Frames_model frameList_model) {
+        this.frameList_model = frameList_model;
+    }
 }

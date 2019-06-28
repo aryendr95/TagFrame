@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.User_Frames_model;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Utils.Constants;
+
 import java.util.ArrayList;
 
 /**
@@ -18,59 +20,59 @@ import java.util.ArrayList;
  */
 
 public class UserFrameAdapter extends RecyclerView.Adapter<UserFrameAdapter.MyViewHolder> {
-  private Context ctx;
-  private ArrayList<User_Frames_model> frames_models;
+    private Context ctx;
+    private ArrayList<User_Frames_model> frames_models;
 
-  public UserFrameAdapter(Context ctx, ArrayList<User_Frames_model> frames_models) {
-    this.ctx = ctx;
-    this.frames_models = frames_models;
-  }
-
-  @Override public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View itemView = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.layout_item_fgridview_frame, parent, false);
-
-    return new MyViewHolder(itemView);
-  }
-
-  @Override public void onBindViewHolder(MyViewHolder mViewHolder, int position) {
-
-    final User_Frames_model frame = frames_models.get(position);
-    if (frame.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
-      Picasso.with(ctx).load(frame.getFrame_image_url()).into(mViewHolder.ivframeimage);
-    }
-    else
-    {
-      Picasso.with(ctx).load(frame.getThumbnail_url()).into(mViewHolder.ivframeimage);
+    public UserFrameAdapter(Context ctx, ArrayList<User_Frames_model> frames_models) {
+        this.ctx = ctx;
+        this.frames_models = frames_models;
     }
 
-    if (frame.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
-      mViewHolder.ivPLayVideo.setVisibility(View.GONE);
-    } else {
-      mViewHolder.ivPLayVideo.setVisibility(View.VISIBLE);
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_fgridview_frame, parent, false);
+        return new MyViewHolder(itemView);
     }
 
-    mViewHolder.ivframeimage.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        ImageAdapter.showFrame(ctx, frame);
-      }
-    });
+    @Override
+    public void onBindViewHolder(MyViewHolder mViewHolder, int position) {
 
-  }
+        final User_Frames_model frame = frames_models.get(position);
+        if (frame.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
+            Picasso.with(ctx).load(frame.getFrame_image_url()).into(mViewHolder.ivframeimage);
+        } else {
+            Picasso.with(ctx).load(frame.getThumbnail_url()).into(mViewHolder.ivframeimage);
+        }
 
-  @Override public int getItemCount() {
-    return frames_models.size();
-  }
+        if (frame.getMedia_type().equals(String.valueOf(Constants.frametype_image))) {
+            mViewHolder.ivPLayVideo.setVisibility(View.GONE);
+        } else {
+            mViewHolder.ivPLayVideo.setVisibility(View.VISIBLE);
+        }
 
-  class MyViewHolder extends RecyclerView.ViewHolder {
+        mViewHolder.ivframeimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageAdapter.showFrame(ctx, frame);
+            }
+        });
 
-    ImageView ivframeimage, ivPLayVideo;
-
-    public MyViewHolder(View item) {
-      super(item);
-
-      ivframeimage = (ImageView) item.findViewById(R.id.grid_iimag_item);
-      ivPLayVideo = (ImageView) item.findViewById(R.id.img_play);
     }
-  }
+
+    @Override
+    public int getItemCount() {
+        return frames_models.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView ivframeimage, ivPLayVideo;
+
+        public MyViewHolder(View item) {
+            super(item);
+
+            ivframeimage = (ImageView) item.findViewById(R.id.grid_iimag_item);
+            ivPLayVideo = (ImageView) item.findViewById(R.id.img_play);
+        }
+    }
 }

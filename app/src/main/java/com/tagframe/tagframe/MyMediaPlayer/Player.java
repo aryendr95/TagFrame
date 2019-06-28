@@ -25,18 +25,15 @@ import com.tagframe.tagframe.Utils.Utility;
 import java.io.IOException;
 
 
-
 /**
  * Created by interview on 16/07/15.
  */
-public class Player implements IPlayer,SurfaceHolder.Callback {
+public class Player implements IPlayer, SurfaceHolder.Callback {
 
     private static final String TAG = Player.class.getSimpleName();
     private static boolean USE_BUFFERING_WORKAROUND = true;
     private static int ON_INFO_BUFFERING_START = 801;
     private static int ON_INFO_BUFFERING_END = 3;
-
-
     private MediaPlayer mPlayer;
     private SurfaceView mSurfaceView;
     private boolean mIsPrepared;
@@ -44,7 +41,7 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
     private DisplayUtils mDisplayUtils;
     private int mStatusBarHeight;
     private Activity mActivity;
-    private Handler mHandler=new Handler();
+    private Handler mHandler = new Handler();
     private boolean IsVideoResized;
 
 
@@ -66,7 +63,6 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
         // Initially 16:9
         resizeSurface(activity.getWindowManager().getDefaultDisplay());
     }
-
 
 
     @Override
@@ -115,7 +111,7 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
     public void release() {
         mIsPrepared = false;
         if (mPlayer != null) {
-            if(mPlayer.isPlaying()) {
+            if (mPlayer.isPlaying()) {
                 mPlayer.stop();
             }
             mPlayer.setDisplay(null);
@@ -134,13 +130,11 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
                     mListener.onBufferingStarted();
                 } else if (what == ON_INFO_BUFFERING_END) {
                     mListener.onBufferingFinished();
-                }
-                else if(what==MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START)
-                {
+                } else if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     mListener.onRendereingstarted();
                 }
             }
-            Log.e("what",what+extra+"");
+            Log.e("what", what + extra + "");
 
             return false;
         }
@@ -169,18 +163,17 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
         @Override
         public void onPrepared(final MediaPlayer mp) {
             mIsPrepared = true;
-            if(mIsPrepared&&IsVideoResized)
-            mp.start();
-            else
-            {
+            if (mIsPrepared && IsVideoResized)
+                mp.start();
+            else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(mIsPrepared&&IsVideoResized)
+                        if (mIsPrepared && IsVideoResized)
                             mSurfaceView.setVisibility(View.VISIBLE);
-                            mp.start();
+                        mp.start();
                     }
-                },500);
+                }, 500);
             }
         }
     };
@@ -198,21 +191,19 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
     private MediaPlayer.OnVideoSizeChangedListener mOnVideoSize = new MediaPlayer.OnVideoSizeChangedListener() {
         @Override
         public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-            double proportion = (double)width / (double)height;
-            Log.d(TAG, "onVideoSize: w"+ width + " h: " + height + " proportion: " + proportion);
+            double proportion = (double) width / (double) height;
+            Log.d(TAG, "onVideoSize: w" + width + " h: " + height + " proportion: " + proportion);
             resizeSurface(mActivity.getWindowManager().getDefaultDisplay());
-            IsVideoResized=true;
+            IsVideoResized = true;
         }
     };
-
-
 
 
     public void resizeSurface(Display display) {
 
         Point point = mDisplayUtils.getFinalVideoSize(getRealDisplaySize(display), getVideoSize(mPlayer));
 
-        ViewGroup.LayoutParams params =  mSurfaceView.getLayoutParams();
+        ViewGroup.LayoutParams params = mSurfaceView.getLayoutParams();
         params.width = point.x;
         params.height = point.y;
 
@@ -225,20 +216,16 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
     }
 
 
-
-
     private PointF getRealDisplaySize(Display display) {
 
         PointF result = new PointF();
         Point size = new Point();
         display.getSize(size);
         result.x = size.x;
-        if(mActivity instanceof MakeNewEvent) {
+        if (mActivity instanceof MakeNewEvent) {
             result.y = size.y - getStatusBarHeight();
-        }
-        else
-        {
-            result.y=result.x;
+        } else {
+            result.y = result.x;
         }
         return result;
     }
@@ -287,13 +274,12 @@ public class Player implements IPlayer,SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.e(TAG, "surface destroyed");
-        if (mPlayer!=null) {
+        if (mPlayer != null) {
             mPlayer.setDisplay(null);
         } else {
             Log.e(TAG, "FATAL player is null!");
         }
     }
-
 
 
 }

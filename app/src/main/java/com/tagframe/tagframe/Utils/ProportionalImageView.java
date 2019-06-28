@@ -3,6 +3,7 @@ package com.tagframe.tagframe.Utils;
 /**
  * Created by Brajendr on 7/15/2016.
  */
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -29,7 +30,6 @@ public class ProportionalImageView extends ImageView {
             int w = MeasureSpec.getSize(widthMeasureSpec);
             int h = w * d.getIntrinsicHeight() / d.getIntrinsicWidth();
             setMeasuredDimension(w, h);
-        }
-        else super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } else super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

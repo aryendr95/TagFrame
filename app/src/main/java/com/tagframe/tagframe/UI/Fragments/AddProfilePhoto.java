@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pkmmte.view.CircularImageView;
 import com.tagframe.tagframe.Models.User;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.UI.Acitivity.Modules;
@@ -35,15 +34,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by abhinav on 18/04/2016.
  */
 public class AddProfilePhoto extends Fragment {
 
-
     View mview;
     TextView skip;
-    CircularImageView pro_image;
+    CircleImageView pro_image;
     ImageView changeimage;
     Button mbuttonsumbit;
     EditText descrip;
@@ -72,7 +72,7 @@ public class AddProfilePhoto extends Fragment {
             }
         });
 
-        pro_image = (CircularImageView) mview.findViewById(R.id.addpic);
+        pro_image = (CircleImageView) mview.findViewById(R.id.addpic);
         pro_image.setImageResource(R.drawable.pro_image);
 
         changeimage = (ImageView) mview.findViewById(R.id.chanepic);
@@ -112,7 +112,7 @@ public class AddProfilePhoto extends Fragment {
 
             Uri selectedImage = data.getData();
             picturePath = GetPaths.getPath(getActivity(), selectedImage);
-            pro_image.setImageBitmap(BitmapHelper.decodeFile(getActivity(),new File(picturePath)));
+            pro_image.setImageBitmap(BitmapHelper.decodeFile(getActivity(), new File(picturePath)));
 
         }
 
@@ -143,22 +143,22 @@ public class AddProfilePhoto extends Fragment {
                 webServiceHandler.addFormField("user_id", AppPrefs.getString(Utility.user_id));
                 if (!picturePath.isEmpty()) {
                     File file = new File(picturePath);
-                    if(file.length()/1000>512)
-                    {
-                        File fileCache = new File(getActivity().getCacheDir(), "temp.png");
-                        Bitmap loadBitmap=BitmapHelper.decodeFile(getActivity(),file);
-                        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-                        loadBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
-                        byte[] bitmapData=byteArrayOutputStream.toByteArray();
+                    // if(file.length()/1000>512)
+                    //  {
+                    File fileCache = new File(getActivity().getCacheDir(), "temp.png");
+                    Bitmap loadBitmap = BitmapHelper.decodeFile(getActivity(), file);
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    loadBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                    byte[] bitmapData = byteArrayOutputStream.toByteArray();
 
-                        FileOutputStream fileOutputStream=new FileOutputStream(fileCache);
-                        fileOutputStream.write(bitmapData);
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
+                    FileOutputStream fileOutputStream = new FileOutputStream(fileCache);
+                    fileOutputStream.write(bitmapData);
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
 
-                        file=fileCache;
+                    file = fileCache;
 
-                    }
+                    //  }
                     webServiceHandler.addFilePart("profile_photo", file, 3, getActivity());
                 }
                 webServiceHandler.addFormField("description", params[0]);
@@ -183,7 +183,7 @@ public class AddProfilePhoto extends Fragment {
                 if (status.equals("success")) {
                     AppPrefs.putString(Utility.user_descrip, description);
                     AppPrefs.putString(Utility.user_pic, profilephoto);
-                    User user=AppPrefs.getUser();
+                    User user = AppPrefs.getUser();
                     user.setDescription(description);
                     user.setProfile_image(profilephoto);
                     AppPrefs.putUser(user);

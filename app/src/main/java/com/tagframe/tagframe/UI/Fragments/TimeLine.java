@@ -80,7 +80,8 @@ public class TimeLine extends Fragment implements ScrollList {
         rcTimeLine.setLayoutManager(llayoutManager);
         rcTimeLine.setAdapter(new TimeLineRecyclerAdapter(getActivity(), events_models));
         rcTimeLine.addOnScrollListener(new EndlessRecyclerViewScrollListener(llayoutManager) {
-            @Override public void onLoadMore(int page, int totalItemsCount) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (shouldLoad) {
                     loadTimeLine();
                 }
@@ -90,7 +91,8 @@ public class TimeLine extends Fragment implements ScrollList {
 
     private void setUpSwipeReferesh() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override public void onRefresh() {
+            @Override
+            public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
                 events_models = new ArrayList<Event_Model>();
                 next_records = 0;
@@ -105,41 +107,42 @@ public class TimeLine extends Fragment implements ScrollList {
             progressBar.setVisibility(View.VISIBLE);
             ApiInterface retrofitService = ApiClient.getClient().create(ApiInterface.class);
             retrofitService.getUserTimeLines(user_id, String.valueOf(next_records))
-                .enqueue(new Callback<ListResponseModel>() {
-                    @Override public void onResponse(Call<ListResponseModel> call,
-                        Response<ListResponseModel> response) {
+                    .enqueue(new Callback<ListResponseModel>() {
+                        @Override
+                        public void onResponse(Call<ListResponseModel> call,
+                                               Response<ListResponseModel> response) {
 
-                        if (isAdded()) {
-                            progressBar.setVisibility(View.GONE);
-                            swipeRefreshLayout.setRefreshing(false);
-                            try {
-                                if (response.body().getStatus().equals("success")) {
-
-                                    events_models.addAll(response.body().getTagStreamArrayList());
-                                    rcTimeLine.getAdapter().notifyDataSetChanged();
-                                    //detect more events are to be loaded or not
-                                    if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
-                                        next_records = next_records + Utility.PAGE_SIZE;
-                                        shouldLoad = true;
+                            if (isAdded()) {
+                                progressBar.setVisibility(View.GONE);
+                                swipeRefreshLayout.setRefreshing(false);
+                                try {
+                                    if (response.body().getStatus().equals("success")) {
+                                        events_models.addAll(response.body().getTagStreamArrayList());
+                                        rcTimeLine.getAdapter().notifyDataSetChanged();
+                                        //detect more events are to be loaded or not
+                                        if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
+                                            next_records = next_records + Utility.PAGE_SIZE;
+                                            shouldLoad = true;
+                                        } else {
+                                            shouldLoad = false;
+                                        }
                                     } else {
-                                        shouldLoad = false;
-                                    }
-                                } else {
 
+                                    }
+                                } catch (Exception e) {
+                                    PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                                 }
-                            } catch (Exception e) {
-                                PopMessage.makesimplesnack(mLayout, "Error, Please try after some time...");
                             }
                         }
-                    }
 
-                    @Override public void onFailure(Call<ListResponseModel> call, Throwable t) {
-                        if (isAdded()) {
-                            progressBar.setVisibility(View.GONE);
-                            swipeRefreshLayout.setRefreshing(false);
+                        @Override
+                        public void onFailure(Call<ListResponseModel> call, Throwable t) {
+                            if (isAdded()) {
+                                progressBar.setVisibility(View.GONE);
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
                         }
-                    }
-                });
+                    });
         } else {
             PopMessage.makesimplesnack(mLayout, "No Internet Connection");
         }

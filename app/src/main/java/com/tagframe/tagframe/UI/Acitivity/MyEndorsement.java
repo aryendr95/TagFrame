@@ -38,13 +38,13 @@ public class MyEndorsement extends AppCompatActivity {
         setContentView(R.layout.activity_my_endorsement);
 
         mLayout = (RelativeLayout) findViewById(R.id.mLayout_endorselist);
-        txt_message=(TextView)findViewById(R.id.txt_message_direct_endorse_list);
-        pbar=(ProgressBar)findViewById(R.id.pbar_direct_endorse_list);
+        txt_message = (TextView) findViewById(R.id.txt_message_direct_endorse_list);
+        pbar = (ProgressBar) findViewById(R.id.pbar_direct_endorse_list);
 
         findViewById(R.id.my_endorsement_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MyEndorsement.this,Modules.class);
+                Intent intent = new Intent(MyEndorsement.this, Modules.class);
                 startActivity(intent);
                 finish();
             }
@@ -69,29 +69,25 @@ public class MyEndorsement extends AppCompatActivity {
             @Override
             public void onResponse(Call<EndorseListResponseModel> call, Response<EndorseListResponseModel> response) {
                 pbar.setVisibility(View.GONE);
-                if(response.body().getStatus().equals(Utility.success_response)) {
+                if (response.body().getStatus().equals(Utility.success_response)) {
                     if (response.body().getEndorseListModels().size() > 0) {
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MyEndorsement.this);
                         list_endorseList.setLayoutManager(layoutManager);
                         list_endorseList.setAdapter(new EndorseListAdapter(response.body().getEndorseListModels(), MyEndorsement.this));
                         txt_message.setVisibility(View.GONE);
-                    }
-                    else
-                    {
+                    } else {
                         txt_message.setVisibility(View.VISIBLE);
                     }
 
-                }
-                else
-                {
-                    PopMessage.makesimplesnack(mLayout,"Error");
+                } else {
+                    PopMessage.makesimplesnack(mLayout, "Error");
                 }
             }
 
             @Override
             public void onFailure(Call<EndorseListResponseModel> call, Throwable t) {
                 pbar.setVisibility(View.GONE);
-                PopMessage.makesimplesnack(mLayout,"Error");
+                PopMessage.makesimplesnack(mLayout, "Error");
             }
         });
 

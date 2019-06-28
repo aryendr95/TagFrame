@@ -26,12 +26,12 @@ public class MyTextView extends TextView {
         super(context, attrs, defStyleAttr);
         init();
     }
-        public  void init()
-        {
-            Typeface font = Typeface.createFromAsset(getContext().getAssets(), "lat.ttf");
-            setTypeface(font);
 
-        }
+    public void init() {
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "lat.ttf");
+        setTypeface(font);
+
+    }
 
 
 }

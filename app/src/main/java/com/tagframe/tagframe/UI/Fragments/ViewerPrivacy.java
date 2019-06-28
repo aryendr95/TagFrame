@@ -20,7 +20,7 @@ public class ViewerPrivacy extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mview=inflater.inflate(R.layout.fragment_viewer_privacy,container,false);
+        mview = inflater.inflate(R.layout.fragment_viewer_privacy, container, false);
 
         return mview;
     }

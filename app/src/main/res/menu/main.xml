@@ -1,5 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.tagframe.tagframe.UI.MainScreen.MainActivity">
   <item
       android:id="@+id/action_example"
@@ -10,4 +11,14 @@
       android:orderInCategory="100"
       android:showAsAction="never"
       android:title="@string/action_settings" />
+
+  <item
+      android:id="@+id/action_search"
+      android:icon="@drawable/search"
+      android:orderInCategory="100"
+      android:title="Search"
+      android:iconTint="@color/colorPrimaryDark"
+      app:showAsAction="always"
+      app:actionViewClass="android.support.v7.widget.SearchView" />
+
 </menu>

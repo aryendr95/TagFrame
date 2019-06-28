@@ -19,7 +19,6 @@
     <color name="GRAYtrans">#9090A4AE</color>
     <color name="blACK">#000000</color>
 
-
     <color name="black">#000000</color>
     <color name="black_event">#302D2D</color>
 
@@ -28,5 +27,6 @@
 
     <color name="multiple_image_select_primary">#1976d2</color>
     <color name="multiple_image_select_primaryDark">#455a64</color>
+    <color name="tagnamecolor">#62cff7</color>
 
 </resources>

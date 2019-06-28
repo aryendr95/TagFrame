@@ -15,19 +15,19 @@ import com.tagframe.tagframe.R;
 /**
  * Created by abhinav on 26/04/2016.
  */
-public class CustomSeekBarDrawable extends Drawable{
+public class CustomSeekBarDrawable extends Drawable {
 
 
-    public CustomSeekBarDrawable()
-    {
+    public CustomSeekBarDrawable() {
 
     }
+
     @Override
     public void draw(Canvas canvas) {
-            Paint paint=new Paint();
+        Paint paint = new Paint();
         paint.setColor(Color.BLUE);
-        Rect rect=new Rect(50, 50, 50, 50);
-        canvas.drawRect(rect,paint);
+        Rect rect = new Rect(50, 50, 50, 50);
+        canvas.drawRect(rect, paint);
     }
 
     @Override

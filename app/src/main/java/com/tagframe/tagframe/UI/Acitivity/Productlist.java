@@ -32,16 +32,13 @@ public class Productlist extends FragmentActivity {
 
     private EditText ed_product;
     private ImageView img;
-
     private int page_number = 1;
     private ArrayList<Product> products = new ArrayList<>();
     private GridViewWithHeaderAndFooter mGridProduct;
     private ProgressBar pbar;
     private RelativeLayout mLayout;
     private View footerView;
-    private String search_term="";
-
-
+    private String search_term = "";
 
 
     @Override
@@ -88,7 +85,7 @@ public class Productlist extends FragmentActivity {
                     //making page number from starting
                     page_number = 1;
                     products = new ArrayList<Product>();
-                    search_term=ed_product.getText().toString();
+                    search_term = ed_product.getText().toString();
                     Modules.hideKeyboard(Productlist.this);
                     searchProduct(search_term);
                 }
@@ -104,7 +101,7 @@ public class Productlist extends FragmentActivity {
                     if (!ed_product.getText().toString().isEmpty()) {
                         page_number = 1;
                         products = new ArrayList<Product>();
-                        search_term=ed_product.getText().toString();
+                        search_term = ed_product.getText().toString();
                         searchProduct(search_term);
                     } else {
                         PopMessage.makesimplesnack(mLayout, "Please provide a search keyword");
@@ -141,7 +138,6 @@ public class Productlist extends FragmentActivity {
 
                         }
                     } else {
-
                         PopMessage.makesimplesnack(mLayout, response.body().getStatus());
 
                     }

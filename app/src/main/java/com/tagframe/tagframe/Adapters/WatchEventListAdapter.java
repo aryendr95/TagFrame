@@ -24,7 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Models.Comment;
 import com.tagframe.tagframe.Models.Event_Model;
@@ -42,6 +41,7 @@ import com.tagframe.tagframe.Utils.Utility;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,7 +60,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
     public WatchEventListAdapter(Context context, ArrayList<Event_Model> event_models) {
         this.context = context;
         this.eventModels = event_models;
-        user_data=new AppPrefs(context);
+        user_data = new AppPrefs(context);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
     @Override
     public void onBindViewHolder(MyViewHolder mViewHolder, int position) {
         final Event_Model tagStream = eventModels.get(position);
-        final Context ctx=context;
+        final Context ctx = context;
 
         mViewHolder.tvTitlle.setText(tagStream.getTitle());
         mViewHolder.tvname.setText(tagStream.getName());
@@ -102,7 +102,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
         }
 
 
-        mViewHolder.tvlike.setText(tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
+        mViewHolder.tvlike.setText(tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and " + tagStream.getNum_of_comments() + " Comments");
 
 
         try {
@@ -133,10 +133,9 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
                 intent.putExtra("position", ((WatchEventActivity)ctx).getCurrentListPosition());
                 intent.putExtra("sharelink", tagStream.getSharelink());
                 intent.putExtra("likevideo",tagStream.getLike_video());*/
-                if(context instanceof WatchEventActivity)
-                {
+                if (context instanceof WatchEventActivity) {
                     Intent intent = new Intent();
-                    intent.putExtra("name",tagStream.getName());
+                    intent.putExtra("name", tagStream.getName());
                     //intent.putExtra("stats",tagStream.getNumber_of_likes() + " Likes" + ", " + tagStream.getFrameList_modelArrayList().size() + " Frames" + " and "+tagStream.getNum_of_comments() + " Comments");
                     intent.putExtra("likes", tagStream.getNumber_of_likes());
                     intent.putExtra("frames", tagStream.getFrameList_modelArrayList().size());
@@ -150,13 +149,13 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
                     intent.putExtra("eventtype", Utility.eventtype_internet);
                     intent.putExtra("eventid", tagStream.getEvent_id());
                     intent.putExtra("tagged_user_id", tagStream.getTaggedUserModelArrayList());
-                    intent.putExtra("position", ((WatchEventActivity)ctx).getCurrentListPosition());
+                    intent.putExtra("position", ((WatchEventActivity) ctx).getCurrentListPosition());
                     intent.putExtra("sharelink", tagStream.getSharelink());
-                    intent.putExtra("likevideo",tagStream.getLike_video());
-                    ((WatchEventActivity)context).playSelected(intent);
+                    intent.putExtra("likevideo", tagStream.getLike_video());
+                    ((WatchEventActivity) context).playSelected(intent);
                 }
-               // context.startActivity(intent);
-               // ((WatchEventActivity)context).finish();
+                // context.startActivity(intent);
+                // ((WatchEventActivity)context).finish();
             }
         });
 
@@ -180,10 +179,10 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
             @Override
             public void onClick(View v) {
                 Broadcastresults mReceiver;
-                if(ctx instanceof Modules)
+                if (ctx instanceof Modules)
                     mReceiver = ((Modules) ctx).register_reviever();
                 else
-                mReceiver=((WatchEventActivity)ctx).register_reviever();
+                    mReceiver = ((WatchEventActivity) ctx).register_reviever();
 
                 if (tagStream.getLike_video().equals("No")) {
 
@@ -199,8 +198,6 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
                     notifyDataSetChanged();
 
                 } else {
-
-
                     Intent intent = new Intent(ctx, IntentServiceOperations.class);
                     intent.putExtra("operation", Utility.operation_unlike);
                     intent.putExtra("user_id", user_data.getString(Utility.user_id));
@@ -257,7 +254,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
         ImageView iveventimage, ivlike;
         VideoView iveventvideo;
         LinearLayout ll_like, ll_share, llcomment;
-        CircularImageView ivpropic;
+        CircleImageView ivpropic;
 
         public MyViewHolder(View item) {
             super(item);
@@ -271,7 +268,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
             llcomment = (LinearLayout) item.findViewById(R.id.llcomment);
 
             tvlike_direct = (TextView) item.findViewById(R.id.txt_like_directive);
-            ivpropic = (CircularImageView) item.findViewById(R.id.list_pro_image);
+            ivpropic = (CircleImageView) item.findViewById(R.id.list_pro_image);
 
             tvlike = (TextView) item.findViewById(R.id.txt_likes);
             ivlike = (ImageView) item.findViewById(R.id.imglike);
@@ -291,9 +288,8 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
 
     public void showCommentDialog(final Context ctx, final String video, final String user_id) {
 
-        if(ctx instanceof WatchEventActivity)
-        {
-            ((WatchEventActivity)ctx).pauseMediaPlayer();
+        if (ctx instanceof WatchEventActivity) {
+            ((WatchEventActivity) ctx).pauseMediaPlayer();
         }
 
         next_rec = 0;
@@ -321,6 +317,7 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
         //load comment task
 
         m_txt_footer.setOnClickListener(new View.OnClickListener() {
+
                                             @Override
                                             public void onClick(View v) {
                                                 loadComments(video, String.valueOf(next_rec), progressbar, m_txt_footer, listview_comment, commentArrayList);
@@ -343,9 +340,8 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
             @Override
             public void onCancel(DialogInterface dialog) {
 
-                if(ctx instanceof WatchEventActivity)
-                {
-                    ((WatchEventActivity)ctx).playMediaPlayer();
+                if (ctx instanceof WatchEventActivity) {
+                    ((WatchEventActivity) ctx).playMediaPlayer();
                 }
 
             }
@@ -418,11 +414,11 @@ public class WatchEventListAdapter extends RecyclerView.Adapter<WatchEventListAd
 
     public void loadComments(String video_id, String next_records, final ProgressBar progressBar, final TextView textView, final RecyclerView recyclerView, final ArrayList<Comment> commentArrayList) {
         if (Networkstate.haveNetworkConnection(context)) {
-            AppPrefs appPrefs=new AppPrefs(context);
+            AppPrefs appPrefs = new AppPrefs(context);
             areCommentsLoaded = false;
             progressBar.setVisibility(View.VISIBLE);
             ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            apiInterface.getCommentList(video_id, next_records,appPrefs.getUser().getUser_id()).enqueue(new Callback<CommentsResponseModel>() {
+            apiInterface.getCommentList(video_id, next_records, appPrefs.getUser().getUser_id()).enqueue(new Callback<CommentsResponseModel>() {
                 @Override
                 public void onResponse(Call<CommentsResponseModel> call, Response<CommentsResponseModel> response) {
                     if (response.body().getStatus().equals(Utility.success_response)) {

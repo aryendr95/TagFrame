@@ -12,7 +12,7 @@ public class UserFrameResponseModel {
 
     @Expose
     @SerializedName("status")
-    String status="";
+    String status = "";
 
     public String getStatus() {
         return status;
