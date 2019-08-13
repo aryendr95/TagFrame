@@ -267,13 +267,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     intent.putExtra("likevideo", event_model.getLike_video());
                     intent.putExtra("tagged_user_id", event_model.getTaggedUserModelArrayList());
                     context.startActivity(intent);
-                } else {
+                }
+                else {
                     PopMessage.makeshorttoast(context, "Error, try after some time");
                 }
             }
 
             @Override
-            public void onFailure(Call<EventDetailResponseModel> call, Throwable t) {
+            public void onFailure(Call<EventDetailResponseModel> call, Throwable t)
+            {
                 PopMessage.makeshorttoast(context, "Error loading, try after some time");
                 hideProgress();
             }
@@ -377,7 +379,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                         listview_comment.getAdapter().notifyDataSetChanged();
                         //fast scroll to last item in list
-                        //listview_comment.smoothScrollToPosition(listview_comment.getAdapter().getCount()-1);
+                       // listview_comment.smoothScrollToPosition(listview_comment.getAdapter().getCount()-1);
 
                         //hiding keyboard and making the edittext empty
                         editext_comment.setText("");

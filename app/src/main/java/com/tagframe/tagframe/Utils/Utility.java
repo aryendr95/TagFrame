@@ -60,7 +60,7 @@ public class Utility {
     public static final String loginstatusvalue = "success";
 
     //webservices
-    // public static final String base_url = "http://tagframe.com/webservice/";
+     //public static final String base_url = "http://tagframe.com/webservice/";
     public static final String base_url = "http://thinksmartapp.com/TagFrame/webservice/";
     //URL
     public static final String URL_COMMENT_LIST = base_url + "comment_list";

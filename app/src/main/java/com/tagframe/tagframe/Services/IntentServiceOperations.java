@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.ResponsePojo;
+import com.tagframe.tagframe.Models.TaggedUserModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
@@ -27,6 +28,7 @@ import com.tagframe.tagframe.Utils.Constants;
 import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.WebServiceHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +52,7 @@ public class IntentServiceOperations extends IntentService implements WebService
     private static final int MY_NOTIFICATION_ID = 1;
     NotificationManager notificationManager;
     Notification myNotification;
+    private ArrayList<TaggedUserModel> list_taggerd_user;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -65,11 +68,16 @@ public class IntentServiceOperations extends IntentService implements WebService
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
+
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
+
+
+
     @Override
     protected void onHandleIntent(Intent intent) {
+
         receiver = intent.getParcelableExtra("receiver");
         int operation = intent.getIntExtra("operation", 0);
 
@@ -94,17 +102,49 @@ public class IntentServiceOperations extends IntentService implements WebService
             follow(touser_id, fromuser_id, operation, type);
 
         } else if (operation == Utility.operation_post_event) {
-            String video_url = intent.getStringExtra("video_url");
-            ArrayList<FrameList_Model> frameList_models =
-                    intent.getParcelableArrayListExtra("frame_list");
-            String tittle = intent.getStringExtra("title");
-            String description = intent.getStringExtra("description");
-            // String access_type=intent.getStringExtra("access_type");
-            int duration = intent.getIntExtra("duration", 0);
-            String user_id = intent.getStringExtra("user_id");
-            String tagged_usr_id = intent.getStringExtra("tagged_user_id");
 
-            post_event(video_url, frameList_models, tittle, description, duration, user_id, tagged_usr_id);
+
+            //do here
+            String video_url = intent.getStringExtra ("video_url");
+            ArrayList<FrameList_Model> frameList_models =
+                    intent.getParcelableArrayListExtra ("frame_list");
+            String tittle = intent.getStringExtra ("title");
+            String description = intent.getStringExtra ("description");
+            // String access_type=intent.getStringExtra("access_type");
+            int duration = intent.getIntExtra ("duration", 0);
+            String user_id = intent.getStringExtra ("user_id");
+            String tagged_usr_id = intent.getStringExtra ("tagged_user_id");
+            list_taggerd_user = intent.getParcelableArrayListExtra("tagul");
+
+            if((intent.getParcelableArrayListExtra("tagul")== null)) {
+                //String tagged_usr_id = intent.getStringExtra("tagged_user_id");
+                post_event(video_url, frameList_models, tittle, description, duration, user_id, tagged_usr_id);
+
+            }
+
+            else{
+                post_event(video_url, frameList_models, tittle, description, duration, user_id,get_tagged_user_in_json());
+            }
+
+
+
+
+//          if ((intent.getParcelableArrayListExtra("tagul") != null)) {
+//               list_taggerd_user = intent.getParcelableArrayListExtra("tagul");
+            // ArrayList<TaggedUserModel> taglist = intent.getParcelableArrayListExtra("tagul");
+//               if (list_taggerd_user.size() > 0) {
+//                   for (int i = 0; i < taglist.size(); i++) {
+//                        //send locally added frames or edited frames(resynced or added product)
+//                        TaggedUserModel fm = taglist.get(i);
+            // post_event(video_url, frameList_models, tittle, description, duration, user_id, tagged_usr_id);
+//
+//                    }
+//                }
+            // }
+            // else {
+
+            //   }
+
         } else if (operation == Utility.operation_follow_profile) {
             String touser_id = intent.getStringExtra("to_userid");
             String fromuser_id = intent.getStringExtra("from_userid");
@@ -146,7 +186,11 @@ public class IntentServiceOperations extends IntentService implements WebService
                                 fm.getStarttime(), fm.getEndtime(), fm.getImagepath(), fm.getProduct_id());
                     }
                 }
+
+
             }
+
+
         } else if (operation == Utility.operation_comment) {
             String user_id = intent.getStringExtra("user_id");
             String event_id = intent.getStringExtra("video_id");
@@ -165,6 +209,7 @@ public class IntentServiceOperations extends IntentService implements WebService
             blockOp(user_id, logged_user_id, block_operation);
         }
     }
+
 
     private void blockOp(String user_id, String logged_user_id, int block_operation) {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -319,7 +364,7 @@ public class IntentServiceOperations extends IntentService implements WebService
         sendNotification("Uploading Event:" + tittle, "uploading..");
         Log.e("user_id", user_id);
 
-       /* ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
+      /*  ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
 
         RequestBody user_id = RequestBody.create(MediaType.parse("text/plain"), userid);
         RequestBody title = RequestBody.create(MediaType.parse("text/plain"), tittle);
@@ -616,5 +661,22 @@ public class IntentServiceOperations extends IntentService implements WebService
     @Override
     public void onFinish() {
         sendNotification(100);
+    }
+
+
+
+    private String get_tagged_user_in_json() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONArray tag_array = new JSONArray();
+            for (int i = 0; i < list_taggerd_user.size(); i++) {
+                tag_array.put(list_taggerd_user.get(i).getUser_id());
+            }
+            jsonObject.put("tag_array", tag_array);
+            Log.e("json", jsonObject.toString());
+            return jsonObject.toString();
+        } catch (JSONException E) {
+            return "";
+        }
     }
 }

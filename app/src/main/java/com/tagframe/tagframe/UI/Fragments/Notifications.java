@@ -127,7 +127,7 @@ public class Notifications extends Fragment {
 
                             } else {
                                 txt_message.setVisibility(View.VISIBLE);
-                                //txt_message.setText(getActivity().getResources().getString(R.string.no_notification_message));
+                               // txt_message.setText(getActivity().getResources().getString(R.string.no_notification_message));
                             }
                         } else {
                             PopMessage.makesimplesnack(mLayout, "Error, please try after some time..");

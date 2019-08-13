@@ -18,6 +18,7 @@ import android.widget.VideoView;
 
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.SingleEventModel;
+import com.tagframe.tagframe.Models.TaggedUserModel;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
@@ -175,7 +176,7 @@ public class SavedEvent_Adapter extends BaseAdapter {
                         // sent to have the camera application capture an video and return it.
 
                         SingleEventModel sm = tagStream_models.get(p);
-                        method_post_event(ctx, sm.getVidaddress(), sm.getFrameList_modelArrayList(), sm.getTittle(), sm.getDescription(), sm.getDuration(), userdata.getString(Utility.user_id));
+                        method_post_event(ctx, sm.getVidaddress(), sm.getFrameList_modelArrayList(), sm.getTittle(), sm.getDescription(), sm.getDuration(), userdata.getString(Utility.user_id),sm.getTaggedUserModelArrayList());
                         break;
 
                     case R.id.save_delete:
@@ -194,7 +195,7 @@ public class SavedEvent_Adapter extends BaseAdapter {
         popup.show();//showing popup menu
     }
 
-    public void method_post_event(Context ctx, String vidAddress, ArrayList<FrameList_Model> framedata_map, String tittle, String description, int durat, String userid) {
+    public void method_post_event(Context ctx, String vidAddress, ArrayList<FrameList_Model> framedata_map, String tittle, String description, int durat, String userid, ArrayList<TaggedUserModel> taggedUserModelArrayList) {
 
         MyToast.popmessage("Posting...", ctx);
         Intent intent = new Intent(ctx, IntentServiceOperations.class);
@@ -205,7 +206,7 @@ public class SavedEvent_Adapter extends BaseAdapter {
         intent.putExtra("description", description);
         //intent.putExtra("access_type", type);
         intent.putExtra("duration", durat);
-
+        intent.putParcelableArrayListExtra("tagul",taggedUserModelArrayList);
         Broadcastresults mreciver = ((SavedEvents) ctx).register_reviever();
         intent.putExtra("receiver", mreciver);
         intent.putExtra("user_id", userid);
