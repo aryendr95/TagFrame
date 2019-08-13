@@ -143,8 +143,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     //Utility
     private final static String TAG = MakeNewEvent.class.getSimpleName();
     private final static String CURRENT_DURATION = "CURRENT_DURATION";
-    private final static String TOTAL_DURATION = "TOTAL_DURATION", TAG_TITTLE = "TITTLE";
-    private final static String FRAMELIST = "FRAMELIST", TAGGED_USER_LIST = "TAGGED_LIST";
+    public final static String TOTAL_DURATION = "TOTAL_DURATION", TAG_TITTLE = "TITTLE";
+    public final static String FRAMELIST = "FRAMELIST", TAGGED_USER_LIST = "TAGGED_LIST";
     public static int Flag_select_video = 4;
     public static int Flag_pick_photo = 5;
     //public static int Flag_select_photo = 6;
@@ -398,7 +398,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         ll_add_frame = (ImageView) findViewById(R.id.add_frame);
         if (event_id.equals(null) || event_id == null || event_id.isEmpty()) {
-            ll_add_frame.setVisibility(View.INVISIBLE);
+            //ll_add_frame.setVisibility(View.INVISIBLE);
         }
         ll_container_frames = (AnimatingRelativeLayout) findViewById(R.id.container_frames);
         ll_add_frame.setOnClickListener(new View.OnClickListener() {
@@ -545,7 +545,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
     private void show_tagged_user() {
         mediaPlayer.pause();
-
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_tagged_users);
@@ -574,6 +573,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         dialog.findViewById(R.id.txt_tag_done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 dialog.cancel();
             }
         });
@@ -594,7 +594,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_edit_event_tittle);
 
-        // VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
+        //VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
 
         final TextView desxription = (TextView) dialog.findViewById(R.id.dia_framedescription);
         final TextView txt_tittle = (TextView) dialog.findViewById(R.id.dia_frametittle);
@@ -955,6 +955,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         singleEventModel.setFrameList_modelArrayList(framedata_map);
         singleEventModel.setVidaddress(vidAddress);
         singleEventModel.setDuration(mediaPlayer.getDuration());
+        singleEventModel.setTaggedUserModelArrayList(list_taggerd_user);
 
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String date = df.format(cal.getTime());
@@ -968,6 +969,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     public void method_post_event() {
+
         if (Validation.hasText(tittle)) {
             if (framedata_map.size() > 0) {
                 if (Validation.hasFrameInformation(framedata_map)) {
@@ -1025,7 +1027,6 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     private void method_post_internet_event() {
-
         if (framedata_map.size() > 0) {
             if (Validation.hasFrameInformation(framedata_map)) {
                 MyToast.popmessage("Posting Frames..", this);

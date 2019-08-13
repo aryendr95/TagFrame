@@ -1,6 +1,7 @@
 package com.tagframe.tagframe.UI.Acitivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -116,6 +117,7 @@ public class ModulesNew extends AppCompatActivity implements Broadcastresults.Re
         transaction.commit();
     }
 
+    @SuppressLint("RestrictedApi")
     private void init() {
         mLayout = (RelativeLayout) findViewById(R.id.mLayout_module);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -175,7 +177,8 @@ public class ModulesNew extends AppCompatActivity implements Broadcastresults.Re
 
             @Override
             public void onPanelClosed(View arg0) {
-                // TODO Auto-genxxerated method stub        getActionBar().setTitle(getString(R.string.app_name));
+                // TODO Auto-genxxerated method stub
+                //  getActionBar().setTitle(getString(R.string.app_name));
                 mod_menu.animate().rotation(0);
             }
 

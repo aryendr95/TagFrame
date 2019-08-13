@@ -49,6 +49,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.squareup.picasso.Picasso;
 import com.tagframe.tagframe.Adapters.TaggedUserAdapter;
 import com.tagframe.tagframe.Adapters.WatchEventListAdapter;
@@ -81,13 +85,21 @@ import com.veer.exvidplayer.VideoPlayer.ExVpCompleteFragment;
 import com.veer.exvidplayer.VideoPlayer.ExVpFragment;
 import com.veer.exvidplayer.VideoPlayer.ExVpListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.tagframe.tagframe.UI.Acitivity.MakeNewEvent.Flag_Get_Tagged_User;
 
 public class WatchEventActivity extends AppCompatActivity implements Broadcastresults.Receiver {
     //controls
@@ -133,7 +145,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     };
     private int currentDuration = 0;
     private AppPrefs userinfo;
-
+    String tagurl = "http://thinksmartapp.com/TagFrame/webservice/tagged_event";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -482,6 +494,20 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         }
     }
 
+    private String get_tagged_user_in_json() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            JSONArray tag_array = new JSONArray();
+            for (int i = 0; i < list_tagged_user.size(); i++) {
+                tag_array.put(list_tagged_user.get(i).getUser_id());
+            }
+            jsonObject.put("tag_array", tag_array);
+            Log.e("json", jsonObject.toString());
+            return jsonObject.toString();
+        } catch (JSONException E) {
+            return "";
+        }
+    }
     public void show_frame_on_seekbar(final int progress) {
 
         int measure = (int) ((((float) progress * p.x) / 100) - (progress));
@@ -610,11 +636,21 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
 
         TextView txt = (TextView) dialog.findViewById(R.id.txt_tag_add);
-        txt.setVisibility(View.GONE);
+        txt.setVisibility(View.VISIBLE);
 
+      txt.setOnClickListener (new View.OnClickListener () {
+         @Override
+        public void onClick(View view) {
+             Intent intent = new Intent(WatchEventActivity.this, SearchUserActivity.class);
+             intent.putExtra("operation", Utility.operation_onclicked_tagged_user);
+             startActivityForResult(intent, Flag_Get_Tagged_User);
+             dialog.dismiss();
+        }
+        });
         dialog.findViewById(R.id.txt_tag_done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                taguser();
                 dialog.cancel();
             }
         });
@@ -627,6 +663,38 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         });
 
         dialog.show();
+    }
+    private void taguser() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, tagurl, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String msg = jsonObject.getString("status");
+                    Toast.makeText(WatchEventActivity.this, "" + msg, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<> ();
+                params.put("user_id", user_id);
+                params.put("event_id", event_id);
+                params.put("tagged_user_id", get_tagged_user_in_json());
+                return params;
+            }
+
+
+        };
+        AppSingleton.getInstance().addToRequestQueue(stringRequest);
     }
 
 
@@ -1095,7 +1163,164 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        //updateProgressBar();
+
+        // if (requestCode == Flag_select_video && resultCode == RESULT_OK) {
+        //  selectedImageUri = data.getData();
+
+        // OI FILE Manager
+        // String filemanagerstring = selectedImageUri.getPath();
+
+        // MEDIA GALLERY
+//            final String selectedImagePath = GetPaths.getPath(WatchEventActivity.this, selectedImageUri);
+//            if (selectedImagePath != null) {
+//
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        set_frames_to_container(selectedImagePath, Utility.frametype_video);
+//                    }
+//                }, 1000);
+//            }
+//        } else if (requestCode == 901 && data != null) {
+//            ArrayList<String> mPath = data.getStringArrayListExtra(com.veer.multiselect.Util.Constants.GET_PATHS);
+//
+//            for (int z = 0; z < mPath.size(); z++) {
+//
+//                set_frames_to_container(mPath.get(z), Utility.frametype_video);
+//            }
+//            //Your Code
+//        } else if (requestCode == 902 && resultCode == RESULT_OK) {
+//            selectedImageUri = data.getData();
+//            // OI FILE Manager
+//            String filemanagerstring = selectedImageUri.getPath();
+//            // MEDIA GALLERY
+//            final String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
+//            if (selectedImagePath != null) {
+//                set_frames_to_container(selectedImagePath, Utility.frametype_video);
+//
+//            }
+//        }
+
+//    if (requestCode == 903 && resultCode == RESULT_OK) {
+//      selectedImageUri = data.getData();
+//      // OI FILE Manager
+//      String filemanagerstring = selectedImageUri.getPath();
+//      // MEDIA GALLERY
+//      final String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
+//      if (selectedImagePath != null) {
+//        new Handler().postDelayed(new Runnable() {
+//          @Override public void run() {
+//            mediaPlayer.pause();
+//            set_frames_to_container(selectedImagePath, Utility.frametype_image);
+//          }
+//        }, 1000);
+//      }
+//    }
+
+//        if (requestCode == 903 && resultCode == RESULT_OK) {
+//            Bitmap photo = (Bitmap) data.getExtras().get("data");
+//            img_frame_to_show.setImageBitmap(photo);
+////            knop.setVisibility(Button.VISIBLE);
+//
+//            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+//            Uri tempUri = getImageUri(getApplicationContext(), photo);
+//
+//            // CALL THIS METHOD TO GET THE ACTUAL PATH
+//            File finalFile = new File(getRealPathFromURI(tempUri));
+//
+//            if (finalFile != null) {
+//                set_frames_to_container(finalFile.toString(), Utility.frametype_image);
+//
+//            }
+//
+//
+//            // System.out.println(mImageCaptureUri);
+//
+//        } else if (requestCode == Flag_pick_photo && resultCode == RESULT_OK) {
+//            selectedImageUri = data.getData();
+//
+//            // OI FILE Manager
+//            //                String filemanagerstring = selectedImageUri.getPath();
+//
+//            // MEDIA GALLERY
+//            String selectedImagePath = GetPaths.getPath(MakeNewEvent.this, selectedImageUri);
+//            if (selectedImagePath != null) {
+//                set_frames_to_container(selectedImagePath, Utility.frametype_image);
+//            }
+//        } else if (requestCode == 102 && resultCode == RESULT_OK && data != null) {
+//            ArrayList<String> images = data.getStringArrayListExtra(com.veer.multiselect.Util.Constants.GET_PATHS);
+//            for (int i = 0; i < images.size(); i++) {
+//                set_frames_to_container(images.get(i), Utility.frametype_image);
+//            }
+//        } else if (requestCode == Flag_product_list_result && data != null) {
+//
+//            int position = Utility.framepostion;
+//
+//            //make change to the frame to which product has been added
+//            FrameList_Model frameList_model = framedata_map.get(position);
+//            frameList_model.setProduct_id(data.getStringExtra("product_id"));
+//            frameList_model.setProduct_path(data.getStringExtra("product_image"));
+//            frameList_model.setProduct_url(data.getStringExtra("product_url"));
+
+        //show the frame
+        //show_synced_frame(position);
+//        } else if (requestCode == FLAG_ADD_PRODUCT && data != null) {
+//
+//            FrameList_Model frameList_model = new FrameList_Model();
+//            frameList_model.setFrametype(Utility.frametype_image);
+//            frameList_model.setName(data.getStringExtra("product_name"));
+//
+//            frameList_model.setFrame_resource_type(Utility.frame_resource_type_local);
+//
+//            frameList_model.setImagepath(data.getStringExtra("product_image"));
+//            frameList_model.setFrame_image_url(data.getStringExtra("product_image"));
+//            frameList_model.setProduct_id(data.getStringExtra("product_id"));
+//            frameList_model.setProduct_path(data.getStringExtra("product_image"));
+//            frameList_model.setProduct_url(data.getStringExtra("product_url"));
+//
+//            frameList_model.setStarttime((int) 0);
+//            frameList_model.setEndtime((int) (0));
+//            frameList_model.setAProductFrame(true);
+//
+//            if (addframe(frameList_model, (int) totalduration)) {
+//                if (count == 0) {
+//                    if (appPrefs.getInt(Utility.isTutShownForEvent) == Utility.tutNotShown) {
+//                        start_tut("Synch a Frame by holding it and moving it up");
+//                        count++;
+//                        appPrefs.putInt(Utility.isTutShownForEvent, Utility.tutShown);
+//                    }
+//                }
+//            } else {
+//                MyToast.popmessage("Frame is already attached to this duration", this);
+//            }
+//            updateProgressBar();
+//        } else
+        if (requestCode == Flag_Get_Tagged_User && data != null) {
+            TaggedUserModel taggedUserModel = (TaggedUserModel) data.getParcelableExtra("tagged_user");
+            if (searchForDuplicate(taggedUserModel)) {
+                //PopMessage.makesimplesnack(mlayout, "User already added");
+            } else {
+                list_tagged_user.add(taggedUserModel);
+                show_tagged_user();
+            }
+            //  pbar_mediaplayer.setVisibility(View.GONE);
+            // }
+            //}
+
+
+        }
+    }
+    private boolean searchForDuplicate(TaggedUserModel taggedUserModel) {
+        // pbar_mediaplayer.setVisibility(View.VISIBLE);
+        for (int i = 0; i < list_tagged_user.size(); i++) {
+            if (taggedUserModel.getUser_id().equals(list_tagged_user.get(i).getUser_id()))
+                return true;
+        }
+        return false;
+    }
 
 }
-
