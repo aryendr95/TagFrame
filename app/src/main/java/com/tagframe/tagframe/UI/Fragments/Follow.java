@@ -1,5 +1,6 @@
 package com.tagframe.tagframe.UI.Fragments;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by abhinav on 05/04/2016.
@@ -36,29 +38,25 @@ public class Follow extends Fragment {
     ProgressBar progressBar;
     AppPrefs userinfo;
 
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mview = inflater.inflate(R.layout.fragment_follow, container, false);
 
-        final ImageButton imgbtn = (ImageButton) mview.findViewById(R.id.createevent_follow);
-        imgbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((Modules) getActivity()).generate_media_chooser(imgbtn);
-            }
-        });
+        final ImageButton imgbtn = mview.findViewById(R.id.createevent_follow);
+        imgbtn.setOnClickListener( v -> ((Modules) getActivity()).generate_media_chooser(imgbtn) );
 
         userinfo = new AppPrefs(getActivity());
 
-        searchlist = (ListView) mview.findViewById(R.id.searchlist);
+        searchlist = mview.findViewById(R.id.searchlist);
 
-        textview = (TextView) mview.findViewById(R.id.txtmsg);
+        textview = mview.findViewById(R.id.txtmsg);
         textview.setVisibility(View.VISIBLE);
         textview.setText("Search for users by their Real Name or their username, then follow them to get their live feeds");
 
-        progressBar = (ProgressBar) mview.findViewById(R.id.pbarsearch);
+        progressBar = mview.findViewById(R.id.pbarsearch);
 
         progressBar.setVisibility(View.GONE);
 
@@ -121,7 +119,7 @@ public class Follow extends Fragment {
             super.onPostExecute(s);
             if (isAdded()) {
                 progressBar.setVisibility(View.GONE);
-                searchlist.setAdapter(new SearchAdapter(getActivity(), followModelArrayList, 2, Utility.operation_onclicked_direct_follow));
+                searchlist.setAdapter(new SearchAdapter( Objects.requireNonNull ( getActivity () ), followModelArrayList, 2, Utility.operation_onclicked_direct_follow));
 
                 if (followModelArrayList.size() == 0) {
                     textview.setVisibility(View.VISIBLE);

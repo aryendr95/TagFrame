@@ -277,7 +277,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     @Override
     protected void onStart() {
         super.onStart();
-        mSurfacecontainer = (RelativeLayout) findViewById(R.id.rl_event);
+        mSurfacecontainer = findViewById(R.id.rl_event);
     }
 
     //utility methods
@@ -334,15 +334,15 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
     //This method initialiazes all the views
     private void init(Bundle savedstate, String event_id) {
         //LAYOUTS
-        ll_dimer = (RelativeLayout) findViewById(R.id.dimer_layout);
-        ll_top_bar = (AnimatingRelativeLayout) findViewById(R.id.topbar);
-        ll_bottom_bar = (AnimatingRelativeLayout) findViewById(R.id.ll_mp_tools);
-        mlayout = (RelativeLayout) findViewById(R.id.mlayout_makenew_event);
+        ll_dimer = findViewById(R.id.dimer_layout);
+        ll_top_bar = findViewById(R.id.topbar);
+        ll_bottom_bar = findViewById(R.id.ll_mp_tools);
+        mlayout = findViewById(R.id.mlayout_makenew_event);
 
         //VIDEO SURFUCE
-        vidSurface = (SurfaceView) findViewById(R.id.surfaceviewnewevent);
-        txt_percent = (TextView) findViewById(R.id.txt_percent);
-        pbar_mediaplayer = (ProgressBar) findViewById(R.id.pbarmediaplayer);
+        vidSurface = findViewById(R.id.surfaceviewnewevent);
+        txt_percent = findViewById(R.id.txt_percent);
+        pbar_mediaplayer = findViewById(R.id.pbarmediaplayer);
 
         // Setup the player once.
         mPlayer = new Player(vidSurface, this);
@@ -350,17 +350,17 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         mediaPlayer = mPlayer.getMediaPlayer();
 
         //setupcontrols
-        imageButton_play = (ImageButton) findViewById(R.id.btn_play_stop);
-        label_seekbar_currentduration = (TextView) findViewById(R.id.txtcurrentduration);
-        label_seekbar_totalduration = (TextView) findViewById(R.id.txttotalduration);
-        label_tittle = (TextView) findViewById(R.id.txt_event_tittle);
-        label_description = (TextView) findViewById(R.id.event_description);
-        post_event = (ImageView) findViewById(R.id.postevent);
-        txt_tagged_user = (ImageView) findViewById(R.id.taguser_event);
+        imageButton_play = findViewById(R.id.btn_play_stop);
+        label_seekbar_currentduration = findViewById(R.id.txtcurrentduration);
+        label_seekbar_totalduration = findViewById(R.id.txttotalduration);
+        label_tittle = findViewById(R.id.txt_event_tittle);
+        label_description = findViewById(R.id.event_description);
+        post_event = findViewById(R.id.postevent);
+        txt_tagged_user = findViewById(R.id.taguser_event);
         label_tittle.setText(tittle);
         label_description.setText(description);
-        ll_title_edit = (ImageView) findViewById(R.id.editTittle);
-        ll_time_container = (LinearLayout) findViewById(R.id.ll_time);
+        ll_title_edit = findViewById(R.id.editTittle);
+        ll_time_container = findViewById(R.id.ll_time);
 
         ll_title_edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,12 +368,12 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                 editevent_tittle();
             }
         });
-        seekbar = (CustomSeekBar) findViewById(R.id.seekbar);
+        seekbar = findViewById(R.id.seekbar);
         seekbar.setOnSeekBarChangeListener(this);
-        img_frame_to_show = (ImageView) findViewById(R.id.img_frame_to_show);
-        img_play_video = (ImageView) findViewById(R.id.img_play_video);
+        img_frame_to_show = findViewById(R.id.img_frame_to_show);
+        img_play_video = findViewById(R.id.img_play_video);
         //setting the layout parameters of image
-        ll_seekbar_frame_container = (RelativeLayout) findViewById(R.id.layout_frame_at_time_container);
+        ll_seekbar_frame_container = findViewById(R.id.layout_frame_at_time_container);
         params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = 0;
         img_frame_to_show.setLayoutParams(params);
@@ -396,11 +396,11 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         });
 
 
-        ll_add_frame = (ImageView) findViewById(R.id.add_frame);
+        ll_add_frame = findViewById(R.id.add_frame);
         if (event_id.equals(null) || event_id == null || event_id.isEmpty()) {
-            //ll_add_frame.setVisibility(View.INVISIBLE);
+           // ll_add_frame.setVisibility(View.INVISIBLE);
         }
-        ll_container_frames = (AnimatingRelativeLayout) findViewById(R.id.container_frames);
+        ll_container_frames = findViewById(R.id.container_frames);
         ll_add_frame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -412,12 +412,11 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                     if (checkPermissions(PERMISSIONS, 2909)) {
                         generate_pop_up_add_frame(ll_add_frame);
                     }
-                    ;
                 }
             }
         });
 
-        framelist = (RecyclerView) findViewById(R.id.framelist);
+        framelist = findViewById(R.id.framelist);
        /* if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE || getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
             linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -447,7 +446,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             }
         });
 
-        save_event = (ImageView) findViewById(R.id.saveevent);
+        save_event = findViewById(R.id.saveevent);
 
         save_event.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -471,9 +470,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         //tutorial screen
 
-        ll_tutorial = (RelativeLayout) findViewById(R.id.layout_tutorials);
-        txt_tutorial_msg = (TextView) findViewById(R.id.txt_tutorial_msg);
-        btn_tut_got_it = (Button) findViewById(R.id.txt_tutorial_button);
+        ll_tutorial = findViewById(R.id.layout_tutorials);
+        txt_tutorial_msg = findViewById(R.id.txt_tutorial_msg);
+        btn_tut_got_it = findViewById(R.id.txt_tutorial_button);
         btn_tut_got_it.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -549,9 +548,9 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_tagged_users);
 
-        TextView txt_message = (TextView) dialog.findViewById(R.id.txt_no_message_tagged_user);
+        TextView txt_message = dialog.findViewById(R.id.txt_no_message_tagged_user);
 
-        RecyclerView list = (RecyclerView) dialog.findViewById(R.id.list_tagged_users);
+        RecyclerView list = dialog.findViewById(R.id.list_tagged_users);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         list.setLayoutManager(layoutManager);
 
@@ -596,8 +595,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
         //VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
 
-        final TextView desxription = (TextView) dialog.findViewById(R.id.dia_framedescription);
-        final TextView txt_tittle = (TextView) dialog.findViewById(R.id.dia_frametittle);
+        final TextView desxription = dialog.findViewById(R.id.dia_framedescription);
+        final TextView txt_tittle = dialog.findViewById(R.id.dia_frametittle);
 
         txt_tittle.setText(tittle.replace("Title:", ""));
         desxription.setText(label_description.getText().toString().replace("Description:", ""));
@@ -649,14 +648,14 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             dialog.setContentView(R.layout.dialog_frame_to_show);
 
             // VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
-            final ImageView frameimage = (ImageView) dialog.findViewById(R.id.framelist_image);
-            ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
-            ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
+            final ImageView frameimage = dialog.findViewById(R.id.framelist_image);
+            ImageView delete = dialog.findViewById(R.id.framelist_delete);
+            ImageView product_image = dialog.findViewById(R.id.product_image);
 
-            TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
-            final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
+            TextView duration = dialog.findViewById(R.id.framelist_time);
+            final EditText tittle = dialog.findViewById(R.id.framelist_name);
 
-            TextView tvaddproduct = (TextView) dialog.findViewById(R.id.add_product);
+            TextView tvaddproduct = dialog.findViewById(R.id.add_product);
             tvaddproduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -738,17 +737,17 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
 
             dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-            final VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
-            final RelativeLayout coverLayout = (RelativeLayout) dialog.findViewById(R.id.cover);
-            final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.pbar_video_dialog);
+            final VideoView framevideo = dialog.findViewById(R.id.framelist_video);
+            final RelativeLayout coverLayout = dialog.findViewById(R.id.cover);
+            final ProgressBar progressBar = dialog.findViewById(R.id.pbar_video_dialog);
 
-            ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
-            ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
+            ImageView delete = dialog.findViewById(R.id.framelist_delete);
+            ImageView product_image = dialog.findViewById(R.id.product_image);
 
-            TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
-            final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
+            TextView duration = dialog.findViewById(R.id.framelist_time);
+            final EditText tittle = dialog.findViewById(R.id.framelist_name);
 
-            TextView tvaddproduct = (TextView) dialog.findViewById(R.id.add_product);
+            TextView tvaddproduct = dialog.findViewById(R.id.add_product);
             tvaddproduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -816,11 +815,11 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             img_play_video.setVisibility(View.GONE);
 
             //video controls
-            final SeekBar seekBar = (SeekBar) dialog.findViewById(R.id.seekbar_dialog);
+            final SeekBar seekBar = dialog.findViewById(R.id.seekbar_dialog);
 
-            final TextView current = (TextView) dialog.findViewById(R.id.dialog_txttotalduration);
-            final TextView total = (TextView) dialog.findViewById(R.id.dialog_txtcurrentduration);
-            final ImageButton play_stop = (ImageButton) dialog.findViewById(R.id.dialog_btn_play_stop);
+            final TextView current = dialog.findViewById(R.id.dialog_txttotalduration);
+            final TextView total = dialog.findViewById(R.id.dialog_txtcurrentduration);
+            final ImageButton play_stop = dialog.findViewById(R.id.dialog_btn_play_stop);
 
             final Handler myHandler = new Handler();
 
@@ -842,7 +841,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                     total.setText("" + Utility.milliSecondsToTimer(currentDuration));
 
                     // Updating progress bar
-                    int progress = (int) (Utility.getProgressPercentage(currentDuration, totalDurationn));
+                    int progress = Utility.getProgressPercentage(currentDuration, totalDurationn);
 
                     seekBar.setProgress(progress);
                     myHandler.postDelayed(this, 100);
@@ -919,7 +918,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         mtutDialog.getWindow()
                 .setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         mtutDialog.setContentView(R.layout.dialog_tutorial);
-        TextView message = (TextView) mtutDialog.findViewById(R.id.txt_tutorial_msg);
+        TextView message = mtutDialog.findViewById(R.id.txt_tutorial_msg);
         message.setText(msg);
         mtutDialog.findViewById(R.id.txt_tutorial_button)
                 .setOnClickListener(new View.OnClickListener() {
@@ -1016,6 +1015,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             JSONObject jsonObject = new JSONObject();
             JSONArray tag_array = new JSONArray();
             for (int i = 0; i < list_taggerd_user.size(); i++) {
+                //list_taggerd_user.remove (i);
                 tag_array.put(list_taggerd_user.get(i).getUser_id());
             }
             jsonObject.put("tag_array", tag_array);
@@ -1025,6 +1025,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             return "";
         }
     }
+
 
     private void method_post_internet_event() {
         if (framedata_map.size() > 0) {
@@ -1065,8 +1066,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.dialog_delete_frame);
-            final LinearLayout controls = (LinearLayout) dialog.findViewById(R.id.layout_logout_controls);
-            final LinearLayout progress = (LinearLayout) dialog.findViewById(R.id.layout_logging_out);
+            final LinearLayout controls = dialog.findViewById(R.id.layout_logout_controls);
+            final LinearLayout progress = dialog.findViewById(R.id.layout_logging_out);
 
             dialog.findViewById(R.id.yesbtn).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1186,7 +1187,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             label_seekbar_currentduration.setText("" + Utility.milliSecondsToTimer(currentDuration));
 
             // Updating progress bar
-            int progress = (int) (Utility.getProgressPercentage(currentDuration, totalDurationn));
+            int progress = Utility.getProgressPercentage(currentDuration, totalDurationn);
 
             seekbar.setProgress(progress);
 
@@ -1246,12 +1247,12 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
                         }
                     }
                     img_frame_to_show.setTag(i + "");
-                    int prog = (int) (Utility.getProgressPercentage(fm.getEndtime(), totalDurationn));
+                    int prog = Utility.getProgressPercentage(fm.getEndtime(), totalDurationn);
                     if (prog > 80) {
                         prog = 80;
                     }
 
-                    show_frame_on_seekbar(prog - (int) (Utility.getProgressPercentage(2000, totalDurationn)));
+                    show_frame_on_seekbar(prog - Utility.getProgressPercentage(2000, totalDurationn) );
                 }
             }
             if (totalDurationn != 0) {
@@ -1385,8 +1386,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
         frameList_model.setImagepath(selectedimage);
         if (frametype == Utility.frametype_video) frameList_model.setFrame_data_url(selectedimage);
 
-        frameList_model.setStarttime((int) 0);
-        frameList_model.setEndtime((int) (0));
+        frameList_model.setStarttime( 0 );
+        frameList_model.setEndtime( 0 );
 
         if (addframe(frameList_model, (int) totalduration)) {
 
@@ -1565,8 +1566,8 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             frameList_model.setProduct_path(data.getStringExtra("product_image"));
             frameList_model.setProduct_url(data.getStringExtra("product_url"));
 
-            frameList_model.setStarttime((int) 0);
-            frameList_model.setEndtime((int) (0));
+            frameList_model.setStarttime( 0 );
+            frameList_model.setEndtime( 0 );
             frameList_model.setAProductFrame(true);
 
             if (addframe(frameList_model, (int) totalduration)) {
@@ -1582,7 +1583,7 @@ public class MakeNewEvent extends Activity implements SeekBar.OnSeekBarChangeLis
             }
             updateProgressBar();
         } else if (requestCode == Flag_Get_Tagged_User && data != null) {
-            TaggedUserModel taggedUserModel = (TaggedUserModel) data.getParcelableExtra("tagged_user");
+            TaggedUserModel taggedUserModel = data.getParcelableExtra("tagged_user");
             if (searchForDuplicate(taggedUserModel)) {
                 PopMessage.makesimplesnack(mlayout, "User already added");
             } else {

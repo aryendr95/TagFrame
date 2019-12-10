@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -15,12 +14,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -60,17 +55,12 @@ import com.tagframe.tagframe.Models.Event_Model;
 import com.tagframe.tagframe.Models.FollowModel;
 import com.tagframe.tagframe.Models.FrameList_Model;
 import com.tagframe.tagframe.Models.ListResponseModel;
-import com.tagframe.tagframe.Models.SearchUserResponseModel;
 import com.tagframe.tagframe.Models.TaggedUserModel;
-import com.tagframe.tagframe.Models.User;
 import com.tagframe.tagframe.R;
 import com.tagframe.tagframe.Retrofit.ApiClient;
 import com.tagframe.tagframe.Retrofit.ApiInterface;
 import com.tagframe.tagframe.Services.Broadcastresults;
 import com.tagframe.tagframe.Services.IntentServiceOperations;
-import com.tagframe.tagframe.UI.Fragments.Notifications;
-import com.tagframe.tagframe.UI.Fragments.Profile;
-import com.tagframe.tagframe.UI.Fragments.ProfileOld;
 import com.tagframe.tagframe.Utils.AppPrefs;
 import com.tagframe.tagframe.Utils.BitmapHelper;
 import com.tagframe.tagframe.Utils.CustomSeekBar;
@@ -81,8 +71,6 @@ import com.tagframe.tagframe.Utils.Utility;
 import com.tagframe.tagframe.Utils.listsort;
 import com.veer.exvidplayer.Player.Constants;
 import com.veer.exvidplayer.VideoPlayer.ExSimpleVpFragment;
-import com.veer.exvidplayer.VideoPlayer.ExVpCompleteFragment;
-import com.veer.exvidplayer.VideoPlayer.ExVpFragment;
 import com.veer.exvidplayer.VideoPlayer.ExVpListener;
 
 import org.json.JSONArray;
@@ -91,15 +79,21 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.tagframe.tagframe.UI.Acitivity.MakeNewEvent.Flag_Get_Tagged_User;
+import static com.tagframe.tagframe.Utils.Utility.base_url;
 
 public class WatchEventActivity extends AppCompatActivity implements Broadcastresults.Receiver {
     //controls
@@ -109,8 +103,10 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     private TextView tvCurrent, tvTotal;
     private ExVpListener exVpControls;
     private FrameLayout frameLayout;
+    TaggedUserAdapter taggedUserAdapter;
     //views
     private ScrollView bottomLayout;
+
     private ImageView ivTagUsers, ivAddFrame, ivPlayback, img_frame_to_show, img_play_video, img_done,
             img_like;
     private RecyclerView rvEventList;
@@ -118,7 +114,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     private TextView mtxt_directive, tvEventTittle, tvStats, tvBuffering, tvUsername;
     private ProgressBar mPbar_events;
     private RelativeLayout.LayoutParams params;
-    private RelativeLayout ll_dimer;
+    private RelativeLayout ll_dimer,mlayout;
     //vars
     private Point p = new Point();
 
@@ -128,7 +124,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     private String vidAddress, tittle, event_id, userName, user_id, shareLink, likevideo;
     private int likes, frames, comments;
     private ArrayList<FrameList_Model> framedata_map;
-    private ArrayList<TaggedUserModel> list_tagged_user;
+    private ArrayList<TaggedUserModel> list_tagged_user=new ArrayList<>();
+    private ArrayList<TaggedUserModel> arrayListTag=new ArrayList<>();
     private ArrayList<FollowModel> followModelArrayList;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -137,6 +134,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     private boolean shouldLoad = false;
     private int next_records = 0, currentListPosition = 0;
     private int frameSize;
+    private TaggedUserModel taggedUserModel;
     private ProgressBar pbarLoadFrame;
     private boolean isFrameShowing = false;
     private Handler handler = new Handler();
@@ -145,7 +143,11 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     };
     private int currentDuration = 0;
     private AppPrefs userinfo;
-    String tagurl = "http://thinksmartapp.com/TagFrame/webservice/tagged_event";
+    String tagurl = base_url+"/tagged_event";
+    String taguserdb= base_url+"/get_tagged_users?event_id=";
+
+    public List<TaggedUserModel> listWithUniqueValues1=new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -313,31 +315,32 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         frameSize = (int) getResources().getDimension(R.dimen.frame_size);
         frameSize = 150;
         getWindowManager().getDefaultDisplay().getSize(p);
-        frameLayout = (FrameLayout) findViewById(R.id.parent);
-        root = (RelativeLayout) findViewById(R.id.root);
-        ll_dimer = (RelativeLayout) findViewById(R.id.dimer_layout);
-        ivRev = (ImageButton) findViewById(R.id.btn_rev);
-        ivForword = (ImageButton) findViewById(R.id.btn_fwd);
-        ivNext = (ImageButton) findViewById(R.id.btn_next);
-        ivPrev = (ImageButton) findViewById(R.id.btn_prev);
-        ivPlayPause = (ImageButton) findViewById(R.id.btn_pause);
-        ivSetting = (ImageButton) findViewById(R.id.btn_settings);
-        mProgress = (CustomSeekBar) findViewById(R.id.seekbar);
-        tvCurrent = (TextView) findViewById(R.id.txt_currentTime);
-        tvTotal = (TextView) findViewById(R.id.txt_totalDuration);
-        bottomLayout = (ScrollView) findViewById(R.id.bottomLayout);
-        mLayout = (LinearLayout) findViewById(R.id.activity_simple_player);
+        frameLayout = findViewById(R.id.parent);
+        root = findViewById(R.id.root);
+        ll_dimer = findViewById(R.id.dimer_layout);
+        ivRev = findViewById(R.id.btn_rev);
+        ivForword = findViewById(R.id.btn_fwd);
+        ivNext = findViewById(R.id.btn_next);
+        ivPrev = findViewById(R.id.btn_prev);
+        ivPlayPause = findViewById(R.id.btn_pause);
+        ivSetting = findViewById(R.id.btn_settings);
+        mProgress = findViewById(R.id.seekbar);
+        tvCurrent = findViewById(R.id.txt_currentTime);
+        tvTotal = findViewById(R.id.txt_totalDuration);
+        bottomLayout = findViewById(R.id.bottomLayout);
+        mLayout = findViewById(R.id.activity_simple_player);
 
-        mPbar_events = (ProgressBar) findViewById(R.id.pbar_events);
+        mPbar_events = findViewById(R.id.pbar_events);
 
-        ll_like = (LinearLayout) findViewById(R.id.lllike);
-        ll_share = (LinearLayout) findViewById(R.id.llshare);
-        llcomment = (LinearLayout) findViewById(R.id.llcomment);
+        ll_like = findViewById(R.id.lllike);
+        ll_share = findViewById(R.id.llshare);
+        llcomment = findViewById(R.id.llcomment);
 
-        ivAddFrame = (ImageView) findViewById(R.id.add_frame);
-        ivTagUsers = (ImageView) findViewById(R.id.taguser_event);
-        img_done = (ImageView) findViewById(R.id.donewatching);
-        img_like = (ImageView) findViewById(R.id.imglike);
+        ivAddFrame = findViewById(R.id.add_frame);
+        ivTagUsers = findViewById(R.id.taguser_event);
+        img_done = findViewById(R.id.donewatching);
+        img_like = findViewById(R.id.imglike);
+        taggedUserAdapter= new TaggedUserAdapter(list_tagged_user,this);
 
         ll_like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -358,9 +361,10 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
             }
         });
 
-        mtxt_directive = (TextView) findViewById(R.id.txt_like_directive);
+        mtxt_directive = findViewById(R.id.txt_like_directive);
 
         ivAddFrame.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WatchEventActivity.this, MakeNewEvent.class);
@@ -381,7 +385,10 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         ivTagUsers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show_tagged_user();
+                //show_tagged_user();
+
+//                list_tagged_user.clear();
+                gettagedusers(event_id);
             }
         });
 
@@ -391,12 +398,12 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
                 finish();
             }
         });
-        tvUsername = (TextView) findViewById(R.id.txt_more_from);
-        tvEventTittle = (TextView) findViewById(R.id.txt_event_tittle);
-        tvStats = (TextView) findViewById(R.id.txt_stats);
+        tvUsername = findViewById(R.id.txt_more_from);
+        tvEventTittle = findViewById(R.id.txt_event_tittle);
+        tvStats = findViewById(R.id.txt_stats);
 
-        img_frame_to_show = (ImageView) findViewById(R.id.img_frame_to_show);
-        img_play_video = (ImageView) findViewById(R.id.img_play_video);
+        img_frame_to_show = findViewById(R.id.img_frame_to_show);
+        img_play_video = findViewById(R.id.img_play_video);
         params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = 0;
@@ -431,6 +438,111 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         });
 
     }
+    private void gettagedusers(String event_id) {
+        listWithUniqueValues1.clear();
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_tagged_users);
+
+        TextView txt_message = dialog.findViewById(R.id.txt_no_message_tagged_user);
+      //  TextView tvCancel= (TextView)dialog.findViewById(R.id.tv_cancel);
+
+        list = dialog.findViewById(R.id.list_tagged_users);
+        LinearLayoutManager llayoutManager = new LinearLayoutManager(this);
+        // RecyclerView.LayoutManager llayoutManager = new LinearLayoutManager(this);
+
+        final TaggedUserAdapter taggedUserAdapter=new TaggedUserAdapter(list_tagged_user, this);
+        list.setLayoutManager(llayoutManager);
+
+        if (list_tagged_user.size() > 0) {
+            txt_message.setVisibility(View.GONE);
+        }
+        // list_tagged_user.clear();
+          list.setAdapter(taggedUserAdapter);
+
+        // list_tagged_user.clear();
+        StringRequest str= new StringRequest(Request.Method.GET, taguserdb+event_id, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject object =new JSONObject(response);
+                    JSONArray array= object.getJSONArray("taggedUsers");
+                    for (int i=0;i<array.length();i++)
+                    {
+                        // list_tagged_user.clear();9
+                        JSONObject object1= (JSONObject)array.get(i);
+                        String name= object1.getString("name");
+                        String userid= object1.getString("user_id");
+                        String profilepic = object1.getString("profile_pic");
+                        taggedUserModel= new TaggedUserModel(name, userid, profilepic);
+                        // list_tagged_user.clear();
+                        //  list_tagged_user.trimToSize();
+                        //  HashSet<TaggedUserModel> setWithUniqueValues = new HashSet<>(list_tagged_user);
+                        // listWithUniqueValues1= new ArrayList<>();
+
+
+                        listWithUniqueValues1.add(taggedUserModel);
+                        list.setAdapter(taggedUserAdapter);
+                        taggedUserAdapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        AppSingleton.getInstance().addToRequestQueue(str);
+
+        list.setAdapter(taggedUserAdapter);
+
+        TextView txt = dialog.findViewById(R.id.txt_tag_add);
+        txt.setVisibility(View.VISIBLE);
+
+
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(WatchEventActivity.this, SearchUserActivity.class);
+                intent.putExtra("operation", Utility.operation_onclicked_tagged_user);
+                startActivityForResult(intent, Flag_Get_Tagged_User);
+                dialog.dismiss();
+
+            }
+        });
+
+
+
+//        tvCancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+
+        dialog.findViewById(R.id.txt_tag_done).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //list_tagged_user.clear();
+                taguser();
+                dialog.cancel();
+            }
+        });
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                exVpControls.play();
+            }
+        });
+
+        dialog.show();
+    }
+
 
     private Runnable runnable = new Runnable() {
         @Override
@@ -494,22 +606,71 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         }
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private String get_tagged_user_in_json() {
         try {
             JSONObject jsonObject = new JSONObject();
             JSONArray tag_array = new JSONArray();
-            for (int i = 0; i < list_tagged_user.size(); i++) {
-                tag_array.put(list_tagged_user.get(i).getUser_id());
-            }
-            jsonObject.put("tag_array", tag_array);
-            Log.e("json", jsonObject.toString());
-            return jsonObject.toString();
-        } catch (JSONException E) {
-            return "";
-        }
-    }
-    public void show_frame_on_seekbar(final int progress) {
 
+            // List<String> listWithDuplicates; // Your list containing duplicates
+            HashSet<TaggedUserModel> setWithUniqueValues = new HashSet<>(list_tagged_user);
+
+            HashSet<TaggedUserModel> setWithUniqueValues1 = new HashSet<>(listWithUniqueValues1);
+
+            List<TaggedUserModel> listWithUniqueValues = new ArrayList<>(setWithUniqueValues);
+
+            ArrayList<TaggedUserModel> listWithUnique = new ArrayList<>(setWithUniqueValues1);
+
+            List <TaggedUserModel>newlist= intersection(listWithUniqueValues,listWithUnique);
+            Log.d("newlistinter","newlisttag"+newlist);
+
+            if(listWithUniqueValues.size()> listWithUnique.size()){
+                for (int i = 0; i < newlist.size(); i++) {
+//                if(list_tagged_user.size()>0)
+//                    list_tagged_user.remove(i);
+                    tag_array.put(newlist.get(i).getUser_id());
+                }
+
+                jsonObject.put("tag_array", tag_array);
+                Log.e("json", jsonObject.toString());
+                return jsonObject.toString();
+
+//                }
+//                else {
+//                    tag_array.put(list_tagged_user.get(i).getUser_id());
+//
+//                }
+                //list_tagged_user.remove(i);
+
+            }
+            else{
+//                Toast.makeText(this, "Same users can not be tag again", Toast.LENGTH_SHORT).show();
+                return "";
+
+            }
+//
+
+        } catch (JSONException E) {
+            E.printStackTrace();
+        }
+        return "";
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public <T> List<TaggedUserModel> intersection(List<TaggedUserModel> list1, List<TaggedUserModel> list2) {
+        List<T> list =  new ArrayList<T>();
+
+
+        Set<String> ids = list2.stream().map(TaggedUserModel::getUser_id).collect(Collectors.toSet());
+        List<TaggedUserModel> parentBooks = list1.stream().filter(book -> !ids.contains(book.getUser_id())).collect(Collectors.toList());
+        System.out.println("parlis"+parentBooks.toString());
+
+        return parentBooks;
+
+    }
+
+    public void show_frame_on_seekbar(final int progress) {
         int measure = (int) ((((float) progress * p.x) / 100) - (progress));
         if (p.x - measure < Utility.dpToPx(150)) {
 
@@ -522,7 +683,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     }
 
     private void setUpEventList() {
-        rvEventList = (RecyclerView) findViewById(R.id.list_event_users);
+        rvEventList = findViewById(R.id.list_event_users);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvEventList.setLayoutManager(linearLayoutManager);
         rvEventList.setAdapter(new WatchEventListAdapter(this, event_modelArrayList));
@@ -538,9 +699,9 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
                 }
             }
         });
+
         loadUserEvents();
     }
-
 
     public Broadcastresults register_reviever() {
         mReceiver = new Broadcastresults(new Handler());
@@ -592,16 +753,17 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         startActivity(sendIntent);
     }
 
+
+
     private void show_tagged_user() {
         exVpControls.stop();
-
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_tagged_users);
 
-        TextView txt_message = (TextView) dialog.findViewById(R.id.txt_no_message_tagged_user);
+        TextView txt_message = dialog.findViewById(R.id.txt_no_message_tagged_user);
 
-        list = (RecyclerView) dialog.findViewById(R.id.list_tagged_users);
+        list = dialog.findViewById(R.id.list_tagged_users);
         LinearLayoutManager llayoutManager = new LinearLayoutManager(this);
         // RecyclerView.LayoutManager llayoutManager = new LinearLayoutManager(this);
         list.setLayoutManager(llayoutManager);
@@ -609,7 +771,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         if (list_tagged_user.size() > 0) {
             txt_message.setVisibility(View.GONE);
         }
-        list.setAdapter(new TaggedUserAdapter(list_tagged_user, this));
+        list.setAdapter(taggedUserAdapter);
+
 
 
 //        list.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), list, new ClickListener() {
@@ -635,18 +798,21 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 //        }));
 
 
-        TextView txt = (TextView) dialog.findViewById(R.id.txt_tag_add);
+        TextView txt = dialog.findViewById(R.id.txt_tag_add);
         txt.setVisibility(View.VISIBLE);
 
-      txt.setOnClickListener (new View.OnClickListener () {
-         @Override
-        public void onClick(View view) {
-             Intent intent = new Intent(WatchEventActivity.this, SearchUserActivity.class);
-             intent.putExtra("operation", Utility.operation_onclicked_tagged_user);
-             startActivityForResult(intent, Flag_Get_Tagged_User);
-             dialog.dismiss();
-        }
+
+        txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(WatchEventActivity.this, SearchUserActivity.class);
+                intent.putExtra("operation", Utility.operation_onclicked_tagged_user);
+                startActivityForResult(intent, Flag_Get_Tagged_User);
+                dialog.dismiss();
+
+            }
         });
+
         dialog.findViewById(R.id.txt_tag_done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -664,6 +830,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
         dialog.show();
     }
+
     private void taguser() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, tagurl, new com.android.volley.Response.Listener<String>() {
             @Override
@@ -671,6 +838,14 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String msg = jsonObject.getString("status");
+                    if(msg.equals ("success")){
+                        Toast.makeText (WatchEventActivity.this, ""+msg, Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent (WatchEventActivity.this, Modules.class);
+                        startActivity (i);
+                    }
+                    else{
+                        Toast.makeText (WatchEventActivity.this,"",Toast.LENGTH_SHORT).show();
+                    }
                     Toast.makeText(WatchEventActivity.this, "" + msg, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -682,17 +857,17 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
             public void onErrorResponse(VolleyError error) {
 
             }
-        }) {
+        })
+         {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<> ();
+                Map<String, String> params = new HashMap<>();
                 params.put("user_id", user_id);
                 params.put("event_id", event_id);
                 params.put("tagged_user_id", get_tagged_user_in_json());
                 return params;
             }
-
-
         };
         AppSingleton.getInstance().addToRequestQueue(stringRequest);
     }
@@ -705,31 +880,24 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
             retrofitService.getUserEvents(user_id, String.valueOf(next_records))
                     .enqueue(new Callback<ListResponseModel>() {
                         @Override
-                        public void onResponse(Call<ListResponseModel> call,
-                                               Response<ListResponseModel> response) {
-
+                        public void onResponse(Call<ListResponseModel> call, Response<ListResponseModel> response) {
                             mPbar_events.setVisibility(View.GONE);
-
                             try {
                                 if (response.body().getStatus().equals("success")) {
-
                                     event_modelArrayList.addAll(response.body().getTagStreamArrayList());
                                     rvEventList.getAdapter().notifyDataSetChanged();
                                     if (rvEventList.getAdapter().getItemCount() > currentListPosition) {
                                         new Handler().postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
-
                                                 rvEventList.smoothScrollToPosition(currentListPosition);
                                             }
                                         }, 1000);
                                     }
                                     if (response.body().getTagStreamArrayList().size() == Utility.PAGE_SIZE) {
                                         next_records = next_records + Utility.PAGE_SIZE;
-
                                         shouldLoad = true;
                                     } else {
-
                                         shouldLoad = false;
                                     }
                                 } else {
@@ -753,11 +921,8 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     public void onReceiveResult(int resultCode, Bundle resultData) {
         int operation = resultData.getInt("operation");
         switch (operation) {
-
             case Utility.operation_unlike:
-
                 if (resultCode == 1) {
-
                     PopMessage.makesimplesnack(mLayout, "Event unliked");
                     likes--;
                     tvStats.setText(likes
@@ -769,18 +934,14 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
                             + comments
                             + " Comments");
                 } else {
-
                     PopMessage.makesimplesnack(mLayout, "Error unliking event,reverting changes");
                     img_like.setImageResource(R.drawable.unlike);
                     mtxt_directive.setText("Unlike");
                 }
-
                 break;
 
             case Utility.operation_like:
-
                 if (resultCode == 1) {
-
                     PopMessage.makesimplesnack(mLayout, "Event Liked");
                     likes++;
                     tvStats.setText(likes
@@ -801,9 +962,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
                 break;
 
             case Utility.operation_comment:
-
                 if (resultCode == 1) {
-
                     PopMessage.makesimplesnack(mLayout, "Comment Successful");
                     comments++;
                     tvStats.setText(likes
@@ -822,12 +981,10 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     }
 
     public void show_synced_frame(final int pos) {
-
         exVpControls.stop();
         final FrameList_Model frameList_model = framedata_map.get(pos);
 
         if (frameList_model.getFrametype() == Utility.frametype_image) {
-
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             Window window = dialog.getWindow();
@@ -837,15 +994,15 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.dialog_frame_to_show);
 
-            // VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
-            final ImageView frameimage = (ImageView) dialog.findViewById(R.id.framelist_image);
-            ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
-            ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
+            //VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
+            final ImageView frameimage = dialog.findViewById(R.id.framelist_image);
+            ImageView delete = dialog.findViewById(R.id.framelist_delete);
+            ImageView product_image = dialog.findViewById(R.id.product_image);
 
-            TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
-            final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
+            TextView duration = dialog.findViewById(R.id.framelist_time);
+            final EditText tittle = dialog.findViewById(R.id.framelist_name);
 
-            TextView tvaddproduct = (TextView) dialog.findViewById(R.id.add_product);
+            TextView tvaddproduct = dialog.findViewById(R.id.add_product);
             tvaddproduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -859,8 +1016,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
             frameimage.setVisibility(View.VISIBLE);
             //if there is product
-            if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id()
-                    .equals("0")) {
+            if (!frameList_model.getProduct_id().isEmpty() && !frameList_model.getProduct_id().equals("0")) {
                 //checking if it is a product frame
                 if (!frameList_model.isAProductFrame()) {
                     product_image.setVisibility(View.VISIBLE);
@@ -918,17 +1074,17 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
                     .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-            final VideoView framevideo = (VideoView) dialog.findViewById(R.id.framelist_video);
-            final RelativeLayout coverLayout = (RelativeLayout) dialog.findViewById(R.id.cover);
-            final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.pbar_video_dialog);
+            final VideoView framevideo = dialog.findViewById(R.id.framelist_video);
+            final RelativeLayout coverLayout = dialog.findViewById(R.id.cover);
+            final ProgressBar progressBar = dialog.findViewById(R.id.pbar_video_dialog);
 
-            ImageView delete = (ImageView) dialog.findViewById(R.id.framelist_delete);
-            ImageView product_image = (ImageView) dialog.findViewById(R.id.product_image);
+            ImageView delete = dialog.findViewById(R.id.framelist_delete);
+            ImageView product_image = dialog.findViewById(R.id.product_image);
 
-            TextView duration = (TextView) dialog.findViewById(R.id.framelist_time);
-            final EditText tittle = (EditText) dialog.findViewById(R.id.framelist_name);
+            TextView duration = dialog.findViewById(R.id.framelist_time);
+            final EditText tittle = dialog.findViewById(R.id.framelist_name);
 
-            TextView tvaddproduct = (TextView) dialog.findViewById(R.id.add_product);
+            TextView tvaddproduct = dialog.findViewById(R.id.add_product);
             tvaddproduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -992,11 +1148,11 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
             img_play_video.setVisibility(View.GONE);
 
             //video controls
-            final SeekBar seekBar = (SeekBar) dialog.findViewById(R.id.seekbar_dialog);
+            final SeekBar seekBar = dialog.findViewById(R.id.seekbar_dialog);
 
-            final TextView current = (TextView) dialog.findViewById(R.id.dialog_txttotalduration);
-            final TextView total = (TextView) dialog.findViewById(R.id.dialog_txtcurrentduration);
-            final ImageButton play_stop = (ImageButton) dialog.findViewById(R.id.dialog_btn_play_stop);
+            final TextView current = dialog.findViewById(R.id.dialog_txttotalduration);
+            final TextView total = dialog.findViewById(R.id.dialog_txtcurrentduration);
+            final ImageButton play_stop = dialog.findViewById(R.id.dialog_btn_play_stop);
 
             final Handler myHandler = new Handler();
 
@@ -1018,7 +1174,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
                     total.setText("" + Utility.milliSecondsToTimer(currentDuration));
 
                     // Updating progress bar
-                    int progress = (int) (Utility.getProgressPercentage(currentDuration, totalDurationn));
+                    int progress = Utility.getProgressPercentage(currentDuration, totalDurationn);
 
                     seekBar.setProgress(progress);
                     myHandler.postDelayed(this, 100);
@@ -1124,7 +1280,6 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
     }
 
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
-
         private GestureDetector gestureDetector;
         private WatchEventActivity.ClickListener clickListener;
 
@@ -1163,6 +1318,7 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         //updateProgressBar();
@@ -1299,13 +1455,14 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 //            }
 //            updateProgressBar();
 //        } else
+
         if (requestCode == Flag_Get_Tagged_User && data != null) {
-            TaggedUserModel taggedUserModel = (TaggedUserModel) data.getParcelableExtra("tagged_user");
+            TaggedUserModel taggedUserModel = data.getParcelableExtra("tagged_user");
             if (searchForDuplicate(taggedUserModel)) {
-                //PopMessage.makesimplesnack(mlayout, "User already added");
+              //  PopMessage.makesimplesnack(mlayout, "User already added");
             } else {
                 list_tagged_user.add(taggedUserModel);
-                show_tagged_user();
+                 show_tagged_user();
             }
             //  pbar_mediaplayer.setVisibility(View.GONE);
             // }
@@ -1314,13 +1471,14 @@ public class WatchEventActivity extends AppCompatActivity implements Broadcastre
 
         }
     }
+
     private boolean searchForDuplicate(TaggedUserModel taggedUserModel) {
         // pbar_mediaplayer.setVisibility(View.VISIBLE);
         for (int i = 0; i < list_tagged_user.size(); i++) {
             if (taggedUserModel.getUser_id().equals(list_tagged_user.get(i).getUser_id()))
+                // list_tagged_user.remove(i);
                 return true;
         }
         return false;
     }
-
 }
